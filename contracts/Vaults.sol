@@ -15,6 +15,11 @@ contract Vaults {
 	}
 
 
+	struct withdrawalRequest {
+		address requester;
+	}
+
+
 	/*** [STATE VARIABLES] ***/
 	mapping(address => Vault) vaults;
 
