@@ -3,10 +3,10 @@
 pragma solidity ^0.8.10;
 
 
-/*** [IMPORT] ***/
+/* [IMPORT] */
 
 contract Vaults {	
-	/*** [STRUCTS] ***/
+	/* [STRUCT] */
 	
 	struct WithdrawalRequest {
 		address requester;
@@ -27,12 +27,7 @@ contract Vaults {
 	}
 
 
-	/*** [STATE VARIABLES] ***/
+	/* [STATE-VARIABLE] */
 
 	mapping(address => Vault) vaults;
-
-
-	/*** [CONSTRUCTOR] ***/
-	
-	constructor () {}
 }
