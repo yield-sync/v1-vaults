@@ -8,18 +8,27 @@ pragma solidity ^0.8.10;
 contract Vaults {	
 	/*** [STRUCTS] ***/
 	
-	struct Vault {
-		mapping(address => uint8) voterWeight;
-		address[] acceptedTokens;
-		uint256 withdrawMinutesDelay;
-	}
-
-	struct withdrawalRequest {
+	struct WithdrawalRequest {
 		address requester;
+
+		address[] tokens;
+
+		uint256[] amounts;
+	}
+	
+	struct Vault {
+		uint256 withdrawMinutesDelay;
+		
+		address[] acceptedTokens;
+		
+		WithdrawalRequest[] withdrawalRequests;
+
+		mapping(address => uint8) voterWeight;
 	}
 
 
 	/*** [STATE VARIABLES] ***/
+
 	mapping(address => Vault) vaults;
 
 
