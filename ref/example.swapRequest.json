@@ -1,0 +1,10 @@
+{
+	"owner": "0xAddress",
+	"strategy": 1,
+	"amountInStrategy": 3,
+	"askingAsset": "TOKENB",
+	"timePeriod": {
+		"start": "epoch time here",
+		"end": "epoch time here"
+	}
+}

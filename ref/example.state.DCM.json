@@ -1,0 +1,48 @@
+{
+	"swapAgreements": {
+		"23": {
+			"start": "epoch time here",
+			"end": "epoch time here",
+
+			"swap": [
+				{
+					"swapperAddress": "0xAddressA",
+					"strategyId": 1,
+					"amount": 100,
+					"token": "TOKEN A",
+					"percentage": 0.5
+				},
+				{
+					"swapperAddress": "0xAddressB",
+					"strategyId": 2,
+					"amount": 100,
+					"token": "TOKEN B",
+					"percentage": 0.5
+				}
+			]
+		},
+		"45": {
+			"start": "epoch time here",
+			"end": "epoch time here",
+
+			"swap": [
+				{
+					"swapperAddress": "0xAddressA",
+					"strategyId": 1,
+					"amount": 100,
+					"token": "TOKEN A",
+					"percentage": 0.5
+				},
+				{
+					"swapperAddress": "0xAddressB",
+					"strategyId": 2,
+					"amount": 100,
+					"token": "TOKEN B",
+					"percentage": 0.5
+				}
+			]
+		}
+	},
+	
+	"strategies": {}
+}

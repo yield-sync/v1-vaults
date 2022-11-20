@@ -1,0 +1,45 @@
+{
+	"0x96A4BC19E6947b8C4b3FbC47bAE0dCB32F0037c8": {
+		"strat1": [
+			{
+				"id": 0,
+
+				"askingToken": "TOKENB",
+
+				"swappingToken": "TOKENA",
+				"amount": 3,
+
+				"timePeriod": {
+					"start": "epoch time here",
+					"end": "epoch time here"
+				}
+			},
+			{
+				"id": 1,
+
+				"askingToken": "TOKENB",
+
+				"swappingToken": "TOKENA",
+				"amount": 3,
+
+				"timePeriod": {
+					"start": "epoch time here",
+					"end": "epoch time here"
+				}
+			},
+			{
+				"id": 2,
+
+				"askingToken": "TOKENB",
+
+				"swappingToken": "TOKENA",
+				"amount": 3,
+
+				"timePeriod": {
+					"start": "epoch time here",
+					"end": "epoch time here"
+				}
+			}
+		]
+	}
+}
