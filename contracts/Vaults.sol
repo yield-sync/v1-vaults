@@ -9,7 +9,7 @@ contract Vaults {
 	/*** [STATE VARIABLES] ***/
 	
 	struct Vault {
-		mapping(address => uint8) voterWeight;
+		uint256 id;
 		address[] acceptedTokens;
 		uint256 withdrawMinutesDelay;
 	}
@@ -21,10 +21,31 @@ contract Vaults {
 
 
 	/*** [STATE VARIABLES] ***/
+	uint256 vaultId;
 	mapping(address => Vault) vaults;
+	mapping(uint256 => uint8) voterWeight;
 
 
 	/*** [CONSTRUCTOR] ***/
 	
-	constructor () {}
+	constructor () {
+		vaultId = 0;
+	}
+
+	function createVault() public {
+		address[] memory acceptedTokens; 
+
+		// [CREATE] Vault
+		Vault memory createdVault = Vault({
+			id: vaultId,
+			acceptedTokens: acceptedTokens,
+			withdrawMinutesDelay: 10
+		});
+
+		// [MAP]
+		vaults[msg.sender] = createdVault;
+
+		// [INCREMENT]
+		vaultId++;
+	}
 }
