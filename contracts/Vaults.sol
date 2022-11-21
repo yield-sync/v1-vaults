@@ -3,21 +3,31 @@
 pragma solidity ^0.8.10;
 
 
-/*** [IMPORT] ***/
+/* [IMPORT] */
 
 contract Vaults {	
-	/*** [STATE VARIABLES] ***/
+	/* [STRUCT] */
+	
+	struct WithdrawalRequest {
+		address requester;
+
+		address[] tokens;
+
+		uint256[] amounts;
+	}
 	
 	struct Vault {
 		uint256 id;
-		address[] acceptedTokens;
+
 		uint256 withdrawMinutesDelay;
+		
+		address[] acceptedTokens;
+		
+		WithdrawalRequest[] withdrawalRequests;
 	}
 
 
-	struct withdrawalRequest {
-		address requester;
-	}
+	/* [STATE-VARIABLE] */
 
 
 	/*** [STATE VARIABLES] ***/
