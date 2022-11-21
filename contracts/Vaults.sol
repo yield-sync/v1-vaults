@@ -29,27 +29,32 @@ contract Vaults {
 
 	/* [STATE-VARIABLE] */
 
-
-	/*** [STATE VARIABLES] ***/
 	uint256 vaultId;
 	mapping(address => Vault) vaults;
 	mapping(uint256 => uint8) voterWeight;
 
 
-	/*** [CONSTRUCTOR] ***/
+	/* [CONSTRUCTOR] */
 	
 	constructor () {
 		vaultId = 0;
 	}
 
-	function createVault() public {
-		address[] memory acceptedTokens; 
+	/**
+	 * @notice Create a Vault
+	 * @param acceptedTokens_ Array of accepted tokens (pass empty array to accept ALL tokens)
+	*/
+	function createVault(address[] memory acceptedTokens_) public {
+		// [INIT]
+		address[] memory _acceptedTokens = acceptedTokens_; 
+		WithdrawalRequest[] memory _withdrawalRequests;
 
 		// [CREATE] Vault
 		Vault memory createdVault = Vault({
 			id: vaultId,
-			acceptedTokens: acceptedTokens,
-			withdrawMinutesDelay: 10
+			withdrawMinutesDelay: 10,
+			acceptedTokens: _acceptedTokens,
+			withdrawalRequests: _withdrawalRequests
 		});
 
 		// [MAP]
