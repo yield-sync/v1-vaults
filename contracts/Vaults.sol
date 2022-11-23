@@ -3,8 +3,6 @@
 pragma solidity ^0.8.10;
 
 
-/* [IMPORT] */
-
 contract Vaults {	
 	/* [STRUCT] */
 	
@@ -29,15 +27,20 @@ contract Vaults {
 
 	/* [STATE-VARIABLE] */
 
-	uint256 vaultId;
-	mapping(address => Vault) vaults;
-	mapping(uint256 => uint8) voterWeight;
+	uint256 vaultIdIncrement;
+
+	// Vault IOd => Vault
+	mapping(uint256 => Vault) vaults;
+	// Vault Id => Owner Address
+	mapping(uint256 => address) vaultOwnedBy;
+	// Vault Id => (Address => Voter Weight)
+	mapping(uint256 => mapping(address => uint8)) voterWeight;
 
 
 	/* [CONSTRUCTOR] */
 	
 	constructor () {
-		vaultId = 0;
+		vaultIdIncrement = 0;
 	}
 
 	/**
@@ -50,17 +53,17 @@ contract Vaults {
 		WithdrawalRequest[] memory _withdrawalRequests;
 
 		// [CREATE] Vault
-		Vault memory createdVault = Vault({
-			id: vaultId,
+		vaults[vaultIdIncrement] = Vault({
+			id: vaultIdIncrement,
 			withdrawMinutesDelay: 10,
 			acceptedTokens: _acceptedTokens,
 			withdrawalRequests: _withdrawalRequests
 		});
 
-		// [MAP]
-		vaults[msg.sender] = createdVault;
+		// [MAP] Vault Owner
+		vaultOwnedBy[vaultIdIncrement] = msg.sender;
 
 		// [INCREMENT]
-		vaultId++;
+		vaultIdIncrement++;
 	}
 }
