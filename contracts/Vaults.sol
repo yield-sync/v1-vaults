@@ -31,8 +31,7 @@ contract Vaults {
 
 	// Vault IOd => Vault
 	mapping(uint256 => Vault) vaults;
-	// Vault Id => Owner Address
-	mapping(uint256 => address) vaultOwnedBy;
+	
 	// Vault Id => (Address => Voter Weight)
 	mapping(uint256 => mapping(address => uint8)) voterWeight;
 
@@ -44,7 +43,7 @@ contract Vaults {
 	}
 
 	/**
-	 * @notice Create a Vault
+	 * @notice Creates a vault.
 	 * @param acceptedTokens_ Array of accepted tokens (pass empty array to accept ALL tokens)
 	*/
 	function createVault(address[] memory acceptedTokens_) public {
@@ -60,8 +59,8 @@ contract Vaults {
 			withdrawalRequests: _withdrawalRequests
 		});
 
-		// [MAP] Vault Owner
-		vaultOwnedBy[vaultIdIncrement] = msg.sender;
+		// [MAP] Voter Weight
+		voterWeight[vaultIdIncrement][msg.sender] = 100;
 
 		// [INCREMENT]
 		vaultIdIncrement++;
