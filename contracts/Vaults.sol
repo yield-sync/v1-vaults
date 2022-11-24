@@ -64,18 +64,38 @@ contract Vaults {
 		vaultIdIncrement++;
 	}
 
-
+	/**
+	 * @notice
+	 */
 	function depositTokens() public {}
 
 
+	/**
+	 * @notice
+	 */
 	function createWithdrawalRequest() public {}
 
 
+	/**
+	 * @notice
+	 */
 	function cancelWithdrawalRequest() public {}
 
 
+	/**
+	 * @notice
+	 */
 	function withdrawTokens() public {}
 
-
+	
+	/**
+	 * @notice
+	 */
 	function changeVoterWeight() public {}
+
+
+	/**
+	 * @notice
+	 */
+	function withdrawMinutesDelay() public {}
 }
