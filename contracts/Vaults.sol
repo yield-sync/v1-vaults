@@ -6,7 +6,7 @@ pragma solidity ^0.8.10;
 contract Vaults {
 	/* [STRUCT] */
 	
-	struct WithdrawalRequest {
+	struct QueuedWithdrawal {
 		address requester;
 
 		address[] tokens;
@@ -16,11 +16,14 @@ contract Vaults {
 	
 	struct Vault {
 		uint256 id;
-		uint256 withdrawMinutesDelay;
+
+		bool strictDeposits;
+
+		uint8 withdrawMinutesDelay;
 		
 		address[] acceptedTokens;
 		
-		WithdrawalRequest[] withdrawalRequests;
+		QueuedWithdrawal[] queuedWithdrawal;
 	}
 
 
@@ -44,17 +47,22 @@ contract Vaults {
 	/**
 	 * @notice Creates a Vault and sets the voter weight of msg.sender to 100
 	 * @param acceptedTokens_ Array of accepted tokens (pass empty array to accept ALL tokens)
+	 * @param withdrawMinutesDelay_ Withdrawal delay (in minutes)
 	*/
-	function createVault(address[] memory acceptedTokens_) public {
+	function createVault(
+		address[] memory acceptedTokens_,
+		uint8 withdrawMinutesDelay_
+	) public {
 		// [INIT]
-		WithdrawalRequest[] memory initialiWithdrawlRequests;
+		QueuedWithdrawal[] memory initialQueuedWithdrawal;
 
 		// [CREATE] Vault
 		vaults[vaultIdIncrement] = Vault({
 			id: vaultIdIncrement,
-			withdrawMinutesDelay: 10,
+			strictDeposits: false,
+			withdrawMinutesDelay: withdrawMinutesDelay_,
 			acceptedTokens: acceptedTokens_,
-			withdrawalRequests: initialiWithdrawlRequests
+			queuedWithdrawal: initialQueuedWithdrawal
 		});
 
 		// [MAP] Voter Weight
@@ -65,37 +73,31 @@ contract Vaults {
 	}
 
 	/**
-	 * @notice
-	 */
+	 * @notice Deposit funds into vault
+	*/
 	function depositTokens() public {}
 
 
 	/**
-	 * @notice
-	 */
-	function createWithdrawalRequest() public {}
+	 * @notice Create a queued withdrawl from vault
+	*/
+	function createQueuedWithdrawal() public {}
+
+
+	/**
+	 * @notice Delete a queued withdrawal from vault
+	*/
+	function deleteQueuedWithdrawal() public {}
 
 
 	/**
 	 * @notice
-	 */
-	function cancelWithdrawalRequest() public {}
-
-
-	/**
-	 * @notice
-	 */
+	*/
 	function withdrawTokens() public {}
 
 	
 	/**
 	 * @notice
-	 */
+	*/
 	function changeVoterWeight() public {}
-
-
-	/**
-	 * @notice
-	 */
-	function withdrawMinutesDelay() public {}
 }
