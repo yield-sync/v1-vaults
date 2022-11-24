@@ -3,7 +3,7 @@
 pragma solidity ^0.8.10;
 
 
-contract Vaults {	
+contract Vaults {
 	/* [STRUCT] */
 	
 	struct WithdrawalRequest {
@@ -16,7 +16,6 @@ contract Vaults {
 	
 	struct Vault {
 		uint256 id;
-
 		uint256 withdrawMinutesDelay;
 		
 		address[] acceptedTokens;
@@ -43,20 +42,19 @@ contract Vaults {
 	}
 
 	/**
-	 * @notice Creates a vault.
+	 * @notice Creates a Vault and sets the voter weight of msg.sender to 100
 	 * @param acceptedTokens_ Array of accepted tokens (pass empty array to accept ALL tokens)
 	*/
 	function createVault(address[] memory acceptedTokens_) public {
 		// [INIT]
-		address[] memory _acceptedTokens = acceptedTokens_; 
-		WithdrawalRequest[] memory _withdrawalRequests;
+		WithdrawalRequest[] memory initialiWithdrawlRequests;
 
 		// [CREATE] Vault
 		vaults[vaultIdIncrement] = Vault({
 			id: vaultIdIncrement,
 			withdrawMinutesDelay: 10,
-			acceptedTokens: _acceptedTokens,
-			withdrawalRequests: _withdrawalRequests
+			acceptedTokens: acceptedTokens_,
+			withdrawalRequests: initialiWithdrawlRequests
 		});
 
 		// [MAP] Voter Weight
@@ -65,4 +63,19 @@ contract Vaults {
 		// [INCREMENT]
 		vaultIdIncrement++;
 	}
+
+
+	function depositTokens() public {}
+
+
+	function createWithdrawalRequest() public {}
+
+
+	function cancelWithdrawalRequest() public {}
+
+
+	function withdrawTokens() public {}
+
+
+	function changeVoterWeight() public {}
 }
