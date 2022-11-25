@@ -3,6 +3,10 @@
 pragma solidity ^0.8.10;
 
 
+/* [IMPORT] */
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+
+
 contract Vaults {
 	/* [STRUCT] */
 	
@@ -32,10 +36,10 @@ contract Vaults {
 	uint256 vaultIdIncrement;
 
 	// Vault IOd => Vault
-	mapping(uint256 => Vault) vaults;
+	mapping (uint256 => Vault) vaults;
 	
 	// Vault Id => (Address => Voter Weight)
-	mapping(uint256 => mapping(address => uint8)) voterWeight;
+	mapping (uint256 => mapping(address => uint8)) voterWeight;
 
 
 	/* [CONSTRUCTOR] */
@@ -43,6 +47,8 @@ contract Vaults {
 	constructor () {
 		vaultIdIncrement = 0;
 	}
+
+	receive () external payable {}
 
 	/**
 	 * @notice Creates a Vault and sets the voter weight of msg.sender to 100
@@ -75,19 +81,25 @@ contract Vaults {
 	/**
 	 * @notice Deposit funds into vault
 	*/
-	function depositTokens() public {}
+	function depositTokens(
+		uint256 vaultId,
+		address tokenAddress,
+		uint256 amount
+	) public payable {
+		// Deposit into vault with given vault id
+	}
 
 
 	/**
-	 * @notice Create a queued withdrawl from vault
+	 * @notice CREATE a queued withdrawl from vault
 	*/
 	function createQueuedWithdrawal() public {}
 
 
 	/**
-	 * @notice Delete a queued withdrawal from vault
+	 * @notice DELETE a queued withdrawal from vault
 	*/
-	function deleteQueuedWithdrawal() public {}
+	function cancelQueuedWithdrawal() public {}
 
 
 	/**
