@@ -1,6 +1,6 @@
-// contracts/Governance.sol
+// contracts/Vault.sol
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.10;
+pragma solidity ^0.8.1;
 
 
 /* [IMPORT] */
@@ -39,7 +39,10 @@ contract Vaults {
 	mapping (uint256 => Vault) vaults;
 	
 	// Vault Id => (Address => Voter Weight)
-	mapping (uint256 => mapping(address => uint8)) voterWeight;
+	mapping (uint256 => mapping (address => uint8)) voterWeight;
+
+	// 
+	mapping (uint256 => mapping (address => uint256)) tokenBalance;
 
 
 	/* [CONSTRUCTOR] */
@@ -86,7 +89,15 @@ contract Vaults {
 		address tokenAddress,
 		uint256 amount
 	) public payable {
-		// Deposit into vault with given vault id
+		// Approve transfer amount
+        IERC20(tokenAddress).approve(address(this), amount);
+
+
+		// Transfer amount from msg.sender to this contract
+        IERC20(tokenAddress).transferFrom(msg.sender, address(this), amount);
+
+		// Update vault token balance
+		tokenBalance[vaultId][tokenAddress] += amount;
 	}
 
 
