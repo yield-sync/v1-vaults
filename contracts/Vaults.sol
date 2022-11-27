@@ -5,9 +5,13 @@ pragma solidity ^0.8.1;
 
 /* [IMPORT] */
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import '@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol';
 
 
 contract Vaults {
+	/* [USING] */
+	using SafeERC20 for IERC20;
+
 	/* [STRUCT] */
 	
 	struct QueuedWithdrawal {
@@ -55,12 +59,12 @@ contract Vaults {
 
 	/**
 	 * @notice Creates a Vault and sets the voter weight of msg.sender to 100
-	 * @param acceptedTokens_ Array of accepted tokens (pass empty array to accept ALL tokens)
-	 * @param withdrawMinutesDelay_ Withdrawal delay (in minutes)
+	 * @param acceptedTokens Array of accepted tokens (pass empty array to accept ALL tokens)
+	 * @param withdrawMinutesDelay Withdrawal delay (in minutes)
 	*/
 	function createVault(
-		address[] memory acceptedTokens_,
-		uint8 withdrawMinutesDelay_
+		address[] memory acceptedTokens,
+		uint8 withdrawMinutesDelay
 	) public {
 		// [INIT]
 		QueuedWithdrawal[] memory initialQueuedWithdrawal;
@@ -69,8 +73,8 @@ contract Vaults {
 		vaults[vaultIdIncrement] = Vault({
 			id: vaultIdIncrement,
 			strictDeposits: false,
-			withdrawMinutesDelay: withdrawMinutesDelay_,
-			acceptedTokens: acceptedTokens_,
+			withdrawMinutesDelay: withdrawMinutesDelay,
+			acceptedTokens: acceptedTokens,
 			queuedWithdrawal: initialQueuedWithdrawal
 		});
 
@@ -90,11 +94,10 @@ contract Vaults {
 		uint256 amount
 	) public payable {
 		// Approve transfer amount
-        IERC20(tokenAddress).approve(address(this), amount);
-
+        IERC20(tokenAddress).safeApprove(address(this), amount);
 
 		// Transfer amount from msg.sender to this contract
-        IERC20(tokenAddress).transferFrom(msg.sender, address(this), amount);
+        IERC20(tokenAddress).safeTransferFrom(msg.sender, address(this), amount);
 
 		// Update vault token balance
 		tokenBalance[vaultId][tokenAddress] += amount;

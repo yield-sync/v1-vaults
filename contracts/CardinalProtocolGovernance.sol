@@ -1,15 +1,16 @@
-// contracts/Governance.sol
+// contracts/CardinalProtocolGovernance.sol
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.10;
 
 
-/* ========== [IMPORT] ========== */
+/* [IMPORT] */
 
 // @openzeppelin/contracts/access
 import "@openzeppelin/contracts/access/AccessControlEnumerable.sol";
 
-contract Governance is AccessControlEnumerable {
-	/* ========== [STATE VARIABLES] ========== */
+
+contract CardinalProtocolGovernance is AccessControlEnumerable {
+	/* [STATE VARIABLES] */
 	
 	bytes32 public constant S_ROLE = keccak256("S_ROLE");
 	bytes32 public constant A_ROLE = keccak256("A_ROLE");
@@ -17,7 +18,7 @@ contract Governance is AccessControlEnumerable {
 	bytes32 public constant C_ROLE = keccak256("C_ROLE");
 
 
-	/* ========== [CONSTRUCTOR] ========== */
+	/* [CONSTRUCTOR] */
 	
 	constructor () {
 		_setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
