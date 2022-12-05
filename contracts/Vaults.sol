@@ -117,13 +117,13 @@ contract Vaults {
 
 
 	/**
-	 * @notice
+	 * @notice Withdraw tokens (instantaneous)
 	*/
 	function withdrawTokens() public {}
 
 	
 	/**
-	 * @notice
+	 * @notice Change voter weight
 	*/
 	function changeVoterWeight() public {}
 }
