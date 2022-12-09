@@ -17,42 +17,43 @@ contract Vaults is AccessControl {
 
 
 	/* [STRUCT] */
-	struct RequestedWithdrawal {
+	struct WithdrawalRequest {
+		address msgSender;
+
 		address to;
 		
 		address token;
 
-		uint256 amounts;
+		uint256 amount;
 
-		uint256 voteCount;
-	}
+		uint256 forVoteCount;
 
-	struct QueuedWithdrawal {
-		address to;
-		
-		address token;
-
-		uint256 amounts;
+		uint256 againstVoteCount;
 	}
 
 
 	/* [STATE-VARIABLE] */
 	uint256 public requiredSignatures;
-	
-	// Vault Id => (Address => Voter Weight)
-	mapping (address => uint8) _voterWeight;
+
 	// ERC20 Contract Address => Balance
 	mapping (address => uint256) _tokenBalance;
 
+	uint256 _withdrawalRequestId;
+
+	// id => Requested Withdrawal
+	mapping (uint256 => WithdrawalRequest) _withdrawalRequest;
+
+	mapping (uint256 => WithdrawalRequest) _queuedWithdrawalRequest;
+
 
 	/* [CONSTRUCTOR] */
-	constructor (uint256 _requiredSignatures)
+	constructor (uint256 requiredSignatures_)
 	{
 		_setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
-		
-		_voterWeight[msg.sender] = 100;
 
-		requiredSignatures = _requiredSignatures;
+		requiredSignatures = requiredSignatures_;
+
+		_withdrawalRequestId = 0;
 	}
 
 
@@ -78,32 +79,60 @@ contract Vaults is AccessControl {
 		_tokenBalance[tokenAddress] += amount;
 	}
 
-
 	/**
-	 * @notice CREATE a queued withdrawl from vault
+	 * @notice Create a withdrawal request
+	 * @param to {address} Address the withdrawal it to be sent
+	 * @param tokenAddress {address} Address of token contract
+	 * @param amount {uint256} Amount to be moved
 	*/
-	function createQueuedWithdrawal()
+	function createWithdrawalRequest(
+		address to,
+		address tokenAddress,
+		uint256 amount
+	)
 		public
-	{}
+	{
+		// Require that the specified amount is available
+		require(_tokenBalance[tokenAddress] >= amount, "Insufficient funds");
 
-	/**
-	 * @notice DELETE a queued withdrawal from vault
-	*/
-	function cancelQueuedWithdrawal()
-		public
-	{}
+		// Require that 'to' is a valid Ethereum address
+		require(to != address(0), "Invalid 'to' address");
 
-	/**
-	 * @notice Withdraw tokens (instantaneous)
-	*/
-	function withdrawTokens()
-		public
-	{}
+		// Create a new withdrawal request
+		uint256 id = _withdrawalRequestId++;
+
+		_withdrawalRequest[id] = WithdrawalRequest({
+			msgSender: msg.sender,
+			to: to,
+			token: tokenAddress,
+			amount: amount,
+			forVoteCount: 0,
+			againstVoteCount: 0
+		});
+	}
 
 	/**
 	 * @notice Change voter weight
+	 * @param WithdrawalRequestId {uint256} Id of the WithdrawalRequest
+	 * @param msgSenderVote {bool} For or against vote
 	*/
-	function changeVoterWeight()
+	function vote(
+		uint256 WithdrawalRequestId,
+		bool msgSenderVote
+	)
 		public
-	{}
+	{
+		// Check if the WithdrawalRequestId exists
+		require(
+			_withdrawalRequest[WithdrawalRequestId].msgSender != address(0),
+			"Invalid WithdrawalRequestId"
+		);
+
+		if (msgSenderVote) {
+			_withdrawalRequest[WithdrawalRequestId].forVoteCount++;
+		}
+		else {
+			_withdrawalRequest[WithdrawalRequestId].againstVoteCount++;
+		}
+	}
 }
