@@ -8,12 +8,15 @@ pragma solidity ^0.8.1;
 import "@openzeppelin/contracts/access/AccessControl.sol";
 // /token
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import '@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol';
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+// /utils
+import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 
 
 contract Vaults is AccessControl {
 	/* [USING] */
 	using SafeERC20 for IERC20;
+	using EnumerableSet for EnumerableSet.AddressSet;
 
 
 	/* [STRUCT] */
@@ -37,8 +40,6 @@ contract Vaults is AccessControl {
 
 	uint256 _withdrawalRequestId;
 
-	// Addresses that can vote
-	address[] public authorizedVoters;
 
 	// ERC20 Contract Address => Balance
 	mapping (address => uint256) _tokenBalance;
@@ -46,8 +47,9 @@ contract Vaults is AccessControl {
 	// WithdrawalRequest Id => Withdrawal Requested
 	mapping (uint256 => WithdrawalRequest) _withdrawalRequest;
 
-	// WithdrawalRequest Id => Withdrawal Requested
-	mapping (uint256 => WithdrawalRequest) _queuedWithdrawalRequest;
+
+	// [ENMERABLE-SET] Addresses that can vote
+	EnumerableSet.AddressSet authorizedVoters;
 
 
 	/* [CONSTRUCTOR] */
@@ -76,7 +78,7 @@ contract Vaults is AccessControl {
 		onlyRole(DEFAULT_ADMIN_ROLE)
 	{
 		// Add the voter to the list of authorized voters
-		authorizedVoters.push(voter);
+		authorizedVoters.add(voter);
 	}
 
 
@@ -88,16 +90,7 @@ contract Vaults is AccessControl {
 		public
 		onlyRole(DEFAULT_ADMIN_ROLE)
 	{
-		// Iterate over the authorizedVoters array
-		for (uint256 i = 0; i < authorizedVoters.length; i++) {
-			// Check if the current voter is the one we want to remove
-			if (authorizedVoters[i] == voter) {
-				// Delete the voter from the array
-				delete authorizedVoters[i];
-				// Stop iterating over the array
-				break;
-			}
-		}
+		authorizedVoters.remove(voter);
 	}
 
 
@@ -152,7 +145,7 @@ contract Vaults is AccessControl {
 
 
 	/**
-	 * @notice Change voter weight
+	 * @notice Vote
 	 * @param WithdrawalRequestId {uint256} Id of the WithdrawalRequest
 	 * @param msgSenderVote {bool} For or against vote
 	*/
@@ -168,23 +161,20 @@ contract Vaults is AccessControl {
 			"Invalid WithdrawalRequestId"
 		);
 
-		// Check if the msg.sender is authorized to vote
-		bool isAuthorized = false;
-		
-		for (uint256 i = 0; i < authorizedVoters.length; i++) {
-			if (authorizedVoters[i] == msg.sender) {
-				isAuthorized = true;
-				break;
-			}
-		}
-
-		require(isAuthorized, "msg.sender is not authorized to vote");
+		require(authorizedVoters.contains(msg.sender), "!AUTH");
 
 		if (msgSenderVote) {
+			// [INCREMENT] For Count
 			_withdrawalRequest[WithdrawalRequestId].forVoteCount++;
 		}
 		else {
+			// [INCREMENT] Against Count
 			_withdrawalRequest[WithdrawalRequestId].againstVoteCount++;
 		}
 	}
+
+
+	function fufillWithdrawal()
+		public
+	{}
 }
