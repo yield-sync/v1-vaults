@@ -35,14 +35,18 @@ contract Vaults is AccessControl {
 	/* [STATE-VARIABLE] */
 	uint256 public requiredSignatures;
 
+	uint256 _withdrawalRequestId;
+
+	// Addresses that can vote
+	address[] public authorizedVoters;
+
 	// ERC20 Contract Address => Balance
 	mapping (address => uint256) _tokenBalance;
 
-	uint256 _withdrawalRequestId;
-
-	// id => Requested Withdrawal
+	// WithdrawalRequest Id => Withdrawal Requested
 	mapping (uint256 => WithdrawalRequest) _withdrawalRequest;
 
+	// WithdrawalRequest Id => Withdrawal Requested
 	mapping (uint256 => WithdrawalRequest) _queuedWithdrawalRequest;
 
 
@@ -64,6 +68,40 @@ contract Vaults is AccessControl {
 
 
 	/**
+	* @notice Add an authorized voter
+	* @param voter {address} Address of the voter to add
+	*/
+	function addAuthorizedVoter(address voter)
+		public
+		onlyRole(DEFAULT_ADMIN_ROLE)
+	{
+		// Add the voter to the list of authorized voters
+		authorizedVoters.push(voter);
+	}
+
+
+	/**
+	* @notice Remove an authorized voter
+	* @param voter {address} Address of the voter to remove
+	*/
+	function removeAuthorizedVoter(address voter)
+		public
+		onlyRole(DEFAULT_ADMIN_ROLE)
+	{
+		// Iterate over the authorizedVoters array
+		for (uint256 i = 0; i < authorizedVoters.length; i++) {
+			// Check if the current voter is the one we want to remove
+			if (authorizedVoters[i] == voter) {
+				// Delete the voter from the array
+				delete authorizedVoters[i];
+				// Stop iterating over the array
+				break;
+			}
+		}
+	}
+
+
+	/**
 	 * @notice Deposit funds into vault
 	*/
 	function depositTokens(
@@ -78,6 +116,7 @@ contract Vaults is AccessControl {
 		// Update vault token balance
 		_tokenBalance[tokenAddress] += amount;
 	}
+
 
 	/**
 	 * @notice Create a withdrawal request
@@ -111,6 +150,7 @@ contract Vaults is AccessControl {
 		});
 	}
 
+
 	/**
 	 * @notice Change voter weight
 	 * @param WithdrawalRequestId {uint256} Id of the WithdrawalRequest
@@ -127,6 +167,18 @@ contract Vaults is AccessControl {
 			_withdrawalRequest[WithdrawalRequestId].msgSender != address(0),
 			"Invalid WithdrawalRequestId"
 		);
+
+		// Check if the msg.sender is authorized to vote
+		bool isAuthorized = false;
+		
+		for (uint256 i = 0; i < authorizedVoters.length; i++) {
+			if (authorizedVoters[i] == msg.sender) {
+				isAuthorized = true;
+				break;
+			}
+		}
+
+		require(isAuthorized, "msg.sender is not authorized to vote");
 
 		if (msgSenderVote) {
 			_withdrawalRequest[WithdrawalRequestId].forVoteCount++;
