@@ -15,8 +15,9 @@ import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 
 contract Vaults is AccessControl {
 	/* [USING] */
-	using SafeERC20 for IERC20;
 	using EnumerableSet for EnumerableSet.AddressSet;
+	using EnumerableSet for EnumerableSet.UintSet;
+	using SafeERC20 for IERC20;
 
 
 	/* [STRUCT] */
@@ -48,8 +49,12 @@ contract Vaults is AccessControl {
 	mapping (uint256 => WithdrawalRequest) _withdrawalRequest;
 
 
-	// [ENMERABLE-SET] Addresses that can vote
+	// [ENMERABLE-SET]
+	// Addresses allowed to vote
 	EnumerableSet.AddressSet authorizedVoters;
+	
+	// Queued Withdrawals 
+	EnumerableSet.UintSet queuedWithdrawals;
 
 
 	/* [CONSTRUCTOR] */
