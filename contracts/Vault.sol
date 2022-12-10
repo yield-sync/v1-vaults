@@ -9,6 +9,8 @@ import "@openzeppelin/contracts/access/AccessControl.sol";
 // /token
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+// /utils
+import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
 
 contract Vaults is AccessControl {
@@ -40,6 +42,8 @@ contract Vaults is AccessControl {
 	/* [STATE-VARIABLE] */
 	uint256 public requiredSignatures;
 
+	uint256 public withdrawalDelayMinutes;
+
 	uint256 _withdrawalRequestId;
 
 
@@ -61,6 +65,9 @@ contract Vaults is AccessControl {
 
 		requiredSignatures = requiredSignatures_;
 
+		// Set delay to 2880 minutes (48 hours)
+		withdrawalDelayMinutes = 2880;
+		
 		_withdrawalRequestId = 0;
 	}
 
@@ -206,7 +213,7 @@ contract Vaults is AccessControl {
 		// If the withdrawal request has reached the required number of signatures
 		if (
 			_withdrawalRequest[wRId].forVoteCount >= requiredSignatures &&
-			currentTime - _withdrawalRequest[wRId].lastChecked >= 48 hours
+			currentTime - _withdrawalRequest[wRId].lastChecked >= mul(withdrawalDelayMinutes, 60)
 		) {
 			// Transfer the specified amount of tokens to the recipient
 			IERC20(_withdrawalRequest[wRId].token)
