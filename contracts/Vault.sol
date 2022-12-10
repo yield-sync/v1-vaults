@@ -73,9 +73,15 @@ contract Vaults is AccessControl {
 
 
 	/* [RECIEVE] */
-	receive ()
-		external payable
-	{}
+	receive () external payable {
+		revert("Cannot directly send Ether to this contract. Please use `depositTokens` function to send ERC20 tokens into vault.");
+	}
+
+
+	/* [FALLBACK] */
+	fallback () external payable {
+		revert("Cannot directly send Ether to this contract. Please use `depositTokens` function to send ERC20 tokens into vault.");
+	}
 
 
 	/**
@@ -213,7 +219,7 @@ contract Vaults is AccessControl {
 		// If the withdrawal request has reached the required number of signatures
 		if (
 			_withdrawalRequest[wRId].forVoteCount >= requiredSignatures &&
-			currentTime - _withdrawalRequest[wRId].lastChecked >= mul(withdrawalDelayMinutes, 60)
+			currentTime - _withdrawalRequest[wRId].lastChecked >= SafeMath.mul(withdrawalDelayMinutes, 60)
 		) {
 			// Transfer the specified amount of tokens to the recipient
 			IERC20(_withdrawalRequest[wRId].token)
