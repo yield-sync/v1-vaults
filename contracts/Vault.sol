@@ -9,14 +9,10 @@ import "@openzeppelin/contracts/access/AccessControl.sol";
 // /token
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-// /utils
-import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 
 
 contract Vaults is AccessControl {
 	/* [USING] */
-	using EnumerableSet for EnumerableSet.AddressSet;
-	using EnumerableSet for EnumerableSet.UintSet;
 	using SafeERC20 for IERC20;
 
 
@@ -37,6 +33,9 @@ contract Vaults is AccessControl {
 		uint lastChecked;		
 	}
 
+	/* [STATE-VARIABLE][CONSTANT] */
+	bytes32 public constant VOTER_ROLE = keccak256("VOTER_ROLE");
+
 
 	/* [STATE-VARIABLE] */
 	uint256 public requiredSignatures;
@@ -51,18 +50,14 @@ contract Vaults is AccessControl {
 	mapping (uint256 => WithdrawalRequest) _withdrawalRequest;
 
 
-	// [ENMERABLE-SET]
-	// Addresses allowed to vote
-	EnumerableSet.AddressSet authorizedVoters;
-	
-	// Queued Withdrawals 
-	EnumerableSet.UintSet queuedWithdrawals;
-
-
 	/* [CONSTRUCTOR] */
-	constructor (uint256 requiredSignatures_)
+	constructor (address admin, uint256 requiredSignatures_)
 	{
-		_setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
+		 // Set up the default admin role
+		_setupRole(DEFAULT_ADMIN_ROLE, admin);
+
+		// Set up the voter role and add the admin as the first voter
+		_setupRole(VOTER_ROLE, admin);
 
 		requiredSignatures = requiredSignatures_;
 
@@ -77,6 +72,12 @@ contract Vaults is AccessControl {
 
 
 	/**
+	 * %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	 * %%% ROLE: DEFAULT_ADMIN_ROLE %%%
+	 * %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	*/
+	
+	/**
 	* @notice Add an authorized voter
 	* @param voter {address} Address of the voter to add
 	*/
@@ -84,8 +85,8 @@ contract Vaults is AccessControl {
 		public
 		onlyRole(DEFAULT_ADMIN_ROLE)
 	{
-		// Add the voter to the list of authorized voters
-		authorizedVoters.add(voter);
+		// Add the voter to the VOTER_ROLE
+    	_setupRole(VOTER_ROLE, voter);
 	}
 
 
@@ -97,10 +98,54 @@ contract Vaults is AccessControl {
 		public
 		onlyRole(DEFAULT_ADMIN_ROLE)
 	{
-		authorizedVoters.remove(voter);
+		_revokeRole(VOTER_ROLE, voter);
 	}
 
 
+	/**
+	 * %%%%%%%%%%%%%%%%%%%%%%%%
+	 * %%% ROLE: VOTER_ROLE %%%
+	 * %%%%%%%%%%%%%%%%%%%%%%%%
+	*/
+
+	/**
+	 * @notice Vote to approve or disapprove withdrawal request
+	 * @param WithdrawalRequestId {uint256} Id of the WithdrawalRequest
+	 * @param msgSenderVote {bool} For or against vote
+	*/
+	function voteOnWithdrawalRequest(
+		uint256 WithdrawalRequestId,
+		bool msgSenderVote
+	)
+		public
+		onlyRole(VOTER_ROLE)
+	{
+		// Check if the WithdrawalRequestId exists
+		require(
+			_withdrawalRequest[WithdrawalRequestId].msgSender != address(0),
+			"Invalid WithdrawalRequestId"
+		);
+
+		if (msgSenderVote) {
+			// [INCREMENT] For count
+			_withdrawalRequest[WithdrawalRequestId].forVoteCount++;
+		}
+		else {
+			// [INCREMENT] Against count
+			_withdrawalRequest[WithdrawalRequestId].againstVoteCount++;
+		}
+
+		// [UPDATE] lastChecked timestamp
+		_withdrawalRequest[WithdrawalRequestId].lastChecked = block.timestamp;
+	}
+
+
+	/**
+	 * %%%%%%%%%%%%%%%%%%%%
+	 * %%% ROLE: ANYONE %%%
+	 * %%%%%%%%%%%%%%%%%%%%
+	*/
+	
 	/**
 	 * @notice Deposit funds into this vault
 	*/
@@ -116,7 +161,6 @@ contract Vaults is AccessControl {
 		// Update vault token balance
 		_tokenBalance[tokenAddress] += amount;
 	}
-
 
 	/**
 	 * @notice Create a WithdrawalRequest
@@ -138,9 +182,9 @@ contract Vaults is AccessControl {
 		require(to != address(0), "Invalid 'to' address");
 
 		// Create a new WithdrawalRequest
-		uint256 id = _withdrawalRequestId++;
+		_withdrawalRequestId++;
 
-		_withdrawalRequest[id] = WithdrawalRequest({
+		_withdrawalRequest[_withdrawalRequestId] = WithdrawalRequest({
 			msgSender: msg.sender,
 			to: to,
 			token: tokenAddress,
@@ -151,48 +195,19 @@ contract Vaults is AccessControl {
 		});
 	}
 
-
-	/**
-	 * @notice Vote to approve or disapprove withdrawal request
-	 * @param WithdrawalRequestId {uint256} Id of the WithdrawalRequest
-	 * @param msgSenderVote {bool} For or against vote
-	*/
-	function voteOnWithdrawalRequest(
-		uint256 WithdrawalRequestId,
-		bool msgSenderVote
-	)
-		public
-	{
-		// Check if the WithdrawalRequestId exists
-		require(
-			_withdrawalRequest[WithdrawalRequestId].msgSender != address(0),
-			"Invalid WithdrawalRequestId"
-		);
-
-		require(authorizedVoters.contains(msg.sender), "!AUTH");
-
-		if (msgSenderVote) {
-			// [INCREMENT] For count
-			_withdrawalRequest[WithdrawalRequestId].forVoteCount++;
-		}
-		else {
-			// [INCREMENT] Against count
-			_withdrawalRequest[WithdrawalRequestId].againstVoteCount++;
-		}
-
-		// [UPDATE] lastChecked timestamp
-		_withdrawalRequest[WithdrawalRequestId].lastChecked = block.timestamp;
-
-	}
-
-
 	/**
 	 * @notice Proccess WithdrawalRequest
 	 * @param wRId {uint256} Id of the WithdrawalRequest
 	*/
 	function processWithdrawalRequests(uint256 wRId) public returns (bool) {
+		// Get the current time
+		uint256 currentTime = block.timestamp;
+
 		// If the withdrawal request has reached the required number of signatures
-		if (_withdrawalRequest[wRId].forVoteCount >= requiredSignatures) {
+		if (
+			_withdrawalRequest[wRId].forVoteCount >= requiredSignatures &&
+			currentTime - _withdrawalRequest[wRId].lastChecked >= 48 hours
+		) {
 			// Transfer the specified amount of tokens to the recipient
 			IERC20(_withdrawalRequest[wRId].token)
 				.safeTransfer(
@@ -203,9 +218,6 @@ contract Vaults is AccessControl {
 
 			// [UPDATE] the vault token balance
 			_tokenBalance[_withdrawalRequest[wRId].token] -= _withdrawalRequest[wRId].amount;
-
-			// Remove the withdrawal request from the queue
-			queuedWithdrawals.remove(wRId);
 		}
 		
 		return true;
