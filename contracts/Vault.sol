@@ -21,18 +21,12 @@ contract Vaults is AccessControl {
 	/* [STRUCT] */
 	struct WithdrawalRequest {
 		address msgSender;
-
 		address to;
-		
 		address token;
-
 		uint256 amount;
-
 		uint256 forVoteCount;
-
 		uint256 againstVoteCount;
-
-		uint lastChecked;		
+		uint256 lastChecked;
 	}
 
 	/* [STATE-VARIABLE][CONSTANT] */
@@ -55,20 +49,32 @@ contract Vaults is AccessControl {
 
 
 	/* [CONSTRUCTOR] */
-	constructor (address admin, uint256 requiredSignatures_)
+	constructor (
+		address admin,
+		uint256 requiredSignatures_,
+		uint256 withdrawalDelayMinutes_,
+		address[] memory voters
+	)
 	{
-		 // Set up the default admin role
+		// Initialize WithdrawalRequest Id
+		_withdrawalRequestId = 0;
+
+		requiredSignatures = requiredSignatures_;
+
+		// Set delay (in minutes)
+		withdrawalDelayMinutes = withdrawalDelayMinutes_;
+
+		// Set up the default admin role
 		_setupRole(DEFAULT_ADMIN_ROLE, admin);
 
 		// Set up the voter role and add the admin as the first voter
 		_setupRole(VOTER_ROLE, admin);
 
-		requiredSignatures = requiredSignatures_;
-
-		// Set delay to 2880 minutes (48 hours)
-		withdrawalDelayMinutes = 2880;
-		
-		_withdrawalRequestId = 0;
+		// For each voter address..
+		for (uint256 i = 0; i < voters.length; i++) {
+			// Set up the role VOTER_ROLE for the voter address
+			_setupRole(VOTER_ROLE, voters[i]);
+		}
 	}
 
 
@@ -89,29 +95,42 @@ contract Vaults is AccessControl {
 	 * %%% ROLE: DEFAULT_ADMIN_ROLE %%%
 	 * %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	*/
-	
+
 	/**
-	* @notice Add an authorized voter
-	* @param voter {address} Address of the voter to add
+	 * @notice Add an authorized voter
+	 * @param voter {address} Address of the voter to add
 	*/
 	function addAuthorizedVoter(address voter)
 		public
 		onlyRole(DEFAULT_ADMIN_ROLE)
 	{
 		// Add the voter to the VOTER_ROLE
-    	_setupRole(VOTER_ROLE, voter);
+		_setupRole(VOTER_ROLE, voter);
 	}
 
-
 	/**
-	* @notice Remove an authorized voter
-	* @param voter {address} Address of the voter to remove
+	 * @notice Remove an authorized voter
+	 * @param voter {address} Address of the voter to remove
 	*/
 	function removeAuthorizedVoter(address voter)
 		public
 		onlyRole(DEFAULT_ADMIN_ROLE)
 	{
 		_revokeRole(VOTER_ROLE, voter);
+	}
+
+	/**
+	 * @notice Update `withdrawalDelayMinutes`
+	 * @param withdrawalDelayMinutes_ {uint256} New withdrawalDelayMinutes
+	*/
+	function updateWithdrawalDelayMinutes(uint256 withdrawalDelayMinutes_)
+		public
+		onlyRole(DEFAULT_ADMIN_ROLE)
+	{
+		require(withdrawalDelayMinutes_ >= 0, "Invalid withdrawalDelayMinutes_");
+
+		// Set delay (in minutes)
+		withdrawalDelayMinutes = withdrawalDelayMinutes_;
 	}
 
 
@@ -154,13 +173,15 @@ contract Vaults is AccessControl {
 
 
 	/**
-	 * %%%%%%%%%%%%%%%%%%%%
-	 * %%% ROLE: ANYONE %%%
-	 * %%%%%%%%%%%%%%%%%%%%
+	 * %%%%%%%%%%%%%%%%%%%%%%
+	 * %%% NO ROLE NEEDED %%%
+	 * %%%%%%%%%%%%%%%%%%%%%%
 	*/
 	
 	/**
 	 * @notice Deposit funds into this vault
+	 * @param tokenAddress {address} Address of token contract
+	 * @param amount {uint256} Amount to be moved
 	*/
 	function depositTokens(
 		address tokenAddress,
@@ -169,7 +190,7 @@ contract Vaults is AccessControl {
 		public payable
 	{
 		// Transfer amount from msg.sender to this contract
-        IERC20(tokenAddress).safeTransferFrom(msg.sender, address(this), amount);
+		IERC20(tokenAddress).safeTransferFrom(msg.sender, address(this), amount);
 
 		// Update vault token balance
 		_tokenBalance[tokenAddress] += amount;
