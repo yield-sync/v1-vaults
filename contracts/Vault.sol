@@ -29,9 +29,13 @@ contract Vaults is AccessControl {
 		uint256 lastChecked;
 	}
 
+
 	/* [STATE-VARIABLE][CONSTANT] */
 	bytes32 public constant VOTER_ROLE = keccak256("VOTER_ROLE");
-
+	string constant _sendingDirectEtherError =
+		"Sending Ether directly to this contract is disabled"
+		"Please use `depositTokens` function to send ERC20 tokens into vault"
+	;
 
 	/* [STATE-VARIABLE] */
 	uint256 public requiredSignatures;
@@ -40,12 +44,23 @@ contract Vaults is AccessControl {
 
 	uint256 _withdrawalRequestId;
 
-
 	// ERC20 Contract Address => Balance
 	mapping (address => uint256) _tokenBalance;
 
 	// WithdrawalRequest Id => WithdrawalRequest
 	mapping (uint256 => WithdrawalRequest) _withdrawalRequest;
+
+
+	/* [MODIFIER] */
+	modifier validWithdrawalRequest(uint256 WithdrawalRequestId) {
+		// Check if the WithdrawalRequestId exists
+		require(
+			_withdrawalRequest[WithdrawalRequestId].msgSender != address(0),
+			"No WithdrawalRequest found."
+		);
+		
+		_;
+	}
 
 
 	/* [CONSTRUCTOR] */
@@ -80,13 +95,13 @@ contract Vaults is AccessControl {
 
 	/* [RECIEVE] */
 	receive () external payable {
-		revert("Cannot directly send Ether to this contract. Please use `depositTokens` function to send ERC20 tokens into vault.");
+		revert(_sendingDirectEtherError);
 	}
 
 
 	/* [FALLBACK] */
 	fallback () external payable {
-		revert("Cannot directly send Ether to this contract. Please use `depositTokens` function to send ERC20 tokens into vault.");
+		revert(_sendingDirectEtherError);
 	}
 
 
@@ -151,13 +166,8 @@ contract Vaults is AccessControl {
 	)
 		public
 		onlyRole(VOTER_ROLE)
+		validWithdrawalRequest(WithdrawalRequestId)
 	{
-		// Check if the WithdrawalRequestId exists
-		require(
-			_withdrawalRequest[WithdrawalRequestId].msgSender != address(0),
-			"Invalid WithdrawalRequestId"
-		);
-
 		if (msgSenderVote) {
 			// [INCREMENT] For count
 			_withdrawalRequest[WithdrawalRequestId].forVoteCount++;
@@ -231,27 +241,29 @@ contract Vaults is AccessControl {
 
 	/**
 	 * @notice Proccess WithdrawalRequest
-	 * @param wRId {uint256} Id of the WithdrawalRequest
+	 * @param WithdrawalRequestId {uint256} Id of the WithdrawalRequest
 	*/
-	function processWithdrawalRequests(uint256 wRId) public returns (bool) {
+	function processWithdrawalRequests(uint256 WithdrawalRequestId)
+		public
+		validWithdrawalRequest(WithdrawalRequestId)
+		returns (bool)
+	{
 		// Get the current time
 		uint256 currentTime = block.timestamp;
 
+		// Create temporary variable
+		WithdrawalRequest memory wr = _withdrawalRequest[WithdrawalRequestId];
+
 		// If the withdrawal request has reached the required number of signatures
 		if (
-			_withdrawalRequest[wRId].forVoteCount >= requiredSignatures &&
-			currentTime - _withdrawalRequest[wRId].lastChecked >= SafeMath.mul(withdrawalDelayMinutes, 60)
+			wr.forVoteCount >= requiredSignatures &&
+			currentTime - wr.lastChecked >= SafeMath.mul(withdrawalDelayMinutes, 60)
 		) {
 			// Transfer the specified amount of tokens to the recipient
-			IERC20(_withdrawalRequest[wRId].token)
-				.safeTransfer(
-					_withdrawalRequest[wRId].to,
-					_withdrawalRequest[wRId].amount
-				)
-			;
+			IERC20(wr.token).safeTransfer(wr.to, wr.amount);
 
-			// [UPDATE] the vault token balance
-			_tokenBalance[_withdrawalRequest[wRId].token] -= _withdrawalRequest[wRId].amount;
+			// [DECREMENT] The vault token balance
+			_tokenBalance[wr.token] -= wr.amount;
 		}
 		
 		return true;
