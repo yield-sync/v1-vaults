@@ -33,6 +33,8 @@ contract Vaults is AccessControl {
 		uint256 forVoteCount;
 
 		uint256 againstVoteCount;
+
+		uint lastChecked;		
 	}
 
 
@@ -45,7 +47,7 @@ contract Vaults is AccessControl {
 	// ERC20 Contract Address => Balance
 	mapping (address => uint256) _tokenBalance;
 
-	// WithdrawalRequest Id => Withdrawal Requested
+	// WithdrawalRequest Id => WithdrawalRequest
 	mapping (uint256 => WithdrawalRequest) _withdrawalRequest;
 
 
@@ -100,7 +102,7 @@ contract Vaults is AccessControl {
 
 
 	/**
-	 * @notice Deposit funds into vault
+	 * @notice Deposit funds into this vault
 	*/
 	function depositTokens(
 		address tokenAddress,
@@ -117,7 +119,7 @@ contract Vaults is AccessControl {
 
 
 	/**
-	 * @notice Create a withdrawal request
+	 * @notice Create a WithdrawalRequest
 	 * @param to {address} Address the withdrawal it to be sent
 	 * @param tokenAddress {address} Address of token contract
 	 * @param amount {uint256} Amount to be moved
@@ -135,7 +137,7 @@ contract Vaults is AccessControl {
 		// Require that 'to' is a valid Ethereum address
 		require(to != address(0), "Invalid 'to' address");
 
-		// Create a new withdrawal request
+		// Create a new WithdrawalRequest
 		uint256 id = _withdrawalRequestId++;
 
 		_withdrawalRequest[id] = WithdrawalRequest({
@@ -144,17 +146,18 @@ contract Vaults is AccessControl {
 			token: tokenAddress,
 			amount: amount,
 			forVoteCount: 0,
-			againstVoteCount: 0
+			againstVoteCount: 0,
+			lastChecked: block.timestamp
 		});
 	}
 
 
 	/**
-	 * @notice Vote
+	 * @notice Vote to approve or disapprove withdrawal request
 	 * @param WithdrawalRequestId {uint256} Id of the WithdrawalRequest
 	 * @param msgSenderVote {bool} For or against vote
 	*/
-	function vote(
+	function voteOnWithdrawalRequest(
 		uint256 WithdrawalRequestId,
 		bool msgSenderVote
 	)
@@ -169,17 +172,42 @@ contract Vaults is AccessControl {
 		require(authorizedVoters.contains(msg.sender), "!AUTH");
 
 		if (msgSenderVote) {
-			// [INCREMENT] For Count
+			// [INCREMENT] For count
 			_withdrawalRequest[WithdrawalRequestId].forVoteCount++;
 		}
 		else {
-			// [INCREMENT] Against Count
+			// [INCREMENT] Against count
 			_withdrawalRequest[WithdrawalRequestId].againstVoteCount++;
 		}
+
+		// [UPDATE] lastChecked timestamp
+		_withdrawalRequest[WithdrawalRequestId].lastChecked = block.timestamp;
+
 	}
 
 
-	function fufillWithdrawal()
-		public
-	{}
+	/**
+	 * @notice Proccess WithdrawalRequest
+	 * @param wRId {uint256} Id of the WithdrawalRequest
+	*/
+	function processWithdrawalRequests(uint256 wRId) public returns (bool success) {
+		// Check if the withdrawal request has reached the required number of signatures
+		if (_withdrawalRequest[wRId].forVoteCount >= requiredSignatures) {
+			// Process the withdrawal request
+
+			// Transfer the specified amount of tokens to the recipient
+			IERC20(_withdrawalRequest[wRId].token)
+				.safeTransfer(
+					_withdrawalRequest[wRId].to,
+					_withdrawalRequest[wRId].amount
+				)
+			;
+
+			// [UPDATE] the vault token balance
+			_tokenBalance[_withdrawalRequest[wRId].token] -= _withdrawalRequest[wRId].amount;
+
+			// Remove the withdrawal request from the queue
+			queuedWithdrawals.remove(wRId);
+		}
+	}
 }
