@@ -190,11 +190,9 @@ contract Vaults is AccessControl {
 	 * @notice Proccess WithdrawalRequest
 	 * @param wRId {uint256} Id of the WithdrawalRequest
 	*/
-	function processWithdrawalRequests(uint256 wRId) public returns (bool success) {
-		// Check if the withdrawal request has reached the required number of signatures
+	function processWithdrawalRequests(uint256 wRId) public returns (bool) {
+		// If the withdrawal request has reached the required number of signatures
 		if (_withdrawalRequest[wRId].forVoteCount >= requiredSignatures) {
-			// Process the withdrawal request
-
 			// Transfer the specified amount of tokens to the recipient
 			IERC20(_withdrawalRequest[wRId].token)
 				.safeTransfer(
@@ -209,5 +207,7 @@ contract Vaults is AccessControl {
 			// Remove the withdrawal request from the queue
 			queuedWithdrawals.remove(wRId);
 		}
+		
+		return true;
 	}
 }
