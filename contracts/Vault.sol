@@ -294,8 +294,11 @@ contract Vaults is AccessControl {
 		// [ADD] Mark msg.sender (voter) has voted
 		_withdrawalRequestVoterVoted[withdrawalRequestId][msg.sender] = true;
 
-		// [UPDATE] lastChecked timestamp
-		_withdrawalRequest[withdrawalRequestId].lastChecked = block.timestamp;
+		// If the required signatures has not yet been reached..
+		if (_withdrawalRequest[withdrawalRequestId].forVoteCount < requiredSignatures) {
+			// [UPDATE] lastChecked timestamp
+			_withdrawalRequest[withdrawalRequestId].lastChecked = block.timestamp;
+		}
 	}
 
 
@@ -343,7 +346,6 @@ contract Vaults is AccessControl {
 		withdrawalDelayMinutes = withdrawalDelayMinutes_;
 	}
 
-
 	/**
 	 * @notice Toggle `pause` on a WithdrawalRequest
 	 * @param withdrawalRequestId {uint256} Id of the WithdrawalRequest
@@ -354,5 +356,17 @@ contract Vaults is AccessControl {
 		validWithdrawalRequest(withdrawalRequestId)
 	{
 		_withdrawalRequest[withdrawalRequestId].paused = !_withdrawalRequest[withdrawalRequestId].paused;
+	}
+
+	/**
+	 * @notice Toggle `pause` on a WithdrawalRequest
+	 * @param withdrawalRequestId {uint256} Id of the WithdrawalRequest
+	*/
+	function deleteWithdrawalRequest(uint256 withdrawalRequestId)
+		public
+		onlyRole(DEFAULT_ADMIN_ROLE)
+		validWithdrawalRequest(withdrawalRequestId)
+	{
+		
 	}
 }
