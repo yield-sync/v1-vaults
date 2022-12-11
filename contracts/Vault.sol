@@ -23,6 +23,8 @@ contract Vaults is AccessControl {
 		address creator;
 		address to;
 		address token;
+		bool paused;
+		bool accelerated;
 		uint256 amount;
 		uint256 forVoteCount;
 		uint256 againstVoteCount;
@@ -50,15 +52,18 @@ contract Vaults is AccessControl {
 	// WithdrawalRequest Id => WithdrawalRequest
 	mapping (uint256 => WithdrawalRequest) _withdrawalRequest;
 
+	// WithdrawalRequest Id => (Voter voted status => true)
+	mapping (uint256 => mapping (address => bool)) public _withdrawalRequestVoterVoted;
+
 	// Creator => Array of WithdrawalRequest
 	mapping (address => uint256[]) _withdrawalRequestByCreator;
 
 
 	/* [MODIFIER] */
-	modifier validWithdrawalRequest(uint256 WithdrawalRequestId) {
-		// Check if the WithdrawalRequestId exists
+	modifier validWithdrawalRequest(uint256 withdrawalRequestId) {
+		// [REQUIRE] withdrawalRequestId exists
 		require(
-			_withdrawalRequest[WithdrawalRequestId].creator != address(0),
+			_withdrawalRequest[withdrawalRequestId].creator != address(0),
 			"No WithdrawalRequest found."
 		);
 		
@@ -109,87 +114,52 @@ contract Vaults is AccessControl {
 
 
 	/**
-	 * %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-	 * %%% ROLE: DEFAULT_ADMIN_ROLE %%%
-	 * %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-	*/
-
-	/**
-	 * @notice Add an authorized voter
-	 * @param voter {address} Address of the voter to add
-	*/
-	function addAuthorizedVoter(address voter)
-		public
-		onlyRole(DEFAULT_ADMIN_ROLE)
-	{
-		// Add the voter to the VOTER_ROLE
-		_setupRole(VOTER_ROLE, voter);
-	}
-
-	/**
-	 * @notice Remove an authorized voter
-	 * @param voter {address} Address of the voter to remove
-	*/
-	function removeAuthorizedVoter(address voter)
-		public
-		onlyRole(DEFAULT_ADMIN_ROLE)
-	{
-		_revokeRole(VOTER_ROLE, voter);
-	}
-
-	/**
-	 * @notice Update `withdrawalDelayMinutes`
-	 * @param withdrawalDelayMinutes_ {uint256} New withdrawalDelayMinutes
-	*/
-	function updateWithdrawalDelayMinutes(uint256 withdrawalDelayMinutes_)
-		public
-		onlyRole(DEFAULT_ADMIN_ROLE)
-	{
-		require(withdrawalDelayMinutes_ >= 0, "Invalid withdrawalDelayMinutes_");
-
-		// Set delay (in minutes)
-		withdrawalDelayMinutes = withdrawalDelayMinutes_;
-	}
-
-
-	/**
-	 * %%%%%%%%%%%%%%%%%%%%%%%%
-	 * %%% ROLE: VOTER_ROLE %%%
-	 * %%%%%%%%%%%%%%%%%%%%%%%%
-	*/
-
-	/**
-	 * @notice Vote to approve or disapprove withdrawal request
-	 * @param WithdrawalRequestId {uint256} Id of the WithdrawalRequest
-	 * @param vote {bool} For or against vote
-	*/
-	function voteOnWithdrawalRequest(
-		uint256 WithdrawalRequestId,
-		bool vote
-	)
-		public
-		onlyRole(VOTER_ROLE)
-		validWithdrawalRequest(WithdrawalRequestId)
-	{
-		if (vote) {
-			// [INCREMENT] For count
-			_withdrawalRequest[WithdrawalRequestId].forVoteCount++;
-		}
-		else {
-			// [INCREMENT] Against count
-			_withdrawalRequest[WithdrawalRequestId].againstVoteCount++;
-		}
-
-		// [UPDATE] lastChecked timestamp
-		_withdrawalRequest[WithdrawalRequestId].lastChecked = block.timestamp;
-	}
-
-
-	/**
 	 * %%%%%%%%%%%%%%%%%%%%%%
 	 * %%% NO ROLE NEEDED %%%
 	 * %%%%%%%%%%%%%%%%%%%%%%
 	*/
+
+	/**
+	 * @notice [GETTER] _withdrawalRequest
+	 * @param withdrawalRequestId {uint256} Id of the WithdrawalRequest
+	*/
+	function withdrawalRequest(uint256 withdrawalRequestId)
+		public
+		view
+		validWithdrawalRequest(withdrawalRequestId)
+		returns (WithdrawalRequest memory)
+	{
+		// Create temporary variable
+		WithdrawalRequest memory wr = _withdrawalRequest[withdrawalRequestId];
+		
+		return wr;
+	}
+
+	/**
+	 * @notice Get WithdrawalRequests by Creator
+	 * @param creator {uint256} Address to query WithdrawalRequests for
+	*/
+	function WithdrawalRequestsByCreator(address creator)
+		public
+		view
+		returns (WithdrawalRequest[] memory)
+	{
+		// Get array of WithdrawalRequest Ids for the provided creator
+		uint256[] memory withdrawalRequestIds = _withdrawalRequestByCreator[creator];
+
+		// Create array of WithdrawalRequests
+		WithdrawalRequest[] memory wr = new WithdrawalRequest[](
+			withdrawalRequestIds.length
+		);
+
+		// For each WithdrawalRequest Id..
+		for (uint256 i = 0; i < withdrawalRequestIds.length; i++) {
+			// Look up the request using the ID
+			wr[i] = _withdrawalRequest[withdrawalRequestIds[i]];
+		}
+
+		return wr;
+	}
 	
 	/**
 	 * @notice Deposit funds
@@ -226,10 +196,10 @@ contract Vaults is AccessControl {
 		public
 		returns (bool)
 	{
-		// Require that the specified amount is available
+		// [REQUIRE]  The specified amount is available
 		require(_tokenBalance[tokenAddress] >= amount, "Insufficient funds");
 
-		// Require that 'to' is a valid Ethereum address
+		// [REQUIRE] 'to' is a valid Ethereum address
 		require(to != address(0), "Invalid 'to' address");
 
 		// Create a new WithdrawalRequest
@@ -239,6 +209,8 @@ contract Vaults is AccessControl {
 			creator: msg.sender,
 			to: to,
 			token: tokenAddress,
+			paused: false,
+			accelerated: false,
 			amount: amount,
 			forVoteCount: 0,
 			againstVoteCount: 0,
@@ -251,24 +223,28 @@ contract Vaults is AccessControl {
 	}
 
 	/**
-	 * @notice Withdraw tokens by WithdrawalRequest
-	 * @param WithdrawalRequestId {uint256} Id of the WithdrawalRequest
+	 * @notice Proccess the WithdrawalRequest
+	 * @param withdrawalRequestId {uint256} Id of the WithdrawalRequest
 	*/
-	function processWithdrawalRequests(uint256 WithdrawalRequestId)
+	function processWithdrawalRequests(uint256 withdrawalRequestId)
 		public
-		validWithdrawalRequest(WithdrawalRequestId)
+		validWithdrawalRequest(withdrawalRequestId)
 		returns (bool)
 	{
 		// Get the current time
 		uint256 currentTime = block.timestamp;
 
 		// Create temporary variable
-		WithdrawalRequest memory wr = _withdrawalRequest[WithdrawalRequestId];
+		WithdrawalRequest memory wr = _withdrawalRequest[withdrawalRequestId];
 
 		// If the withdrawal request has reached the required number of signatures
 		if (
 			wr.forVoteCount >= requiredSignatures &&
-			currentTime - wr.lastChecked >= SafeMath.mul(withdrawalDelayMinutes, 60)
+			(
+				currentTime - wr.lastChecked >= SafeMath.mul(withdrawalDelayMinutes, 60) ||
+				wr.accelerated
+			) &&
+			!wr.paused
 		) {
 			// Transfer the specified amount of tokens to the recipient
 			IERC20(wr.token).safeTransfer(wr.to, wr.amount);
@@ -279,46 +255,104 @@ contract Vaults is AccessControl {
 		
 		return true;
 	}
-	
+
+
 	/**
-	 * @notice [GETTER] WithdrawalRequest
-	 * @param WithdrawalRequestId {uint256} Id of the WithdrawalRequest
+	 * %%%%%%%%%%%%%%%%%%%%%%%%
+	 * %%% ROLE: VOTER_ROLE %%%
+	 * %%%%%%%%%%%%%%%%%%%%%%%%
 	*/
-	function withdrawalRequest(uint256 WithdrawalRequestId)
+
+	/**
+	 * @notice Vote to approve or disapprove withdrawal request
+	 * @param withdrawalRequestId {uint256} Id of the WithdrawalRequest
+	 * @param vote {bool} For or against vote
+	*/
+	function voteOnWithdrawalRequest(
+		uint256 withdrawalRequestId,
+		bool vote
+	)
 		public
-		view
-		validWithdrawalRequest(WithdrawalRequestId)
-		returns (WithdrawalRequest memory)
+		onlyRole(VOTER_ROLE)
+		validWithdrawalRequest(withdrawalRequestId)
 	{
-		// Create temporary variable
-		WithdrawalRequest memory wr = _withdrawalRequest[WithdrawalRequestId];
-		
-		return wr;
+		// [REQUIRE] It is msg.sender's (voter's) first vote
+		require(
+			!_withdrawalRequestVoterVoted[withdrawalRequestId][msg.sender],
+			"You have already casted a vote for this WithdrawalRequest."
+		);
+
+		if (vote) {
+			// [INCREMENT] For count
+			_withdrawalRequest[withdrawalRequestId].forVoteCount++;
+		}
+		else {
+			// [INCREMENT] Against count
+			_withdrawalRequest[withdrawalRequestId].againstVoteCount++;
+		}
+
+		// [ADD] Mark msg.sender (voter) has voted
+		_withdrawalRequestVoterVoted[withdrawalRequestId][msg.sender] = true;
+
+		// [UPDATE] lastChecked timestamp
+		_withdrawalRequest[withdrawalRequestId].lastChecked = block.timestamp;
+	}
+
+
+	/**
+	 * %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	 * %%% ROLE: DEFAULT_ADMIN_ROLE %%%
+	 * %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	*/
+
+	/**
+	 * @notice Add an authorized voter
+	 * @param voter {address} Address of the voter to add
+	*/
+	function addAuthorizedVoter(address voter)
+		public
+		onlyRole(DEFAULT_ADMIN_ROLE)
+	{
+		// Add the voter to the VOTER_ROLE
+		_setupRole(VOTER_ROLE, voter);
 	}
 
 	/**
-	 * @notice [GETTER] WithdrawalRequests by Creator
-	 * @param creator {uint256} Address to query WithdrawalRequests for
+	 * @notice Remove an authorized voter
+	 * @param voter {address} Address of the voter to remove
 	*/
-	function getWithdrawalRequestsByCreator(address creator)
+	function removeAuthorizedVoter(address voter)
 		public
-		view
-		returns (WithdrawalRequest[] memory)
+		onlyRole(DEFAULT_ADMIN_ROLE)
 	{
-		// Get array of WithdrawalRequest Ids for the provided creator
-		uint256[] memory WithdrawalRequestIds = _withdrawalRequestByCreator[creator];
+		_revokeRole(VOTER_ROLE, voter);
+	}
 
-		// Create array of WithdrawalRequests
-		WithdrawalRequest[] memory wr = new WithdrawalRequest[](
-			WithdrawalRequestIds.length
-		);
+	/**
+	 * @notice Update `withdrawalDelayMinutes`
+	 * @param withdrawalDelayMinutes_ {uint256} New withdrawalDelayMinutes
+	*/
+	function updateWithdrawalDelayMinutes(uint256 withdrawalDelayMinutes_)
+		public
+		onlyRole(DEFAULT_ADMIN_ROLE)
+	{
+		// [REQUIRE] withdrawalDelayMinutes_ is greater than 0
+		require(withdrawalDelayMinutes_ >= 0, "Invalid withdrawalDelayMinutes_");
 
-		// For each WithdrawalRequest Id..
-		for (uint256 i = 0; i < WithdrawalRequestIds.length; i++) {
-			// Look up the request using the ID
-			wr[i] = _withdrawalRequest[WithdrawalRequestIds[i]];
-		}
+		// Set delay (in minutes)
+		withdrawalDelayMinutes = withdrawalDelayMinutes_;
+	}
 
-		return wr;
+
+	/**
+	 * @notice Toggle `pause` on a WithdrawalRequest
+	 * @param withdrawalRequestId {uint256} Id of the WithdrawalRequest
+	*/
+	function toggleWithdrawalRequestPause(uint256 withdrawalRequestId)
+		public
+		onlyRole(DEFAULT_ADMIN_ROLE)
+		validWithdrawalRequest(withdrawalRequestId)
+	{
+		_withdrawalRequest[withdrawalRequestId].paused = !_withdrawalRequest[withdrawalRequestId].paused;
 	}
 }
