@@ -20,7 +20,7 @@ contract Vaults is AccessControl {
 
 	/* [STRUCT] */
 	struct WithdrawalRequest {
-		address msgSender;
+		address creator;
 		address to;
 		address token;
 		uint256 amount;
@@ -50,12 +50,15 @@ contract Vaults is AccessControl {
 	// WithdrawalRequest Id => WithdrawalRequest
 	mapping (uint256 => WithdrawalRequest) _withdrawalRequest;
 
+	// Creator => Array of WithdrawalRequest
+	mapping (address => uint256[]) _withdrawalRequestByCreator;
+
 
 	/* [MODIFIER] */
 	modifier validWithdrawalRequest(uint256 WithdrawalRequestId) {
 		// Check if the WithdrawalRequestId exists
 		require(
-			_withdrawalRequest[WithdrawalRequestId].msgSender != address(0),
+			_withdrawalRequest[WithdrawalRequestId].creator != address(0),
 			"No WithdrawalRequest found."
 		);
 		
@@ -158,17 +161,17 @@ contract Vaults is AccessControl {
 	/**
 	 * @notice Vote to approve or disapprove withdrawal request
 	 * @param WithdrawalRequestId {uint256} Id of the WithdrawalRequest
-	 * @param msgSenderVote {bool} For or against vote
+	 * @param vote {bool} For or against vote
 	*/
 	function voteOnWithdrawalRequest(
 		uint256 WithdrawalRequestId,
-		bool msgSenderVote
+		bool vote
 	)
 		public
 		onlyRole(VOTER_ROLE)
 		validWithdrawalRequest(WithdrawalRequestId)
 	{
-		if (msgSenderVote) {
+		if (vote) {
 			// [INCREMENT] For count
 			_withdrawalRequest[WithdrawalRequestId].forVoteCount++;
 		}
@@ -189,7 +192,7 @@ contract Vaults is AccessControl {
 	*/
 	
 	/**
-	 * @notice Deposit funds into this vault
+	 * @notice Deposit funds
 	 * @param tokenAddress {address} Address of token contract
 	 * @param amount {uint256} Amount to be moved
 	*/
@@ -198,16 +201,19 @@ contract Vaults is AccessControl {
 		uint256 amount
 	)
 		public payable
+		returns (bool)
 	{
 		// Transfer amount from msg.sender to this contract
 		IERC20(tokenAddress).safeTransferFrom(msg.sender, address(this), amount);
 
 		// Update vault token balance
 		_tokenBalance[tokenAddress] += amount;
+
+		return true;
 	}
 
 	/**
-	 * @notice Create a WithdrawalRequest
+	 * @notice [CREATE] WithdrawalRequest
 	 * @param to {address} Address the withdrawal it to be sent
 	 * @param tokenAddress {address} Address of token contract
 	 * @param amount {uint256} Amount to be moved
@@ -218,6 +224,7 @@ contract Vaults is AccessControl {
 		uint256 amount
 	)
 		public
+		returns (bool)
 	{
 		// Require that the specified amount is available
 		require(_tokenBalance[tokenAddress] >= amount, "Insufficient funds");
@@ -229,7 +236,7 @@ contract Vaults is AccessControl {
 		_withdrawalRequestId++;
 
 		_withdrawalRequest[_withdrawalRequestId] = WithdrawalRequest({
-			msgSender: msg.sender,
+			creator: msg.sender,
 			to: to,
 			token: tokenAddress,
 			amount: amount,
@@ -237,10 +244,14 @@ contract Vaults is AccessControl {
 			againstVoteCount: 0,
 			lastChecked: block.timestamp
 		});
+
+		_withdrawalRequestByCreator[msg.sender].push(_withdrawalRequestId);
+
+		return true;
 	}
 
 	/**
-	 * @notice Proccess WithdrawalRequest
+	 * @notice Withdraw tokens by WithdrawalRequest
 	 * @param WithdrawalRequestId {uint256} Id of the WithdrawalRequest
 	*/
 	function processWithdrawalRequests(uint256 WithdrawalRequestId)
@@ -267,5 +278,47 @@ contract Vaults is AccessControl {
 		}
 		
 		return true;
+	}
+	
+	/**
+	 * @notice [GETTER] WithdrawalRequest
+	 * @param WithdrawalRequestId {uint256} Id of the WithdrawalRequest
+	*/
+	function withdrawalRequest(uint256 WithdrawalRequestId)
+		public
+		view
+		validWithdrawalRequest(WithdrawalRequestId)
+		returns (WithdrawalRequest memory)
+	{
+		// Create temporary variable
+		WithdrawalRequest memory wr = _withdrawalRequest[WithdrawalRequestId];
+		
+		return wr;
+	}
+
+	/**
+	 * @notice [GETTER] WithdrawalRequests by Creator
+	 * @param creator {uint256} Address to query WithdrawalRequests for
+	*/
+	function getWithdrawalRequestsByCreator(address creator)
+		public
+		view
+		returns (WithdrawalRequest[] memory)
+	{
+		// Get array of WithdrawalRequest Ids for the provided creator
+		uint256[] memory WithdrawalRequestIds = _withdrawalRequestByCreator[creator];
+
+		// Create array of WithdrawalRequests
+		WithdrawalRequest[] memory wr = new WithdrawalRequest[](
+			WithdrawalRequestIds.length
+		);
+
+		// For each WithdrawalRequest Id..
+		for (uint256 i = 0; i < WithdrawalRequestIds.length; i++) {
+			// Look up the request using the ID
+			wr[i] = _withdrawalRequest[WithdrawalRequestIds[i]];
+		}
+
+		return wr;
 	}
 }
