@@ -34,10 +34,6 @@ contract Vaults is AccessControl {
 
 	/* [STATE-VARIABLE][CONSTANT] */
 	bytes32 public constant VOTER_ROLE = keccak256("VOTER_ROLE");
-	string constant _sendingDirectEtherError =
-		"Sending Ether directly to this contract is disabled"
-		"Please use `depositTokens` function to send ERC20 tokens into vault"
-	;
 
 	/* [STATE-VARIABLE] */
 	uint256 public requiredSignatures;
@@ -52,7 +48,7 @@ contract Vaults is AccessControl {
 	// WithdrawalRequest Id => WithdrawalRequest
 	mapping (uint256 => WithdrawalRequest) _withdrawalRequest;
 
-	// WithdrawalRequest Id => (Voter voted status => true)
+	// WithdrawalRequest Id => (Voter Voted Status => `true`)
 	mapping (uint256 => mapping (address => bool)) public _withdrawalRequestVoterVoted;
 
 	// Creator => Array of WithdrawalRequest
@@ -103,13 +99,19 @@ contract Vaults is AccessControl {
 
 	/* [RECIEVE] */
 	receive () external payable {
-		revert(_sendingDirectEtherError);
+		revert(
+			"Sending Ether directly to this contract is disabled"
+			"Please use `depositTokens` function to send ERC20 tokens into vault"
+		);
 	}
 
 
 	/* [FALLBACK] */
 	fallback () external payable {
-		revert(_sendingDirectEtherError);
+		revert(
+			"Sending Ether directly to this contract is disabled"
+			"Please use `depositTokens` function to send ERC20 tokens into vault"
+		);
 	}
 
 
@@ -251,6 +253,21 @@ contract Vaults is AccessControl {
 
 			// [DECREMENT] The vault token balance
 			_tokenBalance[wr.token] -= wr.amount;
+
+			// [DELETE] _withdrawalRequest WithdrawalRequest
+			delete _withdrawalRequest[withdrawalRequestId];
+
+			// [DELETE] _withdrawalRequestVoterVoted value
+			//TODO: fix this! ---> delete _withdrawalRequestVoterVoted[withdrawalRequestId];
+
+			// [DELETE] _withdrawalRequestByCreator
+			for (uint256 i = 0; i < _withdrawalRequestByCreator[msg.sender].length; i++) {
+				if (_withdrawalRequestByCreator[msg.sender][i] == withdrawalRequestId) {
+					delete _withdrawalRequestByCreator[msg.sender][i];
+
+					break;
+				}
+			}
 		}
 		
 		return true;
@@ -309,10 +326,10 @@ contract Vaults is AccessControl {
 	*/
 
 	/**
-	 * @notice Add an authorized voter
+	 * @notice Add a voter
 	 * @param voter {address} Address of the voter to add
 	*/
-	function addAuthorizedVoter(address voter)
+	function addVoter(address voter)
 		public
 		onlyRole(DEFAULT_ADMIN_ROLE)
 	{
@@ -321,10 +338,10 @@ contract Vaults is AccessControl {
 	}
 
 	/**
-	 * @notice Remove an authorized voter
+	 * @notice Remove a voter
 	 * @param voter {address} Address of the voter to remove
 	*/
-	function removeAuthorizedVoter(address voter)
+	function removeVoter(address voter)
 		public
 		onlyRole(DEFAULT_ADMIN_ROLE)
 	{
@@ -367,6 +384,6 @@ contract Vaults is AccessControl {
 		onlyRole(DEFAULT_ADMIN_ROLE)
 		validWithdrawalRequest(withdrawalRequestId)
 	{
-		
+		// TODO
 	}
 }
