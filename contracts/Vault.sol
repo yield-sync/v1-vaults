@@ -263,8 +263,10 @@ contract Vaults is AccessControl {
 			delete _withdrawalRequestVoterVoted[withdrawalRequestId];
 
 			// [DELETE] _withdrawalRequestByCreator
-			for (uint256 i = 0; i < _withdrawalRequestByCreator[msg.sender].length; i++) {
-				if (_withdrawalRequestByCreator[msg.sender][i] == withdrawalRequestId) {
+			for (uint256 i = 0; i < _withdrawalRequestByCreator[msg.sender].length; i++)
+			{
+				if (_withdrawalRequestByCreator[msg.sender][i] == withdrawalRequestId)
+				{
 					delete _withdrawalRequestByCreator[msg.sender][i];
 
 					break;
@@ -295,13 +297,15 @@ contract Vaults is AccessControl {
 		onlyRole(VOTER_ROLE)
 		validWithdrawalRequest(withdrawalRequestId)
 	{
-		// [INIT] voted status
+		// [INIT]
 		bool voted = false;
 
+		// For each voter within WithdrawalRequest
 		for (uint256 i = 0; i < _withdrawalRequestVoterVoted[withdrawalRequestId].length; i++)
 		{
 			if (_withdrawalRequestVoterVoted[withdrawalRequestId][i] == msg.sender)
 			{
+				// Flag
 				voted = true;
 			}
 		}
@@ -324,9 +328,7 @@ contract Vaults is AccessControl {
 		_withdrawalRequestVoterVoted[withdrawalRequestId].push(msg.sender);
 
 		// If the required signatures has not yet been reached..
-		if (
-			_withdrawalRequest[withdrawalRequestId].forVoteCount < requiredSignatures
-		)
+		if (_withdrawalRequest[withdrawalRequestId].forVoteCount < requiredSignatures)
 		{
 			// [UPDATE] lastChecked timestamp
 			_withdrawalRequest[withdrawalRequestId].lastChecked = block.timestamp;
@@ -387,7 +389,9 @@ contract Vaults is AccessControl {
 		onlyRole(DEFAULT_ADMIN_ROLE)
 		validWithdrawalRequest(withdrawalRequestId)
 	{
-		_withdrawalRequest[withdrawalRequestId].paused = !_withdrawalRequest[withdrawalRequestId].paused;
+		_withdrawalRequest[withdrawalRequestId].paused = !_withdrawalRequest[
+			withdrawalRequestId
+		].paused;
 	}
 
 	/**
