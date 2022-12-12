@@ -48,8 +48,8 @@ contract Vaults is AccessControl {
 	// WithdrawalRequest Id => WithdrawalRequest
 	mapping (uint256 => WithdrawalRequest) _withdrawalRequest;
 
-	// WithdrawalRequest Id => (Voter Voted Status => `true`)
-	mapping (uint256 => mapping (address => bool)) public _withdrawalRequestVoterVoted;
+	// WithdrawalRequest Id => Voted Voter Addresses)
+	mapping (uint256 => address[]) public _withdrawalRequestVoterVoted;
 
 	// Creator => Array of WithdrawalRequest
 	mapping (address => uint256[]) _withdrawalRequestByCreator;
@@ -60,7 +60,7 @@ contract Vaults is AccessControl {
 		// [REQUIRE] withdrawalRequestId exists
 		require(
 			_withdrawalRequest[withdrawalRequestId].creator != address(0),
-			"No WithdrawalRequest found."
+			"No WithdrawalRequest found"
 		);
 		
 		_;
@@ -90,7 +90,8 @@ contract Vaults is AccessControl {
 		_setupRole(VOTER_ROLE, admin);
 
 		// For each voter address..
-		for (uint256 i = 0; i < voters.length; i++) {
+		for (uint256 i = 0; i < voters.length; i++)
+		{
 			// Set up the role VOTER_ROLE for the voter address
 			_setupRole(VOTER_ROLE, voters[i]);
 		}
@@ -247,7 +248,8 @@ contract Vaults is AccessControl {
 				wr.accelerated
 			) &&
 			!wr.paused
-		) {
+		)
+		{
 			// Transfer the specified amount of tokens to the recipient
 			IERC20(wr.token).safeTransfer(wr.to, wr.amount);
 
@@ -258,7 +260,7 @@ contract Vaults is AccessControl {
 			delete _withdrawalRequest[withdrawalRequestId];
 
 			// [DELETE] _withdrawalRequestVoterVoted value
-			//TODO: fix this! ---> delete _withdrawalRequestVoterVoted[withdrawalRequestId];
+			delete _withdrawalRequestVoterVoted[withdrawalRequestId];
 
 			// [DELETE] _withdrawalRequestByCreator
 			for (uint256 i = 0; i < _withdrawalRequestByCreator[msg.sender].length; i++) {
@@ -293,26 +295,39 @@ contract Vaults is AccessControl {
 		onlyRole(VOTER_ROLE)
 		validWithdrawalRequest(withdrawalRequestId)
 	{
-		// [REQUIRE] It is msg.sender's (voter's) first vote
-		require(
-			!_withdrawalRequestVoterVoted[withdrawalRequestId][msg.sender],
-			"You have already casted a vote for this WithdrawalRequest."
-		);
+		// [INIT] voted status
+		bool voted = false;
 
-		if (vote) {
+		for (uint256 i = 0; i < _withdrawalRequestVoterVoted[withdrawalRequestId].length; i++)
+		{
+			if (_withdrawalRequestVoterVoted[withdrawalRequestId][i] == msg.sender)
+			{
+				voted = true;
+			}
+		}
+
+		// [REQUIRE] It is msg.sender's (voter's) first vote
+		require(!voted, "You have already casted a vote for this WithdrawalRequest");
+
+		if (vote)
+		{
 			// [INCREMENT] For count
 			_withdrawalRequest[withdrawalRequestId].forVoteCount++;
 		}
-		else {
+		else
+		{
 			// [INCREMENT] Against count
 			_withdrawalRequest[withdrawalRequestId].againstVoteCount++;
 		}
 
 		// [ADD] Mark msg.sender (voter) has voted
-		_withdrawalRequestVoterVoted[withdrawalRequestId][msg.sender] = true;
+		_withdrawalRequestVoterVoted[withdrawalRequestId].push(msg.sender);
 
 		// If the required signatures has not yet been reached..
-		if (_withdrawalRequest[withdrawalRequestId].forVoteCount < requiredSignatures) {
+		if (
+			_withdrawalRequest[withdrawalRequestId].forVoteCount < requiredSignatures
+		)
+		{
 			// [UPDATE] lastChecked timestamp
 			_withdrawalRequest[withdrawalRequestId].lastChecked = block.timestamp;
 		}
