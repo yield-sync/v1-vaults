@@ -381,7 +381,7 @@ contract Vault is AccessControl {
 	 * @param newRequiredSignatures {uint256} New requiredSignatures
 	 * @return {bool} Status
 	*/
-	function setRequiredSignatures(uint256 newRequiredSignatures)
+	function updateRequiredSignatures(uint256 newRequiredSignatures)
 		public
 		onlyRole(DEFAULT_ADMIN_ROLE)
 		returns (bool)
