@@ -13,7 +13,11 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
 
-contract Vaults is AccessControl {
+/**
+ * @title Vault
+ * @notice This is a vault for storing ERC20 tokens.
+*/
+contract Vault is AccessControl {
 	/* [USING] */
 	using SafeERC20 for IERC20;
 
@@ -371,6 +375,22 @@ contract Vaults is AccessControl {
 	 * %%% ROLE: DEFAULT_ADMIN_ROLE %%%
 	 * %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	*/
+
+	/**
+	 * @notice Update `requiredSignatures`
+	 * @param newRequiredSignatures {uint256} New requiredSignatures
+	 * @return {bool} Status
+	*/
+	function setRequiredSignatures(uint256 newRequiredSignatures)
+		public
+		onlyRole(DEFAULT_ADMIN_ROLE)
+		returns (bool)
+	{
+		// [UPDATE]
+		requiredSignatures = newRequiredSignatures;
+
+		return true;
+	}
 
 	/**
 	 * @notice Add a voter
