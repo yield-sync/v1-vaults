@@ -405,19 +405,19 @@ contract Vaults is AccessControl {
 
 	/**
 	 * @notice Update `withdrawalDelayMinutes`
-	 * @param withdrawalDelayMinutes_ {uint256} New withdrawalDelayMinutes
+	 * @param newWithdrawalDelayMinutes {uint256} New withdrawalDelayMinutes
 	 * @return {bool} Status
 	*/
-	function updateWithdrawalDelayMinutes(uint256 withdrawalDelayMinutes_)
+	function updateWithdrawalDelayMinutes(uint256 newWithdrawalDelayMinutes)
 		public
 		onlyRole(DEFAULT_ADMIN_ROLE)
 		returns (bool)
 	{
-		// [REQUIRE] withdrawalDelayMinutes_ is greater than 0
-		require(withdrawalDelayMinutes_ >= 0, "Invalid withdrawalDelayMinutes_");
+		// [REQUIRE] newWithdrawalDelayMinutes is greater than 0
+		require(newWithdrawalDelayMinutes >= 0, "Invalid newWithdrawalDelayMinutes");
 
 		// Set delay (in minutes)
-		withdrawalDelayMinutes = withdrawalDelayMinutes_;
+		withdrawalDelayMinutes = newWithdrawalDelayMinutes;
 
 		return true;
 	}
