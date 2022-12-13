@@ -49,7 +49,7 @@ contract Vaults is AccessControl {
 	mapping (uint256 => WithdrawalRequest) _withdrawalRequest;
 
 	// WithdrawalRequest Id => Voted Voter Addresses)
-	mapping (uint256 => address[]) public _withdrawalRequestVoterVoted;
+	mapping (uint256 => address[]) public _withdrawalRequestVotedVoters;
 
 	// Creator => Array of WithdrawalRequest
 	mapping (address => uint256[]) _withdrawalRequestByCreator;
@@ -259,8 +259,8 @@ contract Vaults is AccessControl {
 			// [DELETE] _withdrawalRequest WithdrawalRequest
 			delete _withdrawalRequest[withdrawalRequestId];
 
-			// [DELETE] _withdrawalRequestVoterVoted value
-			delete _withdrawalRequestVoterVoted[withdrawalRequestId];
+			// [DELETE] _withdrawalRequestVotedVoters value
+			delete _withdrawalRequestVotedVoters[withdrawalRequestId];
 
 			// [DELETE] _withdrawalRequestByCreator
 			for (uint256 i = 0; i < _withdrawalRequestByCreator[msg.sender].length; i++)
@@ -301,9 +301,9 @@ contract Vaults is AccessControl {
 		bool voted = false;
 
 		// For each voter within WithdrawalRequest
-		for (uint256 i = 0; i < _withdrawalRequestVoterVoted[withdrawalRequestId].length; i++)
+		for (uint256 i = 0; i < _withdrawalRequestVotedVoters[withdrawalRequestId].length; i++)
 		{
-			if (_withdrawalRequestVoterVoted[withdrawalRequestId][i] == msg.sender)
+			if (_withdrawalRequestVotedVoters[withdrawalRequestId][i] == msg.sender)
 			{
 				// Flag
 				voted = true;
@@ -325,7 +325,7 @@ contract Vaults is AccessControl {
 		}
 
 		// [ADD] Mark msg.sender (voter) has voted
-		_withdrawalRequestVoterVoted[withdrawalRequestId].push(msg.sender);
+		_withdrawalRequestVotedVoters[withdrawalRequestId].push(msg.sender);
 
 		// If the required signatures has not yet been reached..
 		if (_withdrawalRequest[withdrawalRequestId].forVoteCount < requiredSignatures)
@@ -403,6 +403,21 @@ contract Vaults is AccessControl {
 		onlyRole(DEFAULT_ADMIN_ROLE)
 		validWithdrawalRequest(withdrawalRequestId)
 	{
-		// TODO
+		// [DELETE] _withdrawalRequest WithdrawalRequest
+		delete _withdrawalRequest[withdrawalRequestId];
+
+		// [DELETE] _withdrawalRequestVotedVoters value
+		delete _withdrawalRequestVotedVoters[withdrawalRequestId];
+
+		// [DELETE] _withdrawalRequestByCreator
+		for (uint256 i = 0; i < _withdrawalRequestByCreator[msg.sender].length; i++)
+		{
+			if (_withdrawalRequestByCreator[msg.sender][i] == withdrawalRequestId)
+			{
+				delete _withdrawalRequestByCreator[msg.sender][i];
+
+				break;
+			}
+		}
 	}
 }
