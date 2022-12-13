@@ -117,14 +117,50 @@ contract Vaults is AccessControl {
 
 
 	/**
+	 * %%%%%%%%%%%%%%%%%
+	 * %%% 	INTERNAL %%%
+	 * %%%%%%%%%%%%%%%%%
+	*/
+
+	/**
+	 * @notice [DELETE] WithdrawalRequest
+	 * @param withdrawalRequestId {uint256} Id of the WithdrawalRequest
+	 * @return {bool} Status
+	*/
+	function _deleteWithdrawalRequest(uint256 withdrawalRequestId)
+		internal
+		returns (bool)
+	{
+		// [DELETE] _withdrawalRequest WithdrawalRequest
+		delete _withdrawalRequest[withdrawalRequestId];
+
+		// [DELETE] _withdrawalRequestVotedVoters value
+		delete _withdrawalRequestVotedVoters[withdrawalRequestId];
+
+		// [DELETE] _withdrawalRequestByCreator
+		for (uint256 i = 0; i < _withdrawalRequestByCreator[_withdrawalRequest[withdrawalRequestId].creator].length; i++)
+		{
+			if (_withdrawalRequestByCreator[_withdrawalRequest[withdrawalRequestId].creator][i] == withdrawalRequestId)
+			{
+				delete _withdrawalRequestByCreator[_withdrawalRequest[withdrawalRequestId].creator][i];
+
+				break;
+			}
+		}
+
+		return true;
+	}
+
+	/**
 	 * %%%%%%%%%%%%%%%%%%%%%%
 	 * %%% NO ROLE NEEDED %%%
 	 * %%%%%%%%%%%%%%%%%%%%%%
 	*/
 
 	/**
-	 * @notice [GETTER] _withdrawalRequest
+	 * @notice [GETTER] WithdrawalRequest
 	 * @param withdrawalRequestId {uint256} Id of the WithdrawalRequest
+	 * @return {WithdrawalRequest} WithdrawalRequest
 	*/
 	function withdrawalRequest(uint256 withdrawalRequestId)
 		public
@@ -141,6 +177,7 @@ contract Vaults is AccessControl {
 	/**
 	 * @notice Get WithdrawalRequests by Creator
 	 * @param creator {uint256} Address to query WithdrawalRequests for
+	 * @return {WithdrawalRequest[]} Array of WithdrawalRequests
 	*/
 	function WithdrawalRequestsByCreator(address creator)
 		public
@@ -168,6 +205,7 @@ contract Vaults is AccessControl {
 	 * @notice Deposit funds
 	 * @param tokenAddress {address} Address of token contract
 	 * @param amount {uint256} Amount to be moved
+	 * @return {bool} Status
 	*/
 	function depositTokens(
 		address tokenAddress,
@@ -190,6 +228,7 @@ contract Vaults is AccessControl {
 	 * @param to {address} Address the withdrawal it to be sent
 	 * @param tokenAddress {address} Address of token contract
 	 * @param amount {uint256} Amount to be moved
+	 * @return {WithdrawalRequest} Created WithdrawalRequest
 	*/
 	function createWithdrawalRequest(
 		address to,
@@ -197,7 +236,7 @@ contract Vaults is AccessControl {
 		uint256 amount
 	)
 		public
-		returns (bool)
+		returns (WithdrawalRequest memory)
 	{
 		// [REQUIRE]  The specified amount is available
 		require(_tokenBalance[tokenAddress] >= amount, "Insufficient funds");
@@ -222,12 +261,13 @@ contract Vaults is AccessControl {
 
 		_withdrawalRequestByCreator[msg.sender].push(_withdrawalRequestId);
 
-		return true;
+		return _withdrawalRequest[_withdrawalRequestId];
 	}
 
 	/**
 	 * @notice Proccess the WithdrawalRequest
 	 * @param withdrawalRequestId {uint256} Id of the WithdrawalRequest
+	 * @return {bool} Status
 	*/
 	function processWithdrawalRequests(uint256 withdrawalRequestId)
 		public
@@ -256,22 +296,8 @@ contract Vaults is AccessControl {
 			// [DECREMENT] The vault token balance
 			_tokenBalance[wr.token] -= wr.amount;
 
-			// [DELETE] _withdrawalRequest WithdrawalRequest
-			delete _withdrawalRequest[withdrawalRequestId];
-
-			// [DELETE] _withdrawalRequestVotedVoters value
-			delete _withdrawalRequestVotedVoters[withdrawalRequestId];
-
-			// [DELETE] _withdrawalRequestByCreator
-			for (uint256 i = 0; i < _withdrawalRequestByCreator[msg.sender].length; i++)
-			{
-				if (_withdrawalRequestByCreator[msg.sender][i] == withdrawalRequestId)
-				{
-					delete _withdrawalRequestByCreator[msg.sender][i];
-
-					break;
-				}
-			}
+			// [CALL]
+			_deleteWithdrawalRequest(withdrawalRequestId);
 		}
 		
 		return true;
@@ -288,6 +314,7 @@ contract Vaults is AccessControl {
 	 * @notice Vote to approve or disapprove withdrawal request
 	 * @param withdrawalRequestId {uint256} Id of the WithdrawalRequest
 	 * @param vote {bool} For or against vote
+	 * @return {bool} Status
 	*/
 	function voteOnWithdrawalRequest(
 		uint256 withdrawalRequestId,
@@ -296,6 +323,7 @@ contract Vaults is AccessControl {
 		public
 		onlyRole(VOTER_ROLE)
 		validWithdrawalRequest(withdrawalRequestId)
+		returns (bool)
 	{
 		// [INIT]
 		bool voted = false;
@@ -333,6 +361,8 @@ contract Vaults is AccessControl {
 			// [UPDATE] lastChecked timestamp
 			_withdrawalRequest[withdrawalRequestId].lastChecked = block.timestamp;
 		}
+
+		return true;
 	}
 
 
@@ -345,79 +375,85 @@ contract Vaults is AccessControl {
 	/**
 	 * @notice Add a voter
 	 * @param voter {address} Address of the voter to add
+	 * @return {bool} Status
 	*/
 	function addVoter(address voter)
 		public
 		onlyRole(DEFAULT_ADMIN_ROLE)
+		returns (bool)
 	{
 		// Add the voter to the VOTER_ROLE
 		_setupRole(VOTER_ROLE, voter);
+
+		return true;
 	}
 
 	/**
 	 * @notice Remove a voter
 	 * @param voter {address} Address of the voter to remove
+	 * @return {bool} Status
 	*/
 	function removeVoter(address voter)
 		public
 		onlyRole(DEFAULT_ADMIN_ROLE)
+		returns (bool)
 	{
 		_revokeRole(VOTER_ROLE, voter);
+
+		return true;
 	}
 
 	/**
 	 * @notice Update `withdrawalDelayMinutes`
 	 * @param withdrawalDelayMinutes_ {uint256} New withdrawalDelayMinutes
+	 * @return {bool} Status
 	*/
 	function updateWithdrawalDelayMinutes(uint256 withdrawalDelayMinutes_)
 		public
 		onlyRole(DEFAULT_ADMIN_ROLE)
+		returns (bool)
 	{
 		// [REQUIRE] withdrawalDelayMinutes_ is greater than 0
 		require(withdrawalDelayMinutes_ >= 0, "Invalid withdrawalDelayMinutes_");
 
 		// Set delay (in minutes)
 		withdrawalDelayMinutes = withdrawalDelayMinutes_;
+
+		return true;
 	}
 
 	/**
 	 * @notice Toggle `pause` on a WithdrawalRequest
 	 * @param withdrawalRequestId {uint256} Id of the WithdrawalRequest
+	 * @return {WithdrawalRequest} Updated WithdrawalRequest
 	*/
 	function toggleWithdrawalRequestPause(uint256 withdrawalRequestId)
 		public
 		onlyRole(DEFAULT_ADMIN_ROLE)
 		validWithdrawalRequest(withdrawalRequestId)
+		returns (WithdrawalRequest memory)
 	{
 		_withdrawalRequest[withdrawalRequestId].paused = !_withdrawalRequest[
 			withdrawalRequestId
 		].paused;
+
+		return _withdrawalRequest[withdrawalRequestId];
 	}
 
 	/**
 	 * @notice Toggle `pause` on a WithdrawalRequest
 	 * @param withdrawalRequestId {uint256} Id of the WithdrawalRequest
+	 * @return {bool} Status
 	*/
 	function deleteWithdrawalRequest(uint256 withdrawalRequestId)
 		public
 		onlyRole(DEFAULT_ADMIN_ROLE)
 		validWithdrawalRequest(withdrawalRequestId)
+		returns (bool)
 	{
-		// [DELETE] _withdrawalRequest WithdrawalRequest
-		delete _withdrawalRequest[withdrawalRequestId];
+		// [CALL]
+		_deleteWithdrawalRequest(withdrawalRequestId);
 
-		// [DELETE] _withdrawalRequestVotedVoters value
-		delete _withdrawalRequestVotedVoters[withdrawalRequestId];
-
-		// [DELETE] _withdrawalRequestByCreator
-		for (uint256 i = 0; i < _withdrawalRequestByCreator[msg.sender].length; i++)
-		{
-			if (_withdrawalRequestByCreator[msg.sender][i] == withdrawalRequestId)
-			{
-				delete _withdrawalRequestByCreator[msg.sender][i];
-
-				break;
-			}
-		}
+		return true;
 	}
 }
