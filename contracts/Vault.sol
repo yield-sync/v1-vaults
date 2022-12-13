@@ -105,8 +105,7 @@ contract Vault is AccessControl {
 	/* [RECIEVE] */
 	receive () external payable {
 		revert(
-			"Sending Ether directly to this contract is disabled"
-			"Please use `depositTokens` function to send ERC20 tokens into vault"
+			"Sending Ether directly to this contract is disabled, please use `depositTokens` function to send ERC20 tokens into vault"
 		);
 	}
 
@@ -114,8 +113,7 @@ contract Vault is AccessControl {
 	/* [FALLBACK] */
 	fallback () external payable {
 		revert(
-			"Sending Ether directly to this contract is disabled"
-			"Please use `depositTokens` function to send ERC20 tokens into vault"
+			"Sending Ether directly to this contract is disabled, please use `depositTokens` function to send ERC20 tokens into vault"
 		);
 	}
 
