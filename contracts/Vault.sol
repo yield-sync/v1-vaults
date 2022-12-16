@@ -27,12 +27,15 @@ contract Vault is AccessControl {
 		address creator;
 		address to;
 		address token;
+
 		bool paused;
 		bool accelerated;
+
 		uint256 amount;
 		uint256 forVoteCount;
 		uint256 againstVoteCount;
-		uint256 lastChecked;
+
+		uint256 lastImpactfulVote;
 	}
 
 
@@ -71,7 +74,8 @@ contract Vault is AccessControl {
 	}
 
 
-	/* [CONSTRUCTOR] */
+	/** [CONSTRUCTOR] */
+	
 	constructor (
 		address admin,
 		uint256 requiredSignatures_,
@@ -102,16 +106,22 @@ contract Vault is AccessControl {
 	}
 
 
-	/* [RECIEVE] */
-	receive () external payable {
+	/** [RECIEVE] */
+	receive ()
+		external
+		payable
+	{
 		revert(
 			"Sending Ether directly to this contract is disabled, please use `depositTokens` function to send ERC20 tokens into vault"
 		);
 	}
 
 
-	/* [FALLBACK] */
-	fallback () external payable {
+	/** [FALLBACK] */
+	fallback ()
+		external
+		payable
+	{
 		revert(
 			"Sending Ether directly to this contract is disabled, please use `depositTokens` function to send ERC20 tokens into vault"
 		);
@@ -160,7 +170,21 @@ contract Vault is AccessControl {
 	*/
 
 	/**
-	 * @notice [GETTER] WithdrawalRequest
+	 * @notice [GETTER] _tokenBalance
+	 * @param tokenAddress {address} Token address
+	 * @return {uint256} Token balance
+	*/
+	function tokenBalance(address tokenAddress)
+		public
+		view
+		returns (uint256)
+	{
+		// Return token balance
+		return _tokenBalance[tokenAddress];
+	}
+
+	/**
+	 * @notice [GETTER] _withdrawalRequest
 	 * @param withdrawalRequestId {uint256} Id of the WithdrawalRequest
 	 * @return {WithdrawalRequest} WithdrawalRequest
 	*/
@@ -177,14 +201,14 @@ contract Vault is AccessControl {
 	}
 
 	/**
-	 * @notice Get WithdrawalRequests by Creator
+	 * @notice all WithdrawalRequests by a provided Creator
 	 * @param creator {uint256} Address to query WithdrawalRequests for
 	 * @return {WithdrawalRequest[]} Array of WithdrawalRequests
 	*/
 	function WithdrawalRequestsByCreator(address creator)
 		public
 		view
-		returns (WithdrawalRequest[] memory)
+		returns (bool, WithdrawalRequest[] memory)
 	{
 		// Get array of WithdrawalRequest Ids for the provided creator
 		uint256[] memory withdrawalRequestIds = _withdrawalRequestByCreator[creator];
@@ -194,13 +218,13 @@ contract Vault is AccessControl {
 			withdrawalRequestIds.length
 		);
 
-		// For each WithdrawalRequest Id..
+		// For each withdrawalRequestId..
 		for (uint256 i = 0; i < withdrawalRequestIds.length; i++) {
-			// Look up the request using the ID
+			// Store into array
 			wr[i] = _withdrawalRequest[withdrawalRequestIds[i]];
 		}
 
-		return wr;
+		return (true, wr);
 	}
 	
 	/**
@@ -208,13 +232,15 @@ contract Vault is AccessControl {
 	 * @param tokenAddress {address} Address of token contract
 	 * @param amount {uint256} Amount to be moved
 	 * @return {bool} Status
+	 * @return {uint256} Amount deposited
+	 * @return {uint256} New ERC20 token balance
 	*/
 	function depositTokens(
 		address tokenAddress,
 		uint256 amount
 	)
 		public payable
-		returns (bool)
+		returns (bool, uint256, uint256)
 	{
 		// Transfer amount from msg.sender to this contract
 		IERC20(tokenAddress).safeTransferFrom(msg.sender, address(this), amount);
@@ -222,7 +248,7 @@ contract Vault is AccessControl {
 		// Update vault token balance
 		_tokenBalance[tokenAddress] += amount;
 
-		return true;
+		return (true, amount, _tokenBalance[tokenAddress]);
 	}
 
 	/**
@@ -230,6 +256,7 @@ contract Vault is AccessControl {
 	 * @param to {address} Address the withdrawal it to be sent
 	 * @param tokenAddress {address} Address of token contract
 	 * @param amount {uint256} Amount to be moved
+	 * @return {bool} Status
 	 * @return {WithdrawalRequest} Created WithdrawalRequest
 	*/
 	function createWithdrawalRequest(
@@ -238,7 +265,7 @@ contract Vault is AccessControl {
 		uint256 amount
 	)
 		public
-		returns (WithdrawalRequest memory)
+		returns (bool, WithdrawalRequest memory)
 	{
 		// [REQUIRE]  The specified amount is available
 		require(_tokenBalance[tokenAddress] >= amount, "Insufficient funds");
@@ -258,23 +285,24 @@ contract Vault is AccessControl {
 			amount: amount,
 			forVoteCount: 0,
 			againstVoteCount: 0,
-			lastChecked: block.timestamp
+			lastImpactfulVote: block.timestamp
 		});
 
 		_withdrawalRequestByCreator[msg.sender].push(_withdrawalRequestId);
 
-		return _withdrawalRequest[_withdrawalRequestId];
+		return (true, _withdrawalRequest[_withdrawalRequestId]);
 	}
 
 	/**
 	 * @notice Proccess the WithdrawalRequest
 	 * @param withdrawalRequestId {uint256} Id of the WithdrawalRequest
 	 * @return {bool} Status
+	 * @return {string} Message
 	*/
 	function processWithdrawalRequests(uint256 withdrawalRequestId)
 		public
 		validWithdrawalRequest(withdrawalRequestId)
-		returns (bool)
+		returns (bool, string memory)
 	{
 		// Get the current time
 		uint256 currentTime = block.timestamp;
@@ -286,7 +314,7 @@ contract Vault is AccessControl {
 		if (
 			wr.forVoteCount >= requiredSignatures &&
 			(
-				currentTime - wr.lastChecked >= SafeMath.mul(withdrawalDelayMinutes, 60) ||
+				currentTime - wr.lastImpactfulVote >= SafeMath.mul(withdrawalDelayMinutes, 60) ||
 				wr.accelerated
 			) &&
 			!wr.paused
@@ -300,9 +328,11 @@ contract Vault is AccessControl {
 
 			// [CALL]
 			_deleteWithdrawalRequest(withdrawalRequestId);
+		
+			return (true, "Processed WithdrawalRequest");
 		}
 		
-		return true;
+		return (false, "Unable to process WithdrawalRequest");
 	}
 
 
@@ -317,6 +347,10 @@ contract Vault is AccessControl {
 	 * @param withdrawalRequestId {uint256} Id of the WithdrawalRequest
 	 * @param vote {bool} For or against vote
 	 * @return {bool} Status
+	 * @return {bool} Vote received
+	 * @return {bool} forVoteCount
+	 * @return {bool} againstVoteCount
+	 * @return {bool} lastImpactfulVote
 	*/
 	function voteOnWithdrawalRequest(
 		uint256 withdrawalRequestId,
@@ -325,7 +359,7 @@ contract Vault is AccessControl {
 		public
 		onlyRole(VOTER_ROLE)
 		validWithdrawalRequest(withdrawalRequestId)
-		returns (bool)
+		returns (bool, bool, uint256, uint256, uint256)
 	{
 		// [INIT]
 		bool voted = false;
@@ -360,11 +394,17 @@ contract Vault is AccessControl {
 		// If the required signatures has not yet been reached..
 		if (_withdrawalRequest[withdrawalRequestId].forVoteCount < requiredSignatures)
 		{
-			// [UPDATE] lastChecked timestamp
-			_withdrawalRequest[withdrawalRequestId].lastChecked = block.timestamp;
+			// [UPDATE] lastImpactfulVote timestamp
+			_withdrawalRequest[withdrawalRequestId].lastImpactfulVote = block.timestamp;
 		}
 
-		return true;
+		return (
+			true,
+			vote,
+			_withdrawalRequest[withdrawalRequestId].forVoteCount,
+			_withdrawalRequest[withdrawalRequestId].againstVoteCount,
+			_withdrawalRequest[withdrawalRequestId].lastImpactfulVote
+		);
 	}
 
 
@@ -378,58 +418,62 @@ contract Vault is AccessControl {
 	 * @notice Update `requiredSignatures`
 	 * @param newRequiredSignatures {uint256} New requiredSignatures
 	 * @return {bool} Status
+	 * @return {uint256} New requiredSignatures
 	*/
 	function updateRequiredSignatures(uint256 newRequiredSignatures)
 		public
 		onlyRole(DEFAULT_ADMIN_ROLE)
-		returns (bool)
+		returns (bool, uint256)
 	{
 		// [UPDATE]
 		requiredSignatures = newRequiredSignatures;
 
-		return true;
+		return (true, requiredSignatures);
 	}
 
 	/**
 	 * @notice Add a voter
 	 * @param voter {address} Address of the voter to add
 	 * @return {bool} Status
+	 * @return {address} Voter added
 	*/
 	function addVoter(address voter)
 		public
 		onlyRole(DEFAULT_ADMIN_ROLE)
-		returns (bool)
+		returns (bool, address)
 	{
 		// Add the voter to the VOTER_ROLE
 		_setupRole(VOTER_ROLE, voter);
 
-		return true;
+		return (true, voter);
 	}
 
 	/**
 	 * @notice Remove a voter
 	 * @param voter {address} Address of the voter to remove
 	 * @return {bool} Status
+	 * @return {address} Voter removed
 	*/
 	function removeVoter(address voter)
 		public
 		onlyRole(DEFAULT_ADMIN_ROLE)
-		returns (bool)
+		returns (bool, address)
 	{
 		_revokeRole(VOTER_ROLE, voter);
 
-		return true;
+		return (true, voter);
 	}
 
 	/**
 	 * @notice Update `withdrawalDelayMinutes`
 	 * @param newWithdrawalDelayMinutes {uint256} New withdrawalDelayMinutes
 	 * @return {bool} Status
+	 * @return {uint256} New withdrawalDelayMinutes
 	*/
 	function updateWithdrawalDelayMinutes(uint256 newWithdrawalDelayMinutes)
 		public
 		onlyRole(DEFAULT_ADMIN_ROLE)
-		returns (bool)
+		returns (bool, uint256)
 	{
 		// [REQUIRE] newWithdrawalDelayMinutes is greater than 0
 		require(newWithdrawalDelayMinutes >= 0, "Invalid newWithdrawalDelayMinutes");
@@ -437,25 +481,26 @@ contract Vault is AccessControl {
 		// Set delay (in minutes)
 		withdrawalDelayMinutes = newWithdrawalDelayMinutes;
 
-		return true;
+		return (true, withdrawalDelayMinutes);
 	}
 
 	/**
 	 * @notice Toggle `pause` on a WithdrawalRequest
 	 * @param withdrawalRequestId {uint256} Id of the WithdrawalRequest
+	 * @return {bool} Status
 	 * @return {WithdrawalRequest} Updated WithdrawalRequest
 	*/
 	function toggleWithdrawalRequestPause(uint256 withdrawalRequestId)
 		public
 		onlyRole(DEFAULT_ADMIN_ROLE)
 		validWithdrawalRequest(withdrawalRequestId)
-		returns (WithdrawalRequest memory)
+		returns (bool, WithdrawalRequest memory)
 	{
 		_withdrawalRequest[withdrawalRequestId].paused = !_withdrawalRequest[
 			withdrawalRequestId
 		].paused;
 
-		return _withdrawalRequest[withdrawalRequestId];
+		return (true, _withdrawalRequest[withdrawalRequestId]);
 	}
 
 	/**
