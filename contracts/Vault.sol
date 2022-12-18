@@ -109,9 +109,6 @@ contract Vault is AccessControl {
 		// Set up the default admin role
 		_setupRole(DEFAULT_ADMIN_ROLE, admin);
 
-		// Set up the voter role and add the admin as the first voter
-		_setupRole(VOTER_ROLE, admin);
-
 		// For each voter address..
 		for (uint256 i = 0; i < voters.length; i++)
 		{
