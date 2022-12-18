@@ -66,16 +66,17 @@ contract VaultDeployer is AccessControl {
 
 
 	/**
-	 * @notice Creates a Vault and sets the voter weight of msg.sender to 100
-	 * @param requiredSignatures_ number of required signatures to make a withdrawal
-	 * @param withdrawalDelayMinutes_ number of minutes to delay a withdrawal
-	 * @param voters_ addresses of voter accounts
+	* @notice Creates a Vault
+	* @param admin {address} Admin of the deployed contract
+	* @param requiredSignatures {uint256} Required signatures for actions
+	* @param withdrawalDelayMinutes {uint256} Withdrawal delay minutes
+	* @param voters {address[]} Addresses of voter accounts
 	*/
 	function deploy(
 		address admin,
-		uint256 requiredSignatures_,
-		uint256 withdrawalDelayMinutes_,
-		address[] memory voters_
+		uint256 requiredSignatures,
+		uint256 withdrawalDelayMinutes,
+		address[] memory voters
 	)
 		public
 		returns (address)
@@ -85,9 +86,9 @@ contract VaultDeployer is AccessControl {
 		// Deploy the Vault contract and assign it to the vault state variable
 		deployedContract = new Vault(
 			admin,
-			requiredSignatures_,
-			withdrawalDelayMinutes_,
-			voters_
+			requiredSignatures,
+			withdrawalDelayMinutes,
+			voters
 		);
 
 		// Store the address of the newly deployed Vault contract in the vaults mapping
