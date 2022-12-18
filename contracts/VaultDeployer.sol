@@ -43,18 +43,26 @@ contract VaultDeployer is AccessControl {
 	}
 
 
-	/* [RECIEVE] */
+	/** [RECIEVE] */
 	receive ()
 		external
 		payable
-	{}
+	{
+		revert(
+			"Sending Ether directly to this contract is disabled"
+		);
+	}
 
 
-	/* [FALLBACK] */
+	/** [FALLBACK] */
 	fallback ()
 		external
 		payable
-	{}
+	{
+		revert(
+			"Sending Ether directly to this contract is disabled"
+		);
+	}
 
 
 	/**
