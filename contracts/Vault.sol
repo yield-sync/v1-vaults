@@ -14,8 +14,8 @@ import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
 
 /**
- * @title Vault
- * @notice This is a vault for storing ERC20 tokens.
+* @title Vault
+* @notice This is a vault for storing ERC20 tokens.
 */
 contract Vault is AccessControl {
 	/* [EVENT] */
@@ -141,15 +141,15 @@ contract Vault is AccessControl {
 
 
 	/**
-	 * %%%%%%%%%%%%%%%%%
-	 * %%% 	INTERNAL %%%
-	 * %%%%%%%%%%%%%%%%%
+	* %%%%%%%%%%%%%%%%%
+	* %%% 	INTERNAL %%%
+	* %%%%%%%%%%%%%%%%%
 	*/
 
 	/**
-	 * @notice [DELETE] WithdrawalRequest
-	 * @param withdrawalRequestId {uint256} Id of the WithdrawalRequest
-	 * @return {bool} Status
+	* @notice [DELETE] WithdrawalRequest
+	* @param withdrawalRequestId {uint256} Id of the WithdrawalRequest
+	* @return {bool} Status
 	*/
 	function _deleteWithdrawalRequest(uint256 withdrawalRequestId)
 		internal
@@ -176,15 +176,15 @@ contract Vault is AccessControl {
 	}
 
 	/**
-	 * %%%%%%%%%%%%%%%%%%%%%%
-	 * %%% NO ROLE NEEDED %%%
-	 * %%%%%%%%%%%%%%%%%%%%%%
+	* %%%%%%%%%%%%%%%%%%%%%%
+	* %%% NO ROLE NEEDED %%%
+	* %%%%%%%%%%%%%%%%%%%%%%
 	*/
 
 	/**
-	 * @notice [GETTER] _tokenBalance
-	 * @param tokenAddress {address} Token address
-	 * @return {uint256} Token balance
+	* @notice [GETTER] _tokenBalance
+	* @param tokenAddress {address} Token address
+	* @return {uint256} Token balance
 	*/
 	function tokenBalance(address tokenAddress)
 		public
@@ -196,9 +196,9 @@ contract Vault is AccessControl {
 	}
 
 	/**
-	 * @notice [GETTER] _withdrawalRequest
-	 * @param withdrawalRequestId {uint256} Id of the WithdrawalRequest
-	 * @return {WithdrawalRequest} WithdrawalRequest
+	* @notice [GETTER] _withdrawalRequest
+	* @param withdrawalRequestId {uint256} Id of the WithdrawalRequest
+	* @return {WithdrawalRequest} WithdrawalRequest
 	*/
 	function withdrawalRequest(uint256 withdrawalRequestId)
 		public
@@ -213,9 +213,9 @@ contract Vault is AccessControl {
 	}
 
 	/**
-	 * @notice all WithdrawalRequests by a provided Creator
-	 * @param creator {uint256} Address to query WithdrawalRequests for
-	 * @return {WithdrawalRequest[]} Array of WithdrawalRequests
+	* @notice all WithdrawalRequests by a provided Creator
+	* @param creator {uint256} Address to query WithdrawalRequests for
+	* @return {WithdrawalRequest[]} Array of WithdrawalRequests
 	*/
 	function WithdrawalRequestsByCreator(address creator)
 		public
@@ -240,12 +240,12 @@ contract Vault is AccessControl {
 	}
 	
 	/**
-	 * @notice Deposit funds
-	 * @param tokenAddress {address} Address of token contract
-	 * @param amount {uint256} Amount to be moved
-	 * @return {bool} Status
-	 * @return {uint256} Amount deposited
-	 * @return {uint256} New ERC20 token balance
+	* @notice Deposit funds
+	* @param tokenAddress {address} Address of token contract
+	* @param amount {uint256} Amount to be moved
+	* @return {bool} Status
+	* @return {uint256} Amount deposited
+	* @return {uint256} New ERC20 token balance
 	*/
 	function depositTokens(
 		address tokenAddress,
@@ -279,12 +279,12 @@ contract Vault is AccessControl {
 	}
 
 	/**
-	 * @notice [CREATE] WithdrawalRequest
-	 * @param to {address} Address the withdrawal it to be sent
-	 * @param tokenAddress {address} Address of token contract
-	 * @param amount {uint256} Amount to be moved
-	 * @return {bool} Status
-	 * @return {WithdrawalRequest} Created WithdrawalRequest
+	* @notice [CREATE] WithdrawalRequest
+	* @param to {address} Address the withdrawal it to be sent
+	* @param tokenAddress {address} Address of token contract
+	* @param amount {uint256} Amount to be moved
+	* @return {bool} Status
+	* @return {WithdrawalRequest} Created WithdrawalRequest
 	*/
 	function createWithdrawalRequest(
 		address to,
@@ -321,10 +321,10 @@ contract Vault is AccessControl {
 	}
 
 	/**
-	 * @notice Proccess the WithdrawalRequest
-	 * @param withdrawalRequestId {uint256} Id of the WithdrawalRequest
-	 * @return {bool} Status
-	 * @return {string} Message
+	* @notice Proccess the WithdrawalRequest
+	* @param withdrawalRequestId {uint256} Id of the WithdrawalRequest
+	* @return {bool} Status
+	* @return {string} Message
 	*/
 	function processWithdrawalRequests(uint256 withdrawalRequestId)
 		public
@@ -367,20 +367,20 @@ contract Vault is AccessControl {
 
 
 	/**
-	 * %%%%%%%%%%%%%%%%%%%%%%%%
-	 * %%% ROLE: VOTER_ROLE %%%
-	 * %%%%%%%%%%%%%%%%%%%%%%%%
+	* %%%%%%%%%%%%%%%%%%%%%%%%
+	* %%% ROLE: VOTER_ROLE %%%
+	* %%%%%%%%%%%%%%%%%%%%%%%%
 	*/
 
 	/**
-	 * @notice Vote to approve or disapprove withdrawal request
-	 * @param withdrawalRequestId {uint256} Id of the WithdrawalRequest
-	 * @param vote {bool} For or against vote
-	 * @return {bool} Status
-	 * @return {bool} Vote received
-	 * @return {bool} forVoteCount
-	 * @return {bool} againstVoteCount
-	 * @return {bool} lastImpactfulVote
+	* @notice Vote to approve or disapprove withdrawal request
+	* @param withdrawalRequestId {uint256} Id of the WithdrawalRequest
+	* @param vote {bool} For or against vote
+	* @return {bool} Status
+	* @return {bool} Vote received
+	* @return {bool} forVoteCount
+	* @return {bool} againstVoteCount
+	* @return {bool} lastImpactfulVote
 	*/
 	function voteOnWithdrawalRequest(
 		uint256 withdrawalRequestId,
@@ -439,16 +439,16 @@ contract Vault is AccessControl {
 
 
 	/**
-	 * %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-	 * %%% ROLE: DEFAULT_ADMIN_ROLE %%%
-	 * %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	* %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	* %%% ROLE: DEFAULT_ADMIN_ROLE %%%
+	* %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	*/
 
 	/**
-	 * @notice Update `requiredSignatures`
-	 * @param newRequiredSignatures {uint256} New requiredSignatures
-	 * @return {bool} Status
-	 * @return {uint256} New requiredSignatures
+	* @notice Update `requiredSignatures`
+	* @param newRequiredSignatures {uint256} New requiredSignatures
+	* @return {bool} Status
+	* @return {uint256} New requiredSignatures
 	*/
 	function updateRequiredSignatures(uint256 newRequiredSignatures)
 		public
@@ -462,10 +462,10 @@ contract Vault is AccessControl {
 	}
 
 	/**
-	 * @notice Add a voter
-	 * @param voter {address} Address of the voter to add
-	 * @return {bool} Status
-	 * @return {address} Voter added
+	* @notice Add a voter
+	* @param voter {address} Address of the voter to add
+	* @return {bool} Status
+	* @return {address} Voter added
 	*/
 	function addVoter(address voter)
 		public
@@ -479,10 +479,10 @@ contract Vault is AccessControl {
 	}
 
 	/**
-	 * @notice Remove a voter
-	 * @param voter {address} Address of the voter to remove
-	 * @return {bool} Status
-	 * @return {address} Voter removed
+	* @notice Remove a voter
+	* @param voter {address} Address of the voter to remove
+	* @return {bool} Status
+	* @return {address} Voter removed
 	*/
 	function removeVoter(address voter)
 		public
@@ -495,10 +495,10 @@ contract Vault is AccessControl {
 	}
 
 	/**
-	 * @notice Update `withdrawalDelayMinutes`
-	 * @param newWithdrawalDelayMinutes {uint256} New withdrawalDelayMinutes
-	 * @return {bool} Status
-	 * @return {uint256} New withdrawalDelayMinutes
+	* @notice Update `withdrawalDelayMinutes`
+	* @param newWithdrawalDelayMinutes {uint256} New withdrawalDelayMinutes
+	* @return {bool} Status
+	* @return {uint256} New withdrawalDelayMinutes
 	*/
 	function updateWithdrawalDelayMinutes(uint256 newWithdrawalDelayMinutes)
 		public
@@ -515,10 +515,10 @@ contract Vault is AccessControl {
 	}
 
 	/**
-	 * @notice Toggle `pause` on a WithdrawalRequest
-	 * @param withdrawalRequestId {uint256} Id of the WithdrawalRequest
-	 * @return {bool} Status
-	 * @return {WithdrawalRequest} Updated WithdrawalRequest
+	* @notice Toggle `pause` on a WithdrawalRequest
+	* @param withdrawalRequestId {uint256} Id of the WithdrawalRequest
+	* @return {bool} Status
+	* @return {WithdrawalRequest} Updated WithdrawalRequest
 	*/
 	function toggleWithdrawalRequestPause(uint256 withdrawalRequestId)
 		public
@@ -534,9 +534,9 @@ contract Vault is AccessControl {
 	}
 
 	/**
-	 * @notice Toggle `pause` on a WithdrawalRequest
-	 * @param withdrawalRequestId {uint256} Id of the WithdrawalRequest
-	 * @return {bool} Status
+	* @notice Toggle `pause` on a WithdrawalRequest
+	* @param withdrawalRequestId {uint256} Id of the WithdrawalRequest
+	* @return {bool} Status
 	*/
 	function deleteWithdrawalRequest(uint256 withdrawalRequestId)
 		public
