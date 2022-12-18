@@ -51,7 +51,7 @@ contract VaultDeployer is AccessControl {
 	/**
 	 * @notice Creates a Vault and sets the voter weight of msg.sender to 100
 	*/
-	function createVault(
+	function deploy(
 	)
 		public
 	{

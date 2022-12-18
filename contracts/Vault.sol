@@ -18,6 +18,21 @@ import "@openzeppelin/contracts/utils/math/SafeMath.sol";
  * @notice This is a vault for storing ERC20 tokens.
 */
 contract Vault is AccessControl {
+	/* [EVENT] */
+	event TokensDeposited (
+		address indexed depositor,
+		address indexed token,
+		uint256 amount
+	);
+
+
+	event TokensWithdrawn (
+		address indexed withdrawer,
+		address indexed token,
+		uint256 amount
+	);
+
+
 	/* [USING] */
 	using SafeERC20 for IERC20;
 
@@ -242,12 +257,27 @@ contract Vault is AccessControl {
 		public payable
 		returns (bool, uint256, uint256)
 	{
+		// Ensure token is not a null address
+		require(
+			tokenAddress != address(0),
+			"Token address cannot be null"
+		);
+		
+		// Ensure amount is greater than zero
+		require(
+			amount > 0,
+			"Amount must be greater than zero"
+		);
+
 		// Transfer amount from msg.sender to this contract
 		IERC20(tokenAddress).safeTransferFrom(msg.sender, address(this), amount);
 
 		// Update vault token balance
 		_tokenBalance[tokenAddress] += amount;
-
+			
+		// [EMIT]
+		emit TokensDeposited(msg.sender, tokenAddress, amount);
+		
 		return (true, amount, _tokenBalance[tokenAddress]);
 	}
 
@@ -325,6 +355,9 @@ contract Vault is AccessControl {
 
 			// [DECREMENT] The vault token balance
 			_tokenBalance[wr.token] -= wr.amount;
+
+			// [EMIT]
+			emit TokensDeposited(msg.sender, wr.to, wr.amount);
 
 			// [CALL]
 			_deleteWithdrawalRequest(withdrawalRequestId);
