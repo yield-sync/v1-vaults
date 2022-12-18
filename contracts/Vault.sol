@@ -70,7 +70,7 @@ contract Vault is AccessControl {
 	// WithdrawalRequest Id => WithdrawalRequest
 	mapping (uint256 => WithdrawalRequest) _withdrawalRequest;
 
-	// WithdrawalRequest Id => Voted Voter Addresses)
+	// WithdrawalRequest Id => Voted Voter Addresses Array
 	mapping (uint256 => address[]) public _withdrawalRequestVotedVoters;
 
 	// Creator => Array of WithdrawalRequest

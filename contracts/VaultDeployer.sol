@@ -21,8 +21,17 @@ import "./Vault.sol";
  * @notice This contract deploys the vaults on behalf of a user
 */
 contract VaultDeployer is AccessControl {
+	/* [EVENT] */
+	event VaultDeployed (
+		address indexed admin
+	);
+
+
 	/* [STATE-VARIABLES] */
-	uint256 vaultIdIncrement;
+	uint public vaultId;
+
+	// Vault Id => Vault Address
+	mapping(uint => address) public vaults;
 
 
 	/* [CONSTRUCTOR] */
@@ -30,7 +39,7 @@ contract VaultDeployer is AccessControl {
 	{
 		_setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
 		
-		vaultIdIncrement = 0;
+		vaultId = 0;
 	}
 
 
@@ -55,6 +64,7 @@ contract VaultDeployer is AccessControl {
 	 * @param voters_ addresses of voter accounts
 	*/
 	function deploy(
+		address admin,
 		uint256 requiredSignatures_,
 		uint256 withdrawalDelayMinutes_,
 		address[] memory voters_
@@ -66,11 +76,20 @@ contract VaultDeployer is AccessControl {
 
 		// Deploy the Vault contract and assign it to the vault state variable
 		deployedContract = new Vault(
-			msg.sender,
+			admin,
 			requiredSignatures_,
 			withdrawalDelayMinutes_,
 			voters_
 		);
+
+		// Store the address of the newly deployed Vault contract in the vaults mapping
+		vaults[vaultId] = address(deployedContract);
+
+		// Increment the vaultId variable
+		vaultId++;
+
+		// [EMIT]
+		emit VaultDeployed(admin);
 
 		return address(deployedContract);
 	}
