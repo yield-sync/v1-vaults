@@ -16,7 +16,6 @@ import "./interface/IVault.sol";
 
 /**
 * @title Vault
-* @notice This is a vault for storing ERC20 tokens.
 */
 contract Vault is
 	AccessControl,
@@ -29,10 +28,12 @@ contract Vault is
 	/* [STATE-VARIABLE][PUBLIC][CONSTANT] */
 	bytes32 public constant VOTER_ROLE = keccak256("VOTER_ROLE");
 
+
 	/* [STATE-VARIABLE][PUBLIC] */
 	uint256 public requiredSignatures;
 
 	uint256 public withdrawalDelayMinutes;
+
 
 	/* [STATE-VARIABLE] */
 	uint256 _withdrawalRequestId;

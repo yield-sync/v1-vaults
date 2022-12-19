@@ -4,11 +4,13 @@ pragma solidity ^0.8.1;
 
 /**
 * @title IVault
-* @notice This is a vault for storing ERC20 tokens.
 */
 interface IVault
 {
-	/* [STRUCT] */
+	/**
+	* @dev [struct]
+	* @notice Struct of a `WithdrawalRequest`
+	*/
 	struct WithdrawalRequest {
 		address creator;
 		address to;
@@ -38,7 +40,7 @@ interface IVault
 
 	/**
 	* @dev [uint256]
-	* @notice Delay in minutes withdrawal
+	* @notice Get Withdrawal delay (denominated in minutes)
 	* @return {bytes32} keccak256 value
 	*/
 	function withdrawalDelayMinutes()
@@ -48,8 +50,8 @@ interface IVault
 	;
 
 	/**
-	* @dev [mapping]
-	* @notice Token Balances
+	* @dev [getter][mapping]
+	* @notice Get token balance
 	* @param {address} Token contract address
 	* @return {uint256} Balance of token
 	*/
@@ -60,8 +62,8 @@ interface IVault
 	;
 
 	/**
-	* @dev [mapping]
-	* @notice WithdrawalRequest Id => WithdrawalRequest
+	* @dev [getter][mapping]
+	* @notice Get `WithdrawalRequest` with given Id
 	* @param {address} WithdrawalRequestId
 	* @return {WithdrawalRequest} Balance of token
 	*/
@@ -71,9 +73,9 @@ interface IVault
 	;
 
 	/**
-	* @dev [getter]
-	* @notice Get array of voters who have already voted on given Withdrawal Request 
-	* @param withdrawalRequestId {uint256} Id of Withdrawal Request
+	* @dev [getter][mapping]
+	* @notice Get array of voters that have voted with given `WithdrawalRequest` Id
+	* @param withdrawalRequestId {uint256} Id of `WithdrawalRequest`
 	* @return {WithdrawalRequest}
 	*/
 	function withdrawalRequestVotedVoters(uint256 withdrawalRequestId)
@@ -83,10 +85,10 @@ interface IVault
 	;
 
 	/**
-	* @dev [getter]
-	* @notice Get array of Withdrawal Request Ids by a given creator 
-	* @param creator {address} Id of Withdrawal Request
-	* @return {uint256[]} Array of Withdrawal Request Ids
+	* @dev [getter][mapping]
+	* @notice Get array of `WithdrawalRequest` Ids by a given creator 
+	* @param creator {address} Id of `WithdrawalRequest`
+	* @return {uint256[]} Array of `WithdrawalRequest` Ids
 	*/
 	function withdrawalRequestByCreator(address creator)
 		view
@@ -96,7 +98,7 @@ interface IVault
 
 	/**
 	* @dev [IERC20][emit]
-	* @notice Deposit funds
+	* @notice Deposit tokens
 	* @param tokenAddress {address} Address of token contract
 	* @param amount {uint256} Amount to be moved
 	* @return {bool} Status
@@ -111,12 +113,12 @@ interface IVault
 
 	/**
 	* @dev [create]
-	* @notice Create a WithdrawalRequest
-	* @param to {address} Address the withdrawal it to be sent
+	* @notice Create a `WithdrawalRequest`
+	* @param to {address} Address the withdrawn tokens will be sent
 	* @param tokenAddress {address} Address of token contract
-	* @param amount {uint256} Amount to be moved
+	* @param amount {uint256} Amount to be withdrawn
 	* @return {bool} Status
-	* @return {WithdrawalRequest} Created WithdrawalRequest
+	* @return {WithdrawalRequest} The created `WithdrawalRequest`
 	*/
 	function createWithdrawalRequest(
 		address to,
@@ -129,8 +131,8 @@ interface IVault
 
 	/**
 	* @dev 
-	* @notice Proccess the WithdrawalRequest
-	* @param withdrawalRequestId {uint256} Id of the WithdrawalRequest
+	* @notice Process the WithdrawalRequest
+	* @param withdrawalRequestId {uint256} Id of the `WithdrawalRequest`
 	* @return {bool} Status
 	* @return {string} Message
 	*/
@@ -141,9 +143,9 @@ interface IVault
 
 	/**
 	* @dev [update]
-	* @notice Vote to approve or disapprove withdrawal request
-	* @param withdrawalRequestId {uint256} Id of the WithdrawalRequest
-	* @param vote {bool} For or against vote
+	* @notice Vote on withdrawal request
+	* @param withdrawalRequestId {uint256} Id of the `WithdrawalRequest`
+	* @param vote {bool} Approve (true) or deny (false)
 	* @return {bool} Status
 	* @return {bool} Vote received
 	* @return {bool} forVoteCount
@@ -158,9 +160,9 @@ interface IVault
 	/**
 	* @dev [update]
 	* @notice Update `requiredSignatures`
-	* @param newRequiredSignatures {uint256} New requiredSignatures
+	* @param newRequiredSignatures {uint256} New `requiredSignatures`
 	* @return {bool} Status
-	* @return {uint256} New requiredSignatures
+	* @return {uint256} New `requiredSignatures`
 	*/
 	function updateRequiredSignatures(uint256 newRequiredSignatures)
 		external
@@ -184,7 +186,7 @@ interface IVault
 	* @notice Remove a voter
 	* @param voter {address} Address of the voter to remove
 	* @return {bool} Status
-	* @return {address} Voter removed
+	* @return {address} Removed voter
 	*/	
 	function removeVoter(address voter)
 		external
@@ -194,9 +196,9 @@ interface IVault
 	/**
 	* @dev [update]
 	* @notice Update `withdrawalDelayMinutes`
-	* @param newWithdrawalDelayMinutes {uint256} New withdrawalDelayMinutes
+	* @param newWithdrawalDelayMinutes {uint256} New `withdrawalDelayMinutes`
 	* @return {bool} Status
-	* @return {uint256} New withdrawalDelayMinutes
+	* @return {uint256} New `withdrawalDelayMinutes`
 	*/
 	function updateWithdrawalDelayMinutes(uint256 newWithdrawalDelayMinutes)
 		external
@@ -208,7 +210,7 @@ interface IVault
 	* @notice Toggle `pause` on a WithdrawalRequest
 	* @param withdrawalRequestId {uint256} Id of the WithdrawalRequest
 	* @return {bool} Status
-	* @return {WithdrawalRequest} Updated WithdrawalRequest
+	* @return {WithdrawalRequest} Updated `WithdrawalRequest`
 	*/
 	function toggleWithdrawalRequestPause(uint256 withdrawalRequestId)
 		external
