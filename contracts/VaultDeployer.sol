@@ -4,6 +4,7 @@ pragma solidity ^0.8.1;
 
 /* [IMPORT] */
 import "@cardinal-protocol/v1-sdk/contracts/interface/ICardinalProtocolGovernance.sol";
+import "@openzeppelin/contracts/security/Pausable.sol";
 
 /* [IMPORT] Internal */
 import "./Vault.sol";
@@ -14,7 +15,8 @@ import "./Vault.sol";
 * @author harpoonjs.eth
 * @notice This contract deploys the vaults on behalf of a user
 */
-contract VaultDeployer
+contract VaultDeployer is
+	Pausable
 {
 	/* [EVENT] */
 	event VaultDeployed (
@@ -101,6 +103,7 @@ contract VaultDeployer
 		address[] memory voters
 	)
 		public
+		whenNotPaused()
 		returns (address)
 	{
 		Vault deployedContract;

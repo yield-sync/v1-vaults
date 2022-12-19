@@ -3,16 +3,12 @@ pragma solidity ^0.8.1;
 
 
 /* [IMPORT] */
-// /access
+import "@cardinal-protocol/v1-sdk/contracts/interface/IVault.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
-// /token
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-// /utils
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
-/* [IMPORT] Internal */
-import "./interface/IVault.sol";
 
 /**
 * @title Vault
