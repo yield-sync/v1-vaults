@@ -2,11 +2,11 @@
 pragma solidity ^0.8.1;
 
 
-/* [IMPORT] */
+/* [import] */
 import "@cardinal-protocol/v1-sdk/contracts/interface/ICardinalProtocolGovernance.sol";
 import "@openzeppelin/contracts/security/Pausable.sol";
 
-/* [IMPORT] Internal */
+/* [import] Internal */
 import "./Vault.sol";
 
 
@@ -24,7 +24,7 @@ contract VaultDeployer is
 	);
 
 
-	/* [STATE-VARIABLES] */
+	/* [state-variable] */
 	address public cardinalProtocol;
 
 	uint256 public vaultId;
@@ -34,7 +34,7 @@ contract VaultDeployer is
 	mapping(uint256 => address) public vaults;
 
 
-	/* [CONSTRUCTOR] */
+	/* [constructor] */
 	constructor (address _cardinalProtocol)
 	{
 		cardinalProtocol = _cardinalProtocol;
@@ -43,7 +43,7 @@ contract VaultDeployer is
 	}
 
 
-	/** [RECIEVE] */
+	/** [recieve] */
 	receive ()
 		external
 		payable
@@ -54,7 +54,7 @@ contract VaultDeployer is
 	}
 
 
-	/** [FALLBACK] */
+	/** [fallback] */
 	fallback ()
 		external
 		payable
@@ -108,7 +108,7 @@ contract VaultDeployer is
 	{
 		Vault deployedContract;
 
-		// Deploy the Vault contract and assign it to the vault state variable
+		// [deploy] A vault contract
 		deployedContract = new Vault(
 			admin,
 			requiredSignatures,
@@ -116,13 +116,13 @@ contract VaultDeployer is
 			voters
 		);
 
-		// Store the address of the newly deployed Vault contract in the vaults mapping
+		// Store the address of the newly deployed Vault contract
 		vaults[vaultId] = address(deployedContract);
 
-		// Increment the vaultId variable
+		// [increment] vaultId
 		vaultId++;
 
-		// [EMIT]
+		// [emit]
 		emit VaultDeployed(admin);
 
 		return address(deployedContract);

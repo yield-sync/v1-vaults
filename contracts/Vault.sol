@@ -2,12 +2,14 @@
 pragma solidity ^0.8.1;
 
 
-/* [IMPORT] */
-import "@cardinal-protocol/v1-sdk/contracts/interface/IVault.sol";
+/* [import] */
 import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+
+/* [import] Internal */
+import "./interface/IVault.sol";
 
 
 /**
@@ -21,17 +23,17 @@ contract Vault is
 	using SafeERC20 for IERC20;
 
 
-	/* [STATE-VARIABLE][PUBLIC][CONSTANT] */
+	/* [state-variable][public][constant] */
 	bytes32 public constant VOTER_ROLE = keccak256("VOTER_ROLE");
 
 
-	/* [STATE-VARIABLE][PUBLIC] */
+	/* [state-variable][public] */
 	uint256 public requiredSignatures;
 
 	uint256 public withdrawalDelayMinutes;
 
 
-	/* [STATE-VARIABLE] */
+	/* [state-variable] */
 	uint256 _withdrawalRequestId;
 
 	// ERC20 Contract Address => Balance
@@ -59,7 +61,7 @@ contract Vault is
 	}
 
 
-	/* [CONSTRUCTOR] */
+	/* [constructor] */
 	constructor (
 		address admin,
 		uint256 requiredSignatures_,
@@ -87,7 +89,7 @@ contract Vault is
 	}
 
 
-	/* [RECIEVE] */
+	/* [recieve] */
 	receive ()
 		external
 		payable
@@ -98,7 +100,7 @@ contract Vault is
 	}
 
 
-	/* [FALLBACK] */
+	/* [fallback] */
 	fallback ()
 		external
 		payable
@@ -116,21 +118,21 @@ contract Vault is
 	*/
 
 	/**
-	* @notice [DELETE] WithdrawalRequest
-	* @param withdrawalRequestId {uint256} Id of the WithdrawalRequest
+	* @notice [delete] WithdrawalRequest
+	* @param withdrawalRequestId {uint256}
 	* @return {bool} Status
 	*/
 	function _deleteWithdrawalRequest(uint256 withdrawalRequestId)
 		internal
 		returns (bool)
 	{
-		// [DELETE] _withdrawalRequest WithdrawalRequest
+		// [delete] _withdrawalRequest WithdrawalRequest
 		delete _withdrawalRequest[withdrawalRequestId];
 
-		// [DELETE] _withdrawalRequestVotedVoters value
+		// [delete] _withdrawalRequestVotedVoters value
 		delete _withdrawalRequestVotedVoters[withdrawalRequestId];
 
-		// [DELETE] _withdrawalRequestByCreator
+		// [delete] _withdrawalRequestByCreator
 		for (uint256 i = 0; i < _withdrawalRequestByCreator[_withdrawalRequest[withdrawalRequestId].creator].length; i++)
 		{
 			if (_withdrawalRequestByCreator[_withdrawalRequest[withdrawalRequestId].creator][i] == withdrawalRequestId)
@@ -210,7 +212,7 @@ contract Vault is
 		// Update vault token balance
 		_tokenBalance[tokenAddress] += amount;
 			
-		// [EMIT]
+		// [emit]
 		emit TokensDeposited(msg.sender, tokenAddress, amount);
 		
 		return (true, amount, _tokenBalance[tokenAddress]);
@@ -276,13 +278,13 @@ contract Vault is
 			// Transfer the specified amount of tokens to the recipient
 			IERC20(wr.token).safeTransfer(wr.to, wr.amount);
 
-			// [DECREMENT] The vault token balance
+			// [decrement] The vault token balance
 			_tokenBalance[wr.token] -= wr.amount;
 
-			// [EMIT]
+			// [emit]
 			emit TokensDeposited(msg.sender, wr.to, wr.amount);
 
-			// [CALL]
+			// [call]
 			_deleteWithdrawalRequest(withdrawalRequestId);
 		
 			return (true, "Processed WithdrawalRequest");
@@ -429,7 +431,7 @@ contract Vault is
 		validWithdrawalRequest(withdrawalRequestId)
 		returns (bool)
 	{
-		// [CALL]
+		// [call]
 		_deleteWithdrawalRequest(withdrawalRequestId);
 
 		return true;
