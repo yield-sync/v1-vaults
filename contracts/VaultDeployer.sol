@@ -3,24 +3,17 @@
 pragma solidity ^0.8.1;
 
 
-/* [IMPORT] */
-// /access
-import "@openzeppelin/contracts/access/AccessControl.sol";
-// /token
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-
-
-/* [IMPORT] */
+/* [IMPORT] Internal */
+import "./interface/ICardinalProtocolGovernance.sol";
 import "./Vault.sol";
 
 
 /**
- * @title VaultDeployer
- * @author harpoonjs.eth
- * @notice This contract deploys the vaults on behalf of a user
+* @title VaultDeployer
+* @author harpoonjs.eth
+* @notice This contract deploys the vaults on behalf of a user
 */
-contract VaultDeployer is AccessControl {
+contract VaultDeployer {
 	/* [EVENT] */
 	event VaultDeployed (
 		address indexed admin
@@ -28,17 +21,20 @@ contract VaultDeployer is AccessControl {
 
 
 	/* [STATE-VARIABLES] */
-	uint public vaultId;
+	address public cardinalProtocol;
+
+	uint256 public vaultId;
+	uint256 public fee;
 
 	// Vault Id => Vault Address
-	mapping(uint => address) public vaults;
+	mapping(uint256 => address) public vaults;
 
 
 	/* [CONSTRUCTOR] */
-	constructor ()
+	constructor (address _cardinalProtocol)
 	{
-		_setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
-		
+		cardinalProtocol = _cardinalProtocol;
+
 		vaultId = 0;
 	}
 
@@ -62,6 +58,30 @@ contract VaultDeployer is AccessControl {
 		revert(
 			"Sending Ether directly to this contract is disabled"
 		);
+	}
+
+
+	modifier authLevel_s() {
+		require(
+			ICardinalProtocolGovernance(cardinalProtocol).hasRole(
+				ICardinalProtocolGovernance(cardinalProtocol).S(),
+				msg.sender
+			),
+			"!auth"
+		);
+
+		_;
+	}
+
+	/**
+	* @notice Set fee for deploying a vault
+	* @param _fee {uint256} Fee to be set
+	*/
+	function setFee(uint256 _fee)
+		public
+		authLevel_s()
+	{
+		fee = _fee;
 	}
 
 

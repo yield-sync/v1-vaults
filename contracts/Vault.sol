@@ -89,8 +89,7 @@ contract Vault is AccessControl {
 	}
 
 
-	/** [CONSTRUCTOR] */
-	
+	/* [CONSTRUCTOR] */
 	constructor (
 		address admin,
 		uint256 requiredSignatures_,
@@ -118,7 +117,7 @@ contract Vault is AccessControl {
 	}
 
 
-	/** [RECIEVE] */
+	/* [RECIEVE] */
 	receive ()
 		external
 		payable
@@ -129,7 +128,7 @@ contract Vault is AccessControl {
 	}
 
 
-	/** [FALLBACK] */
+	/* [FALLBACK] */
 	fallback ()
 		external
 		payable
@@ -141,9 +140,9 @@ contract Vault is AccessControl {
 
 
 	/**
-	* %%%%%%%%%%%%%%%%%
-	* %%% 	INTERNAL %%%
-	* %%%%%%%%%%%%%%%%%
+	* %%%%%%%%%%%%%%%%
+	* %%% INTERNAL %%%
+	* %%%%%%%%%%%%%%%%
 	*/
 
 	/**
