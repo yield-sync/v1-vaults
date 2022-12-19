@@ -25,4 +25,7 @@ interface IVault
 	* @return {bytes32} keccak256 value
 	*/
 	function withdrawalDelayMinutes() external view returns (uint256);
+
+
+	mapping(address => uint256) public tokenBalance;
 }

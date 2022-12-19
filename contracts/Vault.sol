@@ -69,16 +69,16 @@ contract Vault is
 	uint256 _withdrawalRequestId;
 
 	// ERC20 Contract Address => Balance
-	mapping (address => uint256) public tokenBalance;
+	mapping(address => uint256) public tokenBalance;
 
 	// WithdrawalRequest Id => WithdrawalRequest
-	mapping (uint256 => WithdrawalRequest) public withdrawalRequest;
+	mapping(uint256 => WithdrawalRequest) public withdrawalRequest;
 
 	// WithdrawalRequest Id => Voted Voter Addresses Array
-	mapping (uint256 => address[]) public withdrawalRequestVotedVoters;
+	mapping(uint256 => address[]) public withdrawalRequestVotedVoters;
 
 	// Creator => Array of WithdrawalRequest
-	mapping (address => uint256[]) public withdrawalRequestByCreator;
+	mapping(address => uint256[]) public withdrawalRequestByCreator;
 
 
 	/* [MODIFIER] */
