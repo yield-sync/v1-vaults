@@ -65,6 +65,7 @@ contract VaultDeployer is
 	}
 
 
+	/** [modifier] */
 	modifier authLevel_s() {
 		require(
 			ICardinalProtocolGovernance(cardinalProtocol).hasRole(
@@ -77,6 +78,13 @@ contract VaultDeployer is
 		_;
 	}
 
+
+	/**
+	* %%%%%%%%%%%%%
+	* %%% ADMIN %%%
+	* %%%%%%%%%%%%%
+	*/
+
 	/**
 	* @notice Set fee for deploying a vault
 	* @param _fee {uint256} Fee to be set
@@ -88,6 +96,11 @@ contract VaultDeployer is
 		fee = _fee;
 	}
 
+	/**
+	* %%%%%%%%%%%%%%%%%%%%%%
+	* %%% NO ROLE NEEDED %%%
+	* %%%%%%%%%%%%%%%%%%%%%%
+	*/
 
 	/**
 	* @notice Creates a Vault

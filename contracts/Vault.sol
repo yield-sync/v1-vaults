@@ -49,18 +49,6 @@ contract Vault is
 	mapping(uint256 => address[]) _withdrawalRequestVotedVoters;
 
 
-	/* [MODIFIER] */
-	modifier validWithdrawalRequest(uint256 withdrawalRequestId) {
-		// [require] withdrawalRequestId exists
-		require(
-			_withdrawalRequest[withdrawalRequestId].creator != address(0),
-			"No WithdrawalRequest found"
-		);
-		
-		_;
-	}
-
-
 	/* [constructor] */
 	constructor (
 		address admin,
@@ -108,6 +96,18 @@ contract Vault is
 		revert(
 			"Sending Ether directly to this contract is disabled, please use `depositTokens` function to send ERC20 tokens into vault"
 		);
+	}
+
+
+	/** [MODIFIER] */
+	modifier validWithdrawalRequest(uint256 withdrawalRequestId) {
+		// [require] withdrawalRequestId exists
+		require(
+			_withdrawalRequest[withdrawalRequestId].creator != address(0),
+			"No WithdrawalRequest found"
+		);
+		
+		_;
 	}
 
 
