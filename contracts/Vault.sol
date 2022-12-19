@@ -1,4 +1,3 @@
-// contracts/Vault.sol
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.1;
 
@@ -12,19 +11,24 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 // /utils
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
+/* [IMPORT] Internal */
+import "./interface/IVault.sol";
+
 
 /**
 * @title Vault
 * @notice This is a vault for storing ERC20 tokens.
 */
-contract Vault is AccessControl {
+contract Vault is
+	AccessControl,
+	IVault
+{
 	/* [EVENT] */
 	event TokensDeposited (
 		address indexed depositor,
 		address indexed token,
 		uint256 amount
 	);
-
 
 	event TokensWithdrawn (
 		address indexed withdrawer,
@@ -65,23 +69,23 @@ contract Vault is AccessControl {
 	uint256 _withdrawalRequestId;
 
 	// ERC20 Contract Address => Balance
-	mapping (address => uint256) _tokenBalance;
+	mapping (address => uint256) public tokenBalance;
 
 	// WithdrawalRequest Id => WithdrawalRequest
-	mapping (uint256 => WithdrawalRequest) _withdrawalRequest;
+	mapping (uint256 => WithdrawalRequest) public withdrawalRequest;
 
 	// WithdrawalRequest Id => Voted Voter Addresses Array
-	mapping (uint256 => address[]) public _withdrawalRequestVotedVoters;
+	mapping (uint256 => address[]) public withdrawalRequestVotedVoters;
 
 	// Creator => Array of WithdrawalRequest
-	mapping (address => uint256[]) _withdrawalRequestByCreator;
+	mapping (address => uint256[]) public withdrawalRequestByCreator;
 
 
 	/* [MODIFIER] */
 	modifier validWithdrawalRequest(uint256 withdrawalRequestId) {
 		// [REQUIRE] withdrawalRequestId exists
 		require(
-			_withdrawalRequest[withdrawalRequestId].creator != address(0),
+			withdrawalRequest[withdrawalRequestId].creator != address(0),
 			"No WithdrawalRequest found"
 		);
 		
@@ -154,18 +158,18 @@ contract Vault is AccessControl {
 		internal
 		returns (bool)
 	{
-		// [DELETE] _withdrawalRequest WithdrawalRequest
-		delete _withdrawalRequest[withdrawalRequestId];
+		// [DELETE] withdrawalRequest WithdrawalRequest
+		delete withdrawalRequest[withdrawalRequestId];
 
-		// [DELETE] _withdrawalRequestVotedVoters value
-		delete _withdrawalRequestVotedVoters[withdrawalRequestId];
+		// [DELETE] withdrawalRequestVotedVoters value
+		delete withdrawalRequestVotedVoters[withdrawalRequestId];
 
-		// [DELETE] _withdrawalRequestByCreator
-		for (uint256 i = 0; i < _withdrawalRequestByCreator[_withdrawalRequest[withdrawalRequestId].creator].length; i++)
+		// [DELETE] withdrawalRequestByCreator
+		for (uint256 i = 0; i < withdrawalRequestByCreator[withdrawalRequest[withdrawalRequestId].creator].length; i++)
 		{
-			if (_withdrawalRequestByCreator[_withdrawalRequest[withdrawalRequestId].creator][i] == withdrawalRequestId)
+			if (withdrawalRequestByCreator[withdrawalRequest[withdrawalRequestId].creator][i] == withdrawalRequestId)
 			{
-				delete _withdrawalRequestByCreator[_withdrawalRequest[withdrawalRequestId].creator][i];
+				delete withdrawalRequestByCreator[withdrawalRequest[withdrawalRequestId].creator][i];
 
 				break;
 			}
@@ -179,64 +183,6 @@ contract Vault is AccessControl {
 	* %%% NO ROLE NEEDED %%%
 	* %%%%%%%%%%%%%%%%%%%%%%
 	*/
-
-	/**
-	* @notice [GETTER] _tokenBalance
-	* @param tokenAddress {address} Token address
-	* @return {uint256} Token balance
-	*/
-	function tokenBalance(address tokenAddress)
-		public
-		view
-		returns (uint256)
-	{
-		// Return token balance
-		return _tokenBalance[tokenAddress];
-	}
-
-	/**
-	* @notice [GETTER] _withdrawalRequest
-	* @param withdrawalRequestId {uint256} Id of the WithdrawalRequest
-	* @return {WithdrawalRequest} WithdrawalRequest
-	*/
-	function withdrawalRequest(uint256 withdrawalRequestId)
-		public
-		view
-		validWithdrawalRequest(withdrawalRequestId)
-		returns (WithdrawalRequest memory)
-	{
-		// Create temporary variable
-		WithdrawalRequest memory wr = _withdrawalRequest[withdrawalRequestId];
-		
-		return wr;
-	}
-
-	/**
-	* @notice all WithdrawalRequests by a provided Creator
-	* @param creator {uint256} Address to query WithdrawalRequests for
-	* @return {WithdrawalRequest[]} Array of WithdrawalRequests
-	*/
-	function WithdrawalRequestsByCreator(address creator)
-		public
-		view
-		returns (bool, WithdrawalRequest[] memory)
-	{
-		// Get array of WithdrawalRequest Ids for the provided creator
-		uint256[] memory withdrawalRequestIds = _withdrawalRequestByCreator[creator];
-
-		// Create array of WithdrawalRequests
-		WithdrawalRequest[] memory wr = new WithdrawalRequest[](
-			withdrawalRequestIds.length
-		);
-
-		// For each withdrawalRequestId..
-		for (uint256 i = 0; i < withdrawalRequestIds.length; i++) {
-			// Store into array
-			wr[i] = _withdrawalRequest[withdrawalRequestIds[i]];
-		}
-
-		return (true, wr);
-	}
 	
 	/**
 	* @notice Deposit funds
@@ -269,12 +215,12 @@ contract Vault is AccessControl {
 		IERC20(tokenAddress).safeTransferFrom(msg.sender, address(this), amount);
 
 		// Update vault token balance
-		_tokenBalance[tokenAddress] += amount;
+		tokenBalance[tokenAddress] += amount;
 			
 		// [EMIT]
 		emit TokensDeposited(msg.sender, tokenAddress, amount);
 		
-		return (true, amount, _tokenBalance[tokenAddress]);
+		return (true, amount, tokenBalance[tokenAddress]);
 	}
 
 	/**
@@ -294,7 +240,7 @@ contract Vault is AccessControl {
 		returns (bool, WithdrawalRequest memory)
 	{
 		// [REQUIRE]  The specified amount is available
-		require(_tokenBalance[tokenAddress] >= amount, "Insufficient funds");
+		require(tokenBalance[tokenAddress] >= amount, "Insufficient funds");
 
 		// [REQUIRE] 'to' is a valid Ethereum address
 		require(to != address(0), "Invalid 'to' address");
@@ -302,7 +248,7 @@ contract Vault is AccessControl {
 		// Create a new WithdrawalRequest
 		_withdrawalRequestId++;
 
-		_withdrawalRequest[_withdrawalRequestId] = WithdrawalRequest({
+		withdrawalRequest[_withdrawalRequestId] = WithdrawalRequest({
 			creator: msg.sender,
 			to: to,
 			token: tokenAddress,
@@ -314,9 +260,9 @@ contract Vault is AccessControl {
 			lastImpactfulVote: block.timestamp
 		});
 
-		_withdrawalRequestByCreator[msg.sender].push(_withdrawalRequestId);
+		withdrawalRequestByCreator[msg.sender].push(_withdrawalRequestId);
 
-		return (true, _withdrawalRequest[_withdrawalRequestId]);
+		return (true, withdrawalRequest[_withdrawalRequestId]);
 	}
 
 	/**
@@ -334,7 +280,7 @@ contract Vault is AccessControl {
 		uint256 currentTime = block.timestamp;
 
 		// Create temporary variable
-		WithdrawalRequest memory wr = _withdrawalRequest[withdrawalRequestId];
+		WithdrawalRequest memory wr = withdrawalRequest[withdrawalRequestId];
 
 		// If the withdrawal request has reached the required number of signatures
 		if (
@@ -350,7 +296,7 @@ contract Vault is AccessControl {
 			IERC20(wr.token).safeTransfer(wr.to, wr.amount);
 
 			// [DECREMENT] The vault token balance
-			_tokenBalance[wr.token] -= wr.amount;
+			tokenBalance[wr.token] -= wr.amount;
 
 			// [EMIT]
 			emit TokensDeposited(msg.sender, wr.to, wr.amount);
@@ -394,9 +340,9 @@ contract Vault is AccessControl {
 		bool voted = false;
 
 		// For each voter within WithdrawalRequest
-		for (uint256 i = 0; i < _withdrawalRequestVotedVoters[withdrawalRequestId].length; i++)
+		for (uint256 i = 0; i < withdrawalRequestVotedVoters[withdrawalRequestId].length; i++)
 		{
-			if (_withdrawalRequestVotedVoters[withdrawalRequestId][i] == msg.sender)
+			if (withdrawalRequestVotedVoters[withdrawalRequestId][i] == msg.sender)
 			{
 				// Flag
 				voted = true;
@@ -409,30 +355,30 @@ contract Vault is AccessControl {
 		if (vote)
 		{
 			// [INCREMENT] For count
-			_withdrawalRequest[withdrawalRequestId].forVoteCount++;
+			withdrawalRequest[withdrawalRequestId].forVoteCount++;
 		}
 		else
 		{
 			// [INCREMENT] Against count
-			_withdrawalRequest[withdrawalRequestId].againstVoteCount++;
+			withdrawalRequest[withdrawalRequestId].againstVoteCount++;
 		}
 
 		// [ADD] Mark msg.sender (voter) has voted
-		_withdrawalRequestVotedVoters[withdrawalRequestId].push(msg.sender);
+		withdrawalRequestVotedVoters[withdrawalRequestId].push(msg.sender);
 
 		// If the required signatures has not yet been reached..
-		if (_withdrawalRequest[withdrawalRequestId].forVoteCount < requiredSignatures)
+		if (withdrawalRequest[withdrawalRequestId].forVoteCount < requiredSignatures)
 		{
 			// [UPDATE] lastImpactfulVote timestamp
-			_withdrawalRequest[withdrawalRequestId].lastImpactfulVote = block.timestamp;
+			withdrawalRequest[withdrawalRequestId].lastImpactfulVote = block.timestamp;
 		}
 
 		return (
 			true,
 			vote,
-			_withdrawalRequest[withdrawalRequestId].forVoteCount,
-			_withdrawalRequest[withdrawalRequestId].againstVoteCount,
-			_withdrawalRequest[withdrawalRequestId].lastImpactfulVote
+			withdrawalRequest[withdrawalRequestId].forVoteCount,
+			withdrawalRequest[withdrawalRequestId].againstVoteCount,
+			withdrawalRequest[withdrawalRequestId].lastImpactfulVote
 		);
 	}
 
@@ -525,11 +471,11 @@ contract Vault is AccessControl {
 		validWithdrawalRequest(withdrawalRequestId)
 		returns (bool, WithdrawalRequest memory)
 	{
-		_withdrawalRequest[withdrawalRequestId].paused = !_withdrawalRequest[
+		withdrawalRequest[withdrawalRequestId].paused = !withdrawalRequest[
 			withdrawalRequestId
 		].paused;
 
-		return (true, _withdrawalRequest[withdrawalRequestId]);
+		return (true, withdrawalRequest[withdrawalRequestId]);
 	}
 
 	/**

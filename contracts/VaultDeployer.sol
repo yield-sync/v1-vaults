@@ -1,4 +1,3 @@
-// contracts/Vault.sol
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.1;
 
@@ -15,7 +14,8 @@ import "./Vault.sol";
 * @author harpoonjs.eth
 * @notice This contract deploys the vaults on behalf of a user
 */
-contract VaultDeployer {
+contract VaultDeployer
+{
 	/* [EVENT] */
 	event VaultDeployed (
 		address indexed admin
