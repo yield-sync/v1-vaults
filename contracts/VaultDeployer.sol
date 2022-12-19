@@ -3,8 +3,10 @@
 pragma solidity ^0.8.1;
 
 
+/* [IMPORT] */
+import "@cardinal-protocol/v1-sdk/contracts/interface/ICardinalProtocolGovernance.sol";
+
 /* [IMPORT] Internal */
-import "./interface/ICardinalProtocolGovernance.sol";
 import "./Vault.sol";
 
 
