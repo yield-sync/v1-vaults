@@ -95,7 +95,7 @@ interface IVault
 	;
 
 	/**
-	* @dev [IERC20][EMIT]
+	* @dev [IERC20][emit]
 	* @notice Deposit funds
 	* @param tokenAddress {address} Address of token contract
 	* @param amount {uint256} Amount to be moved
@@ -110,7 +110,8 @@ interface IVault
 	;
 
 	/**
-	* @notice [CREATE] WithdrawalRequest
+	* @dev [create]
+	* @notice Create a WithdrawalRequest
 	* @param to {address} Address the withdrawal it to be sent
 	* @param tokenAddress {address} Address of token contract
 	* @param amount {uint256} Amount to be moved
@@ -127,6 +128,7 @@ interface IVault
 	;
 
 	/**
+	* @dev 
 	* @notice Proccess the WithdrawalRequest
 	* @param withdrawalRequestId {uint256} Id of the WithdrawalRequest
 	* @return {bool} Status
@@ -138,6 +140,7 @@ interface IVault
 	;
 
 	/**
+	* @dev [update]
 	* @notice Vote to approve or disapprove withdrawal request
 	* @param withdrawalRequestId {uint256} Id of the WithdrawalRequest
 	* @param vote {bool} For or against vote
@@ -152,14 +155,92 @@ interface IVault
 		returns (bool, bool, uint256, uint256, uint256)
 	;
 
+	/**
+	* @dev [update]
+	* @notice Update `requiredSignatures`
+	* @param newRequiredSignatures {uint256} New requiredSignatures
+	* @return {bool} Status
+	* @return {uint256} New requiredSignatures
+	*/
+	function updateRequiredSignatures(uint256 newRequiredSignatures)
+		external
+		returns (bool, uint256)
+	;
 
-	/* [EVENT] */
+	/**
+	* @dev [create]
+	* @notice Add a voter
+	* @param voter {address} Address of the voter to add
+	* @return {bool} Status
+	* @return {address} Voter added
+	*/
+	function addVoter(address voter)
+		external
+		returns (bool, address)
+	;
+
+	/**
+	* @dev [delete]
+	* @notice Remove a voter
+	* @param voter {address} Address of the voter to remove
+	* @return {bool} Status
+	* @return {address} Voter removed
+	*/	
+	function removeVoter(address voter)
+		external
+		returns (bool, address)
+	;
+
+	/**
+	* @dev [update]
+	* @notice Update `withdrawalDelayMinutes`
+	* @param newWithdrawalDelayMinutes {uint256} New withdrawalDelayMinutes
+	* @return {bool} Status
+	* @return {uint256} New withdrawalDelayMinutes
+	*/
+	function updateWithdrawalDelayMinutes(uint256 newWithdrawalDelayMinutes)
+		external
+		returns (bool, uint256)
+	;
+
+	/**
+	* @dev [update]
+	* @notice Toggle `pause` on a WithdrawalRequest
+	* @param withdrawalRequestId {uint256} Id of the WithdrawalRequest
+	* @return {bool} Status
+	* @return {WithdrawalRequest} Updated WithdrawalRequest
+	*/
+	function toggleWithdrawalRequestPause(uint256 withdrawalRequestId)
+		external
+		returns (bool, WithdrawalRequest memory)
+	;
+
+	/**
+	* @dev [delete]
+	* @notice Toggle `pause` on a WithdrawalRequest
+	* @param withdrawalRequestId {uint256} Id of the WithdrawalRequest
+	* @return {bool} Status
+	*/
+	function deleteWithdrawalRequest(uint256 withdrawalRequestId)
+		external
+		returns (bool)
+	;
+
+
+	/**
+	* @dev [event]
+	* @notice Emits when tokens are deposited
+	*/
 	event TokensDeposited (
 		address indexed depositor,
 		address indexed token,
 		uint256 amount
 	);
 
+	/**
+	* @dev [event]
+	* @notice Emits when tokens are withdrawn
+	*/
 	event TokensWithdrawn (
 		address indexed withdrawer,
 		address indexed token,

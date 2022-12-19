@@ -52,7 +52,7 @@ contract Vault is
 
 	/* [MODIFIER] */
 	modifier validWithdrawalRequest(uint256 withdrawalRequestId) {
-		// [REQUIRE] withdrawalRequestId exists
+		// [require] withdrawalRequestId exists
 		require(
 			_withdrawalRequest[withdrawalRequestId].creator != address(0),
 			"No WithdrawalRequest found"
@@ -81,7 +81,7 @@ contract Vault is
 		// Set up the default admin role
 		_setupRole(DEFAULT_ADMIN_ROLE, admin);
 
-		// For each voter address..
+		// [for] each voter address..
 		for (uint256 i = 0; i < voters.length; i++)
 		{
 			// Set up the role VOTER_ROLE for the voter address
@@ -228,10 +228,10 @@ contract Vault is
 		public
 		returns (bool, WithdrawalRequest memory)
 	{
-		// [REQUIRE]  The specified amount is available
+		// [require]  The specified amount is available
 		require(_tokenBalance[tokenAddress] >= amount, "Insufficient funds");
 
-		// [REQUIRE] 'to' is a valid Ethereum address
+		// [require] 'to' is a valid Ethereum address
 		require(to != address(0), "Invalid 'to' address");
 
 		// Create a new WithdrawalRequest
@@ -308,10 +308,10 @@ contract Vault is
 		validWithdrawalRequest(withdrawalRequestId)
 		returns (bool, bool, uint256, uint256, uint256)
 	{
-		// [INIT]
+		// [init]
 		bool voted = false;
 
-		// For each voter within WithdrawalRequest
+		// [for] each voter within WithdrawalRequest
 		for (uint256 i = 0; i < _withdrawalRequestVotedVoters[withdrawalRequestId].length; i++)
 		{
 			if (_withdrawalRequestVotedVoters[withdrawalRequestId][i] == msg.sender)
@@ -321,27 +321,27 @@ contract Vault is
 			}
 		}
 
-		// [REQUIRE] It is msg.sender's (voter's) first vote
+		// [require] It is msg.sender's (voter's) first vote
 		require(!voted, "You have already casted a vote for this WithdrawalRequest");
 
 		if (vote)
 		{
-			// [INCREMENT] For count
+			// [increment] For count
 			_withdrawalRequest[withdrawalRequestId].forVoteCount++;
 		}
 		else
 		{
-			// [INCREMENT] Against count
+			// [increment] Against count
 			_withdrawalRequest[withdrawalRequestId].againstVoteCount++;
 		}
 
-		// [ADD] Mark msg.sender (voter) has voted
+		// [update] Mark msg.sender (voter) has voted
 		_withdrawalRequestVotedVoters[withdrawalRequestId].push(msg.sender);
 
 		// If the required signatures has not yet been reached..
 		if (_withdrawalRequest[withdrawalRequestId].forVoteCount < requiredSignatures)
 		{
-			// [UPDATE] lastImpactfulVote timestamp
+			// [update] lastImpactfulVote timestamp
 			_withdrawalRequest[withdrawalRequestId].lastImpactfulVote = block.timestamp;
 		}
 
@@ -361,29 +361,19 @@ contract Vault is
 	* %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	*/
 
-	/**
-	* @notice Update `requiredSignatures`
-	* @param newRequiredSignatures {uint256} New requiredSignatures
-	* @return {bool} Status
-	* @return {uint256} New requiredSignatures
-	*/
+	/// @inheritdoc IVault
 	function updateRequiredSignatures(uint256 newRequiredSignatures)
 		public
 		onlyRole(DEFAULT_ADMIN_ROLE)
 		returns (bool, uint256)
 	{
-		// [UPDATE]
+		// [update]
 		requiredSignatures = newRequiredSignatures;
 
 		return (true, requiredSignatures);
 	}
 
-	/**
-	* @notice Add a voter
-	* @param voter {address} Address of the voter to add
-	* @return {bool} Status
-	* @return {address} Voter added
-	*/
+	/// @inheritdoc IVault
 	function addVoter(address voter)
 		public
 		onlyRole(DEFAULT_ADMIN_ROLE)
@@ -395,12 +385,7 @@ contract Vault is
 		return (true, voter);
 	}
 
-	/**
-	* @notice Remove a voter
-	* @param voter {address} Address of the voter to remove
-	* @return {bool} Status
-	* @return {address} Voter removed
-	*/
+	/// @inheritdoc IVault
 	function removeVoter(address voter)
 		public
 		onlyRole(DEFAULT_ADMIN_ROLE)
@@ -411,18 +396,13 @@ contract Vault is
 		return (true, voter);
 	}
 
-	/**
-	* @notice Update `withdrawalDelayMinutes`
-	* @param newWithdrawalDelayMinutes {uint256} New withdrawalDelayMinutes
-	* @return {bool} Status
-	* @return {uint256} New withdrawalDelayMinutes
-	*/
+	/// @inheritdoc IVault
 	function updateWithdrawalDelayMinutes(uint256 newWithdrawalDelayMinutes)
 		public
 		onlyRole(DEFAULT_ADMIN_ROLE)
 		returns (bool, uint256)
 	{
-		// [REQUIRE] newWithdrawalDelayMinutes is greater than 0
+		// [require] newWithdrawalDelayMinutes is greater than 0
 		require(newWithdrawalDelayMinutes >= 0, "Invalid newWithdrawalDelayMinutes");
 
 		// Set delay (in minutes)
@@ -431,12 +411,7 @@ contract Vault is
 		return (true, withdrawalDelayMinutes);
 	}
 
-	/**
-	* @notice Toggle `pause` on a WithdrawalRequest
-	* @param withdrawalRequestId {uint256} Id of the WithdrawalRequest
-	* @return {bool} Status
-	* @return {WithdrawalRequest} Updated WithdrawalRequest
-	*/
+	/// @inheritdoc IVault
 	function toggleWithdrawalRequestPause(uint256 withdrawalRequestId)
 		public
 		onlyRole(DEFAULT_ADMIN_ROLE)
@@ -450,11 +425,7 @@ contract Vault is
 		return (true, _withdrawalRequest[withdrawalRequestId]);
 	}
 
-	/**
-	* @notice Toggle `pause` on a WithdrawalRequest
-	* @param withdrawalRequestId {uint256} Id of the WithdrawalRequest
-	* @return {bool} Status
-	*/
+	/// @inheritdoc IVault
 	function deleteWithdrawalRequest(uint256 withdrawalRequestId)
 		public
 		onlyRole(DEFAULT_ADMIN_ROLE)
