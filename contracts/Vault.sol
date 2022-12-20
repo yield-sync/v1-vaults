@@ -148,7 +148,7 @@ contract Vault is
 
 	/**
 	* %%%%%%%%%%%%%%%%%%%%%%
-	* %%% NO ROLE NEEDED %%%
+	* %%% no role needed %%%
 	* %%%%%%%%%%%%%%%%%%%%%%
 	*/
 

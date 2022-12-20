@@ -20,9 +20,10 @@ contract VaultDeployer is
 	Pausable,
 	IVaultDeployer
 {
-	/* [state-variable] */
-	address public cardinalProtocol;
+	/* [state-variable][constant] */
+	address public CARDINAL_PROTOCOL;
 
+	/* [state-variable] */
 	uint256 public vaultId;
 	uint256 public fee;
 
@@ -33,7 +34,7 @@ contract VaultDeployer is
 	/* [constructor] */
 	constructor (address _cardinalProtocol)
 	{
-		cardinalProtocol = _cardinalProtocol;
+		CARDINAL_PROTOCOL = _cardinalProtocol;
 
 		vaultId = 0;
 		fee = 0;
@@ -65,8 +66,8 @@ contract VaultDeployer is
 	/** [modifier] */
 	modifier authLevel_s() {
 		require(
-			ICardinalProtocolGovernance(cardinalProtocol).hasRole(
-				ICardinalProtocolGovernance(cardinalProtocol).S(),
+			ICardinalProtocolGovernance(CARDINAL_PROTOCOL).hasRole(
+				ICardinalProtocolGovernance(CARDINAL_PROTOCOL).S(),
 				msg.sender
 			),
 			"!auth"
