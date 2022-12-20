@@ -7,6 +7,7 @@ import "@cardinal-protocol/v1-sdk/contracts/interface/ICardinalProtocolGovernanc
 import "@openzeppelin/contracts/security/Pausable.sol";
 
 /* [import] Internal */
+import "./interface/IVaultDeployer.sol";
 import "./Vault.sol";
 
 
@@ -16,14 +17,9 @@ import "./Vault.sol";
 * @notice This contract deploys the vaults on behalf of a user
 */
 contract VaultDeployer is
-	Pausable
+	Pausable,
+	IVaultDeployer
 {
-	/* [EVENT] */
-	event VaultDeployed (
-		address indexed admin
-	);
-
-
 	/* [state-variable] */
 	address public cardinalProtocol;
 
@@ -40,6 +36,7 @@ contract VaultDeployer is
 		cardinalProtocol = _cardinalProtocol;
 
 		vaultId = 0;
+		fee = 0;
 	}
 
 
@@ -80,10 +77,28 @@ contract VaultDeployer is
 
 
 	/**
-	* %%%%%%%%%%%%%
-	* %%% ADMIN %%%
-	* %%%%%%%%%%%%%
+	* %%%%%%%%%%%%%%%%%%%%%
+	* %%% Auth Level: S %%%
+	* %%%%%%%%%%%%%%%%%%%%%
 	*/
+
+	/**
+	* @dev [update]
+	* @notice Toggle pause
+	*/
+	function togglePause()
+		public
+		authLevel_s()
+	{
+		if (!paused())
+		{
+			_pause();
+		}
+		else
+		{
+			_unpause();
+		}
+	}
 
 	/**
 	* @notice Set fee for deploying a vault
@@ -92,9 +107,11 @@ contract VaultDeployer is
 	function setFee(uint256 _fee)
 		public
 		authLevel_s()
+		whenPaused()
 	{
 		fee = _fee;
 	}
+
 
 	/**
 	* %%%%%%%%%%%%%%%%%%%%%%
@@ -116,9 +133,12 @@ contract VaultDeployer is
 		address[] memory voters
 	)
 		public
+		payable
 		whenNotPaused()
 		returns (address)
 	{
+		require(msg.value <= fee, "!msg.value");
+
 		Vault deployedContract;
 
 		// [deploy] A vault contract
@@ -136,7 +156,7 @@ contract VaultDeployer is
 		vaultId++;
 
 		// [emit]
-		emit VaultDeployed(admin);
+		emit VaultDeployed(address(deployedContract), admin);
 
 		return address(deployedContract);
 	}
