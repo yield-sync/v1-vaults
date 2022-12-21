@@ -150,6 +150,7 @@ contract VaultDeployer is
 		// [emit]
 		emit VaultDeployed(address(deployedContract), admin);
 
+		// [return]
 		return address(deployedContract);
 	}
 }
