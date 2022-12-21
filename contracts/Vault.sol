@@ -99,7 +99,7 @@ contract Vault is
 	}
 
 
-	/** [MODIFIER] */
+	/* [modifier] */
 	modifier validWithdrawalRequest(uint256 withdrawalRequestId) {
 		// [require] withdrawalRequestId exists
 		require(
@@ -111,12 +111,7 @@ contract Vault is
 	}
 
 
-	/**
-	* %%%%%%%%%%%%%%%%
-	* %%% internal %%%
-	* %%%%%%%%%%%%%%%%
-	*/
-
+	/* [internal] */
 	/**
 	* @notice [delete] WithdrawalRequest
 	* @param withdrawalRequestId {uint256}
@@ -146,12 +141,142 @@ contract Vault is
 		return true;
 	}
 
-	/**
-	* %%%%%%%%%%%%%%%%%%%%%%
-	* %%% no role needed %%%
-	* %%%%%%%%%%%%%%%%%%%%%%
-	*/
 
+	/* [access-control] DEFAULT_ADMIN_ROLE */
+	/// @inheritdoc IVault
+	function updateRequiredSignatures(uint256 newRequiredSignatures)
+		public
+		onlyRole(DEFAULT_ADMIN_ROLE)
+		returns (bool, uint256)
+	{
+		// [update]
+		requiredSignatures = newRequiredSignatures;
+
+		return (true, requiredSignatures);
+	}
+
+	/// @inheritdoc IVault
+	function addVoter(address voter)
+		public
+		onlyRole(DEFAULT_ADMIN_ROLE)
+		returns (bool, address)
+	{
+		// Add the voter to the VOTER_ROLE
+		_setupRole(VOTER_ROLE, voter);
+
+		return (true, voter);
+	}
+
+	/// @inheritdoc IVault
+	function removeVoter(address voter)
+		public
+		onlyRole(DEFAULT_ADMIN_ROLE)
+		returns (bool, address)
+	{
+		_revokeRole(VOTER_ROLE, voter);
+
+		return (true, voter);
+	}
+
+	/// @inheritdoc IVault
+	function updateWithdrawalDelayMinutes(uint256 newWithdrawalDelayMinutes)
+		public
+		onlyRole(DEFAULT_ADMIN_ROLE)
+		returns (bool, uint256)
+	{
+		// [require] newWithdrawalDelayMinutes is greater than 0
+		require(newWithdrawalDelayMinutes >= 0, "Invalid newWithdrawalDelayMinutes");
+
+		// Set delay (in minutes)
+		withdrawalDelayMinutes = newWithdrawalDelayMinutes;
+
+		return (true, withdrawalDelayMinutes);
+	}
+
+	/// @inheritdoc IVault
+	function toggleWithdrawalRequestPause(uint256 withdrawalRequestId)
+		public
+		onlyRole(DEFAULT_ADMIN_ROLE)
+		validWithdrawalRequest(withdrawalRequestId)
+		returns (bool, WithdrawalRequest memory)
+	{
+		_withdrawalRequest[withdrawalRequestId].paused = !_withdrawalRequest[
+			withdrawalRequestId
+		].paused;
+
+		return (true, _withdrawalRequest[withdrawalRequestId]);
+	}
+
+	/// @inheritdoc IVault
+	function deleteWithdrawalRequest(uint256 withdrawalRequestId)
+		public
+		onlyRole(DEFAULT_ADMIN_ROLE)
+		validWithdrawalRequest(withdrawalRequestId)
+		returns (bool)
+	{
+		// [call]
+		_deleteWithdrawalRequest(withdrawalRequestId);
+
+		return true;
+	}
+
+
+	/* [access-control] VOTER_ROLE */
+	/// @inheritdoc IVault
+	function voteOnWithdrawalRequest(uint256 withdrawalRequestId, bool vote)
+		public
+		onlyRole(VOTER_ROLE)
+		validWithdrawalRequest(withdrawalRequestId)
+		returns (bool, bool, uint256, uint256, uint256)
+	{
+		// [init]
+		bool voted = false;
+
+		// [for] each voter within WithdrawalRequest
+		for (uint256 i = 0; i < _withdrawalRequestVotedVoters[withdrawalRequestId].length; i++)
+		{
+			if (_withdrawalRequestVotedVoters[withdrawalRequestId][i] == msg.sender)
+			{
+				// Flag
+				voted = true;
+			}
+		}
+
+		// [require] It is msg.sender's (voter's) first vote
+		require(!voted, "You have already casted a vote for this WithdrawalRequest");
+
+		if (vote)
+		{
+			// [increment] For count
+			_withdrawalRequest[withdrawalRequestId].forVoteCount++;
+		}
+		else
+		{
+			// [increment] Against count
+			_withdrawalRequest[withdrawalRequestId].againstVoteCount++;
+		}
+
+		// [update] Mark msg.sender (voter) has voted
+		_withdrawalRequestVotedVoters[withdrawalRequestId].push(msg.sender);
+
+		// If the required signatures has not yet been reached..
+		if (_withdrawalRequest[withdrawalRequestId].forVoteCount < requiredSignatures)
+		{
+			// [update] lastImpactfulVote timestamp
+			_withdrawalRequest[withdrawalRequestId].lastImpactfulVote = block.timestamp;
+		}
+
+		return (
+			true,
+			vote,
+			_withdrawalRequest[withdrawalRequestId].forVoteCount,
+			_withdrawalRequest[withdrawalRequestId].againstVoteCount,
+			_withdrawalRequest[withdrawalRequestId].lastImpactfulVote
+		);
+	}
+
+
+	/* [!access-control] */
 	/// @inheritdoc IVault
 	function tokenBalance(address tokenAddress)
 		view
@@ -291,149 +416,5 @@ contract Vault is
 		}
 		
 		return (false, "Unable to process WithdrawalRequest");
-	}
-
-
-	/** 
-	* %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-	* %%% Auth Level: VOTER_ROLE %%%
-	* %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-	*/
-
-	/// @inheritdoc IVault
-	function voteOnWithdrawalRequest(uint256 withdrawalRequestId, bool vote)
-		public
-		onlyRole(VOTER_ROLE)
-		validWithdrawalRequest(withdrawalRequestId)
-		returns (bool, bool, uint256, uint256, uint256)
-	{
-		// [init]
-		bool voted = false;
-
-		// [for] each voter within WithdrawalRequest
-		for (uint256 i = 0; i < _withdrawalRequestVotedVoters[withdrawalRequestId].length; i++)
-		{
-			if (_withdrawalRequestVotedVoters[withdrawalRequestId][i] == msg.sender)
-			{
-				// Flag
-				voted = true;
-			}
-		}
-
-		// [require] It is msg.sender's (voter's) first vote
-		require(!voted, "You have already casted a vote for this WithdrawalRequest");
-
-		if (vote)
-		{
-			// [increment] For count
-			_withdrawalRequest[withdrawalRequestId].forVoteCount++;
-		}
-		else
-		{
-			// [increment] Against count
-			_withdrawalRequest[withdrawalRequestId].againstVoteCount++;
-		}
-
-		// [update] Mark msg.sender (voter) has voted
-		_withdrawalRequestVotedVoters[withdrawalRequestId].push(msg.sender);
-
-		// If the required signatures has not yet been reached..
-		if (_withdrawalRequest[withdrawalRequestId].forVoteCount < requiredSignatures)
-		{
-			// [update] lastImpactfulVote timestamp
-			_withdrawalRequest[withdrawalRequestId].lastImpactfulVote = block.timestamp;
-		}
-
-		return (
-			true,
-			vote,
-			_withdrawalRequest[withdrawalRequestId].forVoteCount,
-			_withdrawalRequest[withdrawalRequestId].againstVoteCount,
-			_withdrawalRequest[withdrawalRequestId].lastImpactfulVote
-		);
-	}
-
-
-	/**
-	* %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-	* %%% Auth Level: DEFAULT_ADMIN_ROLE %%%
-	* %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-	*/
-
-	/// @inheritdoc IVault
-	function updateRequiredSignatures(uint256 newRequiredSignatures)
-		public
-		onlyRole(DEFAULT_ADMIN_ROLE)
-		returns (bool, uint256)
-	{
-		// [update]
-		requiredSignatures = newRequiredSignatures;
-
-		return (true, requiredSignatures);
-	}
-
-	/// @inheritdoc IVault
-	function addVoter(address voter)
-		public
-		onlyRole(DEFAULT_ADMIN_ROLE)
-		returns (bool, address)
-	{
-		// Add the voter to the VOTER_ROLE
-		_setupRole(VOTER_ROLE, voter);
-
-		return (true, voter);
-	}
-
-	/// @inheritdoc IVault
-	function removeVoter(address voter)
-		public
-		onlyRole(DEFAULT_ADMIN_ROLE)
-		returns (bool, address)
-	{
-		_revokeRole(VOTER_ROLE, voter);
-
-		return (true, voter);
-	}
-
-	/// @inheritdoc IVault
-	function updateWithdrawalDelayMinutes(uint256 newWithdrawalDelayMinutes)
-		public
-		onlyRole(DEFAULT_ADMIN_ROLE)
-		returns (bool, uint256)
-	{
-		// [require] newWithdrawalDelayMinutes is greater than 0
-		require(newWithdrawalDelayMinutes >= 0, "Invalid newWithdrawalDelayMinutes");
-
-		// Set delay (in minutes)
-		withdrawalDelayMinutes = newWithdrawalDelayMinutes;
-
-		return (true, withdrawalDelayMinutes);
-	}
-
-	/// @inheritdoc IVault
-	function toggleWithdrawalRequestPause(uint256 withdrawalRequestId)
-		public
-		onlyRole(DEFAULT_ADMIN_ROLE)
-		validWithdrawalRequest(withdrawalRequestId)
-		returns (bool, WithdrawalRequest memory)
-	{
-		_withdrawalRequest[withdrawalRequestId].paused = !_withdrawalRequest[
-			withdrawalRequestId
-		].paused;
-
-		return (true, _withdrawalRequest[withdrawalRequestId]);
-	}
-
-	/// @inheritdoc IVault
-	function deleteWithdrawalRequest(uint256 withdrawalRequestId)
-		public
-		onlyRole(DEFAULT_ADMIN_ROLE)
-		validWithdrawalRequest(withdrawalRequestId)
-		returns (bool)
-	{
-		// [call]
-		_deleteWithdrawalRequest(withdrawalRequestId);
-
-		return true;
 	}
 }

@@ -41,7 +41,7 @@ contract VaultDeployer is
 	}
 
 
-	/** [recieve] */
+	/* [recieve] */
 	receive ()
 		external
 		payable
@@ -52,7 +52,7 @@ contract VaultDeployer is
 	}
 
 
-	/** [fallback] */
+	/* [fallback] */
 	fallback ()
 		external
 		payable
@@ -63,7 +63,7 @@ contract VaultDeployer is
 	}
 
 
-	/** [modifier] */
+	/* [modifier] */
 	modifier authLevel_s() {
 		require(
 			ICardinalProtocolGovernance(CARDINAL_PROTOCOL).hasRole(
@@ -76,13 +76,7 @@ contract VaultDeployer is
 		_;
 	}
 
-
-	/**
-	* %%%%%%%%%%%%%%%%%%%%%
-	* %%% Auth Level: S %%%
-	* %%%%%%%%%%%%%%%%%%%%%
-	*/
-
+	/* [access-control] S */
 	/**
 	* @dev [update]
 	* @notice Toggle pause
@@ -113,13 +107,7 @@ contract VaultDeployer is
 		fee = _fee;
 	}
 
-
-	/**
-	* %%%%%%%%%%%%%%%%%%%%%%
-	* %%% NO ROLE NEEDED %%%
-	* %%%%%%%%%%%%%%%%%%%%%%
-	*/
-
+	/* [!access-control] */
 	/**
 	* @notice Creates a Vault
 	* @param admin {address} Admin of the deployed contract
