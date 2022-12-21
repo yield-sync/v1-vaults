@@ -53,7 +53,7 @@ interface IVault is
 
 	/**
 	* @notice Update amount of required signatures
-	* @dev [restriction] AccessControl: DEFAULT_ADMIN_ROLE
+	* @dev [restriction] AccessControl._role = DEFAULT_ADMIN_ROLE
 	* @dev [update] `requiredSignatures`
 	* @param newRequiredSignatures {uint256}
 	* @return {bool} Status
@@ -66,7 +66,7 @@ interface IVault is
 
 	/**
 	* @notice Add a voter
-	* @dev [restriction] AccessControl: DEFAULT_ADMIN_ROLE
+	* @dev [restriction] AccessControl._role = DEFAULT_ADMIN_ROLE
 	* @dev [add] `AccessControl._roles`
 	* @param voter {address} Address of the voter to add
 	* @return {bool} Status
@@ -79,7 +79,7 @@ interface IVault is
 
 	/**
 	* @notice Remove a voter
-	* @dev [restriction] AccessControl: DEFAULT_ADMIN_ROLE
+	* @dev [restriction] AccessControl._role = DEFAULT_ADMIN_ROLE
 	* @dev [remove] `AccessControl._roles`
 	* @param voter {address} Address of the voter to remove
 	* @return {bool} Status
@@ -92,7 +92,7 @@ interface IVault is
 
 	/**
 	* @notice Update withdrawalDelayMinutes
-	* @dev [restriction] AccessControl: DEFAULT_ADMIN_ROLE
+	* @dev [restriction] AccessControl._role = DEFAULT_ADMIN_ROLE
 	* @dev [update] `withdrawalDelayMinutes`
 	* @param newWithdrawalDelayMinutes {uint256}
 	* @return {bool} Status
@@ -105,7 +105,7 @@ interface IVault is
 
 	/**
 	* @notice Toggle pause on a WithdrawalRequest
-	* @dev [restriction] AccessControl: DEFAULT_ADMIN_ROLE
+	* @dev [restriction] AccessControl._role = DEFAULT_ADMIN_ROLE
 	* @dev [update] `_withdrawalRequest`
 	* @param withdrawalRequestId {uint256}
 	* @return {bool} Status
@@ -118,7 +118,7 @@ interface IVault is
 
 	/**
 	* @notice Toggle pause on a WithdrawalRequest
-	* @dev [restriction] AccessControl: DEFAULT_ADMIN_ROLE
+	* @dev [restriction] AccessControl._role = DEFAULT_ADMIN_ROLE
 	* @dev [call][internal] {_deleteWithdrawalRequest}
 	* @param withdrawalRequestId {uint256}
 	* @return {bool} Status
@@ -131,13 +131,13 @@ interface IVault is
 
 	/**
 	* @notice Create a WithdrawalRequest
-	* @dev [restriction] AccessControl: VOTER_ROLE
-	* @dev [create] _withdrawalRequest
+	* @dev [restriction] AccessControl._role = VOTER_ROLE
+	* @dev [add] `_withdrawalRequest`
 	* @param to {address} Address the withdrawn tokens will be sent
-	* @param tokenAddress {address} Address of token contract
+	* @param tokenAddress {address}
 	* @param amount {uint256} Amount to be withdrawn
 	* @return {bool} Status
-	* @return {WithdrawalRequest} The created WithdrawalRequest
+	* @return {WithdrawalRequest} The added `WithdrawalRequest`
 	*/
 	function createWithdrawalRequest(
 		address to,
@@ -150,12 +150,12 @@ interface IVault is
 
 	/**
 	* @notice Vote on withdrawal request
-	* @dev [restriction] AccessControl: VOTER_ROLE
-	* @dev [update] _withdrawalRequest
-	* @param withdrawalRequestId {uint256} Id of the WithdrawalRequest
+	* @dev [restriction] AccessControl._role = VOTER_ROLE
+	* @dev [update] `_withdrawalRequest`
+	* @param withdrawalRequestId {uint256}
 	* @param vote {bool} Approve (true) or deny (false)
 	* @return {bool} Status
-	* @return {bool} Vote received
+	* @return {bool} Vote
 	* @return {bool} forVoteCount
 	* @return {bool} againstVoteCount
 	* @return {bool} lastImpactfulVote
@@ -167,7 +167,8 @@ interface IVault is
 
 	/**
 	* @notice Process the WithdrawalRequest
-	* @dev [restriction] AccessControl: VOTER_ROLE
+	* @dev [restriction] AccessControl._role = VOTER_ROLE
+	* @dev [ERC20-transfer] → [decrement] `_tokenBalance` → [call][internal] `_deleteWithdrawalRequest`
 	* @param withdrawalRequestId {uint256} Id of the WithdrawalRequest
 	* @return {bool} Status
 	* @return {string} Message

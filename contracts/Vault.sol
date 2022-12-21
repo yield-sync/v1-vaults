@@ -114,8 +114,9 @@ contract Vault is
 
 	/* [internal] */
 	/**
-	* @dev [delete] _withdrawalRequest
 	* @notice Delete Withdrawal Request
+	* @dev [delete] `_withdrawalRequest`
+	* @dev [restriction][internal]
 	* @param withdrawalRequestId {uint256}
 	* @return {bool} Status
 	*/
@@ -144,7 +145,7 @@ contract Vault is
 	}
 
 
-	/* [restriction] AccessControl: DEFAULT_ADMIN_ROLE */
+	/* [restriction] AccessControl._role = DEFAULT_ADMIN_ROLE */
 	/// @inheritdoc IVault
 	function updateRequiredSignatures(uint256 newRequiredSignatures)
 		public
@@ -216,7 +217,7 @@ contract Vault is
 		validWithdrawalRequest(withdrawalRequestId)
 		returns (bool)
 	{
-		// [call]
+		// [call][internal]
 		_deleteWithdrawalRequest(withdrawalRequestId);
 
 		return true;
@@ -259,7 +260,7 @@ contract Vault is
 		return (true, _withdrawalRequest[_withdrawalRequestId]);
 	}
 
-	/* [restriction] AccessControl: VOTER_ROLE */
+	/* [restriction] AccessControl._role = VOTER_ROLE */
 	/// @inheritdoc IVault
 	function voteOnWithdrawalRequest(uint256 withdrawalRequestId, bool vote)
 		public
@@ -336,7 +337,7 @@ contract Vault is
 			!wr.paused
 		)
 		{
-			// Transfer the specified amount of tokens to the recipient
+			// [ERC20-transfer] the specified amount of tokens to the recipient
 			IERC20(wr.token).safeTransfer(wr.to, wr.amount);
 
 			// [decrement] The vault token balance
