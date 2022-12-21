@@ -83,7 +83,7 @@ contract Vault is
 		payable
 	{
 		revert(
-			"Sending Ether directly to this contract is disabled, please use `depositTokens` function to send ERC20 tokens into vault"
+			"Sending Ether directly to this contract is disabled, please use `depositTokens()` to send tokens into vault"
 		);
 	}
 
@@ -94,7 +94,7 @@ contract Vault is
 		payable
 	{
 		revert(
-			"Sending Ether directly to this contract is disabled, please use `depositTokens` function to send ERC20 tokens into vault"
+			"Sending Ether directly to this contract is disabled, please use `depositTokens()` to send tokens into vault"
 		);
 	}
 
@@ -113,7 +113,6 @@ contract Vault is
 
 	/* [internal] */
 	/**
-	* @dev [internal]
 	* @dev [delete] _withdrawalRequest
 	* @notice Delete Withdrawal Request
 	* @param withdrawalRequestId {uint256}
