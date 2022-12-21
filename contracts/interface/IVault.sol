@@ -30,7 +30,7 @@ interface IVault is
 
 	/**
 	* @notice Required signatures for an approval
-	* @dev [state-variable][uint256]
+	* @dev [uint256-getter]
 	* @return {uint256}
 	*/
 	function requiredSignatures()
@@ -41,7 +41,7 @@ interface IVault is
 
 	/**
 	* @notice Get Withdrawal delay (denominated in minutes)
-	* @dev [state-variable][uint256]
+	* @dev [uint256-getter]
 	* @return {uint256}
 	*/
 	function withdrawalDelayMinutes()
@@ -52,12 +52,12 @@ interface IVault is
 	
 
 	/**
-	* @notice Update requiredSignatures
+	* @notice Update amount of required signatures
 	* @dev [restriction] AccessControl: DEFAULT_ADMIN_ROLE
-	* @dev [update] requiredSignatures
-	* @param newRequiredSignatures {uint256} New requiredSignatures
+	* @dev [update] `requiredSignatures`
+	* @param newRequiredSignatures {uint256}
 	* @return {bool} Status
-	* @return {uint256} New requiredSignatures
+	* @return {uint256} New `requiredSignatures`
 	*/
 	function updateRequiredSignatures(uint256 newRequiredSignatures)
 		external
@@ -67,7 +67,7 @@ interface IVault is
 	/**
 	* @notice Add a voter
 	* @dev [restriction] AccessControl: DEFAULT_ADMIN_ROLE
-	* @dev [create]
+	* @dev [add] `AccessControl._roles`
 	* @param voter {address} Address of the voter to add
 	* @return {bool} Status
 	* @return {address} Voter added
@@ -80,7 +80,7 @@ interface IVault is
 	/**
 	* @notice Remove a voter
 	* @dev [restriction] AccessControl: DEFAULT_ADMIN_ROLE
-	* @dev [delete]
+	* @dev [remove] `AccessControl._roles`
 	* @param voter {address} Address of the voter to remove
 	* @return {bool} Status
 	* @return {address} Removed voter
@@ -93,10 +93,10 @@ interface IVault is
 	/**
 	* @notice Update withdrawalDelayMinutes
 	* @dev [restriction] AccessControl: DEFAULT_ADMIN_ROLE
-	* @dev [update]
-	* @param newWithdrawalDelayMinutes {uint256} New withdrawalDelayMinutes
+	* @dev [update] `withdrawalDelayMinutes`
+	* @param newWithdrawalDelayMinutes {uint256}
 	* @return {bool} Status
-	* @return {uint256} New withdrawalDelayMinutes
+	* @return {uint256} New `withdrawalDelayMinutes`
 	*/
 	function updateWithdrawalDelayMinutes(uint256 newWithdrawalDelayMinutes)
 		external
@@ -106,10 +106,10 @@ interface IVault is
 	/**
 	* @notice Toggle pause on a WithdrawalRequest
 	* @dev [restriction] AccessControl: DEFAULT_ADMIN_ROLE
-	* @dev [update]
+	* @dev [update] `_withdrawalRequest`
 	* @param withdrawalRequestId {uint256}
 	* @return {bool} Status
-	* @return {WithdrawalRequest} Updated WithdrawalRequest
+	* @return {WithdrawalRequest} Updated `WithdrawalRequest`
 	*/
 	function toggleWithdrawalRequestPause(uint256 withdrawalRequestId)
 		external
@@ -119,7 +119,7 @@ interface IVault is
 	/**
 	* @notice Toggle pause on a WithdrawalRequest
 	* @dev [restriction] AccessControl: DEFAULT_ADMIN_ROLE
-	* @dev [delete]
+	* @dev [call][internal] {_deleteWithdrawalRequest}
 	* @param withdrawalRequestId {uint256}
 	* @return {bool} Status
 	*/
