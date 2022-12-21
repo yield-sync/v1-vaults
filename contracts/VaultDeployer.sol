@@ -76,7 +76,7 @@ contract VaultDeployer is
 		_;
 	}
 
-	/* [access-control] S */
+
 	/**
 	* @dev [update]
 	* @notice Toggle pause
@@ -107,7 +107,7 @@ contract VaultDeployer is
 		fee = _fee;
 	}
 
-	/* [!access-control] */
+
 	/**
 	* @notice Creates a Vault
 	* @param admin {address} Admin of the deployed contract

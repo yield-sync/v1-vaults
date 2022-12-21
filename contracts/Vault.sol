@@ -113,7 +113,9 @@ contract Vault is
 
 	/* [internal] */
 	/**
-	* @notice [delete] WithdrawalRequest
+	* @dev [internal]
+	* @dev [delete] _withdrawalRequest
+	* @notice Delete Withdrawal Request
 	* @param withdrawalRequestId {uint256}
 	* @return {bool} Status
 	*/
@@ -142,7 +144,7 @@ contract Vault is
 	}
 
 
-	/* [access-control] DEFAULT_ADMIN_ROLE */
+	/* [restriction] AccessControl: DEFAULT_ADMIN_ROLE */
 	/// @inheritdoc IVault
 	function updateRequiredSignatures(uint256 newRequiredSignatures)
 		public
@@ -221,7 +223,43 @@ contract Vault is
 	}
 
 
-	/* [access-control] VOTER_ROLE */
+	/// @inheritdoc IVault
+	function createWithdrawalRequest(
+		address to,
+		address tokenAddress,
+		uint256 amount
+	)
+		public
+		onlyRole(VOTER_ROLE)
+		returns (bool, WithdrawalRequest memory)
+	{
+		// [require]  The specified amount is available
+		require(_tokenBalance[tokenAddress] >= amount, "Insufficient funds");
+
+		// [require] 'to' is a valid Ethereum address
+		require(to != address(0), "Invalid 'to' address");
+
+		// Create a new WithdrawalRequest
+		_withdrawalRequestId++;
+
+		_withdrawalRequest[_withdrawalRequestId] = WithdrawalRequest({
+			creator: msg.sender,
+			to: to,
+			token: tokenAddress,
+			paused: false,
+			accelerated: false,
+			amount: amount,
+			forVoteCount: 0,
+			againstVoteCount: 0,
+			lastImpactfulVote: block.timestamp
+		});
+
+		_withdrawalRequestByCreator[msg.sender].push(_withdrawalRequestId);
+
+		return (true, _withdrawalRequest[_withdrawalRequestId]);
+	}
+
+	/* [restriction] AccessControl: VOTER_ROLE */
 	/// @inheritdoc IVault
 	function voteOnWithdrawalRequest(uint256 withdrawalRequestId, bool vote)
 		public
@@ -275,8 +313,49 @@ contract Vault is
 		);
 	}
 
+	/// @inheritdoc IVault
+	function processWithdrawalRequests(uint256 withdrawalRequestId)
+		public
+		onlyRole(VOTER_ROLE)
+		validWithdrawalRequest(withdrawalRequestId)
+		returns (bool, string memory)
+	{
+		// Get the current time
+		uint256 currentTime = block.timestamp;
 
-	/* [!access-control] */
+		// Create temporary variable
+		WithdrawalRequest memory wr = _withdrawalRequest[withdrawalRequestId];
+
+		// If the withdrawal request has reached the required number of signatures
+		if (
+			wr.forVoteCount >= requiredSignatures &&
+			(
+				currentTime - wr.lastImpactfulVote >= SafeMath.mul(withdrawalDelayMinutes, 60) ||
+				wr.accelerated
+			) &&
+			!wr.paused
+		)
+		{
+			// Transfer the specified amount of tokens to the recipient
+			IERC20(wr.token).safeTransfer(wr.to, wr.amount);
+
+			// [decrement] The vault token balance
+			_tokenBalance[wr.token] -= wr.amount;
+
+			// [emit]
+			emit TokensDeposited(msg.sender, wr.to, wr.amount);
+
+			// [call]
+			_deleteWithdrawalRequest(withdrawalRequestId);
+		
+			return (true, "Processed WithdrawalRequest");
+		}
+		
+		return (false, "Unable to process WithdrawalRequest");
+	}
+
+
+	/* [!restriction] */
 	/// @inheritdoc IVault
 	function tokenBalance(address tokenAddress)
 		view
@@ -341,80 +420,5 @@ contract Vault is
 		emit TokensDeposited(msg.sender, tokenAddress, amount);
 		
 		return (true, amount, _tokenBalance[tokenAddress]);
-	}
-
-	/// @inheritdoc IVault
-	function createWithdrawalRequest(
-		address to,
-		address tokenAddress,
-		uint256 amount
-	)
-		public
-		returns (bool, WithdrawalRequest memory)
-	{
-		// [require]  The specified amount is available
-		require(_tokenBalance[tokenAddress] >= amount, "Insufficient funds");
-
-		// [require] 'to' is a valid Ethereum address
-		require(to != address(0), "Invalid 'to' address");
-
-		// Create a new WithdrawalRequest
-		_withdrawalRequestId++;
-
-		_withdrawalRequest[_withdrawalRequestId] = WithdrawalRequest({
-			creator: msg.sender,
-			to: to,
-			token: tokenAddress,
-			paused: false,
-			accelerated: false,
-			amount: amount,
-			forVoteCount: 0,
-			againstVoteCount: 0,
-			lastImpactfulVote: block.timestamp
-		});
-
-		_withdrawalRequestByCreator[msg.sender].push(_withdrawalRequestId);
-
-		return (true, _withdrawalRequest[_withdrawalRequestId]);
-	}
-
-	/// @inheritdoc IVault
-	function processWithdrawalRequests(uint256 withdrawalRequestId)
-		public
-		validWithdrawalRequest(withdrawalRequestId)
-		returns (bool, string memory)
-	{
-		// Get the current time
-		uint256 currentTime = block.timestamp;
-
-		// Create temporary variable
-		WithdrawalRequest memory wr = _withdrawalRequest[withdrawalRequestId];
-
-		// If the withdrawal request has reached the required number of signatures
-		if (
-			wr.forVoteCount >= requiredSignatures &&
-			(
-				currentTime - wr.lastImpactfulVote >= SafeMath.mul(withdrawalDelayMinutes, 60) ||
-				wr.accelerated
-			) &&
-			!wr.paused
-		)
-		{
-			// Transfer the specified amount of tokens to the recipient
-			IERC20(wr.token).safeTransfer(wr.to, wr.amount);
-
-			// [decrement] The vault token balance
-			_tokenBalance[wr.token] -= wr.amount;
-
-			// [emit]
-			emit TokensDeposited(msg.sender, wr.to, wr.amount);
-
-			// [call]
-			_deleteWithdrawalRequest(withdrawalRequestId);
-		
-			return (true, "Processed WithdrawalRequest");
-		}
-		
-		return (false, "Unable to process WithdrawalRequest");
 	}
 }
