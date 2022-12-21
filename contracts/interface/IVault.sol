@@ -2,10 +2,15 @@
 pragma solidity ^0.8.1;
 
 
+/* [import] */
+import "@openzeppelin/contracts/access/IAccessControl.sol";
+
+
 /**
 * @title IVault
 */
-interface IVault
+interface IVault is
+	IAccessControl
 {
 	struct WithdrawalRequest {
 		address creator;
