@@ -8,8 +8,8 @@ pragma solidity ^0.8.1;
 interface IVaultDeployer
 {
 	/**
-	* @dev [event]
 	* @notice Emits when a Vault is created and deployed
+	* @dev [event]
 	*/
 	event VaultDeployed (
 		address indexed VaultAddress,

@@ -8,7 +8,7 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
-/* [import] Internal */
+/* [import-internal] */
 import "./interface/IVault.sol";
 
 
@@ -34,15 +34,16 @@ contract Vault is
 
 
 	/* [state-variable] */
+	// WithdrawalRequest Id
 	uint256 _withdrawalRequestId;
 
-	// ERC20 Contract Address => Balance
+	// Token Contract Address => Balance
 	mapping(address => uint256) _tokenBalance;
 
-	// WithdrawalRequest Id => WithdrawalRequest
+	// WithdrawalRequestId => WithdrawalRequest
 	mapping(uint256 => WithdrawalRequest) _withdrawalRequest;
 
-	// Creator => Array of WithdrawalRequest
+	// Creator Address => Array of WithdrawalRequest
 	mapping(address => uint256[]) _withdrawalRequestByCreator;
 
 	// WithdrawalRequest Id => Voted Voter Addresses Array
@@ -57,7 +58,7 @@ contract Vault is
 		address[] memory voters
 	)
 	{
-		// Initialize WithdrawalRequest Id
+		// Initialize WithdrawalRequestId
 		_withdrawalRequestId = 0;
 
 		requiredSignatures = requiredSignatures_;
@@ -71,7 +72,7 @@ contract Vault is
 		// [for] each voter address..
 		for (uint256 i = 0; i < voters.length; i++)
 		{
-			// Set up the role VOTER_ROLE for the voter address
+			// Set up the role VOTER_ROLE for address
 			_setupRole(VOTER_ROLE, voters[i]);
 		}
 	}

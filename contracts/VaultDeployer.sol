@@ -6,15 +6,13 @@ pragma solidity ^0.8.1;
 import "@cardinal-protocol/v1-sdk/contracts/interface/ICardinalProtocolGovernance.sol";
 import "@openzeppelin/contracts/security/Pausable.sol";
 
-/* [import] Internal */
+/* [import-Internal] */
 import "./interface/IVaultDeployer.sol";
 import "./Vault.sol";
 
 
 /**
 * @title VaultDeployer
-* @author harpoonjs.eth
-* @notice This contract deploys the vaults on behalf of a user
 */
 contract VaultDeployer is
 	Pausable,
@@ -78,8 +76,9 @@ contract VaultDeployer is
 
 
 	/**
-	* @dev [update]
 	* @notice Toggle pause
+	* @dev [restriction] AccessControl: DEFAULT_ADMIN_ROLE
+	* @dev [update] pause
 	*/
 	function togglePause()
 		public
@@ -97,6 +96,8 @@ contract VaultDeployer is
 
 	/**
 	* @notice Set fee for deploying a vault
+	* @dev [restriction] AccessControl: DEFAULT_ADMIN_ROLE
+	* @dev [update] fee
 	* @param _fee {uint256} Fee to be set
 	*/
 	function setFee(uint256 _fee)
@@ -110,6 +111,8 @@ contract VaultDeployer is
 
 	/**
 	* @notice Creates a Vault
+	* @dev [!restriction]
+	* @dev [create]
 	* @param admin {address} Admin of the deployed contract
 	* @param requiredSignatures {uint256} Required signatures for actions
 	* @param withdrawalDelayMinutes {uint256} Withdrawal delay minutes
@@ -126,7 +129,7 @@ contract VaultDeployer is
 		whenNotPaused()
 		returns (address)
 	{
-		require(msg.value <= fee, "!msg.value");
+		require(msg.value >= fee, "!msg.value");
 
 		Vault deployedContract;
 
