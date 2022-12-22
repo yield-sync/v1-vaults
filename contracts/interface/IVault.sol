@@ -58,6 +58,7 @@ interface IVault is
 	* @param newRequiredSignatures {uint256}
 	* @return {bool} Status
 	* @return {uint256} New `requiredSignatures`
+	* Emits: UpdatedRequiredSignatures
 	*/
 	function updateRequiredSignatures(uint256 newRequiredSignatures)
 		external
@@ -246,6 +247,14 @@ interface IVault is
 		returns (bool, uint256, uint256)
 	;
 
+
+	/**
+	* @notice Emits when required signautres are updated 
+	* @dev [event]
+	*/
+	event UpdatedRequiredSignatures (
+		uint256 requiredSignatures
+	);
 
 	/**
 	* @notice Emits when tokens are deposited

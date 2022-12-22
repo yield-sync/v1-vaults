@@ -155,6 +155,9 @@ contract Vault is
 		// [update]
 		requiredSignatures = newRequiredSignatures;
 
+		// [emit]
+		emit UpdatedRequiredSignatures(requiredSignatures);
+
 		return (true, requiredSignatures);
 	}
 
