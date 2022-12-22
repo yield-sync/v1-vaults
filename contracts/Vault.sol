@@ -38,16 +38,16 @@ contract Vault is
 	uint256 _withdrawalRequestId;
 
 	// Token Contract Address => Balance
-	mapping(address => uint256) _tokenBalance;
+	mapping (address => uint256) _tokenBalance;
 
 	// WithdrawalRequestId => WithdrawalRequest
-	mapping(uint256 => WithdrawalRequest) _withdrawalRequest;
+	mapping (uint256 => WithdrawalRequest) _withdrawalRequest;
 
 	// Creator Address => Array of WithdrawalRequest
-	mapping(address => uint256[]) _withdrawalRequestByCreator;
+	mapping (address => uint256[]) _withdrawalRequestByCreator;
 
 	// WithdrawalRequest Id => Voted Voter Addresses Array
-	mapping(uint256 => address[]) _withdrawalRequestVotedVoters;
+	mapping (uint256 => address[]) _withdrawalRequestVotedVoters;
 
 
 	/* [constructor] */
@@ -140,6 +140,9 @@ contract Vault is
 				break;
 			}
 		}
+
+		// [emit]
+		emit DeletedWithdrawalRequest(withdrawalRequestId);
 
 		return true;
 	}
@@ -241,7 +244,7 @@ contract Vault is
 		require(_tokenBalance[tokenAddress] >= amount, "Insufficient funds");
 
 		// [require] 'to' is a valid Ethereum address
-		require(to != address(0), "Invalid 'to' address");
+		require(to != address(0), "Invalid `to` address");
 
 		// Create a new WithdrawalRequest
 		_withdrawalRequestId++;
@@ -291,12 +294,24 @@ contract Vault is
 		{
 			// [increment] For count
 			_withdrawalRequest[withdrawalRequestId].forVoteCount++;
+
+			// If required signatures met
+			if (
+				_withdrawalRequest[withdrawalRequestId].forVoteCount >= requiredSignatures
+			)
+			{
+				// [emit]
+				emit WithdrawalRequestReadyToBeProccessed(withdrawalRequestId);
+			}
 		}
 		else
 		{
 			// [increment] Against count
 			_withdrawalRequest[withdrawalRequestId].againstVoteCount++;
 		}
+
+		// [emit]
+		emit VoterVoted(withdrawalRequestId, msg.sender, vote);
 
 		// [update] Mark msg.sender (voter) has voted
 		_withdrawalRequestVotedVoters[withdrawalRequestId].push(msg.sender);

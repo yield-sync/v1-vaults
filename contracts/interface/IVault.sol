@@ -30,6 +30,7 @@ interface IVault is
 
 	/**
 	* @notice Required signatures for an approval
+	*
 	* @dev [uint256-getter]
 	* @return {uint256}
 	*/
@@ -41,6 +42,7 @@ interface IVault is
 
 	/**
 	* @notice Get Withdrawal delay (denominated in minutes)
+	*
 	* @dev [uint256-getter]
 	* @return {uint256}
 	*/
@@ -53,12 +55,14 @@ interface IVault is
 
 	/**
 	* @notice Update amount of required signatures
+	*
 	* @dev [restriction] AccessControl._role = DEFAULT_ADMIN_ROLE
 	* @dev [update] `requiredSignatures`
 	* @param newRequiredSignatures {uint256}
 	* @return {bool} Status
 	* @return {uint256} New `requiredSignatures`
-	* Emits: UpdatedRequiredSignatures
+	*
+	* Emits: `UpdatedRequiredSignatures`
 	*/
 	function updateRequiredSignatures(uint256 newRequiredSignatures)
 		external
@@ -67,11 +71,14 @@ interface IVault is
 
 	/**
 	* @notice Add a voter
+	*
 	* @dev [restriction] AccessControl._role = DEFAULT_ADMIN_ROLE
 	* @dev [add] `AccessControl._roles`
 	* @param voter {address} Address of the voter to add
 	* @return {bool} Status
 	* @return {address} Voter added
+	*
+	* Emits: `VoterAdded`
 	*/
 	function addVoter(address voter)
 		external
@@ -80,11 +87,14 @@ interface IVault is
 
 	/**
 	* @notice Remove a voter
+	*
 	* @dev [restriction] AccessControl._role = DEFAULT_ADMIN_ROLE
 	* @dev [remove] `AccessControl._roles`
 	* @param voter {address} Address of the voter to remove
 	* @return {bool} Status
 	* @return {address} Removed voter
+	*
+	* Emits: `VoterRemoved`
 	*/	
 	function removeVoter(address voter)
 		external
@@ -92,12 +102,15 @@ interface IVault is
 	;
 
 	/**
-	* @notice Update withdrawalDelayMinutes
+	* @notice Update `withdrawalDelayMinutes`
+	*
 	* @dev [restriction] AccessControl._role = DEFAULT_ADMIN_ROLE
 	* @dev [update] `withdrawalDelayMinutes`
 	* @param newWithdrawalDelayMinutes {uint256}
 	* @return {bool} Status
 	* @return {uint256} New `withdrawalDelayMinutes`
+	*
+	* Emits: `UpdatedWithdrawalDelayMinutes`
 	*/
 	function updateWithdrawalDelayMinutes(uint256 newWithdrawalDelayMinutes)
 		external
@@ -105,12 +118,15 @@ interface IVault is
 	;
 
 	/**
-	* @notice Toggle pause on a WithdrawalRequest
+	* @notice Toggle pause on a `WithdrawalRequest`
+	*
 	* @dev [restriction] AccessControl._role = DEFAULT_ADMIN_ROLE
 	* @dev [update] `_withdrawalRequest`
 	* @param withdrawalRequestId {uint256}
 	* @return {bool} Status
 	* @return {WithdrawalRequest} Updated `WithdrawalRequest`
+	*
+	* Emit: `PauseToggled`
 	*/
 	function toggleWithdrawalRequestPause(uint256 withdrawalRequestId)
 		external
@@ -118,7 +134,8 @@ interface IVault is
 	;
 
 	/**
-	* @notice Toggle pause on a WithdrawalRequest
+	* @notice Toggle pause on a `WithdrawalRequest`
+	*
 	* @dev [restriction] AccessControl._role = DEFAULT_ADMIN_ROLE
 	* @dev [call][internal] {_deleteWithdrawalRequest}
 	* @param withdrawalRequestId {uint256}
@@ -132,6 +149,7 @@ interface IVault is
 
 	/**
 	* @notice Create a WithdrawalRequest
+	*
 	* @dev [restriction] AccessControl._role = VOTER_ROLE
 	* @dev [add] `_withdrawalRequest`
 	* @param to {address} Address the withdrawn tokens will be sent
@@ -139,6 +157,8 @@ interface IVault is
 	* @param amount {uint256} Amount to be withdrawn
 	* @return {bool} Status
 	* @return {WithdrawalRequest} The added `WithdrawalRequest`
+	*
+	* Emits: `CreatedWithdrawalRequest`
 	*/
 	function createWithdrawalRequest(
 		address to,
@@ -151,6 +171,7 @@ interface IVault is
 
 	/**
 	* @notice Vote on withdrawal request
+	*
 	* @dev [restriction] AccessControl._role = VOTER_ROLE
 	* @dev [update] `_withdrawalRequest`
 	* @param withdrawalRequestId {uint256}
@@ -160,6 +181,9 @@ interface IVault is
 	* @return {bool} forVoteCount
 	* @return {bool} againstVoteCount
 	* @return {bool} lastImpactfulVote
+	*
+	* Emits: WithdrawalRequestReadyToBeProccessed
+	* Emits: VoterVoted
 	*/
 	function voteOnWithdrawalRequest(uint256 withdrawalRequestId, bool vote)
 		external
@@ -168,11 +192,14 @@ interface IVault is
 
 	/**
 	* @notice Process the WithdrawalRequest
+	*
 	* @dev [restriction] AccessControl._role = VOTER_ROLE
 	* @dev [ERC20-transfer] → [decrement] `_tokenBalance` → [call][internal] `_deleteWithdrawalRequest`
 	* @param withdrawalRequestId {uint256} Id of the WithdrawalRequest
 	* @return {bool} Status
 	* @return {string} Message
+	*
+	* Emits: `TokensDeposited`
 	*/
 	function processWithdrawalRequests(uint256 withdrawalRequestId)
 		external
@@ -182,6 +209,7 @@ interface IVault is
 
 	/**
 	* @notice Get token balance
+	*
 	* @dev [!restriction]
 	* @dev [getter][mapping]
 	* @param tokenAddress {address} Token contract address
@@ -195,6 +223,7 @@ interface IVault is
 
 	/**
 	* @notice Get WithdrawalRequest with given withdrawalRequestId
+	*
 	* @dev [!restriction]
 	* @dev [getter][mapping]
 	* @param withdrawalRequestId {uint256}
@@ -207,6 +236,7 @@ interface IVault is
 
 	/**
 	* @notice Get array of voters
+	*
 	* @dev [!restriction]
 	* @dev [getter][mapping]
 	* @param withdrawalRequestId {uint256} Id of WithdrawalRequest
@@ -220,6 +250,7 @@ interface IVault is
 
 	/**
 	* @notice Get withdrawalRequestIds by a given creator
+	*
 	* @dev [!restriction]
 	* @dev [getter][mapping]
 	* @param creator {address}
@@ -233,6 +264,7 @@ interface IVault is
 
 	/**
 	* @notice Deposit tokens
+	*
 	* @dev [!restriction]
 	* @dev [IERC20][emit]
 	* @param tokenAddress {address} Address of token contract
@@ -240,6 +272,8 @@ interface IVault is
 	* @return {bool} Status
 	* @return {uint256} Amount deposited
 	* @return {uint256} New token balance
+	*
+	* Emits: TokensDeposited
 	*/
 	function depositTokens(address tokenAddress, uint256 amount)
 		external
@@ -249,29 +283,63 @@ interface IVault is
 
 
 	/**
-	* @notice Emits when required signautres are updated 
-	* @dev [event]
+	* @dev Emits when a `WithdrawalRequest` is deleted 
+	*/
+	event DeletedWithdrawalRequest (
+		uint256 WithdrawalRequest
+	);
+
+	/**
+	* @dev Emits when `requiredSignatures` are updated 
 	*/
 	event UpdatedRequiredSignatures (
 		uint256 requiredSignatures
 	);
 
 	/**
-	* @notice Emits when tokens are deposited
-	* @dev [event]
+	* @dev Emits when a voter is added 
 	*/
-	event TokensDeposited (
-		address indexed depositor,
+	event VoterAdded (
+		address addedVoter
+	);
+
+	/**
+	* @dev Emits when a voter is removed 
+	*/
+	event VoterRemoved (
+		address addedVoter
+	);
+
+	/**
+	* @dev Emits when a voter has voted
+	*/
+	event VoterVoted (
+		uint256 withdrawalRequestId,
+		address indexed voter,
+		bool vote
+	);
+
+	/**
+	* @dev Emit when a WithdrawalRequest is ready to be processed
+	*/
+	event WithdrawalRequestReadyToBeProccessed (
+		uint256 withdrawalRequestId
+	);
+
+	/**
+	* @dev Emits when tokens are withdrawn
+	*/
+	event TokensWithdrawn (
+		address indexed withdrawer,
 		address indexed token,
 		uint256 amount
 	);
 
 	/**
-	* @notice Emits when tokens are withdrawn
-	* @dev [event]
+	* @dev Emits when tokens are deposited
 	*/
-	event TokensWithdrawn (
-		address indexed withdrawer,
+	event TokensDeposited (
+		address indexed depositor,
 		address indexed token,
 		uint256 amount
 	);

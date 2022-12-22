@@ -26,7 +26,7 @@ contract VaultDeployer is
 	uint256 public fee;
 
 	// Vault Id => Vault Address
-	mapping(uint256 => address) public vaults;
+	mapping (uint256 => address) public vaults;
 
 
 	/* [constructor] */
