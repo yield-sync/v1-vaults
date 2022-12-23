@@ -28,32 +28,53 @@ interface IVault is
 	}
 
 
-		/**
-	* @dev Emits when a `WithdrawalRequest` is deleted 
+	/**
+	* @dev Emits when a `WithdrawalRequest` is deleted
 	*/
 	event DeletedWithdrawalRequest (
 		uint256 WithdrawalRequest
 	);
 
 	/**
-	* @dev Emits when `requiredSignatures` are updated 
+	* @dev Emits when `requiredSignatures` are updated
 	*/
 	event UpdatedRequiredSignatures (
 		uint256 requiredSignatures
 	);
 
 	/**
-	* @dev Emits when a voter is added 
+	* @dev Emits when a voter is added
 	*/
 	event VoterAdded (
 		address addedVoter
 	);
 
 	/**
-	* @dev Emits when a voter is removed 
+	* @dev Emits when a voter is removed
 	*/
 	event VoterRemoved (
 		address addedVoter
+	);
+
+	/**
+	* @dev Emits when `withdrawalDelayMinutes` is updated
+	*/
+	event UpdatedWithdrawalDelayMinutes (
+		uint256 withdrawalDelayMinutes
+	);
+
+	/**
+	* @dev Emits when a `WithdrawalRequest.paused` is toggled
+	*/
+	event ToggledWithdrawalRequestPause (
+		bool withdrawalRequestPaused
+	);
+
+	/**
+	* @dev Emits when a `WithdrawalRequest` is created
+	*/
+	event CreatedWithdrawalRequest (
+		WithdrawalRequest withdrawalRequest
 	);
 
 	/**
@@ -107,6 +128,7 @@ interface IVault is
 	* @notice Get Withdrawal delay (denominated in minutes)
 	*
 	* @dev [uint256-getter]
+	*
 	* @return {uint256}
 	*/
 	function withdrawalDelayMinutes()
@@ -120,7 +142,9 @@ interface IVault is
 	* @notice Update amount of required signatures
 	*
 	* @dev [restriction] AccessControl._role = DEFAULT_ADMIN_ROLE
+	*
 	* @dev [update] `requiredSignatures`
+	*
 	* @param newRequiredSignatures {uint256}
 	* @return {bool} Status
 	* @return {uint256} New `requiredSignatures`
@@ -136,7 +160,9 @@ interface IVault is
 	* @notice Add a voter
 	*
 	* @dev [restriction] AccessControl._role = DEFAULT_ADMIN_ROLE
+	*
 	* @dev [add] `AccessControl._roles`
+	*
 	* @param voter {address} Address of the voter to add
 	* @return {bool} Status
 	* @return {address} Voter added
@@ -152,7 +178,9 @@ interface IVault is
 	* @notice Remove a voter
 	*
 	* @dev [restriction] AccessControl._role = DEFAULT_ADMIN_ROLE
+	*
 	* @dev [remove] `AccessControl._roles`
+	*
 	* @param voter {address} Address of the voter to remove
 	* @return {bool} Status
 	* @return {address} Removed voter
@@ -168,7 +196,9 @@ interface IVault is
 	* @notice Update `withdrawalDelayMinutes`
 	*
 	* @dev [restriction] AccessControl._role = DEFAULT_ADMIN_ROLE
+	*
 	* @dev [update] `withdrawalDelayMinutes`
+	*
 	* @param newWithdrawalDelayMinutes {uint256}
 	* @return {bool} Status
 	* @return {uint256} New `withdrawalDelayMinutes`
@@ -184,12 +214,14 @@ interface IVault is
 	* @notice Toggle pause on a `WithdrawalRequest`
 	*
 	* @dev [restriction] AccessControl._role = DEFAULT_ADMIN_ROLE
+	*
 	* @dev [update] `_withdrawalRequest`
+	*
 	* @param withdrawalRequestId {uint256}
 	* @return {bool} Status
 	* @return {WithdrawalRequest} Updated `WithdrawalRequest`
 	*
-	* Emit: `PauseToggled`
+	* Emit: `ToggledWithdrawalRequestPause`
 	*/
 	function toggleWithdrawalRequestPause(uint256 withdrawalRequestId)
 		external
@@ -200,9 +232,13 @@ interface IVault is
 	* @notice Toggle pause on a `WithdrawalRequest`
 	*
 	* @dev [restriction] AccessControl._role = DEFAULT_ADMIN_ROLE
+	*
 	* @dev [call][internal] {_deleteWithdrawalRequest}
+	*
 	* @param withdrawalRequestId {uint256}
 	* @return {bool} Status
+	*
+	* Emits: `DeletedWithdrawalRequest`
 	*/
 	function deleteWithdrawalRequest(uint256 withdrawalRequestId)
 		external
@@ -214,7 +250,11 @@ interface IVault is
 	* @notice Create a WithdrawalRequest
 	*
 	* @dev [restriction] AccessControl._role = VOTER_ROLE
-	* @dev [add] `_withdrawalRequest`
+	*
+	* @dev [increment] _withdrawalRequestId
+	*      [add] `_withdrawalRequest`
+	*      [push-into] `_withdrawalRequestByCreator`
+	*
 	* @param to {address} Address the withdrawn tokens will be sent
 	* @param tokenAddress {address}
 	* @param amount {uint256} Amount to be withdrawn
@@ -236,7 +276,9 @@ interface IVault is
 	* @notice Vote on withdrawal request
 	*
 	* @dev [restriction] AccessControl._role = VOTER_ROLE
+	*
 	* @dev [update] `_withdrawalRequest`
+	*
 	* @param withdrawalRequestId {uint256}
 	* @param vote {bool} Approve (true) or deny (false)
 	* @return {bool} Status
@@ -257,12 +299,17 @@ interface IVault is
 	* @notice Process the WithdrawalRequest
 	*
 	* @dev [restriction] AccessControl._role = VOTER_ROLE
-	* @dev [ERC20-transfer] → [decrement] `_tokenBalance` → [call][internal] `_deleteWithdrawalRequest`
+	*
+	* @dev [ERC20-transfer]
+	*      [decrement] `_tokenBalance`
+	*      [call][internal] `_deleteWithdrawalRequest`
+	*
 	* @param withdrawalRequestId {uint256} Id of the WithdrawalRequest
 	* @return {bool} Status
 	* @return {string} Message
 	*
 	* Emits: `TokensDeposited`
+	* Emits: `DeletedWithdrawalRequest`
 	*/
 	function processWithdrawalRequests(uint256 withdrawalRequestId)
 		external
@@ -274,7 +321,9 @@ interface IVault is
 	* @notice Get token balance
 	*
 	* @dev [!restriction]
+	*
 	* @dev [getter][mapping]
+	*
 	* @param tokenAddress {address} Token contract address
 	* @return {uint256}
 	*/
@@ -288,7 +337,9 @@ interface IVault is
 	* @notice Get WithdrawalRequest with given withdrawalRequestId
 	*
 	* @dev [!restriction]
+	*
 	* @dev [getter][mapping]
+	*
 	* @param withdrawalRequestId {uint256}
 	* @return {WithdrawalRequest}
 	*/
@@ -301,7 +352,9 @@ interface IVault is
 	* @notice Get array of voters
 	*
 	* @dev [!restriction]
+	*
 	* @dev [getter][mapping]
+	*
 	* @param withdrawalRequestId {uint256} Id of WithdrawalRequest
 	* @return {WithdrawalRequest}
 	*/
@@ -315,7 +368,9 @@ interface IVault is
 	* @notice Get withdrawalRequestIds by a given creator
 	*
 	* @dev [!restriction]
+	*
 	* @dev [getter][mapping]
+	*
 	* @param creator {address}
 	* @return {uint256[]} Array of WithdrawalRequestIds
 	*/
@@ -329,7 +384,9 @@ interface IVault is
 	* @notice Deposit tokens
 	*
 	* @dev [!restriction]
-	* @dev [IERC20][emit]
+	*
+	* @dev [IERC20]
+	*
 	* @param tokenAddress {address} Address of token contract
 	* @param amount {uint256} Amount to be moved
 	* @return {bool} Status

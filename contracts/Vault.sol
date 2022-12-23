@@ -141,9 +141,6 @@ contract Vault is
 			}
 		}
 
-		// [emit]
-		emit DeletedWithdrawalRequest(withdrawalRequestId);
-
 		return true;
 	}
 
@@ -205,6 +202,9 @@ contract Vault is
 		// Set delay (in minutes)
 		withdrawalDelayMinutes = newWithdrawalDelayMinutes;
 
+		// [emit]
+		emit UpdatedWithdrawalDelayMinutes(withdrawalDelayMinutes);
+
 		return (true, withdrawalDelayMinutes);
 	}
 
@@ -219,6 +219,11 @@ contract Vault is
 			withdrawalRequestId
 		].paused;
 
+		// [emit]
+		emit ToggledWithdrawalRequestPause(
+			_withdrawalRequest[withdrawalRequestId].paused
+		);
+
 		return (true, _withdrawalRequest[withdrawalRequestId]);
 	}
 
@@ -231,6 +236,9 @@ contract Vault is
 	{
 		// [call][internal]
 		_deleteWithdrawalRequest(withdrawalRequestId);
+
+		// [emit]
+		emit DeletedWithdrawalRequest(withdrawalRequestId);
 
 		return true;
 	}
@@ -252,9 +260,10 @@ contract Vault is
 		// [require] 'to' is a valid Ethereum address
 		require(to != address(0), "Invalid `to` address");
 
-		// Create a new WithdrawalRequest
+		// [increment] _withdrawalRequestId
 		_withdrawalRequestId++;
 
+		// [add] _withdrawalRequest
 		_withdrawalRequest[_withdrawalRequestId] = WithdrawalRequest({
 			creator: msg.sender,
 			to: to,
@@ -267,8 +276,12 @@ contract Vault is
 			lastImpactfulVote: block.timestamp
 		});
 
+		// [push-into] into _withdrawalRequestByCreator 
 		_withdrawalRequestByCreator[msg.sender].push(_withdrawalRequestId);
 
+		// [emit]
+		emit CreatedWithdrawalRequest(_withdrawalRequest[_withdrawalRequestId]);
+		
 		return (true, _withdrawalRequest[_withdrawalRequestId]);
 	}
 
@@ -372,6 +385,9 @@ contract Vault is
 
 			// [call]
 			_deleteWithdrawalRequest(withdrawalRequestId);
+
+			// [emit]
+			emit DeletedWithdrawalRequest(withdrawalRequestId);
 		
 			return (true, "Processed WithdrawalRequest");
 		}
