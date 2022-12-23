@@ -28,6 +28,69 @@ interface IVault is
 	}
 
 
+		/**
+	* @dev Emits when a `WithdrawalRequest` is deleted 
+	*/
+	event DeletedWithdrawalRequest (
+		uint256 WithdrawalRequest
+	);
+
+	/**
+	* @dev Emits when `requiredSignatures` are updated 
+	*/
+	event UpdatedRequiredSignatures (
+		uint256 requiredSignatures
+	);
+
+	/**
+	* @dev Emits when a voter is added 
+	*/
+	event VoterAdded (
+		address addedVoter
+	);
+
+	/**
+	* @dev Emits when a voter is removed 
+	*/
+	event VoterRemoved (
+		address addedVoter
+	);
+
+	/**
+	* @dev Emits when a voter has voted
+	*/
+	event VoterVoted (
+		uint256 withdrawalRequestId,
+		address indexed voter,
+		bool vote
+	);
+
+	/**
+	* @dev Emit when a WithdrawalRequest is ready to be processed
+	*/
+	event WithdrawalRequestReadyToBeProccessed (
+		uint256 withdrawalRequestId
+	);
+
+	/**
+	* @dev Emits when tokens are withdrawn
+	*/
+	event TokensWithdrawn (
+		address indexed withdrawer,
+		address indexed token,
+		uint256 amount
+	);
+
+	/**
+	* @dev Emits when tokens are deposited
+	*/
+	event TokensDeposited (
+		address indexed depositor,
+		address indexed token,
+		uint256 amount
+	);
+
+
 	/**
 	* @notice Required signatures for an approval
 	*
@@ -280,67 +343,4 @@ interface IVault is
 		payable
 		returns (bool, uint256, uint256)
 	;
-
-
-	/**
-	* @dev Emits when a `WithdrawalRequest` is deleted 
-	*/
-	event DeletedWithdrawalRequest (
-		uint256 WithdrawalRequest
-	);
-
-	/**
-	* @dev Emits when `requiredSignatures` are updated 
-	*/
-	event UpdatedRequiredSignatures (
-		uint256 requiredSignatures
-	);
-
-	/**
-	* @dev Emits when a voter is added 
-	*/
-	event VoterAdded (
-		address addedVoter
-	);
-
-	/**
-	* @dev Emits when a voter is removed 
-	*/
-	event VoterRemoved (
-		address addedVoter
-	);
-
-	/**
-	* @dev Emits when a voter has voted
-	*/
-	event VoterVoted (
-		uint256 withdrawalRequestId,
-		address indexed voter,
-		bool vote
-	);
-
-	/**
-	* @dev Emit when a WithdrawalRequest is ready to be processed
-	*/
-	event WithdrawalRequestReadyToBeProccessed (
-		uint256 withdrawalRequestId
-	);
-
-	/**
-	* @dev Emits when tokens are withdrawn
-	*/
-	event TokensWithdrawn (
-		address indexed withdrawer,
-		address indexed token,
-		uint256 amount
-	);
-
-	/**
-	* @dev Emits when tokens are deposited
-	*/
-	event TokensDeposited (
-		address indexed depositor,
-		address indexed token,
-		uint256 amount
-	);
 }

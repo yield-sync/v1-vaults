@@ -173,6 +173,9 @@ contract Vault is
 		// Add the voter to the VOTER_ROLE
 		_setupRole(VOTER_ROLE, voter);
 
+		// [emit]
+		emit VoterAdded(voter);
+
 		return (true, voter);
 	}
 
@@ -183,6 +186,9 @@ contract Vault is
 		returns (bool, address)
 	{
 		_revokeRole(VOTER_ROLE, voter);
+
+		// [emit]
+		emit VoterAdded(voter);
 
 		return (true, voter);
 	}
