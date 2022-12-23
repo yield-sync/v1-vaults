@@ -161,7 +161,7 @@ interface IVault is
 	*
 	* @dev [restriction] AccessControl._role = DEFAULT_ADMIN_ROLE
 	*
-	* @dev [add] `AccessControl._roles`
+	* @dev [add] Voter to `AccessControl._roles` VOTER_ROLE
 	*
 	* @param voter {address} Address of the voter to add
 	* @return {bool} Status
@@ -179,7 +179,7 @@ interface IVault is
 	*
 	* @dev [restriction] AccessControl._role = DEFAULT_ADMIN_ROLE
 	*
-	* @dev [remove] `AccessControl._roles`
+	* @dev [remove] Voter with VOTER_ROLE from `AccessControl._roles`
 	*
 	* @param voter {address} Address of the voter to remove
 	* @return {bool} Status
@@ -197,7 +197,7 @@ interface IVault is
 	*
 	* @dev [restriction] AccessControl._role = DEFAULT_ADMIN_ROLE
 	*
-	* @dev [update] `withdrawalDelayMinutes`
+	* @dev [update] `withdrawalDelayMinutes` to new value
 	*
 	* @param newWithdrawalDelayMinutes {uint256}
 	* @return {bool} Status
@@ -251,8 +251,8 @@ interface IVault is
 	*
 	* @dev [restriction] AccessControl._role = VOTER_ROLE
 	*
-	* @dev [increment] _withdrawalRequestId
-	*      [add] `_withdrawalRequest`
+	* @dev [increment] `_withdrawalRequestId`
+	*      [add] `_withdrawalRequest` value
 	*      [push-into] `_withdrawalRequestByCreator`
 	*
 	* @param to {address} Address the withdrawn tokens will be sent
@@ -278,6 +278,7 @@ interface IVault is
 	* @dev [restriction] AccessControl._role = VOTER_ROLE
 	*
 	* @dev [update] `_withdrawalRequest`
+	*      [update] `_withdrawalRequestVotedVoters`
 	*
 	* @param withdrawalRequestId {uint256}
 	* @param vote {bool} Approve (true) or deny (false)
@@ -385,7 +386,8 @@ interface IVault is
 	*
 	* @dev [!restriction]
 	*
-	* @dev [IERC20]
+	* @dev [ERC20-transfer] Transfer amount from msg.sender to this contract
+	*      [increment] `_tokenBalance`
 	*
 	* @param tokenAddress {address}
 	* @param amount {uint256} Amount to be moved

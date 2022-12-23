@@ -72,7 +72,7 @@ contract Vault is
 		// [for] each voter address..
 		for (uint256 i = 0; i < voters.length; i++)
 		{
-			// Set up the role VOTER_ROLE for address
+			// [add] Voter to `AccessControl._roles` as VOTER_ROLE
 			_setupRole(VOTER_ROLE, voters[i]);
 		}
 	}
@@ -115,8 +115,13 @@ contract Vault is
 	/* [internal] */
 	/**
 	* @notice Delete Withdrawal Request
-	* @dev [delete] `_withdrawalRequest`
+	*
 	* @dev [restriction][internal]
+	*
+	* @dev [delete] `_withdrawalRequest` value
+	*      [delete] `_withdrawalRequestVotedVoters` value
+	*      [delete] `_withdrawalRequestByCreator` value
+	*
 	* @param withdrawalRequestId {uint256}
 	* @return {bool} Status
 	*/
@@ -124,17 +129,17 @@ contract Vault is
 		internal
 		returns (bool)
 	{
-		// [delete] _withdrawalRequest WithdrawalRequest
+		// [delete] `_withdrawalRequest` value
 		delete _withdrawalRequest[withdrawalRequestId];
 
-		// [delete] _withdrawalRequestVotedVoters value
+		// [delete] `_withdrawalRequestVotedVoters` value
 		delete _withdrawalRequestVotedVoters[withdrawalRequestId];
 
-		// [delete] _withdrawalRequestByCreator
 		for (uint256 i = 0; i < _withdrawalRequestByCreator[_withdrawalRequest[withdrawalRequestId].creator].length; i++)
 		{
 			if (_withdrawalRequestByCreator[_withdrawalRequest[withdrawalRequestId].creator][i] == withdrawalRequestId)
 			{
+				// [delete] `_withdrawalRequestByCreator` value
 				delete _withdrawalRequestByCreator[_withdrawalRequest[withdrawalRequestId].creator][i];
 
 				break;
@@ -167,7 +172,7 @@ contract Vault is
 		onlyRole(DEFAULT_ADMIN_ROLE)
 		returns (bool, address)
 	{
-		// Add the voter to the VOTER_ROLE
+		// [add] Voter to `AccessControl._roles` as VOTER_ROLE
 		_setupRole(VOTER_ROLE, voter);
 
 		// [emit]
@@ -182,10 +187,11 @@ contract Vault is
 		onlyRole(DEFAULT_ADMIN_ROLE)
 		returns (bool, address)
 	{
+		// [remove] Voter with VOTER_ROLE from `AccessControl._roles`
 		_revokeRole(VOTER_ROLE, voter);
 
 		// [emit]
-		emit VoterAdded(voter);
+		emit VoterRemoved(voter);
 
 		return (true, voter);
 	}
@@ -199,7 +205,7 @@ contract Vault is
 		// [require] newWithdrawalDelayMinutes is greater than 0
 		require(newWithdrawalDelayMinutes >= 0, "Invalid newWithdrawalDelayMinutes");
 
-		// Set delay (in minutes)
+		// [update] `withdrawalDelayMinutes` to new value
 		withdrawalDelayMinutes = newWithdrawalDelayMinutes;
 
 		// [emit]
@@ -215,6 +221,7 @@ contract Vault is
 		validWithdrawalRequest(withdrawalRequestId)
 		returns (bool, WithdrawalRequest memory)
 	{
+		// [update] `_withdrawalRequest`
 		_withdrawalRequest[withdrawalRequestId].paused = !_withdrawalRequest[
 			withdrawalRequestId
 		].paused;
@@ -260,10 +267,10 @@ contract Vault is
 		// [require] 'to' is a valid Ethereum address
 		require(to != address(0), "Invalid `to` address");
 
-		// [increment] _withdrawalRequestId
+		// [increment] `_withdrawalRequestId`
 		_withdrawalRequestId++;
 
-		// [add] _withdrawalRequest
+		// [add] `_withdrawalRequest` value
 		_withdrawalRequest[_withdrawalRequestId] = WithdrawalRequest({
 			creator: msg.sender,
 			to: to,
@@ -276,7 +283,7 @@ contract Vault is
 			lastImpactfulVote: block.timestamp
 		});
 
-		// [push-into] into _withdrawalRequestByCreator 
+		// [push-into] `_withdrawalRequestByCreator`
 		_withdrawalRequestByCreator[msg.sender].push(_withdrawalRequestId);
 
 		// [emit]
@@ -311,7 +318,7 @@ contract Vault is
 
 		if (vote)
 		{
-			// [increment] For count
+			// [update] `_withdrawalRequest` → [increment] For count
 			_withdrawalRequest[withdrawalRequestId].forVoteCount++;
 
 			// If required signatures met
@@ -325,14 +332,14 @@ contract Vault is
 		}
 		else
 		{
-			// [increment] Against count
+			// [update] `_withdrawalRequest` → [increment] Against count
 			_withdrawalRequest[withdrawalRequestId].againstVoteCount++;
 		}
 
 		// [emit]
 		emit VoterVoted(withdrawalRequestId, msg.sender, vote);
 
-		// [update] Mark msg.sender (voter) has voted
+		// [update] `_withdrawalRequestVotedVoters` → Mark voter has voted
 		_withdrawalRequestVotedVoters[withdrawalRequestId].push(msg.sender);
 
 		// If the required signatures has not yet been reached..
@@ -374,10 +381,10 @@ contract Vault is
 			!wr.paused
 		)
 		{
-			// [ERC20-transfer] the specified amount of tokens to the recipient
+			// [ERC20-transfer] Specified amount of tokens to recipient
 			IERC20(wr.token).safeTransfer(wr.to, wr.amount);
 
-			// [decrement] The vault token balance
+			// [decrement] `_tokenBalance`
 			_tokenBalance[wr.token] -= wr.amount;
 
 			// [emit]
@@ -451,10 +458,10 @@ contract Vault is
 			"Amount must be greater than zero"
 		);
 
-		// Transfer amount from msg.sender to this contract
+		// [ERC20-transfer] Transfer amount from msg.sender to this contract
 		IERC20(tokenAddress).safeTransferFrom(msg.sender, address(this), amount);
 
-		// Update vault token balance
+		// [increment] `_tokenBalance`
 		_tokenBalance[tokenAddress] += amount;
 			
 		// [emit]
