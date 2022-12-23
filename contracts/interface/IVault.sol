@@ -113,7 +113,7 @@ interface IVault is
 
 
 	/**
-	* @notice Required signatures for an approval
+	* @notice Required signatures for approval
 	*
 	* @dev [uint256-getter]
 	* @return {uint256}
@@ -125,7 +125,7 @@ interface IVault is
 	;
 
 	/**
-	* @notice Get Withdrawal delay (denominated in minutes)
+	* @notice Get Withdrawal delay in minutes
 	*
 	* @dev [uint256-getter]
 	*
@@ -211,7 +211,7 @@ interface IVault is
 	;
 
 	/**
-	* @notice Toggle pause on a `WithdrawalRequest`
+	* @notice Toggle pause on a WithdrawalRequest
 	*
 	* @dev [restriction] AccessControl._role = DEFAULT_ADMIN_ROLE
 	*
@@ -219,7 +219,7 @@ interface IVault is
 	*
 	* @param withdrawalRequestId {uint256}
 	* @return {bool} Status
-	* @return {WithdrawalRequest} Updated `WithdrawalRequest`
+	* @return {WithdrawalRequest} Updated WithdrawalRequest
 	*
 	* Emit: `ToggledWithdrawalRequestPause`
 	*/
@@ -229,7 +229,7 @@ interface IVault is
 	;
 
 	/**
-	* @notice Toggle pause on a `WithdrawalRequest`
+	* @notice Toggle pause on a WithdrawalRequest
 	*
 	* @dev [restriction] AccessControl._role = DEFAULT_ADMIN_ROLE
 	*
@@ -273,7 +273,7 @@ interface IVault is
 	;
 
 	/**
-	* @notice Vote on withdrawal request
+	* @notice Vote on WithdrawalRequest
 	*
 	* @dev [restriction] AccessControl._role = VOTER_ROLE
 	*
@@ -287,8 +287,8 @@ interface IVault is
 	* @return {bool} againstVoteCount
 	* @return {bool} lastImpactfulVote
 	*
-	* Emits: WithdrawalRequestReadyToBeProccessed
-	* Emits: VoterVoted
+	* Emits: `WithdrawalRequestReadyToBeProccessed`
+	* Emits: `VoterVoted`
 	*/
 	function voteOnWithdrawalRequest(uint256 withdrawalRequestId, bool vote)
 		external
@@ -296,7 +296,7 @@ interface IVault is
 	;
 
 	/**
-	* @notice Process the WithdrawalRequest
+	* @notice Process WithdrawalRequest with given `withdrawalRequestId`
 	*
 	* @dev [restriction] AccessControl._role = VOTER_ROLE
 	*
@@ -334,7 +334,7 @@ interface IVault is
 	;
 
 	/**
-	* @notice Get WithdrawalRequest with given withdrawalRequestId
+	* @notice Get WithdrawalRequest with given `withdrawalRequestId`
 	*
 	* @dev [!restriction]
 	*
@@ -372,7 +372,7 @@ interface IVault is
 	* @dev [getter][mapping]
 	*
 	* @param creator {address}
-	* @return {uint256[]} Array of WithdrawalRequestIds
+	* @return {uint256[]} Array of `WithdrawalRequestId`'s
 	*/
 	function withdrawalRequestByCreator(address creator)
 		view
@@ -387,13 +387,13 @@ interface IVault is
 	*
 	* @dev [IERC20]
 	*
-	* @param tokenAddress {address} Address of token contract
+	* @param tokenAddress {address}
 	* @param amount {uint256} Amount to be moved
 	* @return {bool} Status
 	* @return {uint256} Amount deposited
 	* @return {uint256} New token balance
 	*
-	* Emits: TokensDeposited
+	* Emits: `TokensDeposited`
 	*/
 	function depositTokens(address tokenAddress, uint256 amount)
 		external
