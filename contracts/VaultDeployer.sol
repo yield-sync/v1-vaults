@@ -77,7 +77,7 @@ contract VaultDeployer is
 
 	/**
 	* @notice Toggle pause
-	* @dev [restriction][AccessControlEnumerable] DEFAULT_ADMIN_ROLE
+	* @dev [restriction] AccessControl._role = DEFAULT_ADMIN_ROLE
 	* @dev [update] pause
 	*/
 	function togglePause()
@@ -96,7 +96,7 @@ contract VaultDeployer is
 
 	/**
 	* @notice Set fee for deploying a vault
-	* @dev [restriction][AccessControlEnumerable] DEFAULT_ADMIN_ROLE
+	* @dev [restriction] AccessControl._role = DEFAULT_ADMIN_ROLE
 	* @dev [update] fee
 	* @param _fee {uint256} Fee to be set
 	*/
