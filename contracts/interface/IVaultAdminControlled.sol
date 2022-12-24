@@ -12,19 +12,6 @@ import "./IVault.sol";
 interface IVaultAdminControlled is
 	IVault
 {
-	struct WithdrawalRequest {
-		address creator;
-		address to;
-		address token;
-		uint256 amount;
-		uint256 forVoteCount;
-		uint256 againstVoteCount;
-		uint256 lastImpactfulVote;
-		bool accelerated;
-		bool paused;
-	}
-
-
 	/**
 	* @dev Emits when `requiredSignatures` are updated
 	*/

@@ -112,7 +112,7 @@ interface IVault is
 	* @param tokenAddress {address}
 	* @param amount {uint256} Amount to be withdrawn
 	* @return {bool} Status
-	* @return {WithdrawalRequest} The added `WithdrawalRequest`
+	* @return {uint256} Id of the added `WithdrawalRequest`
 	*
 	* Emits: `CreatedWithdrawalRequest`
 	*/
@@ -122,7 +122,7 @@ interface IVault is
 		uint256 amount
 	)
 		external
-		returns (bool, WithdrawalRequest memory)
+		returns (bool, uint256)
 	;
 
 	/**

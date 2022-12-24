@@ -11,6 +11,12 @@ contract VaultAdminControlled is
 	Vault,
 	IVaultAdminControlled
 {
+	// [state-variable]
+	//
+	mapping (uint256 => bool) _withdrawalRequestAccelerated;
+	//
+	mapping (uint256 => bool) _withdrawalRequestPaused;
+
 	constructor (
 		address admin,
 		uint256 requiredSignatures_,
@@ -27,8 +33,58 @@ contract VaultAdminControlled is
 		_setupRole(DEFAULT_ADMIN_ROLE, admin);
 	}
 
-	//bool paused;
-	//bool accelerated;
+
+	function createWithdrawalRequest(
+		address to,
+		address tokenAddress,
+		uint256 amount
+	)
+		public
+		override(Vault, IVault)
+		onlyRole(VOTER_ROLE)
+		returns (bool, uint256)
+	{
+		(bool status, uint256 _withdrawalRequestId) = super.createWithdrawalRequest(
+			to,
+			tokenAddress,
+			amount
+		);
+
+		_withdrawalRequestAccelerated[_withdrawalRequestId] = false;
+		_withdrawalRequestPaused[_withdrawalRequestId] = false;
+
+		return (status, _withdrawalRequestId);
+	}
+
+	function processWithdrawalRequests(uint256 withdrawalRequestId)
+		public
+		override(Vault, IVault)
+		returns (bool)
+	{
+		// [require] Required signatures to be met
+		require(
+			_withdrawalRequest[withdrawalRequestId].forVoteCount >= requiredSignatures,
+			"Not enough signatures"
+		);
+
+		// [calculate] Time passed
+		uint256 timePassed = block.timestamp - _withdrawalRequest[withdrawalRequestId].lastImpactfulVoteTime;
+
+		// [require] WithdrawalRequest time delay passed OR accelerated
+		require(
+			timePassed >= SafeMath.mul(withdrawalDelayMinutes, 60) ||
+			_withdrawalRequest[withdrawalRequestId].accelerated,
+			"Not enough time has passed"
+		);
+
+		// [require] WithdrawalRequest NOT paused
+		require(_withdrawalRequest[withdrawalRequestId].paused == false, "Paused");
+
+		// [call][internal]
+		_processWithdrawalRequest(withdrawalRequestId);
+
+		return true;
+	}
 
 
 	/* [restriction][AccessControlEnumerable] DEFAULT_ADMIN_ROLE */
@@ -133,37 +189,6 @@ contract VaultAdminControlled is
 
 		// [emit]
 		emit DeletedWithdrawalRequest(withdrawalRequestId);
-
-		return true;
-	}
-
-
-	function processWithdrawalRequests(uint256 withdrawalRequestId)
-		public
-		override(Vault, IVault)
-		returns (bool)
-	{
-		// [require] Required signatures to be met
-		require(
-			_withdrawalRequest[withdrawalRequestId].forVoteCount >= requiredSignatures,
-			"Not enough signatures"
-		);
-
-		// [calculate] Time passed
-		uint256 timePassed = block.timestamp - _withdrawalRequest[withdrawalRequestId].lastImpactfulVoteTime;
-
-		// [require] WithdrawalRequest time delay passed OR accelerated
-		require(
-			timePassed >= SafeMath.mul(withdrawalDelayMinutes, 60) ||
-			_withdrawalRequest[withdrawalRequestId].accelerated,
-			"Not enough time has passed"
-		);
-
-		// [require] WithdrawalRequest NOT paused
-		require(_withdrawalRequest[withdrawalRequestId].paused == false, "Paused");
-
-		// [call][internal]
-		_processWithdrawalRequests(withdrawalRequestId);
 
 		return true;
 	}

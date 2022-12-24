@@ -150,7 +150,7 @@ contract Vault is
 	*
 	* @param withdrawalRequestId {uint256}
 	*/
-	function _processWithdrawalRequests(uint256 withdrawalRequestId)
+	function _processWithdrawalRequest(uint256 withdrawalRequestId)
 		internal
 	{
 		// Create temporary variable
@@ -182,7 +182,7 @@ contract Vault is
 	)
 		public
 		onlyRole(VOTER_ROLE)
-		returns (bool, WithdrawalRequest memory)
+		returns (bool, uint256)
 	{
 		// [require]  The specified amount is available
 		require(_tokenBalance[tokenAddress] >= amount, "Insufficient funds");
@@ -212,7 +212,7 @@ contract Vault is
 		// [emit]
 		emit CreatedWithdrawalRequest(_withdrawalRequest[_withdrawalRequestId]);
 		
-		return (true, _withdrawalRequest[_withdrawalRequestId]);
+		return (true, _withdrawalRequestId);
 	}
 
 	/// @inheritdoc IVault
@@ -303,7 +303,7 @@ contract Vault is
 		);
 		
 		// [call][internal]
-		_processWithdrawalRequests(withdrawalRequestId);
+		_processWithdrawalRequest(withdrawalRequestId);
 	
 		return (true);
 	}
