@@ -43,7 +43,7 @@ interface IVaultAdminControlled is
 	/**
 	* @dev Emits when a `WithdrawalRequest.paused` is toggled
 	*/
-	event ToggledWithdrawalRequestPause (
+	event ToggledWithdrawalRequestPaused (
 		bool withdrawalRequestPaused
 	);
 

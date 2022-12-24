@@ -20,9 +20,6 @@ interface IVault is
 		uint256 forVoteCount;
 		uint256 againstVoteCount;
 		uint256 lastImpactfulVoteTime;
-
-		bool accelerated;
-		bool paused;
 	}
 
 

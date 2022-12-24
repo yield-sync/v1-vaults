@@ -198,8 +198,6 @@ contract Vault is
 			creator: msg.sender,
 			to: to,
 			token: tokenAddress,
-			paused: false,
-			accelerated: false,
 			amount: amount,
 			forVoteCount: 0,
 			againstVoteCount: 0,
@@ -293,12 +291,9 @@ contract Vault is
 			"Not enough for votes"
 		);
 
-		// [calculate] Time passed
-		uint256 timePassed = block.timestamp - _withdrawalRequest[withdrawalRequestId].lastImpactfulVoteTime;
-
 		// [require] WithdrawalRequest time delay passed OR accelerated
 		require(
-			timePassed >= SafeMath.mul(withdrawalDelayMinutes, 60),
+			block.timestamp - _withdrawalRequest[withdrawalRequestId].lastImpactfulVoteTime >= SafeMath.mul(withdrawalDelayMinutes, 60),
 			"Not enough time has passed"
 		);
 		

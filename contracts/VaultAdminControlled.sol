@@ -67,18 +67,15 @@ contract VaultAdminControlled is
 			"Not enough signatures"
 		);
 
-		// [calculate] Time passed
-		uint256 timePassed = block.timestamp - _withdrawalRequest[withdrawalRequestId].lastImpactfulVoteTime;
-
 		// [require] WithdrawalRequest time delay passed OR accelerated
 		require(
-			timePassed >= SafeMath.mul(withdrawalDelayMinutes, 60) ||
-			_withdrawalRequest[withdrawalRequestId].accelerated,
+			block.timestamp - _withdrawalRequest[withdrawalRequestId].lastImpactfulVoteTime >= SafeMath.mul(withdrawalDelayMinutes, 60) ||
+			_withdrawalRequestAccelerated[withdrawalRequestId],
 			"Not enough time has passed"
 		);
 
 		// [require] WithdrawalRequest NOT paused
-		require(_withdrawalRequest[withdrawalRequestId].paused == false, "Paused");
+		require(_withdrawalRequestPaused[withdrawalRequestId] == false, "Paused");
 
 		// [call][internal]
 		_processWithdrawalRequest(withdrawalRequestId);
@@ -164,14 +161,14 @@ contract VaultAdminControlled is
 		validWithdrawalRequest(withdrawalRequestId)
 		returns (bool, uint256)
 	{
-		// [update] `_withdrawalRequest`
-		_withdrawalRequest[withdrawalRequestId].paused = !_withdrawalRequest[
+		// [update] `_withdrawalRequestPaused`
+		_withdrawalRequestPaused[withdrawalRequestId] = !_withdrawalRequestPaused[
 			withdrawalRequestId
-		].paused;
+		];
 
 		// [emit]
-		emit ToggledWithdrawalRequestPause(
-			_withdrawalRequest[withdrawalRequestId].paused
+		emit ToggledWithdrawalRequestPaused(
+			_withdrawalRequestPaused[withdrawalRequestId]
 		);
 
 		return (true, withdrawalRequestId);
