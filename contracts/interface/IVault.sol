@@ -3,28 +3,23 @@ pragma solidity ^0.8.1;
 
 
 /* [import] */
-import "@openzeppelin/contracts/access/IAccessControl.sol";
+import "@openzeppelin/contracts/access/IAccessControlEnumerable.sol";
 
 
 /**
 * @title IVault
 */
 interface IVault is
-	IAccessControl
+	IAccessControlEnumerable
 {
 	struct WithdrawalRequest {
 		address creator;
 		address to;
 		address token;
-
-		bool paused;
-		bool accelerated;
-
 		uint256 amount;
 		uint256 forVoteCount;
 		uint256 againstVoteCount;
-
-		uint256 lastImpactfulVote;
+		uint256 lastImpactfulVoteTime;
 	}
 
 
@@ -33,41 +28,6 @@ interface IVault is
 	*/
 	event DeletedWithdrawalRequest (
 		uint256 WithdrawalRequest
-	);
-
-	/**
-	* @dev Emits when `requiredSignatures` are updated
-	*/
-	event UpdatedRequiredSignatures (
-		uint256 requiredSignatures
-	);
-
-	/**
-	* @dev Emits when a voter is added
-	*/
-	event VoterAdded (
-		address addedVoter
-	);
-
-	/**
-	* @dev Emits when a voter is removed
-	*/
-	event VoterRemoved (
-		address addedVoter
-	);
-
-	/**
-	* @dev Emits when `withdrawalDelayMinutes` is updated
-	*/
-	event UpdatedWithdrawalDelayMinutes (
-		uint256 withdrawalDelayMinutes
-	);
-
-	/**
-	* @dev Emits when a `WithdrawalRequest.paused` is toggled
-	*/
-	event ToggledWithdrawalRequestPause (
-		bool withdrawalRequestPaused
 	);
 
 	/**
@@ -116,6 +76,7 @@ interface IVault is
 	* @notice Required signatures for approval
 	*
 	* @dev [uint256-getter]
+	*
 	* @return {uint256}
 	*/
 	function requiredSignatures()
@@ -136,120 +97,9 @@ interface IVault is
 		view
 		returns (uint256)
 	;
-	
-
-	/**
-	* @notice Update amount of required signatures
-	*
-	* @dev [restriction] AccessControl._role = DEFAULT_ADMIN_ROLE
-	*
-	* @dev [update] `requiredSignatures`
-	*
-	* @param newRequiredSignatures {uint256}
-	* @return {bool} Status
-	* @return {uint256} New `requiredSignatures`
-	*
-	* Emits: `UpdatedRequiredSignatures`
-	*/
-	function updateRequiredSignatures(uint256 newRequiredSignatures)
-		external
-		returns (bool, uint256)
-	;
-
-	/**
-	* @notice Add a voter
-	*
-	* @dev [restriction] AccessControl._role = DEFAULT_ADMIN_ROLE
-	*
-	* @dev [add] Voter to `AccessControl._roles` VOTER_ROLE
-	*
-	* @param voter {address} Address of the voter to add
-	* @return {bool} Status
-	* @return {address} Voter added
-	*
-	* Emits: `VoterAdded`
-	*/
-	function addVoter(address voter)
-		external
-		returns (bool, address)
-	;
-
-	/**
-	* @notice Remove a voter
-	*
-	* @dev [restriction] AccessControl._role = DEFAULT_ADMIN_ROLE
-	*
-	* @dev [remove] Voter with VOTER_ROLE from `AccessControl._roles`
-	*
-	* @param voter {address} Address of the voter to remove
-	* @return {bool} Status
-	* @return {address} Removed voter
-	*
-	* Emits: `VoterRemoved`
-	*/	
-	function removeVoter(address voter)
-		external
-		returns (bool, address)
-	;
-
-	/**
-	* @notice Update `withdrawalDelayMinutes`
-	*
-	* @dev [restriction] AccessControl._role = DEFAULT_ADMIN_ROLE
-	*
-	* @dev [update] `withdrawalDelayMinutes` to new value
-	*
-	* @param newWithdrawalDelayMinutes {uint256}
-	* @return {bool} Status
-	* @return {uint256} New `withdrawalDelayMinutes`
-	*
-	* Emits: `UpdatedWithdrawalDelayMinutes`
-	*/
-	function updateWithdrawalDelayMinutes(uint256 newWithdrawalDelayMinutes)
-		external
-		returns (bool, uint256)
-	;
-
-	/**
-	* @notice Toggle pause on a WithdrawalRequest
-	*
-	* @dev [restriction] AccessControl._role = DEFAULT_ADMIN_ROLE
-	*
-	* @dev [update] `_withdrawalRequest`
-	*
-	* @param withdrawalRequestId {uint256}
-	* @return {bool} Status
-	* @return {WithdrawalRequest} Updated WithdrawalRequest
-	*
-	* Emit: `ToggledWithdrawalRequestPause`
-	*/
-	function toggleWithdrawalRequestPause(uint256 withdrawalRequestId)
-		external
-		returns (bool, WithdrawalRequest memory)
-	;
-
-	/**
-	* @notice Toggle pause on a WithdrawalRequest
-	*
-	* @dev [restriction] AccessControl._role = DEFAULT_ADMIN_ROLE
-	*
-	* @dev [call][internal] {_deleteWithdrawalRequest}
-	*
-	* @param withdrawalRequestId {uint256}
-	* @return {bool} Status
-	*
-	* Emits: `DeletedWithdrawalRequest`
-	*/
-	function deleteWithdrawalRequest(uint256 withdrawalRequestId)
-		external
-		returns (bool)
-	;
-
 
 	/**
 	* @notice Create a WithdrawalRequest
-	*
-	* @dev [restriction] AccessControl._role = VOTER_ROLE
 	*
 	* @dev [increment] `_withdrawalRequestId`
 	*      [add] `_withdrawalRequest` value
@@ -259,7 +109,7 @@ interface IVault is
 	* @param tokenAddress {address}
 	* @param amount {uint256} Amount to be withdrawn
 	* @return {bool} Status
-	* @return {WithdrawalRequest} The added `WithdrawalRequest`
+	* @return {uint256} Id of the added `WithdrawalRequest`
 	*
 	* Emits: `CreatedWithdrawalRequest`
 	*/
@@ -269,13 +119,11 @@ interface IVault is
 		uint256 amount
 	)
 		external
-		returns (bool, WithdrawalRequest memory)
+		returns (bool, uint256)
 	;
 
 	/**
 	* @notice Vote on WithdrawalRequest
-	*
-	* @dev [restriction] AccessControl._role = VOTER_ROLE
 	*
 	* @dev [update] `_withdrawalRequest`
 	*      [update] `_withdrawalRequestVotedVoters`
@@ -299,29 +147,24 @@ interface IVault is
 	/**
 	* @notice Process WithdrawalRequest with given `withdrawalRequestId`
 	*
-	* @dev [restriction] AccessControl._role = VOTER_ROLE
-	*
 	* @dev [ERC20-transfer]
 	*      [decrement] `_tokenBalance`
 	*      [call][internal] `_deleteWithdrawalRequest`
 	*
 	* @param withdrawalRequestId {uint256} Id of the WithdrawalRequest
 	* @return {bool} Status
-	* @return {string} Message
 	*
 	* Emits: `TokensDeposited`
 	* Emits: `DeletedWithdrawalRequest`
 	*/
 	function processWithdrawalRequests(uint256 withdrawalRequestId)
 		external
-		returns (bool, string memory)
+		returns (bool)
 	;
 
 
 	/**
 	* @notice Get token balance
-	*
-	* @dev [!restriction]
 	*
 	* @dev [getter][mapping]
 	*
@@ -337,8 +180,6 @@ interface IVault is
 	/**
 	* @notice Get WithdrawalRequest with given `withdrawalRequestId`
 	*
-	* @dev [!restriction]
-	*
 	* @dev [getter][mapping]
 	*
 	* @param withdrawalRequestId {uint256}
@@ -351,8 +192,6 @@ interface IVault is
 
 	/**
 	* @notice Get array of voters
-	*
-	* @dev [!restriction]
 	*
 	* @dev [getter][mapping]
 	*
@@ -368,8 +207,6 @@ interface IVault is
 	/**
 	* @notice Get withdrawalRequestIds by a given creator
 	*
-	* @dev [!restriction]
-	*
 	* @dev [getter][mapping]
 	*
 	* @param creator {address}
@@ -383,8 +220,6 @@ interface IVault is
 
 	/**
 	* @notice Deposit tokens
-	*
-	* @dev [!restriction]
 	*
 	* @dev [ERC20-transfer] Transfer amount from msg.sender to this contract
 	*      [increment] `_tokenBalance`
