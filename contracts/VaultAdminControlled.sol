@@ -2,6 +2,10 @@
 pragma solidity ^0.8.1;
 
 
+/* [import] */
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+
 /* [import-internal] */
 import "./interface/IVaultAdminControlled.sol";
 import "./Vault.sol";
@@ -11,6 +15,10 @@ contract VaultAdminControlled is
 	Vault,
 	IVaultAdminControlled
 {
+	/* [USING] */
+	using SafeERC20 for IERC20;
+
+
 	/* [state-variable] */
 	mapping (uint256 => WithdrawalRequestAdminData) _withdrawalRequestAdminData;
 
@@ -30,16 +38,14 @@ contract VaultAdminControlled is
 
 
 	/* [restriction][internal] */
-	
+
 	/**
 	* @notice Delete `WithdrawalRequest` and related values
-	*a
+	*
 	* @dev [restriction][internal]
 	*
 	* @dev [override]
-	*      [delete] `_withdrawalRequest` value
-	*      [delete] `_withdrawalRequestVotedVoters` value
-	*      [delete] `_withdrawalRequestByCreator` value
+	*      [super] `_deleteWithdrawalRequest`
 	*      [delete] `_withdrawalRequestAdminData` value
 	*
 	* @param withdrawalRequestId {uint256}
@@ -96,24 +102,35 @@ contract VaultAdminControlled is
 		override(Vault, IVault)
 		public
 	{
+		// Temporary variable
+		WithdrawalRequest memory w = _withdrawalRequest[withdrawalRequestId];
+
 		// [require] Required signatures to be met
 		require(
-			_withdrawalRequest[withdrawalRequestId].forVoteCount >= requiredForVotes,
+			w.forVoteCount >= requiredForVotes,
 			"Not enough signatures"
 		);
 
 		// [require] WithdrawalRequest time delay passed OR accelerated
 		require(
-			block.timestamp - _withdrawalRequest[withdrawalRequestId].lastImpactfulVoteTime >= SafeMath.mul(withdrawalDelayMinutes, 60) ||
-			_withdrawalRequestAdminData[withdrawalRequestId].accelerated,
+			block.timestamp - w.lastImpactfulVoteTime >= SafeMath.mul(withdrawalDelayMinutes, 60) || _withdrawalRequestAdminData[withdrawalRequestId].accelerated,
 			"Not enough time has passed & not accelerated"
 		);
 
 		// [require] WithdrawalRequest NOT paused
 		require(!_withdrawalRequestAdminData[withdrawalRequestId].paused, "Paused");
+		
+		// [ERC20-transfer] Specified amount of tokens to recipient
+		IERC20(w.token).safeTransfer(w.to, w.amount);
 
-		// [call][internal]
-		_processWithdrawalRequest(withdrawalRequestId);
+		// [decrement] `_tokenBalance`
+		_tokenBalance[_withdrawalRequest[withdrawalRequestId].token] -= w.amount;
+
+		// [emit]
+		emit TokensWithdrawn(msg.sender, w.to, w.amount);
+
+		// [call]
+		_deleteWithdrawalRequest(withdrawalRequestId);
 	}
 
 

@@ -101,6 +101,8 @@ interface IVault is
 	/**
 	* @notice Create a WithdrawalRequest
 	*
+	* @dev [restriction][AccessControlEnumerable] VOTER_ROLE
+	*
 	* @dev [increment] `_withdrawalRequestId`
 	*      [add] `_withdrawalRequest` value
 	*      [push-into] `_withdrawalRequestByCreator`
@@ -124,6 +126,8 @@ interface IVault is
 	/**
 	* @notice Vote on WithdrawalRequest
 	*
+	* @dev [restriction][AccessControlEnumerable] VOTER_ROLE
+	*
 	* @dev [update] `_withdrawalRequest`
 	*      [update] `_withdrawalRequestVotedVoters`
 	*
@@ -145,11 +149,15 @@ interface IVault is
 	/**
 	* @notice Process WithdrawalRequest with given `withdrawalRequestId`
 	*
+	* @dev [restriction][AccessControlEnumerable] VOTER_ROLE
+	*
 	* @dev [ERC20-transfer]
 	*      [decrement] `_tokenBalance`
 	*      [call][internal] `_deleteWithdrawalRequest`
 	*
 	* @param withdrawalRequestId {uint256} Id of the WithdrawalRequest
+	*
+	* Emits: `TokensWithdrawn`
 	*/
 	function processWithdrawalRequests(uint256 withdrawalRequestId)
 		external

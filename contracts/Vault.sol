@@ -142,36 +142,6 @@ contract Vault is
 		emit DeletedWithdrawalRequest(withdrawalRequestId);
 	}
 
-	/**
-	* @notice Process WithdrawalRequest
-	*
-	* @dev [restriction][internal]
-	*
-	* @dev 
-	*
-	* @param withdrawalRequestId {uint256}
-	*
-	* Emits: `TokensWithdrawn`
-	*/
-	function _processWithdrawalRequest(uint256 withdrawalRequestId)
-		internal
-	{
-		// Create temporary variable
-		WithdrawalRequest memory wr = _withdrawalRequest[withdrawalRequestId];
-		
-		// [ERC20-transfer] Specified amount of tokens to recipient
-		IERC20(wr.token).safeTransfer(wr.to, wr.amount);
-
-		// [decrement] `_tokenBalance`
-		_tokenBalance[wr.token] -= wr.amount;
-
-		// [emit]
-		emit TokensWithdrawn(msg.sender, wr.to, wr.amount);
-
-		// [call]
-		_deleteWithdrawalRequest(withdrawalRequestId);
-	}
-
 
 	/* [restriction][AccessControlEnumerable] VOTER_ROLE */
 
@@ -284,20 +254,32 @@ contract Vault is
 		onlyRole(VOTER_ROLE)
 		validWithdrawalRequest(withdrawalRequestId)
 	{
+		// Temporary variable
+		WithdrawalRequest memory w = _withdrawalRequest[withdrawalRequestId];
+		
 		// [require] Required signatures to be met
 		require(
-			_withdrawalRequest[withdrawalRequestId].forVoteCount >= requiredForVotes,
+			w.forVoteCount >= requiredForVotes,
 			"Not enough for votes"
 		);
 
 		// [require] WithdrawalRequest time delay passed OR accelerated
 		require(
-			block.timestamp - _withdrawalRequest[withdrawalRequestId].lastImpactfulVoteTime >= SafeMath.mul(withdrawalDelayMinutes, 60),
+			block.timestamp - w.lastImpactfulVoteTime >= SafeMath.mul(withdrawalDelayMinutes, 60),
 			"Not enough time has passed"
 		);
-		
-		// [call][internal]
-		_processWithdrawalRequest(withdrawalRequestId);
+
+		// [ERC20-transfer] Specified amount of tokens to recipient
+		IERC20(w.token).safeTransfer(w.to, w.amount);
+
+		// [decrement] `_tokenBalance`
+		_tokenBalance[_withdrawalRequest[withdrawalRequestId].token] -= w.amount;
+
+		// [emit]
+		emit TokensWithdrawn(msg.sender, w.to, w.amount);
+
+		// [call]
+		_deleteWithdrawalRequest(withdrawalRequestId);
 	}
 
 
