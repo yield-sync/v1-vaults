@@ -14,7 +14,7 @@ contract VaultAdminControlled is
 	// [state-variable]
 	//
 	mapping (uint256 => bool) _withdrawalRequestAccelerated;
-	//
+	// 
 	mapping (uint256 => bool) _withdrawalRequestPaused;
 
 	constructor (
