@@ -29,7 +29,8 @@ contract VaultAdminControlled is
 	}
 
 
-	/* Note [restriction][internal] */
+	/* [restriction][internal] */
+	
 	/**
 	* @notice Delete `WithdrawalRequest` and related values
 	*a
