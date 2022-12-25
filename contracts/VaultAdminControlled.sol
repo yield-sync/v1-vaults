@@ -11,24 +11,27 @@ import "./interface/IVaultAdminControlled.sol";
 import "./Vault.sol";
 
 
+/**
+* @title VaultAdminControlled
+*/
 contract VaultAdminControlled is
 	Vault,
 	IVaultAdminControlled
 {
-	/* [USING] */
+	/* [using] */
 	using SafeERC20 for IERC20;
 
 
 	/* [constructor] */
 	constructor (
 		address admin,
-		uint256 requiredApproveVotes_,
-		uint256 withdrawalDelayMinutes_,
+		uint256 _requiredApproveVotes,
+		uint256 _withdrawalDelayMinutes,
 		address[] memory voters
 	)
-		Vault(requiredApproveVotes_, withdrawalDelayMinutes_, voters)
+		Vault(_requiredApproveVotes, _withdrawalDelayMinutes, voters)
 	{
-		// Set up the default admin role
+		// Set up DEFAULT_ADMIN_ROLE
 		_setupRole(DEFAULT_ADMIN_ROLE, admin);
 	}
 

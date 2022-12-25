@@ -19,7 +19,7 @@ contract Vault is
 	AccessControlEnumerable,
 	IVault
 {
-	/* [USING] */
+	/* [using] */
 	using SafeERC20 for IERC20;
 
 
@@ -47,18 +47,18 @@ contract Vault is
 
 	/* [constructor] */
 	constructor (
-		uint256 requiredApproveVotes_,
-		uint256 withdrawalDelayMinutes_,
+		uint256 _requiredApproveVotes,
+		uint256 _withdrawalDelayMinutes,
 		address[] memory voters
 	)
 	{
 		// Initialize WithdrawalRequestId
 		_withdrawalRequestId = 0;
 
-		requiredApproveVotes = requiredApproveVotes_;
+		requiredApproveVotes = _requiredApproveVotes;
 
 		// Set delay (in minutes)
-		withdrawalDelayMinutes = withdrawalDelayMinutes_;
+		withdrawalDelayMinutes = _withdrawalDelayMinutes;
 
 		// [for] each voter address..
 		for (uint256 i = 0; i < voters.length; i++)
