@@ -6,24 +6,24 @@ pragma solidity ^0.8.1;
 import "@openzeppelin/contracts/access/IAccessControlEnumerable.sol";
 
 
+/* [struct] */
+struct WithdrawalRequest {
+	address creator;
+	address to;
+	address token;
+	uint256 amount;
+	uint256 approveVoteCount;
+	uint256 denyVoteCount;
+	uint256 latestSignificantApproveVoteTime;
+}
+
+
 /**
 * @title IVault
 */
 interface IVault is
 	IAccessControlEnumerable
 {
-	/* [struct] */
-	struct WithdrawalRequest {
-		address creator;
-		address to;
-		address token;
-		uint256 amount;
-		uint256 approveVoteCount;
-		uint256 denyVoteCount;
-		uint256 latestSignificantApproveVoteTime;
-	}
-
-
 	/* [event] */
 	/**
 	* @dev Emits when a `WithdrawalRequest` is deleted
