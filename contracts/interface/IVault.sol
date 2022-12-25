@@ -12,6 +12,7 @@ import "@openzeppelin/contracts/access/IAccessControlEnumerable.sol";
 interface IVault is
 	IAccessControlEnumerable
 {
+	/* [struct] */
 	struct WithdrawalRequest {
 		address creator;
 		address to;
@@ -19,10 +20,11 @@ interface IVault is
 		uint256 amount;
 		uint256 approveVoteCount;
 		uint256 denyVoteCount;
-		uint256 latestSignificantApproveVoteMade;
+		uint256 latestSignificantApproveVoteTime;
 	}
 
 
+	/* [event] */
 	/**
 	* @dev Emits when a `WithdrawalRequest` is deleted
 	*/
@@ -110,7 +112,8 @@ interface IVault is
 	* @param to {address} Address the withdrawn tokens will be sent
 	* @param tokenAddress {address}
 	* @param amount {uint256} Amount to be withdrawn
-	* @return {uint256} Id of the added `WithdrawalRequest`
+	*
+	* @return {uint256} `_withdrawalRequestId`
 	*
 	* Emits: `CreatedWithdrawalRequest`
 	*/
@@ -132,7 +135,8 @@ interface IVault is
 	*      [update] `_withdrawalRequestVotedVoters`
 	*
 	* @param withdrawalRequestId {uint256}
-	* @param vote {bool} Approve (true) or deny (false)
+	* @param vote {bool} true (approve) or false (deny)
+	*
 	* @return {bool} Vote
 	* @return {bool} approveVoteCount
 	* @return {bool} denyVoteCount
@@ -170,6 +174,7 @@ interface IVault is
 	* @dev [getter][mapping]
 	*
 	* @param tokenAddress {address} Token contract address
+	*
 	* @return {uint256}
 	*/
 	function tokenBalance(address tokenAddress)
@@ -184,6 +189,7 @@ interface IVault is
 	* @dev [getter][mapping]
 	*
 	* @param withdrawalRequestId {uint256}
+	*
 	* @return {WithdrawalRequest}
 	*/
 	function withdrawalRequest(uint256 withdrawalRequestId)
@@ -197,6 +203,7 @@ interface IVault is
 	* @dev [getter][mapping]
 	*
 	* @param withdrawalRequestId {uint256} Id of WithdrawalRequest
+	*
 	* @return {WithdrawalRequest}
 	*/
 	function withdrawalRequestVotedVoters(uint256 withdrawalRequestId)
@@ -211,7 +218,8 @@ interface IVault is
 	* @dev [getter][mapping]
 	*
 	* @param creator {address}
-	* @return {uint256[]} Array of `WithdrawalRequestId`'s
+	*
+	* @return {uint256[]} Array of `WithdrawalRequestId`
 	*/
 	function withdrawalRequestByCreator(address creator)
 		view
@@ -227,8 +235,9 @@ interface IVault is
 	*
 	* @param tokenAddress {address}
 	* @param amount {uint256} Amount to be moved
+	*
 	* @return {uint256} Amount deposited
-	* @return {uint256} New token balance
+	* @return {uint256} New `_tokenBalance`
 	*
 	* Emits: `TokensDeposited`
 	*/

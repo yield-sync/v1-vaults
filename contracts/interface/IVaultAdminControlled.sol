@@ -12,6 +12,7 @@ import "./IVault.sol";
 interface IVaultAdminControlled is
 	IVault
 {
+	/* [event] */
 	/**
 	* @dev Emits when `requiredApproveVotes` are updated
 	*/
@@ -40,48 +41,41 @@ interface IVaultAdminControlled is
 		uint256 withdrawalDelayMinutes
 	);
 
-	/**
-	* @dev Emits when a `WithdrawalRequest.paused` is toggled
-	*/
-	event ToggledWithdrawalRequestPaused (
-		bool withdrawalRequestPaused
-	);
-
 
 	/**
-	* @notice Update amount of required signatures
+	* @notice Update the required approved votes
 	*
 	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
 	*
 	* @dev [update] `requiredApproveVotes`
 	*
 	* @param newRequiredApproveVotes {uint256}
-	* @return {bool} Status
+	*
 	* @return {uint256} New `requiredApproveVotes`
 	*
 	* Emits: `UpdatedRequiredApproveVotes`
 	*/
 	function updateRequiredApproveVotes(uint256 newRequiredApproveVotes)
 		external
-		returns (bool, uint256)
+		returns (uint256)
 	;
 
 	/**
-	* @notice Add a voter
+	* @notice Assign VOTER_ROLE to an address on AccessControlEnumerable
 	*
 	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
 	*
-	* @dev [add] Voter to `AccessControl._roles` VOTER_ROLE
+	* @dev [add] address to VOTER_ROLE on `AccessControlEnumerable`
 	*
-	* @param voter {address} Address of the voter to add
-	* @return {bool} Status
+	* @param targetAddress {address}
+	*
 	* @return {address} Voter added
 	*
 	* Emits: `VoterAdded`
 	*/
-	function addVoter(address voter)
+	function addVoter(address targetAddress)
 		external
-		returns (bool, address)
+		returns (address)
 	;
 
 	/**
@@ -89,17 +83,17 @@ interface IVaultAdminControlled is
 	*
 	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
 	*
-	* @dev [remove] Voter with VOTER_ROLE from `AccessControl._roles`
+	* @dev [remove] address with VOTER_ROLE on `AccessControlEnumerable`
 	*
 	* @param voter {address} Address of the voter to remove
-	* @return {bool} Status
+	*
 	* @return {address} Removed voter
 	*
 	* Emits: `VoterRemoved`
 	*/	
 	function removeVoter(address voter)
 		external
-		returns (bool, address)
+		returns (address)
 	;
 
 	/**
@@ -110,14 +104,14 @@ interface IVaultAdminControlled is
 	* @dev [update] `withdrawalDelayMinutes` to new value
 	*
 	* @param newWithdrawalDelayMinutes {uint256}
-	* @return {bool} Status
+	*
 	* @return {uint256} New `withdrawalDelayMinutes`
 	*
 	* Emits: `UpdatedWithdrawalDelayMinutes`
 	*/
 	function updateWithdrawalDelayMinutes(uint256 newWithdrawalDelayMinutes)
 		external
-		returns (bool, uint256)
+		returns (uint256)
 	;
 
 	/**
@@ -125,24 +119,25 @@ interface IVaultAdminControlled is
 	*
 	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
 	*
-	* @dev
+	* @dev [update] WithdrawalRequest within `_withdrawalRequest`
 	*
-	* @param newLatestSignificantApproveVoteMade {uint256}
+	* @param newLatestSignificantApproveVoteTime {uint256}
+	*
 	* @return {uint256} `withdrawalRequestId`
-	* @return {uint256} `newLatestSignificantApproveVoteMade`
+	* @return {uint256} `newLatestSignificantApproveVoteTime`
 	*
 	* Emits: `UpdatedWithdrawalRequestLastSignificantApproveVote`
 	*/
-	function updateWithdrawalRequestLatestSignificantApproveVoteMade(
+	function updateWithdrawalRequestLatestSignificantApproveVoteTime(
 		uint256 withdrawalRequestId,
-		uint256 newLatestSignificantApproveVoteMade
+		uint256 newLatestSignificantApproveVoteTime
 	)
 		external
 		returns (uint256, uint256)
 	;
 
 	/**
-	* @notice Toggle pause on a WithdrawalRequest
+	* @notice Delete WithdrawalRequest & all associated values
 	*
 	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
 	*

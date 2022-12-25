@@ -33,13 +33,12 @@ contract VaultAdminControlled is
 	}
 
 
-	/* [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE */
-
+	/* [function] */
 	/// @inheritdoc IVaultAdminControlled
 	function updateRequiredApproveVotes(uint256 newRequiredApproveVotes)
 		public
 		onlyRole(DEFAULT_ADMIN_ROLE)
-		returns (bool, uint256)
+		returns (uint256)
 	{
 		// [require] `newRequiredApproveVotes` <= VOTER_ROLE Member Count
 		require(
@@ -53,72 +52,73 @@ contract VaultAdminControlled is
 		// [emit]
 		emit UpdatedRequiredApproveVotes(requiredApproveVotes);
 
-		return (true, requiredApproveVotes);
+		return (requiredApproveVotes);
 	}
 
 	/// @inheritdoc IVaultAdminControlled
-	function addVoter(address voter)
+	function addVoter(address targetAddress)
 		public
 		onlyRole(DEFAULT_ADMIN_ROLE)
-		returns (bool, address)
+		returns (address)
 	{
-		// [add] Voter to `AccessControl._roles` as VOTER_ROLE
-		_setupRole(VOTER_ROLE, voter);
+		// [add] address to VOTER_ROLE on `AccessControlEnumerable`
+		_setupRole(VOTER_ROLE, targetAddress);
 
 		// [emit]
-		emit VoterAdded(voter);
+		emit VoterAdded(targetAddress);
 
-		return (true, voter);
+		return targetAddress;
 	}
 
 	/// @inheritdoc IVaultAdminControlled
 	function removeVoter(address voter)
 		public
 		onlyRole(DEFAULT_ADMIN_ROLE)
-		returns (bool, address)
+		returns (address)
 	{
-		// [remove] Voter with VOTER_ROLE from `AccessControl._roles`
+		// [remove] address with VOTER_ROLE on `AccessControlEnumerable`
 		_revokeRole(VOTER_ROLE, voter);
 
 		// [emit]
 		emit VoterRemoved(voter);
 
-		return (true, voter);
+		return voter;
 	}
 
 	/// @inheritdoc IVaultAdminControlled
 	function updateWithdrawalDelayMinutes(uint256 newWithdrawalDelayMinutes)
 		public
 		onlyRole(DEFAULT_ADMIN_ROLE)
-		returns (bool, uint256)
+		returns (uint256)
 	{
-		// [require] newWithdrawalDelayMinutes is greater than 0
+		// [require] newWithdrawalDelayMinutes is greater than OR equal to 0
 		require(newWithdrawalDelayMinutes >= 0, "Invalid newWithdrawalDelayMinutes");
 
-		// [update] `withdrawalDelayMinutes` to new value
+		// [update] `withdrawalDelayMinutes`
 		withdrawalDelayMinutes = newWithdrawalDelayMinutes;
 
 		// [emit]
 		emit UpdatedWithdrawalDelayMinutes(withdrawalDelayMinutes);
 
-		return (true, withdrawalDelayMinutes);
+		return withdrawalDelayMinutes;
 	}
 
 	/// @inheritdoc IVaultAdminControlled
-	function updateWithdrawalRequestLatestSignificantApproveVoteMade(
+	function updateWithdrawalRequestLatestSignificantApproveVoteTime(
 		uint256 withdrawalRequestId,
-		uint256 latestSignificantApproveVoteMade
+		uint256 latestSignificantApproveVoteTime
 	)
 		public
 		onlyRole(DEFAULT_ADMIN_ROLE)
 		validWithdrawalRequest(withdrawalRequestId)
 		returns (uint256, uint256)
 	{
+		// [update] WithdrawalRequest within `_withdrawalRequest`
 		_withdrawalRequest[
 			withdrawalRequestId
-		].latestSignificantApproveVoteMade = latestSignificantApproveVoteMade;
+		].latestSignificantApproveVoteTime = latestSignificantApproveVoteTime;
 
-		return (withdrawalRequestId, latestSignificantApproveVoteMade);
+		return (withdrawalRequestId, latestSignificantApproveVoteTime);
 	}
 
 	/// @inheritdoc IVaultAdminControlled

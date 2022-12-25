@@ -103,8 +103,7 @@ contract Vault is
 	}
 
 
-	/* [restriction][internal] */
-
+	/* [function] */
 	/**
 	* @notice Delete WithdrawalRequest
 	*
@@ -141,9 +140,7 @@ contract Vault is
 		// [emit]
 		emit DeletedWithdrawalRequest(withdrawalRequestId);
 	}
-
-
-	/* [restriction] AccessControlEnumerable → VOTER_ROLE */
+	
 
 	/// @inheritdoc IVault
 	function createWithdrawalRequest(
@@ -172,7 +169,7 @@ contract Vault is
 			amount: amount,
 			approveVoteCount: 0,
 			denyVoteCount: 0,
-			latestSignificantApproveVoteMade: block.timestamp
+			latestSignificantApproveVoteTime: block.timestamp
 		});
 
 		// [push-into] `_withdrawalRequestByCreator`
@@ -209,13 +206,11 @@ contract Vault is
 
 		if (vote)
 		{
-			// [update] `_withdrawalRequest` → [increment] For count
+			// [update] `_withdrawalRequest` → [increment] Approve vote count
 			_withdrawalRequest[withdrawalRequestId].approveVoteCount++;
 
-			// If required signatures met
-			if (
-				_withdrawalRequest[withdrawalRequestId].approveVoteCount >= requiredApproveVotes
-			)
+			// If required signatures met..
+			if (_withdrawalRequest[withdrawalRequestId].approveVoteCount >= requiredApproveVotes)
 			{
 				// [emit]
 				emit WithdrawalRequestReadyToBeProccessed(withdrawalRequestId);
@@ -223,7 +218,7 @@ contract Vault is
 		}
 		else
 		{
-			// [update] `_withdrawalRequest` → [increment] Deny count
+			// [update] `_withdrawalRequest` → [increment] Deny vote count
 			_withdrawalRequest[withdrawalRequestId].denyVoteCount++;
 		}
 
@@ -236,15 +231,15 @@ contract Vault is
 		// If the required signatures has not yet been reached..
 		if (_withdrawalRequest[withdrawalRequestId].approveVoteCount < requiredApproveVotes)
 		{
-			// [update] latestSignificantApproveVoteMade timestamp
-			_withdrawalRequest[withdrawalRequestId].latestSignificantApproveVoteMade = block.timestamp;
+			// [update] latestSignificantApproveVoteTime timestamp
+			_withdrawalRequest[withdrawalRequestId].latestSignificantApproveVoteTime = block.timestamp;
 		}
 
 		return (
 			vote,
 			_withdrawalRequest[withdrawalRequestId].approveVoteCount,
 			_withdrawalRequest[withdrawalRequestId].denyVoteCount,
-			_withdrawalRequest[withdrawalRequestId].latestSignificantApproveVoteMade
+			_withdrawalRequest[withdrawalRequestId].latestSignificantApproveVoteTime
 		);
 	}
 
@@ -263,9 +258,9 @@ contract Vault is
 			"Not enough for votes"
 		);
 
-		// [require] WithdrawalRequest time delay passed OR accelerated
+		// [require] WithdrawalRequest time delay passed
 		require(
-			block.timestamp - w.latestSignificantApproveVoteMade >= SafeMath.mul(withdrawalDelayMinutes, 60),
+			block.timestamp - w.latestSignificantApproveVoteTime >= SafeMath.mul(withdrawalDelayMinutes, 60),
 			"Not enough time has passed"
 		);
 
@@ -275,11 +270,11 @@ contract Vault is
 		// [decrement] `_tokenBalance`
 		_tokenBalance[_withdrawalRequest[withdrawalRequestId].token] -= w.amount;
 
+		// [call][internal]
+		_deleteWithdrawalRequest(withdrawalRequestId);
+
 		// [emit]
 		emit TokensWithdrawn(msg.sender, w.to, w.amount);
-
-		// [call]
-		_deleteWithdrawalRequest(withdrawalRequestId);
 	}
 
 
