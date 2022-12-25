@@ -28,7 +28,7 @@ contract Vault is
 	bytes32 public constant VOTER_ROLE = keccak256("VOTER_ROLE");
 
 	// [public]
-	uint256 public requiredForVotes;
+	uint256 public requiredApproveVotes;
 	uint256 public withdrawalDelayMinutes;
 	
 	// [internal]
@@ -47,7 +47,7 @@ contract Vault is
 
 	/* [constructor] */
 	constructor (
-		uint256 requiredForVotes_,
+		uint256 requiredApproveVotes_,
 		uint256 withdrawalDelayMinutes_,
 		address[] memory voters
 	)
@@ -55,7 +55,7 @@ contract Vault is
 		// Initialize WithdrawalRequestId
 		_withdrawalRequestId = 0;
 
-		requiredForVotes = requiredForVotes_;
+		requiredApproveVotes = requiredApproveVotes_;
 
 		// Set delay (in minutes)
 		withdrawalDelayMinutes = withdrawalDelayMinutes_;
@@ -170,9 +170,9 @@ contract Vault is
 			to: to,
 			token: tokenAddress,
 			amount: amount,
-			forVoteCount: 0,
-			againstVoteCount: 0,
-			lastImpactfulVoteTime: block.timestamp
+			approveVoteCount: 0,
+			denyVoteCount: 0,
+			latestSignificantApproveVoteMade: block.timestamp
 		});
 
 		// [push-into] `_withdrawalRequestByCreator`
@@ -210,11 +210,11 @@ contract Vault is
 		if (vote)
 		{
 			// [update] `_withdrawalRequest` → [increment] For count
-			_withdrawalRequest[withdrawalRequestId].forVoteCount++;
+			_withdrawalRequest[withdrawalRequestId].approveVoteCount++;
 
 			// If required signatures met
 			if (
-				_withdrawalRequest[withdrawalRequestId].forVoteCount >= requiredForVotes
+				_withdrawalRequest[withdrawalRequestId].approveVoteCount >= requiredApproveVotes
 			)
 			{
 				// [emit]
@@ -223,8 +223,8 @@ contract Vault is
 		}
 		else
 		{
-			// [update] `_withdrawalRequest` → [increment] Against count
-			_withdrawalRequest[withdrawalRequestId].againstVoteCount++;
+			// [update] `_withdrawalRequest` → [increment] Deny count
+			_withdrawalRequest[withdrawalRequestId].denyVoteCount++;
 		}
 
 		// [emit]
@@ -234,17 +234,17 @@ contract Vault is
 		_withdrawalRequestVotedVoters[withdrawalRequestId].push(msg.sender);
 
 		// If the required signatures has not yet been reached..
-		if (_withdrawalRequest[withdrawalRequestId].forVoteCount < requiredForVotes)
+		if (_withdrawalRequest[withdrawalRequestId].approveVoteCount < requiredApproveVotes)
 		{
-			// [update] lastImpactfulVoteTime timestamp
-			_withdrawalRequest[withdrawalRequestId].lastImpactfulVoteTime = block.timestamp;
+			// [update] latestSignificantApproveVoteMade timestamp
+			_withdrawalRequest[withdrawalRequestId].latestSignificantApproveVoteMade = block.timestamp;
 		}
 
 		return (
 			vote,
-			_withdrawalRequest[withdrawalRequestId].forVoteCount,
-			_withdrawalRequest[withdrawalRequestId].againstVoteCount,
-			_withdrawalRequest[withdrawalRequestId].lastImpactfulVoteTime
+			_withdrawalRequest[withdrawalRequestId].approveVoteCount,
+			_withdrawalRequest[withdrawalRequestId].denyVoteCount,
+			_withdrawalRequest[withdrawalRequestId].latestSignificantApproveVoteMade
 		);
 	}
 
@@ -259,13 +259,13 @@ contract Vault is
 		
 		// [require] Required signatures to be met
 		require(
-			w.forVoteCount >= requiredForVotes,
+			w.approveVoteCount >= requiredApproveVotes,
 			"Not enough for votes"
 		);
 
 		// [require] WithdrawalRequest time delay passed OR accelerated
 		require(
-			block.timestamp - w.lastImpactfulVoteTime >= SafeMath.mul(withdrawalDelayMinutes, 60),
+			block.timestamp - w.latestSignificantApproveVoteMade >= SafeMath.mul(withdrawalDelayMinutes, 60),
 			"Not enough time has passed"
 		);
 

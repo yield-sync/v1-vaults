@@ -12,17 +12,11 @@ import "./IVault.sol";
 interface IVaultAdminControlled is
 	IVault
 {
-	struct WithdrawalRequestAdminData {
-		bool paused;
-		bool accelerated;
-	}
-
-
 	/**
-	* @dev Emits when `requiredForVotes` are updated
+	* @dev Emits when `requiredApproveVotes` are updated
 	*/
-	event UpdatedRequiredForVotes (
-		uint256 requiredForVotes
+	event UpdatedRequiredApproveVotes (
+		uint256 requiredApproveVotes
 	);
 
 	/**
@@ -59,15 +53,15 @@ interface IVaultAdminControlled is
 	*
 	* @dev [restriction][AccessControlEnumerable] DEFAULT_ADMIN_ROLE
 	*
-	* @dev [update] `requiredForVotes`
+	* @dev [update] `requiredApproveVotes`
 	*
-	* @param newRequiredForVotes {uint256}
+	* @param newRequiredApproveVotes {uint256}
 	* @return {bool} Status
-	* @return {uint256} New `requiredForVotes`
+	* @return {uint256} New `requiredApproveVotes`
 	*
-	* Emits: `UpdatedRequiredForVotes`
+	* Emits: `UpdatedRequiredApproveVotes`
 	*/
-	function updateRequiredForVotes(uint256 newRequiredForVotes)
+	function updateRequiredApproveVotes(uint256 newRequiredApproveVotes)
 		external
 		returns (bool, uint256)
 	;
@@ -127,21 +121,22 @@ interface IVaultAdminControlled is
 	;
 
 	/**
-	* @notice Toggle pause on a WithdrawalRequest
+	* @notice
 	*
 	* @dev [restriction][AccessControlEnumerable] DEFAULT_ADMIN_ROLE
 	*
-	* @dev [update] `_withdrawalRequest`
+	* @dev
 	*
 	* @param withdrawalRequestId {uint256}
 	* @return {bool} Status
-	* @return {WithdrawalRequest} Updated WithdrawalRequest
 	*
-	* Emit: `ToggledWithdrawalRequestPause`
+	* Emits: `UpdatedWithdrawalRequestLastSignificantApproveVote`
 	*/
-	function toggleWithdrawalRequestPause(uint256 withdrawalRequestId)
+	function update_WithdrawalRequest_latestSignificantApproveVoteMade(
+		uint256 withdrawalRequestId
+	)
 		external
-		returns (bool, uint256)
+		returns (bool)
 	;
 
 	/**

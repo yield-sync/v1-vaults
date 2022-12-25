@@ -17,9 +17,9 @@ interface IVault is
 		address to;
 		address token;
 		uint256 amount;
-		uint256 forVoteCount;
-		uint256 againstVoteCount;
-		uint256 lastImpactfulVoteTime;
+		uint256 approveVoteCount;
+		uint256 denyVoteCount;
+		uint256 latestSignificantApproveVoteMade;
 	}
 
 
@@ -79,7 +79,7 @@ interface IVault is
 	*
 	* @return {uint256}
 	*/
-	function requiredForVotes()
+	function requiredApproveVotes()
 		external
 		view
 		returns (uint256)
@@ -134,8 +134,8 @@ interface IVault is
 	* @param withdrawalRequestId {uint256}
 	* @param vote {bool} Approve (true) or deny (false)
 	* @return {bool} Vote
-	* @return {bool} forVoteCount
-	* @return {bool} againstVoteCount
+	* @return {bool} approveVoteCount
+	* @return {bool} denyVoteCount
 	* @return {bool} lastImpactfulVote
 	*
 	* Emits: `WithdrawalRequestReadyToBeProccessed`
