@@ -51,7 +51,7 @@ interface IVaultAdminControlled is
 	/**
 	* @notice Update amount of required signatures
 	*
-	* @dev [restriction][AccessControlEnumerable] DEFAULT_ADMIN_ROLE
+	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
 	*
 	* @dev [update] `requiredApproveVotes`
 	*
@@ -69,7 +69,7 @@ interface IVaultAdminControlled is
 	/**
 	* @notice Add a voter
 	*
-	* @dev [restriction][AccessControlEnumerable] DEFAULT_ADMIN_ROLE
+	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
 	*
 	* @dev [add] Voter to `AccessControl._roles` VOTER_ROLE
 	*
@@ -87,7 +87,7 @@ interface IVaultAdminControlled is
 	/**
 	* @notice Remove a voter
 	*
-	* @dev [restriction][AccessControlEnumerable] DEFAULT_ADMIN_ROLE
+	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
 	*
 	* @dev [remove] Voter with VOTER_ROLE from `AccessControl._roles`
 	*
@@ -105,7 +105,7 @@ interface IVaultAdminControlled is
 	/**
 	* @notice Update `withdrawalDelayMinutes`
 	*
-	* @dev [restriction][AccessControlEnumerable] DEFAULT_ADMIN_ROLE
+	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
 	*
 	* @dev [update] `withdrawalDelayMinutes` to new value
 	*
@@ -123,26 +123,28 @@ interface IVaultAdminControlled is
 	/**
 	* @notice
 	*
-	* @dev [restriction][AccessControlEnumerable] DEFAULT_ADMIN_ROLE
+	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
 	*
 	* @dev
 	*
-	* @param withdrawalRequestId {uint256}
-	* @return {bool} Status
+	* @param newLatestSignificantApproveVoteMade {uint256}
+	* @return {uint256} `withdrawalRequestId`
+	* @return {uint256} `newLatestSignificantApproveVoteMade`
 	*
 	* Emits: `UpdatedWithdrawalRequestLastSignificantApproveVote`
 	*/
-	function update_WithdrawalRequest_latestSignificantApproveVoteMade(
-		uint256 withdrawalRequestId
+	function updateWithdrawalRequestLatestSignificantApproveVoteMade(
+		uint256 withdrawalRequestId,
+		uint256 newLatestSignificantApproveVoteMade
 	)
 		external
-		returns (bool)
+		returns (uint256, uint256)
 	;
 
 	/**
 	* @notice Toggle pause on a WithdrawalRequest
 	*
-	* @dev [restriction][AccessControlEnumerable] DEFAULT_ADMIN_ROLE
+	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
 	*
 	* @dev [call][internal] {_deleteWithdrawalRequest}
 	*
@@ -153,6 +155,6 @@ interface IVaultAdminControlled is
 	*/
 	function deleteWithdrawalRequest(uint256 withdrawalRequestId)
 		external
-		returns (bool)
+		returns (uint256)
 	;
 }

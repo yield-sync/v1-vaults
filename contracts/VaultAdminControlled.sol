@@ -33,9 +33,9 @@ contract VaultAdminControlled is
 	}
 
 
-	/* [restriction][AccessControlEnumerable] DEFAULT_ADMIN_ROLE */
+	/* [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE */
 
-	// @inheritdoc IVaultAdminControlled
+	/// @inheritdoc IVaultAdminControlled
 	function updateRequiredApproveVotes(uint256 newRequiredApproveVotes)
 		public
 		onlyRole(DEFAULT_ADMIN_ROLE)
@@ -56,7 +56,7 @@ contract VaultAdminControlled is
 		return (true, requiredApproveVotes);
 	}
 
-	// @inheritdoc IVaultAdminControlled
+	/// @inheritdoc IVaultAdminControlled
 	function addVoter(address voter)
 		public
 		onlyRole(DEFAULT_ADMIN_ROLE)
@@ -71,7 +71,7 @@ contract VaultAdminControlled is
 		return (true, voter);
 	}
 
-	// @inheritdoc IVaultAdminControlled
+	/// @inheritdoc IVaultAdminControlled
 	function removeVoter(address voter)
 		public
 		onlyRole(DEFAULT_ADMIN_ROLE)
@@ -86,7 +86,7 @@ contract VaultAdminControlled is
 		return (true, voter);
 	}
 
-	// @inheritdoc IVaultAdminControlled
+	/// @inheritdoc IVaultAdminControlled
 	function updateWithdrawalDelayMinutes(uint256 newWithdrawalDelayMinutes)
 		public
 		onlyRole(DEFAULT_ADMIN_ROLE)
@@ -104,16 +104,33 @@ contract VaultAdminControlled is
 		return (true, withdrawalDelayMinutes);
 	}
 
-	// @inheritdoc IVaultAdminControlled
+	/// @inheritdoc IVaultAdminControlled
+	function updateWithdrawalRequestLatestSignificantApproveVoteMade(
+		uint256 withdrawalRequestId,
+		uint256 latestSignificantApproveVoteMade
+	)
+		public
+		onlyRole(DEFAULT_ADMIN_ROLE)
+		validWithdrawalRequest(withdrawalRequestId)
+		returns (uint256, uint256)
+	{
+		_withdrawalRequest[
+			withdrawalRequestId
+		].latestSignificantApproveVoteMade = latestSignificantApproveVoteMade;
+
+		return (withdrawalRequestId, latestSignificantApproveVoteMade);
+	}
+
+	/// @inheritdoc IVaultAdminControlled
 	function deleteWithdrawalRequest(uint256 withdrawalRequestId)
 		public
 		onlyRole(DEFAULT_ADMIN_ROLE)
 		validWithdrawalRequest(withdrawalRequestId)
-		returns (bool)
+		returns (uint256)
 	{
 		// [call][internal]
 		_deleteWithdrawalRequest(withdrawalRequestId);
 
-		return true;
+		return withdrawalRequestId;
 	}
 }

@@ -143,7 +143,7 @@ contract Vault is
 	}
 
 
-	/* [restriction][AccessControlEnumerable] VOTER_ROLE */
+	/* [restriction] AccessControlEnumerable → VOTER_ROLE */
 
 	/// @inheritdoc IVault
 	function createWithdrawalRequest(
