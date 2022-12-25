@@ -79,7 +79,7 @@ interface IVault is
 	*
 	* @return {uint256}
 	*/
-	function requiredSignatures()
+	function requiredForVotes()
 		external
 		view
 		returns (uint256)
@@ -108,7 +108,6 @@ interface IVault is
 	* @param to {address} Address the withdrawn tokens will be sent
 	* @param tokenAddress {address}
 	* @param amount {uint256} Amount to be withdrawn
-	* @return {bool} Status
 	* @return {uint256} Id of the added `WithdrawalRequest`
 	*
 	* Emits: `CreatedWithdrawalRequest`
@@ -119,7 +118,7 @@ interface IVault is
 		uint256 amount
 	)
 		external
-		returns (bool, uint256)
+		returns (uint256)
 	;
 
 	/**
@@ -130,7 +129,6 @@ interface IVault is
 	*
 	* @param withdrawalRequestId {uint256}
 	* @param vote {bool} Approve (true) or deny (false)
-	* @return {bool} Status
 	* @return {bool} Vote
 	* @return {bool} forVoteCount
 	* @return {bool} againstVoteCount
@@ -141,7 +139,7 @@ interface IVault is
 	*/
 	function voteOnWithdrawalRequest(uint256 withdrawalRequestId, bool vote)
 		external
-		returns (bool, bool, uint256, uint256, uint256)
+		returns (bool, uint256, uint256, uint256)
 	;
 
 	/**
@@ -152,14 +150,9 @@ interface IVault is
 	*      [call][internal] `_deleteWithdrawalRequest`
 	*
 	* @param withdrawalRequestId {uint256} Id of the WithdrawalRequest
-	* @return {bool} Status
-	*
-	* Emits: `TokensDeposited`
-	* Emits: `DeletedWithdrawalRequest`
 	*/
 	function processWithdrawalRequests(uint256 withdrawalRequestId)
 		external
-		returns (bool)
 	;
 
 
@@ -226,7 +219,6 @@ interface IVault is
 	*
 	* @param tokenAddress {address}
 	* @param amount {uint256} Amount to be moved
-	* @return {bool} Status
 	* @return {uint256} Amount deposited
 	* @return {uint256} New token balance
 	*
@@ -234,7 +226,6 @@ interface IVault is
 	*/
 	function depositTokens(address tokenAddress, uint256 amount)
 		external
-		payable
-		returns (bool, uint256, uint256)
+		returns (uint256, uint256)
 	;
 }

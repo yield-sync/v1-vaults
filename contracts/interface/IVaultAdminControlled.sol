@@ -12,11 +12,17 @@ import "./IVault.sol";
 interface IVaultAdminControlled is
 	IVault
 {
+	struct WithdrawalRequestAdminData {
+		bool paused;
+		bool accelerated;
+	}
+
+
 	/**
-	* @dev Emits when `requiredSignatures` are updated
+	* @dev Emits when `requiredForVotes` are updated
 	*/
-	event UpdatedRequiredSignatures (
-		uint256 requiredSignatures
+	event UpdatedRequiredForVotes (
+		uint256 requiredForVotes
 	);
 
 	/**
@@ -53,15 +59,15 @@ interface IVaultAdminControlled is
 	*
 	* @dev [restriction][AccessControlEnumerable] DEFAULT_ADMIN_ROLE
 	*
-	* @dev [update] `requiredSignatures`
+	* @dev [update] `requiredForVotes`
 	*
-	* @param newRequiredSignatures {uint256}
+	* @param newRequiredForVotes {uint256}
 	* @return {bool} Status
-	* @return {uint256} New `requiredSignatures`
+	* @return {uint256} New `requiredForVotes`
 	*
-	* Emits: `UpdatedRequiredSignatures`
+	* Emits: `UpdatedRequiredForVotes`
 	*/
-	function updateRequiredSignatures(uint256 newRequiredSignatures)
+	function updateRequiredForVotes(uint256 newRequiredForVotes)
 		external
 		returns (bool, uint256)
 	;

@@ -114,13 +114,13 @@ contract VaultDeployer is
 	* @dev [!restriction]
 	* @dev [create]
 	* @param admin {address} Admin of the deployed contract
-	* @param requiredSignatures {uint256} Required signatures for actions
+	* @param requiredForVotes {uint256} Required signatures for actions
 	* @param withdrawalDelayMinutes {uint256} Withdrawal delay minutes
 	* @param voters {address[]} Addresses of voter accounts
 	*/
 	function deploy(
 		address admin,
-		uint256 requiredSignatures,
+		uint256 requiredForVotes,
 		uint256 withdrawalDelayMinutes,
 		address[] memory voters
 	)
@@ -136,7 +136,7 @@ contract VaultDeployer is
 		// [deploy] A vault contract
 		deployedContract = new Vault(
 			admin,
-			requiredSignatures,
+			requiredForVotes,
 			withdrawalDelayMinutes,
 			voters
 		);
