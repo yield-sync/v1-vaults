@@ -21,14 +21,14 @@ interface IVaultAdminControlled is
 	);
 
 	/**
-	* @dev Emits when a voter is added
+	* @dev Emits when an address is added to VOTER_ROLE on `AccessControlEnumerable`
 	*/
 	event VoterAdded (
 		address addedVoter
 	);
 
 	/**
-	* @dev Emits when a voter is removed
+	* @dev Emits when an address is removed from VOTER_ROLE on `AccessControlEnumerable`
 	*/
 	event VoterRemoved (
 		address addedVoter
