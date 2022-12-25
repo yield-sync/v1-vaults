@@ -3,7 +3,7 @@ pragma solidity ^0.8.1;
 
 
 /* [import] */
-import "@openzeppelin/contracts/access/AccessControl.sol";
+import "@openzeppelin/contracts/access/AccessControlEnumerable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
@@ -16,7 +16,7 @@ import "./interface/IVault.sol";
 * @title Vault
 */
 contract Vault is
-	AccessControl,
+	AccessControlEnumerable,
 	IVault
 {
 	/* [USING] */
@@ -34,25 +34,21 @@ contract Vault is
 
 
 	/* [state-variable] */
-	// WithdrawalRequest Id
+	// WithdrawalRequestId
 	uint256 _withdrawalRequestId;
 
 	// Token Contract Address => Balance
 	mapping (address => uint256) _tokenBalance;
-
 	// WithdrawalRequestId => WithdrawalRequest
 	mapping (uint256 => WithdrawalRequest) _withdrawalRequest;
-
-	// Creator Address => Array of WithdrawalRequest
+	// Voter Address => Array of WithdrawalRequest
 	mapping (address => uint256[]) _withdrawalRequestByCreator;
-
-	// WithdrawalRequest Id => Voted Voter Addresses Array
+	// WithdrawalRequestId => Voted Voter Addresses Array
 	mapping (uint256 => address[]) _withdrawalRequestVotedVoters;
 
 
 	/* [constructor] */
 	constructor (
-		address admin,
 		uint256 requiredSignatures_,
 		uint256 withdrawalDelayMinutes_,
 		address[] memory voters
@@ -65,9 +61,6 @@ contract Vault is
 
 		// Set delay (in minutes)
 		withdrawalDelayMinutes = withdrawalDelayMinutes_;
-
-		// Set up the default admin role
-		_setupRole(DEFAULT_ADMIN_ROLE, admin);
 
 		// [for] each voter address..
 		for (uint256 i = 0; i < voters.length; i++)
@@ -112,7 +105,7 @@ contract Vault is
 	}
 
 
-	/* [internal] */
+	/** NOTE [restriction][internal] */
 	/**
 	* @notice Delete Withdrawal Request
 	*
@@ -123,11 +116,9 @@ contract Vault is
 	*      [delete] `_withdrawalRequestByCreator` value
 	*
 	* @param withdrawalRequestId {uint256}
-	* @return {bool} Status
 	*/
 	function _deleteWithdrawalRequest(uint256 withdrawalRequestId)
 		internal
-		returns (bool)
 	{
 		// [delete] `_withdrawalRequest` value
 		delete _withdrawalRequest[withdrawalRequestId];
@@ -145,112 +136,44 @@ contract Vault is
 				break;
 			}
 		}
-
-		return true;
 	}
 
-
-	/* [restriction] AccessControl._role = DEFAULT_ADMIN_ROLE */
-	/// @inheritdoc IVault
-	function updateRequiredSignatures(uint256 newRequiredSignatures)
-		public
-		onlyRole(DEFAULT_ADMIN_ROLE)
-		returns (bool, uint256)
+	/** NOTE [restriction][internal] */
+	/**
+	* @notice Delete Withdrawal Request
+	*
+	* @dev [restriction][internal]
+	*
+	* @dev [delete] `_withdrawalRequest` value
+	*      [delete] `_withdrawalRequestVotedVoters` value
+	*      [delete] `_withdrawalRequestByCreator` value
+	*
+	* @param withdrawalRequestId {uint256}
+	*/
+	function _processWithdrawalRequest(uint256 withdrawalRequestId)
+		internal
 	{
-		// [update]
-		requiredSignatures = newRequiredSignatures;
+		// Create temporary variable
+		WithdrawalRequest memory wr = _withdrawalRequest[withdrawalRequestId];
+		
+		// [ERC20-transfer] Specified amount of tokens to recipient
+		IERC20(wr.token).safeTransfer(wr.to, wr.amount);
+
+		// [decrement] `_tokenBalance`
+		_tokenBalance[wr.token] -= wr.amount;
 
 		// [emit]
-		emit UpdatedRequiredSignatures(requiredSignatures);
+		emit TokensDeposited(msg.sender, wr.to, wr.amount);
 
-		return (true, requiredSignatures);
-	}
-
-	/// @inheritdoc IVault
-	function addVoter(address voter)
-		public
-		onlyRole(DEFAULT_ADMIN_ROLE)
-		returns (bool, address)
-	{
-		// [add] Voter to `AccessControl._roles` as VOTER_ROLE
-		_setupRole(VOTER_ROLE, voter);
-
-		// [emit]
-		emit VoterAdded(voter);
-
-		return (true, voter);
-	}
-
-	/// @inheritdoc IVault
-	function removeVoter(address voter)
-		public
-		onlyRole(DEFAULT_ADMIN_ROLE)
-		returns (bool, address)
-	{
-		// [remove] Voter with VOTER_ROLE from `AccessControl._roles`
-		_revokeRole(VOTER_ROLE, voter);
-
-		// [emit]
-		emit VoterRemoved(voter);
-
-		return (true, voter);
-	}
-
-	/// @inheritdoc IVault
-	function updateWithdrawalDelayMinutes(uint256 newWithdrawalDelayMinutes)
-		public
-		onlyRole(DEFAULT_ADMIN_ROLE)
-		returns (bool, uint256)
-	{
-		// [require] newWithdrawalDelayMinutes is greater than 0
-		require(newWithdrawalDelayMinutes >= 0, "Invalid newWithdrawalDelayMinutes");
-
-		// [update] `withdrawalDelayMinutes` to new value
-		withdrawalDelayMinutes = newWithdrawalDelayMinutes;
-
-		// [emit]
-		emit UpdatedWithdrawalDelayMinutes(withdrawalDelayMinutes);
-
-		return (true, withdrawalDelayMinutes);
-	}
-
-	/// @inheritdoc IVault
-	function toggleWithdrawalRequestPause(uint256 withdrawalRequestId)
-		public
-		onlyRole(DEFAULT_ADMIN_ROLE)
-		validWithdrawalRequest(withdrawalRequestId)
-		returns (bool, WithdrawalRequest memory)
-	{
-		// [update] `_withdrawalRequest`
-		_withdrawalRequest[withdrawalRequestId].paused = !_withdrawalRequest[
-			withdrawalRequestId
-		].paused;
-
-		// [emit]
-		emit ToggledWithdrawalRequestPause(
-			_withdrawalRequest[withdrawalRequestId].paused
-		);
-
-		return (true, _withdrawalRequest[withdrawalRequestId]);
-	}
-
-	/// @inheritdoc IVault
-	function deleteWithdrawalRequest(uint256 withdrawalRequestId)
-		public
-		onlyRole(DEFAULT_ADMIN_ROLE)
-		validWithdrawalRequest(withdrawalRequestId)
-		returns (bool)
-	{
-		// [call][internal]
+		// [call]
 		_deleteWithdrawalRequest(withdrawalRequestId);
 
 		// [emit]
 		emit DeletedWithdrawalRequest(withdrawalRequestId);
-
-		return true;
 	}
 
 
+	/** NOTE [restriction][AccessControlEnumerable] VOTER_ROLE */
 	/// @inheritdoc IVault
 	function createWithdrawalRequest(
 		address to,
@@ -259,7 +182,7 @@ contract Vault is
 	)
 		public
 		onlyRole(VOTER_ROLE)
-		returns (bool, WithdrawalRequest memory)
+		returns (bool, uint256)
 	{
 		// [require]  The specified amount is available
 		require(_tokenBalance[tokenAddress] >= amount, "Insufficient funds");
@@ -275,12 +198,10 @@ contract Vault is
 			creator: msg.sender,
 			to: to,
 			token: tokenAddress,
-			paused: false,
-			accelerated: false,
 			amount: amount,
 			forVoteCount: 0,
 			againstVoteCount: 0,
-			lastImpactfulVote: block.timestamp
+			lastImpactfulVoteTime: block.timestamp
 		});
 
 		// [push-into] `_withdrawalRequestByCreator`
@@ -289,10 +210,9 @@ contract Vault is
 		// [emit]
 		emit CreatedWithdrawalRequest(_withdrawalRequest[_withdrawalRequestId]);
 		
-		return (true, _withdrawalRequest[_withdrawalRequestId]);
+		return (true, _withdrawalRequestId);
 	}
 
-	/* [restriction] AccessControl._role = VOTER_ROLE */
 	/// @inheritdoc IVault
 	function voteOnWithdrawalRequest(uint256 withdrawalRequestId, bool vote)
 		public
@@ -345,8 +265,8 @@ contract Vault is
 		// If the required signatures has not yet been reached..
 		if (_withdrawalRequest[withdrawalRequestId].forVoteCount < requiredSignatures)
 		{
-			// [update] lastImpactfulVote timestamp
-			_withdrawalRequest[withdrawalRequestId].lastImpactfulVote = block.timestamp;
+			// [update] lastImpactfulVoteTime timestamp
+			_withdrawalRequest[withdrawalRequestId].lastImpactfulVoteTime = block.timestamp;
 		}
 
 		return (
@@ -354,7 +274,7 @@ contract Vault is
 			vote,
 			_withdrawalRequest[withdrawalRequestId].forVoteCount,
 			_withdrawalRequest[withdrawalRequestId].againstVoteCount,
-			_withdrawalRequest[withdrawalRequestId].lastImpactfulVote
+			_withdrawalRequest[withdrawalRequestId].lastImpactfulVoteTime
 		);
 	}
 
@@ -363,47 +283,28 @@ contract Vault is
 		public
 		onlyRole(VOTER_ROLE)
 		validWithdrawalRequest(withdrawalRequestId)
-		returns (bool, string memory)
+		returns (bool)
 	{
-		// Get the current time
-		uint256 currentTime = block.timestamp;
+		// [require] Required signatures to be met
+		require(
+			_withdrawalRequest[withdrawalRequestId].forVoteCount >= requiredSignatures,
+			"Not enough for votes"
+		);
 
-		// Create temporary variable
-		WithdrawalRequest memory wr = _withdrawalRequest[withdrawalRequestId];
-
-		// If the withdrawal request has reached the required number of signatures
-		if (
-			wr.forVoteCount >= requiredSignatures &&
-			(
-				currentTime - wr.lastImpactfulVote >= SafeMath.mul(withdrawalDelayMinutes, 60) ||
-				wr.accelerated
-			) &&
-			!wr.paused
-		)
-		{
-			// [ERC20-transfer] Specified amount of tokens to recipient
-			IERC20(wr.token).safeTransfer(wr.to, wr.amount);
-
-			// [decrement] `_tokenBalance`
-			_tokenBalance[wr.token] -= wr.amount;
-
-			// [emit]
-			emit TokensDeposited(msg.sender, wr.to, wr.amount);
-
-			// [call]
-			_deleteWithdrawalRequest(withdrawalRequestId);
-
-			// [emit]
-			emit DeletedWithdrawalRequest(withdrawalRequestId);
+		// [require] WithdrawalRequest time delay passed OR accelerated
+		require(
+			block.timestamp - _withdrawalRequest[withdrawalRequestId].lastImpactfulVoteTime >= SafeMath.mul(withdrawalDelayMinutes, 60),
+			"Not enough time has passed"
+		);
 		
-			return (true, "Processed WithdrawalRequest");
-		}
-		
-		return (false, "Unable to process WithdrawalRequest");
+		// [call][internal]
+		_processWithdrawalRequest(withdrawalRequestId);
+	
+		return (true);
 	}
 
 
-	/* [!restriction] */
+	/** NOTE [!restriction] */
 	/// @inheritdoc IVault
 	function tokenBalance(address tokenAddress)
 		view
