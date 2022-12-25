@@ -2,10 +2,6 @@
 pragma solidity ^0.8.1;
 
 
-/* [import] */
-import "@openzeppelin/contracts/access/IAccessControlEnumerable.sol";
-
-
 /* [struct] */
 struct WithdrawalRequest {
 	address creator;
@@ -21,8 +17,7 @@ struct WithdrawalRequest {
 /**
 * @title IVault
 */
-interface IVault is
-	IAccessControlEnumerable
+interface IVault
 {
 	/* [event] */
 	/**
