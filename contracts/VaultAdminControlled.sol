@@ -38,27 +38,6 @@ contract VaultAdminControlled is
 
 	/* [function] */
 	/// @inheritdoc IVaultAdminControlled
-	function updateRequiredApproveVotes(uint256 newRequiredApproveVotes)
-		public
-		onlyRole(DEFAULT_ADMIN_ROLE)
-		returns (uint256)
-	{
-		// [require] `newRequiredApproveVotes` <= VOTER_ROLE Member Count
-		require(
-			newRequiredApproveVotes <= getRoleMemberCount(VOTER_ROLE),
-			"Invalid `newRequiredApproveVotes`"
-		);
-
-		// [update]
-		requiredApproveVotes = newRequiredApproveVotes;
-
-		// [emit]
-		emit UpdatedRequiredApproveVotes(requiredApproveVotes);
-
-		return (requiredApproveVotes);
-	}
-
-	/// @inheritdoc IVaultAdminControlled
 	function addVoter(address targetAddress)
 		public
 		onlyRole(DEFAULT_ADMIN_ROLE)
@@ -89,6 +68,27 @@ contract VaultAdminControlled is
 	}
 
 	/// @inheritdoc IVaultAdminControlled
+	function updateRequiredApproveVotes(uint256 newRequiredApproveVotes)
+		public
+		onlyRole(DEFAULT_ADMIN_ROLE)
+		returns (uint256)
+	{
+		// [require] `newRequiredApproveVotes` <= VOTER_ROLE Member Count
+		require(
+			newRequiredApproveVotes <= getRoleMemberCount(VOTER_ROLE),
+			"Invalid `newRequiredApproveVotes`"
+		);
+
+		// [update]
+		requiredApproveVotes = newRequiredApproveVotes;
+
+		// [emit]
+		emit UpdatedRequiredApproveVotes(requiredApproveVotes);
+
+		return (requiredApproveVotes);
+	}
+
+	/// @inheritdoc IVaultAdminControlled
 	function updateWithdrawalDelayMinutes(uint256 newWithdrawalDelayMinutes)
 		public
 		onlyRole(DEFAULT_ADMIN_ROLE)
@@ -107,9 +107,9 @@ contract VaultAdminControlled is
 	}
 
 	/// @inheritdoc IVaultAdminControlled
-	function updateWithdrawalRequestLatestSignificantApproveVoteTime(
+	function updateWithdrawalRequestLatestRelevantApproveVoteTime(
 		uint256 withdrawalRequestId,
-		uint256 latestSignificantApproveVoteTime
+		uint256 latestRelevantApproveVoteTime
 	)
 		public
 		onlyRole(DEFAULT_ADMIN_ROLE)
@@ -119,9 +119,9 @@ contract VaultAdminControlled is
 		// [update] WithdrawalRequest within `_withdrawalRequest`
 		_withdrawalRequest[
 			withdrawalRequestId
-		].latestSignificantApproveVoteTime = latestSignificantApproveVoteTime;
+		].latestRelevantApproveVoteTime = latestRelevantApproveVoteTime;
 
-		return (withdrawalRequestId, latestSignificantApproveVoteTime);
+		return (withdrawalRequestId, latestRelevantApproveVoteTime);
 	}
 
 	/// @inheritdoc IVaultAdminControlled

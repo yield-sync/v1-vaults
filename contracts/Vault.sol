@@ -236,7 +236,7 @@ contract Vault is
 			amount: amount,
 			approveVoteCount: 0,
 			denyVoteCount: 0,
-			latestSignificantApproveVoteTime: block.timestamp
+			latestRelevantApproveVoteTime: block.timestamp
 		});
 
 		// [push-into] `_withdrawalRequestByCreator`
@@ -298,15 +298,15 @@ contract Vault is
 		// If the required signatures has not yet been reached..
 		if (_withdrawalRequest[withdrawalRequestId].approveVoteCount < requiredApproveVotes)
 		{
-			// [update] latestSignificantApproveVoteTime timestamp
-			_withdrawalRequest[withdrawalRequestId].latestSignificantApproveVoteTime = block.timestamp;
+			// [update] latestRelevantApproveVoteTime timestamp
+			_withdrawalRequest[withdrawalRequestId].latestRelevantApproveVoteTime = block.timestamp;
 		}
 
 		return (
 			vote,
 			_withdrawalRequest[withdrawalRequestId].approveVoteCount,
 			_withdrawalRequest[withdrawalRequestId].denyVoteCount,
-			_withdrawalRequest[withdrawalRequestId].latestSignificantApproveVoteTime
+			_withdrawalRequest[withdrawalRequestId].latestRelevantApproveVoteTime
 		);
 	}
 
@@ -327,7 +327,7 @@ contract Vault is
 
 		// [require] WithdrawalRequest time delay passed
 		require(
-			block.timestamp - w.latestSignificantApproveVoteTime >= SafeMath.mul(withdrawalDelayMinutes, 60),
+			block.timestamp - w.latestRelevantApproveVoteTime >= SafeMath.mul(withdrawalDelayMinutes, 60),
 			"Not enough time has passed"
 		);
 

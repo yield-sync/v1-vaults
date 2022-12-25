@@ -43,24 +43,6 @@ interface IVaultAdminControlled is
 
 
 	/**
-	* @notice Update the required approved votes
-	*
-	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
-	*
-	* @dev [update] `requiredApproveVotes`
-	*
-	* @param newRequiredApproveVotes {uint256}
-	*
-	* @return {uint256} New `requiredApproveVotes`
-	*
-	* Emits: `UpdatedRequiredApproveVotes`
-	*/
-	function updateRequiredApproveVotes(uint256 newRequiredApproveVotes)
-		external
-		returns (uint256)
-	;
-
-	/**
 	* @notice Assign VOTER_ROLE to an address on AccessControlEnumerable
 	*
 	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
@@ -97,6 +79,24 @@ interface IVaultAdminControlled is
 	;
 
 	/**
+	* @notice Update the required approved votes
+	*
+	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
+	*
+	* @dev [update] `requiredApproveVotes`
+	*
+	* @param newRequiredApproveVotes {uint256}
+	*
+	* @return {uint256} New `requiredApproveVotes`
+	*
+	* Emits: `UpdatedRequiredApproveVotes`
+	*/
+	function updateRequiredApproveVotes(uint256 newRequiredApproveVotes)
+		external
+		returns (uint256)
+	;
+
+	/**
 	* @notice Update `withdrawalDelayMinutes`
 	*
 	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
@@ -121,16 +121,16 @@ interface IVaultAdminControlled is
 	*
 	* @dev [update] WithdrawalRequest within `_withdrawalRequest`
 	*
-	* @param newLatestSignificantApproveVoteTime {uint256}
+	* @param newLatestRelevantApproveVoteTime {uint256}
 	*
 	* @return {uint256} `withdrawalRequestId`
-	* @return {uint256} `newLatestSignificantApproveVoteTime`
+	* @return {uint256} `newLatestRelevantApproveVoteTime`
 	*
 	* Emits: `UpdatedWithdrawalRequestLastSignificantApproveVote`
 	*/
-	function updateWithdrawalRequestLatestSignificantApproveVoteTime(
+	function updateWithdrawalRequestLatestRelevantApproveVoteTime(
 		uint256 withdrawalRequestId,
-		uint256 newLatestSignificantApproveVoteTime
+		uint256 newLatestRelevantApproveVoteTime
 	)
 		external
 		returns (uint256, uint256)
