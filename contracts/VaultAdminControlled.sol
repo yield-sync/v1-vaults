@@ -12,7 +12,7 @@ contract VaultAdminControlled is
 	IVaultAdminControlled
 {
 	/* [state-variable] */
-	mapping (uint256 => WithdrawalRequestAdminData) _widrawalRequestAdminData;
+	mapping (uint256 => WithdrawalRequestAdminData) _withdrawalRequestAdminData;
 
 
 	/* [constructor] */
@@ -29,6 +29,22 @@ contract VaultAdminControlled is
 	}
 
 
+	/* Note [restriction][internal] */
+	/**
+	* @notice Delete `WithdrawalRequest` and related values
+	*a
+	* @dev [restriction][internal]
+	*
+	* @dev [override]
+	*      [delete] `_withdrawalRequest` value
+	*      [delete] `_withdrawalRequestVotedVoters` value
+	*      [delete] `_withdrawalRequestByCreator` value
+	*      [delete] `_withdrawalRequestAdminData` value
+	*
+	* @param withdrawalRequestId {uint256}
+	*
+	* Emits: `DeletedWithdrawalRequest`
+	*/
 	function _deleteWithdrawalRequest(uint256 withdrawalRequestId)
 		override(Vault)
 		internal
@@ -36,11 +52,16 @@ contract VaultAdminControlled is
 		// [super]
 		super._deleteWithdrawalRequest(withdrawalRequestId);
 
-		// [delete] `_widrawalRequestAdminData` value
-		delete _widrawalRequestAdminData[withdrawalRequestId];
+		// [delete] `_withdrawalRequestAdminData` value
+		delete _withdrawalRequestAdminData[withdrawalRequestId];
 	}
 	
 
+	/* [restriction][AccessControlEnumerable] VOTER_ROLE */
+
+	/**
+	* @dev [override]
+	*/
 	function createWithdrawalRequest(
 		address to,
 		address tokenAddress,
@@ -58,12 +79,18 @@ contract VaultAdminControlled is
 			amount
 		);
 
-		_widrawalRequestAdminData[withdrawalRequestId].paused = false;
-		_widrawalRequestAdminData[withdrawalRequestId].accelerated = false;
+		// [add] `_withdrawalRequestAdminData` value
+		_withdrawalRequestAdminData[withdrawalRequestId] = WithdrawalRequestAdminData({
+			paused: false,
+			accelerated: false
+		});
 
 		return withdrawalRequestId;
 	}
 
+	/**
+	* @dev [override]
+	*/
 	function processWithdrawalRequests(uint256 withdrawalRequestId)
 		override(Vault, IVault)
 		public
@@ -77,12 +104,12 @@ contract VaultAdminControlled is
 		// [require] WithdrawalRequest time delay passed OR accelerated
 		require(
 			block.timestamp - _withdrawalRequest[withdrawalRequestId].lastImpactfulVoteTime >= SafeMath.mul(withdrawalDelayMinutes, 60) ||
-			_widrawalRequestAdminData[withdrawalRequestId].accelerated,
+			_withdrawalRequestAdminData[withdrawalRequestId].accelerated,
 			"Not enough time has passed & not accelerated"
 		);
 
 		// [require] WithdrawalRequest NOT paused
-		require(!_widrawalRequestAdminData[withdrawalRequestId].paused, "Paused");
+		require(!_withdrawalRequestAdminData[withdrawalRequestId].paused, "Paused");
 
 		// [call][internal]
 		_processWithdrawalRequest(withdrawalRequestId);
@@ -90,6 +117,7 @@ contract VaultAdminControlled is
 
 
 	/* [restriction][AccessControlEnumerable] DEFAULT_ADMIN_ROLE */
+
 	// @inheritdoc IVaultAdminControlled
 	function updateRequiredForVotes(uint256 newRequiredForVotes)
 		public
@@ -167,13 +195,13 @@ contract VaultAdminControlled is
 		returns (bool, uint256)
 	{
 		// [update] `_withdrawalRequestPaused`
-		_widrawalRequestAdminData[withdrawalRequestId].paused = !_widrawalRequestAdminData[
+		_withdrawalRequestAdminData[withdrawalRequestId].paused = !_withdrawalRequestAdminData[
 			withdrawalRequestId
 		].paused;
 
 		// [emit]
 		emit ToggledWithdrawalRequestPaused(
-			_widrawalRequestAdminData[withdrawalRequestId].paused
+			_withdrawalRequestAdminData[withdrawalRequestId].paused
 		);
 
 		return (true, withdrawalRequestId);

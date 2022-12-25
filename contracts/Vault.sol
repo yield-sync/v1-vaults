@@ -103,7 +103,7 @@ contract Vault is
 	}
 
 
-	/** Note [restriction][internal] */
+	/* [restriction][internal] */
 
 	/**
 	* @notice Delete WithdrawalRequest
@@ -173,7 +173,7 @@ contract Vault is
 	}
 
 
-	/** NOTE [restriction][AccessControlEnumerable] VOTER_ROLE */
+	/* [restriction][AccessControlEnumerable] VOTER_ROLE */
 
 	/// @inheritdoc IVault
 	function createWithdrawalRequest(
@@ -301,7 +301,7 @@ contract Vault is
 	}
 
 
-	/** NOTE [!restriction] */
+	/* [!restriction] */
 	/// @inheritdoc IVault
 	function tokenBalance(address tokenAddress)
 		view
