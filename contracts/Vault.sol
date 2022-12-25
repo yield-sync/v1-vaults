@@ -140,6 +140,73 @@ contract Vault is
 		// [emit]
 		emit DeletedWithdrawalRequest(withdrawalRequestId);
 	}
+
+
+	/// @inheritdoc IVault
+	function tokenBalance(address tokenAddress)
+		view
+		public
+		returns (uint256)
+	{
+		return _tokenBalance[tokenAddress];
+	}
+
+	/// @inheritdoc IVault
+	function withdrawalRequest(uint256 withdrawalRequestId)
+		view
+		public
+		returns (WithdrawalRequest memory)
+	{
+		return _withdrawalRequest[withdrawalRequestId];
+	}
+
+	/// @inheritdoc IVault
+	function withdrawalRequestByCreator(address creator)
+		view
+		public
+		returns (uint256[] memory)
+	{
+		return _withdrawalRequestByCreator[creator];
+	}
+
+	/// @inheritdoc IVault
+	function withdrawalRequestVotedVoters(uint256 withdrawalRequestId)
+		view
+		public
+		returns (address[] memory)
+	{
+		return _withdrawalRequestVotedVoters[withdrawalRequestId];
+	}
+
+	
+	/// @inheritdoc IVault
+	function depositTokens(address tokenAddress, uint256 amount)
+		public
+		returns (uint256, uint256)
+	{
+		// Ensure token is not a null address
+		require(
+			tokenAddress != address(0),
+			"Token address cannot be null"
+		);
+		
+		// Ensure amount is greater than zero
+		require(
+			amount > 0,
+			"Amount must be greater than zero"
+		);
+
+		// [ERC20-transfer] Transfer amount from msg.sender to this contract
+		IERC20(tokenAddress).safeTransferFrom(msg.sender, address(this), amount);
+
+		// [increment] `_tokenBalance`
+		_tokenBalance[tokenAddress] += amount;
+			
+		// [emit]
+		emit TokensDeposited(msg.sender, tokenAddress, amount);
+		
+		return (amount, _tokenBalance[tokenAddress]);
+	}
 	
 
 	/// @inheritdoc IVault
@@ -275,72 +342,5 @@ contract Vault is
 
 		// [emit]
 		emit TokensWithdrawn(msg.sender, w.to, w.amount);
-	}
-
-
-	/* [!restriction] */
-	/// @inheritdoc IVault
-	function tokenBalance(address tokenAddress)
-		view
-		public
-		returns (uint256)
-	{
-		return _tokenBalance[tokenAddress];
-	}
-
-	/// @inheritdoc IVault
-	function withdrawalRequest(uint256 withdrawalRequestId)
-		view
-		public
-		returns (WithdrawalRequest memory)
-	{
-		return _withdrawalRequest[withdrawalRequestId];
-	}
-
-	/// @inheritdoc IVault
-	function withdrawalRequestVotedVoters(uint256 withdrawalRequestId)
-		view
-		public
-		returns (address[] memory)
-	{
-		return _withdrawalRequestVotedVoters[withdrawalRequestId];
-	}
-
-	/// @inheritdoc IVault
-	function withdrawalRequestByCreator(address creator)
-		view
-		public
-		returns (uint256[] memory)
-	{
-		return _withdrawalRequestByCreator[creator];
-	}
-	
-	/// @inheritdoc IVault
-	function depositTokens(address tokenAddress, uint256 amount)
-		public
-		returns (uint256, uint256)
-	{
-		// Ensure token is not a null address
-		require(
-			tokenAddress != address(0),
-			"Token address cannot be null"
-		);
-		
-		// Ensure amount is greater than zero
-		require(
-			amount > 0,
-			"Amount must be greater than zero"
-		);
-
-		// [ERC20-transfer] Transfer amount from msg.sender to this contract
-		IERC20(tokenAddress).safeTransferFrom(msg.sender, address(this), amount);
-
-		// [increment] `_tokenBalance`
-		_tokenBalance[tokenAddress] += amount;
-			
-		// [emit]
-		emit TokensDeposited(msg.sender, tokenAddress, amount);
-		
-		return (amount, _tokenBalance[tokenAddress]);
 	}
 }

@@ -77,7 +77,7 @@ interface IVault is
 	/**
 	* @notice Required signatures for approval
 	*
-	* @dev [uint256-getter]
+	* @dev [view-uint256]
 	*
 	* @return {uint256}
 	*/
@@ -90,7 +90,7 @@ interface IVault is
 	/**
 	* @notice Get Withdrawal delay in minutes
 	*
-	* @dev [uint256-getter]
+	* @dev [view-uint256]
 	*
 	* @return {uint256}
 	*/
@@ -99,6 +99,87 @@ interface IVault is
 		view
 		returns (uint256)
 	;
+
+
+	/**
+	* @notice Get token balance
+	*
+	* @dev [view][mapping]
+	*
+	* @param tokenAddress {address} Token contract address
+	*
+	* @return {uint256}
+	*/
+	function tokenBalance(address tokenAddress)
+		external
+		view
+		returns (uint256)
+	;
+
+	/**
+	* @notice Get WithdrawalRequest with given `withdrawalRequestId`
+	*
+	* @dev [view][mapping]
+	*
+	* @param withdrawalRequestId {uint256}
+	*
+	* @return {WithdrawalRequest}
+	*/
+	function withdrawalRequest(uint256 withdrawalRequestId)
+		external
+		view returns (WithdrawalRequest memory)
+	;
+
+	/**
+	* @notice Get withdrawalRequestIds by a given creator
+	*
+	* @dev [view][mapping]
+	*
+	* @param creator {address}
+	*
+	* @return {uint256[]} Array of `WithdrawalRequestId`
+	*/
+	function withdrawalRequestByCreator(address creator)
+		view
+		external
+		returns (uint256[] memory)
+	;
+
+	/**
+	* @notice Get array of voters
+	*
+	* @dev [view][mapping]
+	*
+	* @param withdrawalRequestId {uint256} Id of WithdrawalRequest
+	*
+	* @return {WithdrawalRequest}
+	*/
+	function withdrawalRequestVotedVoters(uint256 withdrawalRequestId)
+		view
+		external
+		returns (address[] memory)
+	;
+
+
+	/**
+	* @notice Deposit tokens
+	*
+	* @dev [ERC20-transfer] Transfer amount from msg.sender to this contract
+	*      [increment] `_tokenBalance`
+	*
+	* @param tokenAddress {address}
+	* @param amount {uint256} Amount to be moved
+	*
+	* @return {uint256} Amount deposited
+	* @return {uint256} New `_tokenBalance`
+	*
+	* Emits: `TokensDeposited`
+	*/
+	function depositTokens(address tokenAddress, uint256 amount)
+		external
+		returns (uint256, uint256)
+	;
+
 
 	/**
 	* @notice Create a WithdrawalRequest
@@ -165,84 +246,5 @@ interface IVault is
 	*/
 	function processWithdrawalRequests(uint256 withdrawalRequestId)
 		external
-	;
-
-
-	/**
-	* @notice Get token balance
-	*
-	* @dev [getter][mapping]
-	*
-	* @param tokenAddress {address} Token contract address
-	*
-	* @return {uint256}
-	*/
-	function tokenBalance(address tokenAddress)
-		external
-		view
-		returns (uint256)
-	;
-
-	/**
-	* @notice Get WithdrawalRequest with given `withdrawalRequestId`
-	*
-	* @dev [getter][mapping]
-	*
-	* @param withdrawalRequestId {uint256}
-	*
-	* @return {WithdrawalRequest}
-	*/
-	function withdrawalRequest(uint256 withdrawalRequestId)
-		external
-		view returns (WithdrawalRequest memory)
-	;
-
-	/**
-	* @notice Get array of voters
-	*
-	* @dev [getter][mapping]
-	*
-	* @param withdrawalRequestId {uint256} Id of WithdrawalRequest
-	*
-	* @return {WithdrawalRequest}
-	*/
-	function withdrawalRequestVotedVoters(uint256 withdrawalRequestId)
-		view
-		external
-		returns (address[] memory)
-	;
-
-	/**
-	* @notice Get withdrawalRequestIds by a given creator
-	*
-	* @dev [getter][mapping]
-	*
-	* @param creator {address}
-	*
-	* @return {uint256[]} Array of `WithdrawalRequestId`
-	*/
-	function withdrawalRequestByCreator(address creator)
-		view
-		external
-		returns (uint256[] memory)
-	;
-
-	/**
-	* @notice Deposit tokens
-	*
-	* @dev [ERC20-transfer] Transfer amount from msg.sender to this contract
-	*      [increment] `_tokenBalance`
-	*
-	* @param tokenAddress {address}
-	* @param amount {uint256} Amount to be moved
-	*
-	* @return {uint256} Amount deposited
-	* @return {uint256} New `_tokenBalance`
-	*
-	* Emits: `TokensDeposited`
-	*/
-	function depositTokens(address tokenAddress, uint256 amount)
-		external
-		returns (uint256, uint256)
 	;
 }
