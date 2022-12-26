@@ -12,9 +12,9 @@ import "./VaultAdminControlled.sol";
 
 
 /**
-* @title VaultFactory
+* @title CardinalProtocolVaultFactory
 */
-contract VaultFactory is
+contract CardinalProtocolVaultFactory is
 	Pausable,
 	IVaultFactory
 {
