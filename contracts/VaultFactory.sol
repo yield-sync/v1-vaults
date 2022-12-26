@@ -62,7 +62,7 @@ contract VaultFactory is
 
 
 	/* [modifier] */
-	modifier authLevel_s() {
+	modifier authLevelS() {
 		require(
 			ICardinalProtocolGovernance(CARDINAL_PROTOCOL).hasRole(
 				ICardinalProtocolGovernance(CARDINAL_PROTOCOL).S(),
@@ -72,40 +72,6 @@ contract VaultFactory is
 		);
 
 		_;
-	}
-
-
-	/**
-	* @notice Toggle pause
-	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
-	* @dev [update] pause
-	*/
-	function togglePause()
-		public
-		authLevel_s()
-	{
-		if (!paused())
-		{
-			_pause();
-		}
-		else
-		{
-			_unpause();
-		}
-	}
-
-	/**
-	* @notice Set fee for deploying a vault
-	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
-	* @dev [update] fee
-	* @param _fee {uint256} Fee to be set
-	*/
-	function setFee(uint256 _fee)
-		public
-		authLevel_s()
-		whenPaused()
-	{
-		fee = _fee;
 	}
 
 
@@ -151,5 +117,41 @@ contract VaultFactory is
 
 		// [return]
 		return address(deployedContract);
+	}
+
+
+	/**
+	* @notice Toggle pause
+	*
+	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
+	*
+	* @dev [update] pause
+	*/
+	function togglePause()
+		public
+		authLevelS()
+	{
+		if (!paused())
+		{
+			_pause();
+		}
+		else
+		{
+			_unpause();
+		}
+	}
+
+	/**
+	* @notice Set fee for deploying a vault
+	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
+	* @dev [update] fee
+	* @param _fee {uint256} Fee to be set
+	*/
+	function setFee(uint256 _fee)
+		public
+		authLevelS()
+		whenPaused()
+	{
+		fee = _fee;
 	}
 }
