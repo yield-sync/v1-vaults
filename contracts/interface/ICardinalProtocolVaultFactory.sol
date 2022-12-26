@@ -12,7 +12,6 @@ interface ICardinalProtocolVaultFactory
 	* @dev [event]
 	*/
 	event VaultDeployed (
-		address indexed VaultAddress,
-		address indexed admin
+		address indexed VaultAddress
 	);
 }

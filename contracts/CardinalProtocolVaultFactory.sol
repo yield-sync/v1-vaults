@@ -78,13 +78,11 @@ contract CardinalProtocolVaultFactory is
 	* @notice Creates a Vault
 	* @dev [!restriction]
 	* @dev [create]
-	* @param admin {address} Admin of the deployed contract
 	* @param requiredApproveVotes {uint256} Required signatures for actions
 	* @param withdrawalDelayMinutes {uint256} Withdrawal delay minutes
 	* @param voters {address[]} Addresses of voter accounts
 	*/
-	function deploy(
-		address admin,
+	function deployVault(
 		uint256 requiredApproveVotes,
 		uint256 withdrawalDelayMinutes,
 		address[] memory voters
@@ -112,7 +110,7 @@ contract CardinalProtocolVaultFactory is
 		vaultId++;
 
 		// [emit]
-		emit VaultDeployed(address(deployedContract), admin);
+		emit VaultDeployed(address(deployedContract));
 
 		// [return]
 		return address(deployedContract);

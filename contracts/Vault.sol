@@ -264,6 +264,8 @@ contract Vault is
 			{
 				// Flag
 				voted = true;
+
+				break;
 			}
 		}
 
