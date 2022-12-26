@@ -45,9 +45,7 @@ contract VaultFactory is
 		external
 		payable
 	{
-		revert(
-			"Sending Ether directly to this contract is disabled"
-		);
+		revert("Sending Ether directly to this contract is disabled");
 	}
 
 
@@ -56,9 +54,7 @@ contract VaultFactory is
 		external
 		payable
 	{
-		revert(
-			"Sending Ether directly to this contract is disabled"
-		);
+		revert("Sending Ether directly to this contract is disabled");
 	}
 
 
@@ -77,7 +73,13 @@ contract VaultFactory is
 
 
 	/**
+	* @notice Get the address of vault with the given Id
+	*
 	* @dev [getter]
+	*
+	* @param vaultId {uint256}
+	*
+	* @return {address} Vault
 	*/
 	function vaultAddresses(uint256 vaultId)
 		public
