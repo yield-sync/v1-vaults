@@ -21,11 +21,12 @@ contract VaultFactory is
 	address public CARDINAL_PROTOCOL;
 
 	/* [state-variable] */
-	uint256 public vaultId;
 	uint256 public fee;
 
+	uint256 internal _vaultId;
+
 	// Vault Id => Vault Address
-	mapping (uint256 => address) public vaults;
+	mapping (uint256 => address) _vaultAddress;
 
 
 	/* [constructor] */
@@ -33,8 +34,9 @@ contract VaultFactory is
 	{
 		CARDINAL_PROTOCOL = _cardinalProtocol;
 
-		vaultId = 0;
 		fee = 0;
+
+		_vaultId = 0;
 	}
 
 
@@ -75,12 +77,27 @@ contract VaultFactory is
 
 
 	/**
+	* @dev [getter]
+	*/
+	function vaultAddresses(uint256 vaultId)
+		public
+		view
+		returns (address)
+	{
+		return _vaultAddress[vaultId];
+	}
+
+
+	/**
 	* @notice Creates a Vault
+	*
 	* @dev [!restriction]
+	*
 	* @dev [create]
-	* @param requiredApproveVotes {uint256} Required signatures for actions
-	* @param withdrawalDelayMinutes {uint256} Withdrawal delay minutes
-	* @param voters {address[]} Addresses of voter accounts
+	*
+	* @param requiredApproveVotes {uint256}
+	* @param withdrawalDelayMinutes {uint256}
+	* @param voters {address[]} Addresses to be assigned VOTER_ROLE
 	*/
 	function deployVault(
 		uint256 requiredApproveVotes,
@@ -103,11 +120,11 @@ contract VaultFactory is
 			voters
 		);
 
-		// Store the address of the newly deployed Vault contract
-		vaults[vaultId] = address(deployedContract);
+		// Register vault
+		_vaultAddress[_vaultId] = address(deployedContract);
 
 		// [increment] vaultId
-		vaultId++;
+		_vaultId++;
 
 		// [emit]
 		emit VaultDeployed(address(deployedContract));
