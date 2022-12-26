@@ -72,12 +72,6 @@ contract VaultAdminControlled is
 		onlyRole(DEFAULT_ADMIN_ROLE)
 		returns (uint256)
 	{
-		// [require] `newRequiredApproveVotes` <= VOTER_ROLE Member Count
-		require(
-			newRequiredApproveVotes <= getRoleMemberCount(VOTER_ROLE),
-			"Invalid `newRequiredApproveVotes`"
-		);
-
 		// [update]
 		requiredApproveVotes = newRequiredApproveVotes;
 
