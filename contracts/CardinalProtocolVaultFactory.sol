@@ -6,8 +6,7 @@ pragma solidity ^0.8.1;
 import "@cardinal-protocol/v1-sdk/contracts/interface/ICardinalProtocolGovernance.sol";
 import "@openzeppelin/contracts/security/Pausable.sol";
 
-/* [import-Internal] */
-import "./interface/IVaultFactory.sol";
+import "./interface/ICardinalProtocolVaultFactory.sol";
 import "./VaultAdminControlled.sol";
 
 
@@ -16,7 +15,7 @@ import "./VaultAdminControlled.sol";
 */
 contract CardinalProtocolVaultFactory is
 	Pausable,
-	IVaultFactory
+	ICardinalProtocolVaultFactory
 {
 	/* [state-variable][constant] */
 	address public CARDINAL_PROTOCOL;

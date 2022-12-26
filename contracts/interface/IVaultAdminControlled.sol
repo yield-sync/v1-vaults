@@ -2,7 +2,7 @@
 pragma solidity ^0.8.1;
 
 
-/* [import-internal] */
+/* [import] */
 import "./IVault.sol";
 
 

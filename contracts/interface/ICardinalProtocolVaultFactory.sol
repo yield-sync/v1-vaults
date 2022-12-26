@@ -3,9 +3,9 @@ pragma solidity ^0.8.1;
 
 
 /**
-* @title IVaultFactory
+* @title ICardinalProtocolVaultFactory
 */
-interface IVaultFactory
+interface ICardinalProtocolVaultFactory
 {
 	/**
 	* @notice
