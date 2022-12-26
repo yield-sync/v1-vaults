@@ -21,12 +21,16 @@ contract VaultFactory is
 	address public CARDINAL_PROTOCOL;
 
 	/* [state-variable] */
-	uint256 public fee;
-
 	uint256 internal _vaultId;
+	uint256 internal _vaultFee;
+	uint256 internal _vaultAdminControlledId;
+	uint256 internal _vaultAdminControlledFee;
 
-	// Vault Id => Vault Address
+
+	// Vault Id => Address
 	mapping (uint256 => address) _vaultAddress;
+	// VaultAdminControlled Id => Address
+	mapping (uint256 => address) _vaultAdminControlledAddress;
 
 
 	/* [constructor] */
@@ -34,9 +38,10 @@ contract VaultFactory is
 	{
 		CARDINAL_PROTOCOL = _cardinalProtocol;
 
-		fee = 0;
-
 		_vaultId = 0;
+		_vaultFee = 0;
+		_vaultAdminControlledId = 0;
+		_vaultAdminControlledFee = 0;
 	}
 
 
@@ -69,6 +74,38 @@ contract VaultFactory is
 		);
 
 		_;
+	}
+
+
+	/**
+	* @notice Get Vault Fee
+	*
+	* @dev [getter]
+	*
+	* @return {uint256}
+	*/
+	function vaultFee()
+		public
+		view
+		returns (uint256)
+	{
+		return _vaultFee;
+	}
+
+
+	/**
+	* @notice Get Vault Admin Controlled Fee
+	*
+	* @dev [getter]
+	*
+	* @return {uint256}
+	*/
+	function vaultAdminControlledFee()
+		public
+		view
+		returns (uint256)
+	{
+		return _vaultAdminControlledFee;
 	}
 
 
@@ -111,7 +148,7 @@ contract VaultFactory is
 		whenNotPaused()
 		returns (address)
 	{
-		require(msg.value >= fee, "!msg.value");
+		require(msg.value >= _vaultFee, "!msg.value");
 
 		Vault deployedContract;
 
@@ -158,16 +195,37 @@ contract VaultFactory is
 	}
 
 	/**
-	* @notice Set fee for deploying a vault
+	* @notice Set fee for Vault.sol deployment
+	*
 	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
+	*
 	* @dev [update] fee
+	*
 	* @param _fee {uint256} Fee to be set
 	*/
-	function setFee(uint256 _fee)
+	function setFeeVault(uint256 _fee)
 		public
 		authLevelS()
 		whenPaused()
 	{
-		fee = _fee;
+		_vaultFee = _fee;
+	}
+
+
+	/**
+	* @notice Set fee for VaultAdminControlled.sol deployment
+	*
+	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
+	*
+	* @dev [update] fee
+	*
+	* @param _fee {uint256} Fee to be set
+	*/
+	function setFeeVaultAdminControlled(uint256 _fee)
+		public
+		authLevelS()
+		whenPaused()
+	{
+		_vaultAdminControlledFee = _fee;
 	}
 }
