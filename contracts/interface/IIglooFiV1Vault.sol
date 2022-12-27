@@ -15,9 +15,9 @@ struct WithdrawalRequest {
 
 
 /**
-* @title IVault
+* @title Igloo Fi V1 Vault
 */
-interface IVault
+interface IglooFiV1Vault
 {
 	/* [event] */
 	/**

@@ -3,19 +3,19 @@ pragma solidity ^0.8.1;
 
 
 /* [import] */
-import "@cardinal-protocol/v1-sdk/contracts/interface/ICardinalProtocolGovernance.sol";
+import "@igloo-fi/v1-sdk/contracts/interface/IIglooFiGovernance.sol";
 import "@openzeppelin/contracts/security/Pausable.sol";
 
-import "./interface/ICardinalProtocolVaultFactory.sol";
-import "./Vault.sol";
+import "./interface/IIglooFiV1VaultFactory.sol";
+import "./IglooFiVault.sol";
 
 
 /**
-* @title Cardinal Protocol V1 Vault Factory
+* @title Igloo Fi V1 Vault Factory
 */
-contract CardinalProtocolV1VaultFactory is
+contract IglooFiV1VaultFactory is
 	Pausable,
-	ICardinalProtocolVaultFactory
+	IIglooFiVaultFactory
 {
 	/* [state-variable][constant] */
 	address public constant CARDINAL_PROTOCOL;

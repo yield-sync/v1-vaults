@@ -8,13 +8,13 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
-import "./interface/ICardinalProtocolVault.sol";
+import "./interface/IIglooFiV1Vault.sol";
 
 
 /**
-* @title Vault
+* @title Igloo Fi V1 Vault
 */
-contract Vault is
+contract IglooFiV1Vault is
 	AccessControlEnumerable,
 	IVault
 {
