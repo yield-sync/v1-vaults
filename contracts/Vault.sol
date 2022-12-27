@@ -46,6 +46,7 @@ contract Vault is
 
 	/* [constructor] */
 	constructor (
+		address admin,
 		uint256 _requiredApproveVotes,
 		uint256 _withdrawalDelayMinutes,
 		address[] memory voters
@@ -53,6 +54,9 @@ contract Vault is
 	{
 		// Initialize WithdrawalRequestId
 		_withdrawalRequestId = 0;
+
+		// Set up DEFAULT_ADMIN_ROLE
+		_setupRole(DEFAULT_ADMIN_ROLE, admin);
 
 		requiredApproveVotes = _requiredApproveVotes;
 
@@ -343,5 +347,100 @@ contract Vault is
 
 		// [emit]
 		emit TokensWithdrawn(msg.sender, w.to, w.amount);
+	}
+	
+
+	/// @inheritdoc IVaultAdminControlled
+	function addVoter(address targetAddress)
+		public
+		onlyRole(DEFAULT_ADMIN_ROLE)
+		returns (address)
+	{
+		// [add] address to VOTER_ROLE on `AccessControlEnumerable`
+		_setupRole(VOTER_ROLE, targetAddress);
+
+		// [emit]
+		emit VoterAdded(targetAddress);
+
+		return targetAddress;
+	}
+
+	/// @inheritdoc IVaultAdminControlled
+	function removeVoter(address voter)
+		public
+		onlyRole(DEFAULT_ADMIN_ROLE)
+		returns (address)
+	{
+		// [remove] address with VOTER_ROLE on `AccessControlEnumerable`
+		_revokeRole(VOTER_ROLE, voter);
+
+		// [emit]
+		emit VoterRemoved(voter);
+
+		return voter;
+	}
+
+	/// @inheritdoc IVaultAdminControlled
+	function updateRequiredApproveVotes(uint256 newRequiredApproveVotes)
+		public
+		onlyRole(DEFAULT_ADMIN_ROLE)
+		returns (uint256)
+	{
+		// [update]
+		requiredApproveVotes = newRequiredApproveVotes;
+
+		// [emit]
+		emit UpdatedRequiredApproveVotes(requiredApproveVotes);
+
+		return (requiredApproveVotes);
+	}
+
+	/// @inheritdoc IVaultAdminControlled
+	function updateWithdrawalDelayMinutes(uint256 newWithdrawalDelayMinutes)
+		public
+		onlyRole(DEFAULT_ADMIN_ROLE)
+		returns (uint256)
+	{
+		// [require] newWithdrawalDelayMinutes is greater than OR equal to 0
+		require(newWithdrawalDelayMinutes >= 0, "Invalid newWithdrawalDelayMinutes");
+
+		// [update] `withdrawalDelayMinutes`
+		withdrawalDelayMinutes = newWithdrawalDelayMinutes;
+
+		// [emit]
+		emit UpdatedWithdrawalDelayMinutes(withdrawalDelayMinutes);
+
+		return withdrawalDelayMinutes;
+	}
+
+	/// @inheritdoc IVaultAdminControlled
+	function updateWithdrawalRequestLatestRelevantApproveVoteTime(
+		uint256 withdrawalRequestId,
+		uint256 latestRelevantApproveVoteTime
+	)
+		public
+		onlyRole(DEFAULT_ADMIN_ROLE)
+		validWithdrawalRequest(withdrawalRequestId)
+		returns (uint256, uint256)
+	{
+		// [update] WithdrawalRequest within `_withdrawalRequest`
+		_withdrawalRequest[
+			withdrawalRequestId
+		].latestRelevantApproveVoteTime = latestRelevantApproveVoteTime;
+
+		return (withdrawalRequestId, latestRelevantApproveVoteTime);
+	}
+
+	/// @inheritdoc IVaultAdminControlled
+	function deleteWithdrawalRequest(uint256 withdrawalRequestId)
+		public
+		onlyRole(DEFAULT_ADMIN_ROLE)
+		validWithdrawalRequest(withdrawalRequestId)
+		returns (uint256)
+	{
+		// [call][internal]
+		_deleteWithdrawalRequest(withdrawalRequestId);
+
+		return withdrawalRequestId;
 	}
 }

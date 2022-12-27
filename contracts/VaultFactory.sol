@@ -7,7 +7,7 @@ import "@cardinal-protocol/v1-sdk/contracts/interface/ICardinalProtocolGovernanc
 import "@openzeppelin/contracts/security/Pausable.sol";
 
 import "./interface/IVaultFactory.sol";
-import "./VaultAdminControlled.sol";
+import "./Vault.sol";
 
 
 /**
@@ -18,19 +18,14 @@ contract VaultFactory is
 	IVaultFactory
 {
 	/* [state-variable][constant] */
-	address public CARDINAL_PROTOCOL;
+	address public constant CARDINAL_PROTOCOL;
 
 	/* [state-variable] */
 	uint256 internal _vaultId;
 	uint256 internal _vaultFee;
-	uint256 internal _vaultAdminControlledId;
-	uint256 internal _vaultAdminControlledFee;
-
 
 	// Vault Id => Address
 	mapping (uint256 => address) _vaultAddress;
-	// VaultAdminControlled Id => Address
-	mapping (uint256 => address) _vaultAdminControlledAddress;
 
 
 	/* [constructor] */
@@ -40,8 +35,6 @@ contract VaultFactory is
 
 		_vaultId = 0;
 		_vaultFee = 0;
-		_vaultAdminControlledId = 0;
-		_vaultAdminControlledFee = 0;
 	}
 
 
@@ -80,7 +73,9 @@ contract VaultFactory is
 	/**
 	* @notice Get Vault Fee
 	*
-	* @dev [getter]
+	* @dev [!restriction]
+	*
+	* @dev [view]
 	*
 	* @return {uint256}
 	*/
@@ -94,25 +89,11 @@ contract VaultFactory is
 
 
 	/**
-	* @notice Get Vault Admin Controlled Fee
-	*
-	* @dev [getter]
-	*
-	* @return {uint256}
-	*/
-	function vaultAdminControlledFee()
-		public
-		view
-		returns (uint256)
-	{
-		return _vaultAdminControlledFee;
-	}
-
-
-	/**
 	* @notice Get the address of vault with the given Id
 	*
-	* @dev [getter]
+	* @dev [!restriction]
+	*
+	* @dev [view]
 	*
 	* @param vaultId {uint256}
 	*
@@ -209,23 +190,5 @@ contract VaultFactory is
 		whenPaused()
 	{
 		_vaultFee = _fee;
-	}
-
-
-	/**
-	* @notice Set fee for VaultAdminControlled.sol deployment
-	*
-	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
-	*
-	* @dev [update] fee
-	*
-	* @param _fee {uint256} Fee to be set
-	*/
-	function setFeeVaultAdminControlled(uint256 _fee)
-		public
-		authLevelS()
-		whenPaused()
-	{
-		_vaultAdminControlledFee = _fee;
 	}
 }
