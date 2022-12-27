@@ -7,7 +7,7 @@ import "@igloo-fi/v1-sdk/contracts/interface/IIglooFiGovernance.sol";
 import "@openzeppelin/contracts/security/Pausable.sol";
 
 import "./interface/IIglooFiV1VaultFactory.sol";
-import "./IglooFiVault.sol";
+import "./IglooFiV1Vault.sol";
 
 
 /**
@@ -18,7 +18,7 @@ contract IglooFiV1VaultFactory is
 	IIglooFiVaultFactory
 {
 	/* [state-variable][constant] */
-	address public constant CARDINAL_PROTOCOL;
+	address public constant IGLOO_FI;
 
 	/* [state-variable] */
 	uint256 internal _vaultId;
@@ -29,9 +29,9 @@ contract IglooFiV1VaultFactory is
 
 
 	/* [constructor] */
-	constructor (address _cardinalProtocol)
+	constructor (address iglooFi)
 	{
-		CARDINAL_PROTOCOL = _cardinalProtocol;
+		IGLOO_FI = iglooFi;
 
 		_vaultId = 0;
 		_vaultFee = 0;
@@ -59,8 +59,8 @@ contract IglooFiV1VaultFactory is
 	/* [modifier] */
 	modifier authLevelS() {
 		require(
-			ICardinalProtocolGovernance(CARDINAL_PROTOCOL).hasRole(
-				ICardinalProtocolGovernance(CARDINAL_PROTOCOL).S(),
+			IIglooFiGovernance(IGLOO_FI).hasRole(
+				IIglooFiGovernance(IGLOO_FI).S(),
 				msg.sender
 			),
 			"!auth"

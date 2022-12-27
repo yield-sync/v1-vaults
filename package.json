@@ -1,5 +1,5 @@
 {
-  "name": "cardinal",
+  "name": "igloo-fi-v1-vaults",
   "version": "0.0.1",
   "description": "",
   "main": "index.js",
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/w3st-io/cardinal.git"
+    "url": "git+https://github.com/igloo-fi/v1-vaults.git"
   },
   "keywords": [],
   "author": "harpoonjs.eth",
