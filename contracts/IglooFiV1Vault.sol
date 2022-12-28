@@ -55,12 +55,10 @@ contract IglooFiV1Vault is
 		// Initialize WithdrawalRequestId
 		_withdrawalRequestId = 0;
 
-		// Set up DEFAULT_ADMIN_ROLE
+		// Set DEFAULT_ADMIN_ROLE
 		_setupRole(DEFAULT_ADMIN_ROLE, admin);
 
 		requiredApproveVotes = _requiredApproveVotes;
-
-		// Set delay (in minutes)
 		withdrawalDelayMinutes = _withdrawalDelayMinutes;
 
 		// [for] each voter address..
