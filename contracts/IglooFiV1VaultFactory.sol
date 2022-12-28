@@ -71,6 +71,24 @@ contract IglooFiV1VaultFactory is
 
 
 	/**
+	* @notice Get vault deployment fee
+	*
+	* @dev [!restriction]
+	*
+	* @dev [view]
+	*
+	* @return {uint256}
+	*/
+	function vaultFee()
+		public
+		view
+		returns (uint256)
+	{
+		return _vaultFee;
+	}
+
+
+	/**
 	* @notice Get vault address
 	*
 	* @dev [!restriction]
@@ -87,24 +105,6 @@ contract IglooFiV1VaultFactory is
 		returns (address)
 	{
 		return _vaultAddress[vaultId];
-	}
-
-
-	/**
-	* @notice Get vault deployment fee
-	*
-	* @dev [!restriction]
-	*
-	* @dev [view]
-	*
-	* @return {uint256}
-	*/
-	function vaultFee()
-		public
-		view
-		returns (uint256)
-	{
-		return _vaultFee;
 	}
 
 
