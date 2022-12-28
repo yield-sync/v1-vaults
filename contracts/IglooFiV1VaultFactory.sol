@@ -25,7 +25,7 @@ contract IglooFiV1VaultFactory is
 	uint256 internal _vaultFee;
 
 	// Vault Id => Address
-	mapping (uint256 => address) _vaultAddress;
+	mapping (uint256 => address) internal _vaultAddress;
 
 
 	/* [constructor] */
@@ -71,7 +71,27 @@ contract IglooFiV1VaultFactory is
 
 
 	/**
-	* @notice Get Vault Fee
+	* @notice Get vault address
+	*
+	* @dev [!restriction]
+	*
+	* @dev [view]
+	*
+	* @param vaultId {uint256}
+	*
+	* @return {uint256}
+	*/
+	function vaultAddress(uint256 vaultId)
+		public
+		view
+		returns (address)
+	{
+		return _vaultAddress[vaultId];
+	}
+
+
+	/**
+	* @notice Get vault deployment fee
 	*
 	* @dev [!restriction]
 	*
@@ -85,26 +105,6 @@ contract IglooFiV1VaultFactory is
 		returns (uint256)
 	{
 		return _vaultFee;
-	}
-
-
-	/**
-	* @notice Get the address of vault with the given Id
-	*
-	* @dev [!restriction]
-	*
-	* @dev [view]
-	*
-	* @param vaultId {uint256}
-	*
-	* @return {address} Vault
-	*/
-	function vaultAddresses(uint256 vaultId)
-		public
-		view
-		returns (address)
-	{
-		return _vaultAddress[vaultId];
 	}
 
 
