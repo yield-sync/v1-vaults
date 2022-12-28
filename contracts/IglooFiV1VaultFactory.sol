@@ -24,7 +24,7 @@ contract IglooFiV1VaultFactory is
 	uint256 internal _vaultId;
 	uint256 internal _vaultFee;
 
-	// Vault Id => Address
+	// Vault Id => Contract address
 	mapping (uint256 => address) internal _vaultAddress;
 
 
@@ -187,7 +187,6 @@ contract IglooFiV1VaultFactory is
 	function setFeeVault(uint256 _fee)
 		public
 		authLevelS()
-		whenPaused()
 	{
 		_vaultFee = _fee;
 	}
