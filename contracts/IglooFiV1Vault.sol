@@ -3,11 +3,14 @@ pragma solidity ^0.8.1;
 
 
 /* [import] */
+// [!local]
 import "@openzeppelin/contracts/access/AccessControlEnumerable.sol";
+import "@openzeppelin/contracts/interfaces/IERC1271.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
-
+// [local]
 import "./interface/IIglooFiV1Vault.sol";
 
 
@@ -16,32 +19,41 @@ import "./interface/IIglooFiV1Vault.sol";
 */
 contract IglooFiV1Vault is
 	AccessControlEnumerable,
+	IERC1271,
 	IVault
 {
 	/* [using] */
+	using ECDSA for bytes32;
 	using SafeERC20 for IERC20;
 
 
 	/* [state-variable] */
-	// [public][constant]
+	// [bytes4][internal]
+	bytes4 internal constant MAGICVALUE = 0x1626ba7e;
+    bytes4 internal constant INVALID_SIGNATURE = 0xffffffff;
+
+	// [byte32][public]
 	bytes32 public constant VOTER_ROLE = keccak256("VOTER_ROLE");
 
-	// [public]
+	// [uint256][public]
 	uint256 public requiredApproveVotes;
 	uint256 public withdrawalDelayMinutes;
-	
-	// [internal]
+
+	// [uint256][internal]
 	uint256 internal _withdrawalRequestId;
 
-	// [mapping]
+	// [mapping][internal]
 	// Token Contract Address => Balance
-	mapping (address => uint256) _tokenBalance;
-	// WithdrawalRequestId => WithdrawalRequest
-	mapping (uint256 => WithdrawalRequest) _withdrawalRequest;
+	mapping (address => uint256) internal _tokenBalance;
 	// Voter Address => Array of WithdrawalRequest
-	mapping (address => uint256[]) _withdrawalRequestByCreator;
+	mapping (address => uint256[]) internal _withdrawalRequestByCreator;
+	// WithdrawalRequestId => WithdrawalRequest
+	mapping (uint256 => WithdrawalRequest) internal _withdrawalRequest;
 	// WithdrawalRequestId => Voted Voter Addresses Array
-	mapping (uint256 => address[]) _withdrawalRequestVotedVoters;
+	mapping (uint256 => address[]) internal _withdrawalRequestVotedVoters;
+
+	// [mapping][public]
+	mapping(bytes32 => uint256) public messageSignatures;
 
 
 	/* [constructor] */
@@ -143,7 +155,7 @@ contract IglooFiV1Vault is
 	}
 
 
-	/// @inheritdoc IVault
+	/// @inheritdoc IglooFiV1Vault
 	function tokenBalance(address tokenAddress)
 		view
 		public
@@ -152,7 +164,7 @@ contract IglooFiV1Vault is
 		return _tokenBalance[tokenAddress];
 	}
 
-	/// @inheritdoc IVault
+	/// @inheritdoc IglooFiV1Vault
 	function withdrawalRequest(uint256 withdrawalRequestId)
 		view
 		public
@@ -161,7 +173,7 @@ contract IglooFiV1Vault is
 		return _withdrawalRequest[withdrawalRequestId];
 	}
 
-	/// @inheritdoc IVault
+	/// @inheritdoc IglooFiV1Vault
 	function withdrawalRequestByCreator(address creator)
 		view
 		public
@@ -170,7 +182,7 @@ contract IglooFiV1Vault is
 		return _withdrawalRequestByCreator[creator];
 	}
 
-	/// @inheritdoc IVault
+	/// @inheritdoc IglooFiV1Vault
 	function withdrawalRequestVotedVoters(uint256 withdrawalRequestId)
 		view
 		public
@@ -180,7 +192,7 @@ contract IglooFiV1Vault is
 	}
 
 	
-	/// @inheritdoc IVault
+	/// @inheritdoc IglooFiV1Vault
 	function depositTokens(address tokenAddress, uint256 amount)
 		public
 		returns (uint256, uint256)
@@ -210,7 +222,7 @@ contract IglooFiV1Vault is
 	}
 	
 
-	/// @inheritdoc IVault
+	/// @inheritdoc IglooFiV1Vault
 	function createWithdrawalRequest(
 		address to,
 		address tokenAddress,
@@ -249,7 +261,7 @@ contract IglooFiV1Vault is
 		return _withdrawalRequestId;
 	}
 
-	/// @inheritdoc IVault
+	/// @inheritdoc IglooFiV1Vault
 	function voteOnWithdrawalRequest(uint256 withdrawalRequestId, bool vote)
 		public
 		onlyRole(VOTER_ROLE)
@@ -313,7 +325,7 @@ contract IglooFiV1Vault is
 		);
 	}
 
-	/// @inheritdoc IVault
+	/// @inheritdoc IglooFiV1Vault
 	function processWithdrawalRequests(uint256 withdrawalRequestId)
 		public
 		onlyRole(VOTER_ROLE)
@@ -348,7 +360,7 @@ contract IglooFiV1Vault is
 	}
 	
 
-	/// @inheritdoc IVaultAdminControlled
+	/// @inheritdoc IglooFiV1Vault
 	function addVoter(address targetAddress)
 		public
 		onlyRole(DEFAULT_ADMIN_ROLE)
@@ -363,7 +375,7 @@ contract IglooFiV1Vault is
 		return targetAddress;
 	}
 
-	/// @inheritdoc IVaultAdminControlled
+	/// @inheritdoc IglooFiV1Vault
 	function removeVoter(address voter)
 		public
 		onlyRole(DEFAULT_ADMIN_ROLE)
@@ -378,7 +390,7 @@ contract IglooFiV1Vault is
 		return voter;
 	}
 
-	/// @inheritdoc IVaultAdminControlled
+	/// @inheritdoc IglooFiV1Vault
 	function updateRequiredApproveVotes(uint256 newRequiredApproveVotes)
 		public
 		onlyRole(DEFAULT_ADMIN_ROLE)
@@ -393,7 +405,7 @@ contract IglooFiV1Vault is
 		return (requiredApproveVotes);
 	}
 
-	/// @inheritdoc IVaultAdminControlled
+	/// @inheritdoc IglooFiV1Vault
 	function updateWithdrawalDelayMinutes(uint256 newWithdrawalDelayMinutes)
 		public
 		onlyRole(DEFAULT_ADMIN_ROLE)
@@ -411,7 +423,7 @@ contract IglooFiV1Vault is
 		return withdrawalDelayMinutes;
 	}
 
-	/// @inheritdoc IVaultAdminControlled
+	/// @inheritdoc IglooFiV1Vault
 	function updateWithdrawalRequestLatestRelevantApproveVoteTime(
 		uint256 withdrawalRequestId,
 		uint256 latestRelevantApproveVoteTime
@@ -429,7 +441,7 @@ contract IglooFiV1Vault is
 		return (withdrawalRequestId, latestRelevantApproveVoteTime);
 	}
 
-	/// @inheritdoc IVaultAdminControlled
+	/// @inheritdoc IglooFiV1Vault
 	function deleteWithdrawalRequest(uint256 withdrawalRequestId)
 		public
 		onlyRole(DEFAULT_ADMIN_ROLE)
@@ -441,4 +453,38 @@ contract IglooFiV1Vault is
 
 		return withdrawalRequestId;
 	}
+
+	/// @inheritdoc IglooFiV1Vault
+    function sign(bytes32 _messageHash, bytes memory _signature)
+		public
+	{
+        address signer = _messageHash.recover(_signature);
+
+        if (hasRole(VOTER_ROLE, signer))
+		{
+            messageSignatures[_messageHash] += 1;
+        }
+    }
+	
+    /// @inhertidoc IERC1271
+    function isValidSignature(bytes32 _messageHash, bytes memory _signature)
+        public
+        view
+        override
+        returns (bytes4 magicValue)
+    {
+        address signer = _messageHash.recover(_signature);
+
+        if (
+            messageSignatures[_messageHash] >= requiredApproveVotes &&
+            hasRole(VOTER_ROLE, signer)
+        )
+		{
+            return MAGICVALUE;
+        }
+		else
+		{
+            return INVALID_SIGNATURE;
+        }
+    }
 }
