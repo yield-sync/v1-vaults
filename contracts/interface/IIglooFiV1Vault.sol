@@ -140,20 +140,6 @@ interface IglooFiV1Vault
 	;
 
 	/**
-	* @notice Get WithdrawalRequest with given `withdrawalRequestId`
-	*
-	* @dev [view][mapping]
-	*
-	* @param withdrawalRequestId {uint256}
-	*
-	* @return {WithdrawalRequest}
-	*/
-	function withdrawalRequest(uint256 withdrawalRequestId)
-		external
-		view returns (WithdrawalRequest memory)
-	;
-
-	/**
 	* @notice Get withdrawalRequestIds by a given creator
 	*
 	* @dev [view][mapping]
@@ -166,6 +152,20 @@ interface IglooFiV1Vault
 		view
 		external
 		returns (uint256[] memory)
+	;
+
+	/**
+	* @notice Get WithdrawalRequest with given `withdrawalRequestId`
+	*
+	* @dev [view][mapping]
+	*
+	* @param withdrawalRequestId {uint256}
+	*
+	* @return {WithdrawalRequest}
+	*/
+	function withdrawalRequest(uint256 withdrawalRequestId)
+		external
+		view returns (WithdrawalRequest memory)
 	;
 
 	/**
@@ -190,7 +190,7 @@ interface IglooFiV1Vault
 	* @dev [increment] Value in `messageSignatures`
 	*
 	* @param _messageHash {bytes32}
-	* @param _signature {byte} Amount to be moved
+	* @param _signature {byte}
 	*/
     function sign(bytes32 _messageHash, bytes memory _signature)
 		public

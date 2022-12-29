@@ -155,7 +155,7 @@ contract IglooFiV1Vault is
 	}
 
 
-	/// @inhertidoc IERC1271
+	/// @inheritdoc IERC1271
     function isValidSignature(bytes32 _messageHash, bytes memory _signature)
         public
         view
@@ -188,21 +188,21 @@ contract IglooFiV1Vault is
 	}
 
 	/// @inheritdoc IglooFiV1Vault
-	function withdrawalRequest(uint256 withdrawalRequestId)
-		view
-		public
-		returns (WithdrawalRequest memory)
-	{
-		return _withdrawalRequest[withdrawalRequestId];
-	}
-
-	/// @inheritdoc IglooFiV1Vault
 	function withdrawalRequestByCreator(address creator)
 		view
 		public
 		returns (uint256[] memory)
 	{
 		return _withdrawalRequestByCreator[creator];
+	}
+
+	/// @inheritdoc IglooFiV1Vault
+	function withdrawalRequest(uint256 withdrawalRequestId)
+		view
+		public
+		returns (WithdrawalRequest memory)
+	{
+		return _withdrawalRequest[withdrawalRequestId];
 	}
 
 	/// @inheritdoc IglooFiV1Vault
@@ -223,7 +223,7 @@ contract IglooFiV1Vault is
 		if (hasRole(VOTER_ROLE, signer))
 		{
 			// [increment] Value in `messageSignatures`
-			messageSignatures[_messageHash] += 1;
+			messageSignatures[_messageHash]++;
 		}
 	}
 
