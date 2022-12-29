@@ -125,7 +125,7 @@ interface IglooFiV1Vault
 
 
 	/**
-	* @notice Get token balance
+	* @notice Getter for token balance
 	*
 	* @dev [view][mapping]
 	*
@@ -140,7 +140,7 @@ interface IglooFiV1Vault
 	;
 
 	/**
-	* @notice Get withdrawalRequestIds by a given creator
+	* @notice Getter for array of withdrawalRequestIds by a given creator
 	*
 	* @dev [view][mapping]
 	*
@@ -155,7 +155,7 @@ interface IglooFiV1Vault
 	;
 
 	/**
-	* @notice Get WithdrawalRequest with given `withdrawalRequestId`
+	* @notice Getter for WithdrawalRequest with given `withdrawalRequestId`
 	*
 	* @dev [view][mapping]
 	*
@@ -169,7 +169,7 @@ interface IglooFiV1Vault
 	;
 
 	/**
-	* @notice Get array of voters
+	* @notice Getter for array of voters
 	*
 	* @dev [view][mapping]
 	*
@@ -192,7 +192,7 @@ interface IglooFiV1Vault
 	* @param _messageHash {bytes32}
 	* @param _signature {byte}
 	*/
-    function sign(bytes32 _messageHash, bytes memory _signature)
+	function sign(bytes32 _messageHash, bytes memory _signature)
 		public
 	;
 

@@ -30,7 +30,7 @@ contract IglooFiV1Vault is
 	/* [state-variable] */
 	// [bytes4][internal]
 	bytes4 internal constant MAGICVALUE = 0x1626ba7e;
-    bytes4 internal constant INVALID_SIGNATURE = 0xffffffff;
+	bytes4 internal constant INVALID_SIGNATURE = 0xffffffff;
 
 	// [byte32][public]
 	bytes32 public constant VOTER_ROLE = keccak256("VOTER_ROLE");
@@ -156,26 +156,26 @@ contract IglooFiV1Vault is
 
 
 	/// @inheritdoc IERC1271
-    function isValidSignature(bytes32 _messageHash, bytes memory _signature)
-        public
-        view
-        override
-        returns (bytes4 magicValue)
-    {
-        address signer = _messageHash.recover(_signature);
+	function isValidSignature(bytes32 _messageHash, bytes memory _signature)
+		public
+		view
+		override
+		returns (bytes4 magicValue)
+	{
+		address signer = _messageHash.recover(_signature);
 
-        if (
-            messageSignatures[_messageHash] >= requiredApproveVotes &&
-            hasRole(VOTER_ROLE, signer)
-        )
+		if (
+			hasRole(VOTER_ROLE, signer) &&
+			messageSignatures[_messageHash] >= requiredApproveVotes
+		)
 		{
-            return MAGICVALUE;
-        }
+			return MAGICVALUE;
+		}
 		else
 		{
-            return INVALID_SIGNATURE;
-        }
-    }
+			return INVALID_SIGNATURE;
+		}
+	}
 
 
 	/// @inheritdoc IglooFiV1Vault
