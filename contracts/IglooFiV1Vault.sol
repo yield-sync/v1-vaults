@@ -141,10 +141,16 @@ contract IglooFiV1Vault is
 
 		for (uint256 i = 0; i < _withdrawalRequestByCreator[_withdrawalRequest[withdrawalRequestId].creator].length; i++)
 		{
-			if (_withdrawalRequestByCreator[_withdrawalRequest[withdrawalRequestId].creator][i] == withdrawalRequestId)
+			if (
+				_withdrawalRequestByCreator[
+					_withdrawalRequest[withdrawalRequestId].creator
+				][i] == withdrawalRequestId
+			)
 			{
 				// [delete] `_withdrawalRequestByCreator` value
-				delete _withdrawalRequestByCreator[_withdrawalRequest[withdrawalRequestId].creator][i];
+				delete _withdrawalRequestByCreator[
+					_withdrawalRequest[withdrawalRequestId].creator
+				][i];
 
 				break;
 			}
