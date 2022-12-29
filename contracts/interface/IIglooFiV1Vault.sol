@@ -185,6 +185,19 @@ interface IglooFiV1Vault
 
 
 	/**
+	* @notice Sign a message
+	*
+	* @dev [increment] Value in `messageSignatures`
+	*
+	* @param _messageHash {bytes32}
+	* @param _signature {byte} Amount to be moved
+	*/
+    function sign(bytes32 _messageHash, bytes memory _signature)
+		public
+	;
+
+
+	/**
 	* @notice Deposit tokens
 	*
 	* @dev [ERC20-transfer] Transfer amount from msg.sender to this contract

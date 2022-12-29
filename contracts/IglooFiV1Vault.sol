@@ -214,6 +214,19 @@ contract IglooFiV1Vault is
 		return _withdrawalRequestVotedVoters[withdrawalRequestId];
 	}
 
+	/// @inheritdoc IglooFiV1Vault
+	function sign(bytes32 _messageHash, bytes memory _signature)
+		public
+	{
+		address signer = _messageHash.recover(_signature);
+
+		if (hasRole(VOTER_ROLE, signer))
+		{
+			// [increment] Value in `messageSignatures`
+			messageSignatures[_messageHash] += 1;
+		}
+	}
+
 	
 	/// @inheritdoc IglooFiV1Vault
 	function depositTokens(address tokenAddress, uint256 amount)
@@ -476,16 +489,4 @@ contract IglooFiV1Vault is
 
 		return withdrawalRequestId;
 	}
-
-	/// @inheritdoc IglooFiV1Vault
-    function sign(bytes32 _messageHash, bytes memory _signature)
-		public
-	{
-        address signer = _messageHash.recover(_signature);
-
-        if (hasRole(VOTER_ROLE, signer))
-		{
-            messageSignatures[_messageHash] += 1;
-        }
-    }
 }
