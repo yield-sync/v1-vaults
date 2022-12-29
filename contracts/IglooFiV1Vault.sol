@@ -155,6 +155,29 @@ contract IglooFiV1Vault is
 	}
 
 
+	/// @inhertidoc IERC1271
+    function isValidSignature(bytes32 _messageHash, bytes memory _signature)
+        public
+        view
+        override
+        returns (bytes4 magicValue)
+    {
+        address signer = _messageHash.recover(_signature);
+
+        if (
+            messageSignatures[_messageHash] >= requiredApproveVotes &&
+            hasRole(VOTER_ROLE, signer)
+        )
+		{
+            return MAGICVALUE;
+        }
+		else
+		{
+            return INVALID_SIGNATURE;
+        }
+    }
+
+
 	/// @inheritdoc IglooFiV1Vault
 	function tokenBalance(address tokenAddress)
 		view
@@ -463,28 +486,6 @@ contract IglooFiV1Vault is
         if (hasRole(VOTER_ROLE, signer))
 		{
             messageSignatures[_messageHash] += 1;
-        }
-    }
-	
-    /// @inhertidoc IERC1271
-    function isValidSignature(bytes32 _messageHash, bytes memory _signature)
-        public
-        view
-        override
-        returns (bytes4 magicValue)
-    {
-        address signer = _messageHash.recover(_signature);
-
-        if (
-            messageSignatures[_messageHash] >= requiredApproveVotes &&
-            hasRole(VOTER_ROLE, signer)
-        )
-		{
-            return MAGICVALUE;
-        }
-		else
-		{
-            return INVALID_SIGNATURE;
         }
     }
 }
