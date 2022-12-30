@@ -86,9 +86,7 @@ contract IglooFiV1Vault is
 		external
 		payable
 	{
-		revert(
-			"Sending Ether directly to this contract is disabled, please use `depositTokens()` to send tokens into vault"
-		);
+		emit EtherRecieved(msg.value);
 	}
 
 
@@ -98,7 +96,7 @@ contract IglooFiV1Vault is
 		payable
 	{
 		revert(
-			"Sending Ether directly to this contract is disabled, please use `depositTokens()` to send tokens into vault"
+			"Invalid message"
 		);
 	}
 

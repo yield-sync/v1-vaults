@@ -4,6 +4,7 @@ pragma solidity ^0.8.1;
 
 /* [struct] */
 struct WithdrawalRequest {
+	bool requestEther;
 	address creator;
 	address to;
 	address token;
@@ -21,6 +22,13 @@ struct WithdrawalRequest {
 interface IglooFiV1Vault
 {
 	/* [event] */
+	/**
+	* @dev
+	*/
+	event EtherRecieved (
+		uint256 EtherRecieved
+	);
+
 	/**
 	* @dev Emits when a `WithdrawalRequest` is deleted
 	*/
