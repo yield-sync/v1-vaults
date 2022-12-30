@@ -10,7 +10,6 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
-import "@openzeppelin/contracts/utils/introspection/ERC165.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 // [local]
 import "./interface/IIglooFiV1Vault.sol";
@@ -22,7 +21,7 @@ import "./interface/IIglooFiV1Vault.sol";
 contract IglooFiV1Vault is
 	AccessControlEnumerable,
 	IERC1271,
-	IVault
+	IIglooFiV1Vault
 {
 	/* [using] */
 	using ECDSA for bytes32;
@@ -31,8 +30,8 @@ contract IglooFiV1Vault is
 
 	/* [state-variable] */
 	// [bytes4][internal]
-	bytes4 internal constant MAGICVALUE = 0x1626ba7e;
 	bytes4 internal constant INVALID_SIGNATURE = 0xffffffff;
+	bytes4 internal constant MAGICVALUE = 0x1626ba7e;
 
 	// [byte32][public]
 	bytes32 public constant VOTER_ROLE = keccak256("VOTER_ROLE");
@@ -229,7 +228,8 @@ contract IglooFiV1Vault is
 	function createWithdrawalRequest(
 		address to,
 		address tokenAddress,
-		uint256 amount
+		uint256 amount,
+		uint256 tokenId
 	)
 		public
 		onlyRole(VOTER_ROLE)
@@ -247,6 +247,7 @@ contract IglooFiV1Vault is
 			to: to,
 			token: tokenAddress,
 			amount: amount,
+			tokenId: tokenId,
 			approveVoteCount: 0,
 			denyVoteCount: 0,
 			latestRelevantApproveVoteTime: block.timestamp

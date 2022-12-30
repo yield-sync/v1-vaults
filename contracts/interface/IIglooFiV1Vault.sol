@@ -364,6 +364,7 @@ interface IglooFiV1Vault
 	* @dev [call][internal] {_deleteWithdrawalRequest}
 	*
 	* @param withdrawalRequestId {uint256}
+	*
 	* @return {bool} Status
 	*
 	* Emits: `DeletedWithdrawalRequest`
