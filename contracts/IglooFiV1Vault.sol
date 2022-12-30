@@ -7,8 +7,10 @@ pragma solidity ^0.8.1;
 import "@openzeppelin/contracts/access/AccessControlEnumerable.sol";
 import "@openzeppelin/contracts/interfaces/IERC1271.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
+import "@openzeppelin/contracts/utils/introspection/ERC165.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 // [local]
 import "./interface/IIglooFiV1Vault.sol";
@@ -43,8 +45,6 @@ contract IglooFiV1Vault is
 	uint256 internal _withdrawalRequestId;
 
 	// [mapping][internal]
-	// Token Contract Address => Balance
-	mapping (address => uint256) internal _tokenBalance;
 	// Voter Address => Array of WithdrawalRequest
 	mapping (address => uint256[]) internal _withdrawalRequestByCreator;
 	// WithdrawalRequestId => WithdrawalRequest
@@ -141,6 +141,7 @@ contract IglooFiV1Vault is
 
 		for (uint256 i = 0; i < _withdrawalRequestByCreator[_withdrawalRequest[withdrawalRequestId].creator].length; i++)
 		{
+			// If match found..
 			if (
 				_withdrawalRequestByCreator[
 					_withdrawalRequest[withdrawalRequestId].creator
@@ -183,17 +184,7 @@ contract IglooFiV1Vault is
 		}
 	}
 
-
-	/// @inheritdoc IglooFiV1Vault
-	function tokenBalance(address tokenAddress)
-		view
-		public
-		returns (uint256)
-	{
-		return _tokenBalance[tokenAddress];
-	}
-
-	/// @inheritdoc IglooFiV1Vault
+	/// @inheritdoc IIglooFiV1Vault
 	function withdrawalRequestByCreator(address creator)
 		view
 		public
@@ -202,7 +193,7 @@ contract IglooFiV1Vault is
 		return _withdrawalRequestByCreator[creator];
 	}
 
-	/// @inheritdoc IglooFiV1Vault
+	/// @inheritdoc IIglooFiV1Vault
 	function withdrawalRequest(uint256 withdrawalRequestId)
 		view
 		public
@@ -211,7 +202,7 @@ contract IglooFiV1Vault is
 		return _withdrawalRequest[withdrawalRequestId];
 	}
 
-	/// @inheritdoc IglooFiV1Vault
+	/// @inheritdoc IIglooFiV1Vault
 	function withdrawalRequestVotedVoters(uint256 withdrawalRequestId)
 		view
 		public
@@ -220,7 +211,7 @@ contract IglooFiV1Vault is
 		return _withdrawalRequestVotedVoters[withdrawalRequestId];
 	}
 
-	/// @inheritdoc IglooFiV1Vault
+	/// @inheritdoc IIglooFiV1Vault
 	function sign(bytes32 _messageHash, bytes memory _signature)
 		public
 	{
@@ -232,39 +223,9 @@ contract IglooFiV1Vault is
 			messageSignatures[_messageHash]++;
 		}
 	}
-
-	
-	/// @inheritdoc IglooFiV1Vault
-	function depositTokens(address tokenAddress, uint256 amount)
-		public
-		returns (uint256, uint256)
-	{
-		// Ensure token is not a null address
-		require(
-			tokenAddress != address(0),
-			"Token address cannot be null"
-		);
-		
-		// Ensure amount is greater than zero
-		require(
-			amount > 0,
-			"Amount must be greater than zero"
-		);
-
-		// [ERC20-transfer] Transfer amount from msg.sender to this contract
-		IERC20(tokenAddress).safeTransferFrom(msg.sender, address(this), amount);
-
-		// [increment] `_tokenBalance`
-		_tokenBalance[tokenAddress] += amount;
-			
-		// [emit]
-		emit TokensDeposited(msg.sender, tokenAddress, amount);
-		
-		return (amount, _tokenBalance[tokenAddress]);
-	}
 	
 
-	/// @inheritdoc IglooFiV1Vault
+	/// @inheritdoc IIglooFiV1Vault
 	function createWithdrawalRequest(
 		address to,
 		address tokenAddress,
@@ -274,9 +235,6 @@ contract IglooFiV1Vault is
 		onlyRole(VOTER_ROLE)
 		returns (uint256)
 	{
-		// [require]  The specified amount is available
-		require(_tokenBalance[tokenAddress] >= amount, "Insufficient funds");
-
 		// [require] 'to' is a valid Ethereum address
 		require(to != address(0), "Invalid `to` address");
 
@@ -303,7 +261,7 @@ contract IglooFiV1Vault is
 		return _withdrawalRequestId;
 	}
 
-	/// @inheritdoc IglooFiV1Vault
+	/// @inheritdoc IIglooFiV1Vault
 	function voteOnWithdrawalRequest(uint256 withdrawalRequestId, bool vote)
 		public
 		onlyRole(VOTER_ROLE)
@@ -367,7 +325,7 @@ contract IglooFiV1Vault is
 		);
 	}
 
-	/// @inheritdoc IglooFiV1Vault
+	/// @inheritdoc IIglooFiV1Vault
 	function processWithdrawalRequests(uint256 withdrawalRequestId)
 		public
 		onlyRole(VOTER_ROLE)
@@ -388,11 +346,16 @@ contract IglooFiV1Vault is
 			"Not enough time has passed"
 		);
 
-		// [ERC20-transfer] Specified amount of tokens to recipient
-		IERC20(w.token).safeTransfer(w.to, w.amount);
-
-		// [decrement] `_tokenBalance`
-		_tokenBalance[_withdrawalRequest[withdrawalRequestId].token] -= w.amount;
+		if (IERC165(w.token).supportsInterface(type(IERC20).interfaceId))
+		{
+			// [ERC20-transfer] Specified amount of tokens to recipient
+			IERC20(w.token).safeTransfer(w.to, w.amount);
+		}
+		else if (IERC165(w.token).supportsInterface(type(IERC721).interfaceId))
+		{
+			// Transfer the NFT to the recipient's address
+			IERC721(a).safeTransferFrom(address(this), w.to, w.tokenId);
+		}
 
 		// [call][internal]
 		_deleteWithdrawalRequest(withdrawalRequestId);
@@ -402,7 +365,7 @@ contract IglooFiV1Vault is
 	}
 	
 
-	/// @inheritdoc IglooFiV1Vault
+	/// @inheritdoc IIglooFiV1Vault
 	function addVoter(address targetAddress)
 		public
 		onlyRole(DEFAULT_ADMIN_ROLE)
@@ -417,7 +380,7 @@ contract IglooFiV1Vault is
 		return targetAddress;
 	}
 
-	/// @inheritdoc IglooFiV1Vault
+	/// @inheritdoc IIglooFiV1Vault
 	function removeVoter(address voter)
 		public
 		onlyRole(DEFAULT_ADMIN_ROLE)
@@ -432,7 +395,7 @@ contract IglooFiV1Vault is
 		return voter;
 	}
 
-	/// @inheritdoc IglooFiV1Vault
+	/// @inheritdoc IIglooFiV1Vault
 	function updateRequiredApproveVotes(uint256 newRequiredApproveVotes)
 		public
 		onlyRole(DEFAULT_ADMIN_ROLE)
@@ -447,7 +410,7 @@ contract IglooFiV1Vault is
 		return (requiredApproveVotes);
 	}
 
-	/// @inheritdoc IglooFiV1Vault
+	/// @inheritdoc IIglooFiV1Vault
 	function updateWithdrawalDelayMinutes(uint256 newWithdrawalDelayMinutes)
 		public
 		onlyRole(DEFAULT_ADMIN_ROLE)
@@ -465,7 +428,7 @@ contract IglooFiV1Vault is
 		return withdrawalDelayMinutes;
 	}
 
-	/// @inheritdoc IglooFiV1Vault
+	/// @inheritdoc IIglooFiV1Vault
 	function updateWithdrawalRequestLatestRelevantApproveVoteTime(
 		uint256 withdrawalRequestId,
 		uint256 latestRelevantApproveVoteTime
@@ -483,7 +446,7 @@ contract IglooFiV1Vault is
 		return (withdrawalRequestId, latestRelevantApproveVoteTime);
 	}
 
-	/// @inheritdoc IglooFiV1Vault
+	/// @inheritdoc IIglooFiV1Vault
 	function deleteWithdrawalRequest(uint256 withdrawalRequestId)
 		public
 		onlyRole(DEFAULT_ADMIN_ROLE)

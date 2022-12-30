@@ -8,6 +8,7 @@ struct WithdrawalRequest {
 	address to;
 	address token;
 	uint256 amount;
+	uint256 tokenId;
 	uint256 approveVoteCount;
 	uint256 denyVoteCount;
 	uint256 latestRelevantApproveVoteTime;
@@ -100,6 +101,8 @@ interface IglooFiV1Vault
 	/**
 	* @notice Required signatures for approval
 	*
+	* @dev [!restriction]
+	*
 	* @dev [view-uint256]
 	*
 	* @return {uint256}
@@ -113,6 +116,8 @@ interface IglooFiV1Vault
 	/**
 	* @notice Get Withdrawal delay in minutes
 	*
+	* @dev [!restriction]
+	*
 	* @dev [view-uint256]
 	*
 	* @return {uint256}
@@ -125,22 +130,9 @@ interface IglooFiV1Vault
 
 
 	/**
-	* @notice Getter for token balance
-	*
-	* @dev [view][mapping]
-	*
-	* @param tokenAddress {address} Token contract address
-	*
-	* @return {uint256}
-	*/
-	function tokenBalance(address tokenAddress)
-		external
-		view
-		returns (uint256)
-	;
-
-	/**
 	* @notice Getter for array of withdrawalRequestIds by a given creator
+	*
+	* @dev [!restriction]
 	*
 	* @dev [view][mapping]
 	*
@@ -157,6 +149,8 @@ interface IglooFiV1Vault
 	/**
 	* @notice Getter for WithdrawalRequest with given `withdrawalRequestId`
 	*
+	* @dev [!restriction]
+	*
 	* @dev [view][mapping]
 	*
 	* @param withdrawalRequestId {uint256}
@@ -170,6 +164,8 @@ interface IglooFiV1Vault
 
 	/**
 	* @notice Getter for array of voters
+	*
+	* @dev [!restriction]
 	*
 	* @dev [view][mapping]
 	*
@@ -187,6 +183,8 @@ interface IglooFiV1Vault
 	/**
 	* @notice Sign a message
 	*
+	* @dev [!restriction]
+	*
 	* @dev [increment] Value in `messageSignatures`
 	*
 	* @param _messageHash {bytes32}
@@ -194,26 +192,6 @@ interface IglooFiV1Vault
 	*/
 	function sign(bytes32 _messageHash, bytes memory _signature)
 		public
-	;
-
-
-	/**
-	* @notice Deposit tokens
-	*
-	* @dev [ERC20-transfer] Transfer amount from msg.sender to this contract
-	*      [increment] `_tokenBalance`
-	*
-	* @param tokenAddress {address}
-	* @param amount {uint256} Amount to be moved
-	*
-	* @return {uint256} Amount deposited
-	* @return {uint256} New `_tokenBalance`
-	*
-	* Emits: `TokensDeposited`
-	*/
-	function depositTokens(address tokenAddress, uint256 amount)
-		external
-		returns (uint256, uint256)
 	;
 
 
