@@ -107,10 +107,9 @@ interface IglooFiV1Vault
 
 
 	/**
-	* @notice
+	* @notice Invalid return value for isValidSignature
 	*
 	* @dev [!restriction]
-	*
 	* @dev [view-bytes4]
 	*
 	* @return {uint256}
@@ -122,10 +121,9 @@ interface IglooFiV1Vault
 	;
 
 	/**
-	* @notice
+	* @notice Valid return value for isValidSignature
 	*
 	* @dev [!restriction]
-	*
 	* @dev [view-bytes4]
 	*
 	* @return {uint256}
@@ -137,10 +135,9 @@ interface IglooFiV1Vault
 	;
 
 	/**
-	* @notice
+	* @notice AccessControlEnumerable role
 	*
 	* @dev [!restriction]
-	*
 	* @dev [view-bytes32]
 	*
 	* @return {uint256}
@@ -155,7 +152,6 @@ interface IglooFiV1Vault
 	* @notice Required signatures for approval
 	*
 	* @dev [!restriction]
-	*
 	* @dev [view-uint256]
 	*
 	* @return {uint256}
@@ -167,10 +163,9 @@ interface IglooFiV1Vault
 	;
 
 	/**
-	* @notice Get Withdrawal delay in minutes
+	* @notice Withdrawal delay in minutes
 	*
 	* @dev [!restriction]
-	*
 	* @dev [view-uint256]
 	*
 	* @return {uint256}
@@ -186,7 +181,6 @@ interface IglooFiV1Vault
 	* @notice Getter for array of withdrawalRequestIds by a given creator
 	*
 	* @dev [!restriction]
-	*
 	* @dev [view][mapping]
 	*
 	* @param creator {address}
@@ -203,7 +197,6 @@ interface IglooFiV1Vault
 	* @notice Getter for WithdrawalRequest with given `withdrawalRequestId`
 	*
 	* @dev [!restriction]
-	*
 	* @dev [view][mapping]
 	*
 	* @param withdrawalRequestId {uint256}
@@ -219,7 +212,6 @@ interface IglooFiV1Vault
 	* @notice Getter for array of voters
 	*
 	* @dev [!restriction]
-	*
 	* @dev [view][mapping]
 	*
 	* @param withdrawalRequestId {uint256} Id of WithdrawalRequest
@@ -237,7 +229,6 @@ interface IglooFiV1Vault
 	* @notice Sign a message
 	*
 	* @dev [!restriction]
-	*
 	* @dev [increment] Value in `messageSignatures`
 	*
 	* @param _messageHash {bytes32}
@@ -252,7 +243,6 @@ interface IglooFiV1Vault
 	* @notice Create a WithdrawalRequest
 	*
 	* @dev [restriction] AccessControlEnumerable → VOTER_ROLE
-	*
 	* @dev [increment] `_withdrawalRequestId`
 	*      [add] `_withdrawalRequest` value
 	*      [push-into] `_withdrawalRequestByCreator`
@@ -280,7 +270,6 @@ interface IglooFiV1Vault
 	* @notice Vote on WithdrawalRequest
 	*
 	* @dev [restriction] AccessControlEnumerable → VOTER_ROLE
-	*
 	* @dev [update] `_withdrawalRequest`
 	*      [update] `_withdrawalRequestVotedVoters`
 	*
@@ -304,7 +293,6 @@ interface IglooFiV1Vault
 	* @notice Process WithdrawalRequest with given `withdrawalRequestId`
 	*
 	* @dev [restriction] AccessControlEnumerable → VOTER_ROLE
-	*
 	* @dev [erc20-transfer]
 	*      [decrement] `_tokenBalance`
 	*      [call][internal] `_deleteWithdrawalRequest`
@@ -321,7 +309,6 @@ interface IglooFiV1Vault
 	* @notice Assign VOTER_ROLE to an address on AccessControlEnumerable
 	*
 	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
-	*
 	* @dev [add] address to VOTER_ROLE on `AccessControlEnumerable`
 	*
 	* @param targetAddress {address}
@@ -339,7 +326,6 @@ interface IglooFiV1Vault
 	* @notice Remove a voter
 	*
 	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
-	*
 	* @dev [remove] address with VOTER_ROLE on `AccessControlEnumerable`
 	*
 	* @param voter {address} Address of the voter to remove
@@ -357,7 +343,6 @@ interface IglooFiV1Vault
 	* @notice Update the required approved votes
 	*
 	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
-	*
 	* @dev [update] `requiredApproveVotes`
 	*
 	* @param newRequiredApproveVotes {uint256}
@@ -375,7 +360,6 @@ interface IglooFiV1Vault
 	* @notice Update `withdrawalDelayMinutes`
 	*
 	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
-	*
 	* @dev [update] `withdrawalDelayMinutes` to new value
 	*
 	* @param newWithdrawalDelayMinutes {uint256}
@@ -393,7 +377,6 @@ interface IglooFiV1Vault
 	* @notice
 	*
 	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
-	*
 	* @dev [update] WithdrawalRequest within `_withdrawalRequest`
 	*
 	* @param newLatestRelevantApproveVoteTime {uint256}
@@ -415,7 +398,6 @@ interface IglooFiV1Vault
 	* @notice Delete WithdrawalRequest & all associated values
 	*
 	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
-	*
 	* @dev [call][internal] {_deleteWithdrawalRequest}
 	*
 	* @param withdrawalRequestId {uint256}
