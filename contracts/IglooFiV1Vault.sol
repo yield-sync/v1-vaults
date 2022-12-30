@@ -346,15 +346,16 @@ contract IglooFiV1Vault is
 			"Not enough time has passed"
 		);
 
+		// Check if erc20 or erc721 and transfer accordingly
 		if (IERC165(w.token).supportsInterface(type(IERC20).interfaceId))
 		{
-			// [ERC20-transfer] Specified amount of tokens to recipient
+			// [erc20-transfer]
 			IERC20(w.token).safeTransfer(w.to, w.amount);
 		}
 		else if (IERC165(w.token).supportsInterface(type(IERC721).interfaceId))
 		{
-			// Transfer the NFT to the recipient's address
-			IERC721(a).safeTransferFrom(address(this), w.to, w.tokenId);
+			// [erc721-transfer]
+			IERC721(w.token).safeTransferFrom(address(this), w.to, w.tokenId);
 		}
 
 		// [call][internal]

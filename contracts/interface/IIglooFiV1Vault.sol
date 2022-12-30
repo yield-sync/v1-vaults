@@ -250,7 +250,7 @@ interface IglooFiV1Vault
 	*
 	* @dev [restriction] AccessControlEnumerable → VOTER_ROLE
 	*
-	* @dev [ERC20-transfer]
+	* @dev [erc20-transfer]
 	*      [decrement] `_tokenBalance`
 	*      [call][internal] `_deleteWithdrawalRequest`
 	*
