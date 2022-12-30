@@ -97,6 +97,59 @@ interface IglooFiV1Vault
 		uint256 withdrawalDelayMinutes
 	);
 
+	/**
+	* @dev Emits when `_withdrawalRequest[withdrawalRequestId].latestRelevantApproveVoteTime` is updated
+	*/
+	event UpdatedWithdrawalRequestLastSignificantApproveVote (
+		uint256 withdrawalRequestId,
+		uint256 latestRelevantApproveVoteTime
+	);
+
+
+	/**
+	* @notice
+	*
+	* @dev [!restriction]
+	*
+	* @dev [view-bytes4]
+	*
+	* @return {uint256}
+	*/
+	function INVALID_SIGNATURE()
+		external
+		view
+		returns (uint256)
+	;
+
+	/**
+	* @notice
+	*
+	* @dev [!restriction]
+	*
+	* @dev [view-bytes4]
+	*
+	* @return {uint256}
+	*/
+	function MAGICVALUE()
+		external
+		view
+		returns (uint256)
+	;
+
+	/**
+	* @notice
+	*
+	* @dev [!restriction]
+	*
+	* @dev [view-bytes32]
+	*
+	* @return {uint256}
+	*/
+	function VOTER_ROLE()
+		external
+		view
+		returns (uint256)
+	;
 
 	/**
 	* @notice Required signatures for approval
@@ -207,6 +260,7 @@ interface IglooFiV1Vault
 	* @param to {address} Address the withdrawn tokens will be sent
 	* @param tokenAddress {address}
 	* @param amount {uint256} Amount to be withdrawn
+	* @param tokenId {uint256} erc721 token id
 	*
 	* @return {uint256} `_withdrawalRequestId`
 	*
@@ -215,7 +269,8 @@ interface IglooFiV1Vault
 	function createWithdrawalRequest(
 		address to,
 		address tokenAddress,
-		uint256 amount
+		uint256 amount,
+		uint256 tokenId
 	)
 		external
 		returns (uint256)

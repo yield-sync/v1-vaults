@@ -29,19 +29,19 @@ contract IglooFiV1Vault is
 
 
 	/* [state-variable] */
-	// [bytes4][internal]
-	bytes4 internal constant INVALID_SIGNATURE = 0xffffffff;
-	bytes4 internal constant MAGICVALUE = 0x1626ba7e;
+	// [bytes4][public]
+	bytes4 public constant INVALID_SIGNATURE = 0xffffffff;
+	bytes4 public constant MAGICVALUE = 0x1626ba7e;
 
 	// [byte32][public]
 	bytes32 public constant VOTER_ROLE = keccak256("VOTER_ROLE");
 
+	// [uint256][internal]
+	uint256 internal _withdrawalRequestId;
+
 	// [uint256][public]
 	uint256 public requiredApproveVotes;
 	uint256 public withdrawalDelayMinutes;
-
-	// [uint256][internal]
-	uint256 internal _withdrawalRequestId;
 
 	// [mapping][internal]
 	// Voter Address => Array of WithdrawalRequest
@@ -444,6 +444,12 @@ contract IglooFiV1Vault is
 		_withdrawalRequest[
 			withdrawalRequestId
 		].latestRelevantApproveVoteTime = latestRelevantApproveVoteTime;
+
+		// [emit]
+		emit UpdatedWithdrawalRequestLastSignificantApproveVote(
+			withdrawalRequestId,
+			latestRelevantApproveVoteTime
+		);
 
 		return (withdrawalRequestId, latestRelevantApproveVoteTime);
 	}
