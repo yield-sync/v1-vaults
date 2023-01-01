@@ -71,12 +71,24 @@ interface IglooFiV1Vault
 	);
 
 	/**
-	* @dev Emits when tokens are deposited
+	* @dev Emits when an address is added to VOTER_ROLE on `AccessControlEnumerable`
 	*/
-	event TokensDeposited (
-		address indexed depositor,
-		address indexed token,
-		uint256 amount
+	event AddedVoter (
+		address addedVoter
+	);
+
+	/**
+	* @dev Emits when an address is removed from VOTER_ROLE on `AccessControlEnumerable`
+	*/
+	event RemovedVoter (
+		address addedVoter
+	);
+
+	/**
+	* @dev Emits when `name` is updated
+	*/
+	event UpdatedName (
+		string name
 	);
 
 	/**
@@ -84,20 +96,6 @@ interface IglooFiV1Vault
 	*/
 	event UpdatedRequiredApproveVotes (
 		uint256 requiredApproveVotes
-	);
-
-	/**
-	* @dev Emits when an address is added to VOTER_ROLE on `AccessControlEnumerable`
-	*/
-	event VoterAdded (
-		address addedVoter
-	);
-
-	/**
-	* @dev Emits when an address is removed from VOTER_ROLE on `AccessControlEnumerable`
-	*/
-	event VoterRemoved (
-		address addedVoter
 	);
 
 	/**
@@ -379,6 +377,23 @@ interface IglooFiV1Vault
 	* Emits: `VoterRemoved`
 	*/	
 	function removeVoter(address voter)
+		external
+		returns (address)
+	;
+
+	/**
+	* @notice Update `name`
+	*
+	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
+	* @dev [update] `name`
+	*
+	* @param _name {string} 
+	*
+	* @return {address} Updated `name`
+	*
+	* Emits: `VoterRemoved`
+	*/	
+	function updateName(string memory _name)
 		external
 		returns (address)
 	;

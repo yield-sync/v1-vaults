@@ -38,6 +38,9 @@ contract IglooFiV1Vault is
 	// [byte32][public]
 	bytes32 public constant VOTER_ROLE = keccak256("VOTER_ROLE");
 
+	// [string][public]
+	string public name;
+
 	// [uint256][internal]
 	uint256 internal _withdrawalRequestId;
 
@@ -182,7 +185,7 @@ contract IglooFiV1Vault is
 			return INVALID_SIGNATURE;
 		}
 	}
-	
+
 
 	/// @inheritdoc IIglooFiV1Vault
 	function withdrawalRequestByCreator(address creator)
@@ -401,7 +404,7 @@ contract IglooFiV1Vault is
 		_setupRole(VOTER_ROLE, targetAddress);
 
 		// [emit]
-		emit VoterAdded(targetAddress);
+		emit AddedVoter(targetAddress);
 
 		return targetAddress;
 	}
@@ -416,9 +419,24 @@ contract IglooFiV1Vault is
 		_revokeRole(VOTER_ROLE, voter);
 
 		// [emit]
-		emit VoterRemoved(voter);
+		emit RemovedVoter(voter);
 
 		return voter;
+	}
+
+	/// @inheritdoc IIglooFiV1Vault
+	function updateName(string memory _name)
+		public
+		onlyRole(DEFAULT_ADMIN_ROLE)
+		returns (string)
+	{
+		// [update]
+		name = _name;
+
+		// [emit]
+		emit UpdatedName(_name);
+
+		return (_name);
 	}
 
 	/// @inheritdoc IIglooFiV1Vault
