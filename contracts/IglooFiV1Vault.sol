@@ -343,21 +343,32 @@ contract IglooFiV1Vault is
 			"Not enough time has passed"
 		);
 
-		// Check if ETH, erc20, or erc721 and transfer accordingly
+		// If WithdrawalRequest is for Ether, erc20, or erc721 and transfer accordingly
 		if (w.requestETH)
 		{
-			// [send]
-			w.to.send(w.amount);
+			if (address(this).balance >= w.amount)
+			{
+				// [transfer]
+				bool sent = w.to.transfer(w.amount);
+
+				require(sent, "Failed to send Ether");
+			}
 		}
 		else if (IERC165(w.token).supportsInterface(type(IERC20).interfaceId))
 		{
-			// [erc20-transfer]
-			IERC20(w.token).safeTransfer(w.to, w.amount);
+			if (IERC20(w.token).balanceOf(address(this)) >= w.amount)
+			{
+				// [erc20-transfer]
+				IERC20(w.token).safeTransfer(w.to, w.amount);
+			}
 		}
 		else if (IERC165(w.token).supportsInterface(type(IERC721).interfaceId))
 		{
-			// [erc721-transfer]
-			IERC721(w.token).safeTransferFrom(address(this), w.to, w.tokenId);
+			if (IERC721(w.token).ownerOf(address(this)) >= w.amount)
+			{
+				// [erc721-transfer]
+				IERC721(w.token).safeTransferFrom(address(this), w.to, w.tokenId);
+			}
 		}
 
 		// [call][internal]
