@@ -59,19 +59,15 @@ contract IglooFiV1Vault is
 	/* [constructor] */
 	constructor (
 		address admin,
+		address[] memory voters,
 		uint256 _requiredApproveVotes,
 		uint256 _withdrawalDelayMinutes,
-		address[] memory voters
+		string memory name
 	)
+		Nameable(name)
 	{
-		// Initialize WithdrawalRequestId
-		_withdrawalRequestId = 0;
-
 		// Set DEFAULT_ADMIN_ROLE
 		_setupRole(DEFAULT_ADMIN_ROLE, admin);
-
-		requiredApproveVotes = _requiredApproveVotes;
-		withdrawalDelayMinutes = _withdrawalDelayMinutes;
 
 		// [for] each voter address..
 		for (uint256 i = 0; i < voters.length; i++)
@@ -79,6 +75,15 @@ contract IglooFiV1Vault is
 			// [add] Voter to `AccessControl._roles` as VOTER_ROLE
 			_setupRole(VOTER_ROLE, voters[i]);
 		}
+
+		// Initialize WithdrawalRequestId
+		_withdrawalRequestId = 0;
+
+		// Initialize _changeNameRequestId
+		_changeNameRequestId = 0;
+
+		requiredApproveVotes = _requiredApproveVotes;
+		withdrawalDelayMinutes = _withdrawalDelayMinutes;
 	}
 
 
@@ -87,7 +92,7 @@ contract IglooFiV1Vault is
 		external
 		payable
 	{
-		emit EtherRecieved(msg.value);
+		emit EtherRecieved(msg.sender, msg.value);
 	}
 
 
@@ -177,6 +182,7 @@ contract IglooFiV1Vault is
 			return INVALID_SIGNATURE;
 		}
 	}
+	
 
 	/// @inheritdoc IIglooFiV1Vault
 	function withdrawalRequestByCreator(address creator)
@@ -248,6 +254,7 @@ contract IglooFiV1Vault is
 
 		// [add] `_withdrawalRequest` value
 		_withdrawalRequest[_withdrawalRequestId] = WithdrawalRequest({
+			id: _withdrawalRequestId,
 			requestETH: requestETH,
 			creator: msg.sender,
 			to: to,

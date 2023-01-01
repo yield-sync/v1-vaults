@@ -4,6 +4,7 @@ pragma solidity ^0.8.1;
 
 /* [struct] */
 struct WithdrawalRequest {
+	uint256 id;
 	bool requestETH;
 	address creator;
 	address to;
@@ -17,7 +18,7 @@ struct WithdrawalRequest {
 
 
 /**
-* @title Igloo Fi V1 Vault
+* @title IglooFiV1Vault
 */
 interface IglooFiV1Vault
 {
@@ -26,6 +27,7 @@ interface IglooFiV1Vault
 	* @dev
 	*/
 	event EtherRecieved (
+		address msgSender,
 		uint256 EtherRecieved
 	);
 
@@ -182,6 +184,21 @@ interface IglooFiV1Vault
 		external
 		view
 		returns (uint256)
+	;
+
+
+	/**
+	* @notice Name
+	*
+	* @dev [!restriction]
+	* @dev [view-string]
+	*
+	* @return {string}
+	*/
+	function name()
+		external
+		view
+		returns (string)
 	;
 
 
