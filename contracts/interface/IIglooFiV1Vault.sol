@@ -202,7 +202,7 @@ interface IglooFiV1Vault
 	;
 
 	/**
-	* @notice Getter for WithdrawalRequest with given `withdrawalRequestId`
+	* @notice Getter for `_withdrawalRequest`
 	*
 	* @dev [!restriction]
 	* @dev [view][mapping]
@@ -217,7 +217,7 @@ interface IglooFiV1Vault
 	;
 
 	/**
-	* @notice Getter for array of voters
+	* @notice Getter for `_withdrawalRequestVotedVoters`
 	*
 	* @dev [!restriction]
 	* @dev [view][mapping]
@@ -230,6 +230,23 @@ interface IglooFiV1Vault
 		view
 		external
 		returns (address[] memory)
+	;
+
+
+	/**
+	* @notice Getter for `_messageSignature`
+	*
+	* @dev [!restriction]
+	* @dev [view][mapping]
+	*
+	* @param message {bytes32}
+	*
+	* @return {uint256}
+	*/
+	function messageSignatures(bytes32 message)
+		view
+		public
+		returns (uint256)
 	;
 
 

@@ -50,9 +50,8 @@ contract IglooFiV1Vault is
 	mapping (uint256 => WithdrawalRequest) internal _withdrawalRequest;
 	// WithdrawalRequestId => Voted Voter Addresses Array
 	mapping (uint256 => address[]) internal _withdrawalRequestVotedVoters;
-
-	// [mapping][public]
-	mapping(bytes32 => uint256) public messageSignatures;
+	// Message => votes
+	mapping(bytes32 => uint256) internal _messageSignatures;
 
 
 	/* [constructor] */
@@ -166,7 +165,7 @@ contract IglooFiV1Vault is
 
 		if (
 			hasRole(VOTER_ROLE, signer) &&
-			messageSignatures[_messageHash] >= requiredApproveVotes
+			_messageSignatures[_messageHash] >= requiredApproveVotes
 		)
 		{
 			return MAGICVALUE;
@@ -205,6 +204,15 @@ contract IglooFiV1Vault is
 	}
 
 	/// @inheritdoc IIglooFiV1Vault
+	function messageSignatures(bytes32 message)
+		view
+		public
+		returns (uint256)
+	{
+		return _messageSignatures[message];
+	}
+
+	/// @inheritdoc IIglooFiV1Vault
 	function sign(bytes32 _messageHash, bytes memory _signature)
 		public
 	{
@@ -212,8 +220,8 @@ contract IglooFiV1Vault is
 
 		if (hasRole(VOTER_ROLE, signer))
 		{
-			// [increment] Value in `messageSignatures`
-			messageSignatures[_messageHash]++;
+			// [increment] Value in `_messageSignatures`
+			_messageSignatures[_messageHash]++;
 		}
 	}
 	
