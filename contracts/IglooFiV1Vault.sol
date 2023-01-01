@@ -94,11 +94,7 @@ contract IglooFiV1Vault is
 	fallback ()
 		external
 		payable
-	{
-		revert(
-			"Invalid message"
-		);
-	}
+	{}
 
 
 	/* [modifier] */
@@ -224,6 +220,7 @@ contract IglooFiV1Vault is
 
 	/// @inheritdoc IIglooFiV1Vault
 	function createWithdrawalRequest(
+		bool requestETH,
 		address to,
 		address tokenAddress,
 		uint256 amount,
@@ -241,6 +238,7 @@ contract IglooFiV1Vault is
 
 		// [add] `_withdrawalRequest` value
 		_withdrawalRequest[_withdrawalRequestId] = WithdrawalRequest({
+			requestETH: requestETH,
 			creator: msg.sender,
 			to: to,
 			token: tokenAddress,
@@ -345,8 +343,13 @@ contract IglooFiV1Vault is
 			"Not enough time has passed"
 		);
 
-		// Check if erc20 or erc721 and transfer accordingly
-		if (IERC165(w.token).supportsInterface(type(IERC20).interfaceId))
+		// Check if ETH, erc20, or erc721 and transfer accordingly
+		if (w.requestETH)
+		{
+			// [send]
+			w.to.send(w.amount);
+		}
+		else if (IERC165(w.token).supportsInterface(type(IERC20).interfaceId))
 		{
 			// [erc20-transfer]
 			IERC20(w.token).safeTransfer(w.to, w.amount);

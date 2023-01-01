@@ -4,7 +4,7 @@ pragma solidity ^0.8.1;
 
 /* [struct] */
 struct WithdrawalRequest {
-	bool requestEther;
+	bool requestETH;
 	address creator;
 	address to;
 	address token;
@@ -255,6 +255,7 @@ interface IglooFiV1Vault
 	*      [add] `_withdrawalRequest` value
 	*      [push-into] `_withdrawalRequestByCreator`
 	*
+	* @param requestETH {bool} If to be withdrawn asset is ETH set to true
 	* @param to {address} Address the withdrawn tokens will be sent
 	* @param tokenAddress {address}
 	* @param amount {uint256} Amount to be withdrawn
@@ -265,6 +266,7 @@ interface IglooFiV1Vault
 	* Emits: `CreatedWithdrawalRequest`
 	*/
 	function createWithdrawalRequest(
+		bool requestETH,
 		address to,
 		address tokenAddress,
 		uint256 amount,
