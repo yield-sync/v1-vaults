@@ -11,6 +11,7 @@ import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+import "@openzeppelin/contracts/utils/Address.sol";
 // [local]
 import "./interface/IIglooFiV1Vault.sol";
 
@@ -24,6 +25,7 @@ contract IglooFiV1Vault is
 	IIglooFiV1Vault
 {
 	/* [using] */
+	using Address for address payable;
 	using ECDSA for bytes32;
 	using SafeERC20 for IERC20;
 
@@ -288,7 +290,7 @@ contract IglooFiV1Vault is
 			}
 		}
 
-		// [require] It is msg.sender's (voter's) first vote
+		// [require] msg.sender's (voter's) has not voted already
 		require(!voted, "You have already casted a vote for this WithdrawalRequest");
 
 		if (vote)
@@ -354,13 +356,8 @@ contract IglooFiV1Vault is
 		// If WithdrawalRequest is for Ether, erc20, or erc721 and transfer accordingly
 		if (w.requestETH)
 		{
-			if (address(this).balance >= w.amount)
-			{
-				// [transfer]
-				bool sent = w.to.transfer(w.amount);
-
-				require(sent, "Failed to send Ether");
-			}
+			// [transfer]
+			w.to.sendValue(w.amount);
 		}
 		else if (IERC165(w.token).supportsInterface(type(IERC20).interfaceId))
 		{
