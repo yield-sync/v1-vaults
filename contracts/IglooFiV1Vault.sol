@@ -67,7 +67,6 @@ contract IglooFiV1Vault is
 		uint256 _withdrawalDelayMinutes,
 		string memory name
 	)
-		Nameable(name)
 	{
 		// Set DEFAULT_ADMIN_ROLE
 		_setupRole(DEFAULT_ADMIN_ROLE, admin);
