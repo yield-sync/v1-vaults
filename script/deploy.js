@@ -1,3 +1,9 @@
 const hre = require("hardhat");
 
-console.log(hre);
+
+const main = async () => {
+	console.log(hre);
+}
+
+
+main().catch(e => console.log(e));
