@@ -163,7 +163,7 @@ contract IglooFiV1Vault is
 	}
 
 
-	/// @inheritdoc IERC1271
+	/** @inheritdoc IERC1271 */
 	function isValidSignature(bytes32 _messageHash, bytes memory _signature)
 		public
 		view
@@ -186,7 +186,7 @@ contract IglooFiV1Vault is
 	}
 
 
-	/// @inheritdoc IIglooFiV1Vault
+	/** @inheritdoc IIglooFiV1Vault */
 	function withdrawalRequestByCreator(address creator)
 		view
 		public
@@ -195,7 +195,7 @@ contract IglooFiV1Vault is
 		return _withdrawalRequestByCreator[creator];
 	}
 
-	/// @inheritdoc IIglooFiV1Vault
+	/** @inheritdoc IIglooFiV1Vault */
 	function withdrawalRequest(uint256 withdrawalRequestId)
 		view
 		public
@@ -204,7 +204,7 @@ contract IglooFiV1Vault is
 		return _withdrawalRequest[withdrawalRequestId];
 	}
 
-	/// @inheritdoc IIglooFiV1Vault
+	/** @inheritdoc IIglooFiV1Vault */
 	function withdrawalRequestVotedVoters(uint256 withdrawalRequestId)
 		view
 		public
@@ -213,7 +213,7 @@ contract IglooFiV1Vault is
 		return _withdrawalRequestVotedVoters[withdrawalRequestId];
 	}
 
-	/// @inheritdoc IIglooFiV1Vault
+	/** @inheritdoc IIglooFiV1Vault */
 	function messageSignatures(bytes32 message)
 		view
 		public
@@ -222,7 +222,7 @@ contract IglooFiV1Vault is
 		return _messageSignatures[message];
 	}
 
-	/// @inheritdoc IIglooFiV1Vault
+	/** @inheritdoc IIglooFiV1Vault */
 	function sign(bytes32 _messageHash, bytes memory _signature)
 		public
 	{
@@ -236,7 +236,7 @@ contract IglooFiV1Vault is
 	}
 	
 
-	/// @inheritdoc IIglooFiV1Vault
+	/** @inheritdoc IIglooFiV1Vault */
 	function createWithdrawalRequest(
 		bool requestETH,
 		address to,
@@ -277,7 +277,7 @@ contract IglooFiV1Vault is
 		return _withdrawalRequestId;
 	}
 
-	/// @inheritdoc IIglooFiV1Vault
+	/** @inheritdoc IIglooFiV1Vault */
 	function voteOnWithdrawalRequest(uint256 withdrawalRequestId, bool vote)
 		public
 		onlyRole(VOTER_ROLE)
@@ -341,7 +341,7 @@ contract IglooFiV1Vault is
 		);
 	}
 
-	/// @inheritdoc IIglooFiV1Vault
+	/** @inheritdoc IIglooFiV1Vault */
 	function processWithdrawalRequests(uint256 withdrawalRequestId)
 		public
 		onlyRole(VOTER_ROLE)
@@ -393,7 +393,7 @@ contract IglooFiV1Vault is
 	}
 	
 
-	/// @inheritdoc IIglooFiV1Vault
+	/** @inheritdoc IIglooFiV1Vault */
 	function addVoter(address targetAddress)
 		public
 		onlyRole(DEFAULT_ADMIN_ROLE)
@@ -408,7 +408,7 @@ contract IglooFiV1Vault is
 		return targetAddress;
 	}
 
-	/// @inheritdoc IIglooFiV1Vault
+	/** @inheritdoc IIglooFiV1Vault */
 	function removeVoter(address voter)
 		public
 		onlyRole(DEFAULT_ADMIN_ROLE)
@@ -423,7 +423,7 @@ contract IglooFiV1Vault is
 		return voter;
 	}
 
-	/// @inheritdoc IIglooFiV1Vault
+	/** @inheritdoc IIglooFiV1Vault */
 	function updateName(string memory _name)
 		public
 		onlyRole(DEFAULT_ADMIN_ROLE)
@@ -438,7 +438,7 @@ contract IglooFiV1Vault is
 		return (_name);
 	}
 
-	/// @inheritdoc IIglooFiV1Vault
+	/** @inheritdoc IIglooFiV1Vault */
 	function updateRequiredApproveVotes(uint256 newRequiredApproveVotes)
 		public
 		onlyRole(DEFAULT_ADMIN_ROLE)
@@ -453,7 +453,7 @@ contract IglooFiV1Vault is
 		return (requiredApproveVotes);
 	}
 
-	/// @inheritdoc IIglooFiV1Vault
+	/** @inheritdoc IIglooFiV1Vault */
 	function updateWithdrawalDelayMinutes(uint256 newWithdrawalDelayMinutes)
 		public
 		onlyRole(DEFAULT_ADMIN_ROLE)
@@ -471,7 +471,7 @@ contract IglooFiV1Vault is
 		return withdrawalDelayMinutes;
 	}
 
-	/// @inheritdoc IIglooFiV1Vault
+	/** @inheritdoc IIglooFiV1Vault */
 	function updateWithdrawalRequestLatestRelevantApproveVoteTime(
 		uint256 withdrawalRequestId,
 		uint256 latestRelevantApproveVoteTime
@@ -495,7 +495,7 @@ contract IglooFiV1Vault is
 		return (withdrawalRequestId, latestRelevantApproveVoteTime);
 	}
 
-	/// @inheritdoc IIglooFiV1Vault
+	/** @inheritdoc IIglooFiV1Vault */
 	function deleteWithdrawalRequest(uint256 withdrawalRequestId)
 		public
 		onlyRole(DEFAULT_ADMIN_ROLE)

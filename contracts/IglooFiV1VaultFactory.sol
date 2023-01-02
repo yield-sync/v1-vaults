@@ -77,15 +77,7 @@ contract IglooFiV1VaultFactory is
 	}
 
 
-	/**
-	* @notice Get vault deployment fee
-	*
-	* @dev [!restriction]
-	*
-	* @dev [view]
-	*
-	* @return {uint256}
-	*/
+	/** @inheritdoc IIglooFiV1VaultFactory */
 	function fee()
 		public
 		view
@@ -95,17 +87,7 @@ contract IglooFiV1VaultFactory is
 	}
 
 
-	/**
-	* @notice Get vault address
-	*
-	* @dev [!restriction]
-	*
-	* @dev [view]
-	*
-	* @param vaultId {uint256}
-	*
-	* @return {uint256}
-	*/
+	/** @inheritdoc IIglooFiV1VaultFactory */
 	function vaultAddress(uint256 vaultId)
 		public
 		view
@@ -115,17 +97,7 @@ contract IglooFiV1VaultFactory is
 	}
 
 
-	/**
-	* @notice Creates a Vault
-	*
-	* @dev [!restriction]
-	*
-	* @dev [create]
-	*
-	* @param requiredApproveVotes {uint256}
-	* @param withdrawalDelayMinutes {uint256}
-	* @param voters {address[]} Addresses to be assigned VOTER_ROLE
-	*/
+	/** @inheritdoc IIglooFiV1VaultFactory */
 	function deployVault(
 		address admin,
 		address[] memory voters,
@@ -165,36 +137,24 @@ contract IglooFiV1VaultFactory is
 	}
 
 
-	/**
-	* @notice Toggle pause
-	*
-	* @dev [restriction] AccessControlEnumerable → S
-	*
-	* @dev [update] pause
-	*/
+	/** @inheritdoc IIglooFiV1VaultFactory */
 	function togglePause()
 		public
 		authLevelS()
 	{
 		if (!paused())
 		{
+			// [call-internal]
 			_pause();
 		}
 		else
 		{
+			// [call-internal]
 			_unpause();
 		}
 	}
 
-	/**
-	* @notice Update fee
-	*
-	* @dev [restriction] AccessControlEnumerable → S
-	*
-	* @dev [update] `_fee`
-	*
-	* @param newFee {uint256}
-	*/
+	/** @inheritdoc IIglooFiV1VaultFactory */
 	function updateFee(uint256 newFee)
 		public
 		authLevelS()
@@ -202,15 +162,7 @@ contract IglooFiV1VaultFactory is
 		_fee = newFee;
 	}
 
-	/**
-	* @notice Update treasury
-	*
-	* @dev [restriction] AccessControlEnumerable → S
-	*
-	* @dev [update] `treasury`
-	*
-	* @param _treasury {address}
-	*/
+	/** @inheritdoc IIglooFiV1VaultFactory */
 	function updateTreasury(address _treasury)
 		public
 		whenNotPaused()
@@ -219,15 +171,7 @@ contract IglooFiV1VaultFactory is
 		treasury = _treasury;
 	}
 
-	/**
-	* @notice Set fee for Vault.sol deployment
-	*
-	* @dev [restriction] AccessControlEnumerable → S
-	*
-	* @dev [update] fee
-	*
-	* @param _fee {uint256} Fee to be set
-	*/
+	/** @inheritdoc IIglooFiV1VaultFactory */
 	function transferFunds()
 		public
 		whenNotPaused()
