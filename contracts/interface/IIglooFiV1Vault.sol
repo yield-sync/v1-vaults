@@ -70,10 +70,10 @@ interface IIglooFiV1Vault
 	);
 
 	/**
-	* @dev Emits when `requiredVotes` are updated
+	* @dev Emits when `requiredVoteCount` are updated
 	*/
-	event UpdatedRequiredVotes(
-		uint256 requiredVotes
+	event UpdatedRequiredVoteCount(
+		uint256 requiredVoteCount
 	);
 
 	/**
@@ -128,7 +128,7 @@ interface IIglooFiV1Vault
 	*
 	* @return {uint256}
 	*/
-	function VOTER_ROLE()
+	function VOTER()
 		external
 		view
 		returns (bytes32)
@@ -142,7 +142,7 @@ interface IIglooFiV1Vault
 	*
 	* @return {uint256}
 	*/
-	function requiredVotes()
+	function requiredVoteCount()
 		external
 		view
 		returns (uint256)
@@ -179,7 +179,7 @@ interface IIglooFiV1Vault
 
 
 	/**
-	* @notice Getter for `withdrawalRequestByCreator`
+	* @notice Getter for `creatorWithdrawalRequests`
 	*
 	* @dev [!restriction]
 	* @dev [view][mapping]
@@ -188,7 +188,7 @@ interface IIglooFiV1Vault
 	*
 	* @return {uint256[]}
 	*/
-	function withdrawalRequestByCreator(address creator)
+	function creatorWithdrawalRequests(address creator)
 		view
 		external
 		returns (uint256[] memory)
@@ -229,10 +229,10 @@ interface IIglooFiV1Vault
 	/**
 	* @notice Create a WithdrawalRequest
 	*
-	* @dev [restriction] AccessControlEnumerable → VOTER_ROLE
+	* @dev [restriction] AccessControlEnumerable → VOTER
 	* @dev [increment] `_withdrawalRequestId`
 	*      [add] `_withdrawalRequest` value
-	*      [push-into] `_withdrawalRequestByCreator`
+	*      [push-into] `_creatorWithdrawalRequests`
 	*
 	* @param requestETH {bool} If to be withdrawn asset is ETH set to true
 	* @param to {address} Address the withdrawn tokens will be sent
@@ -258,7 +258,7 @@ interface IIglooFiV1Vault
 	/**
 	* @notice Vote on WithdrawalRequest
 	*
-	* @dev [restriction] AccessControlEnumerable → VOTER_ROLE
+	* @dev [restriction] AccessControlEnumerable → VOTER
 	* @dev [update] `_withdrawalRequest`
 	*      [update] `_withdrawalRequestVotedVoters`
 	*
@@ -280,7 +280,7 @@ interface IIglooFiV1Vault
 	/**
 	* @notice Process WithdrawalRequest with given `withdrawalRequestId`
 	*
-	* @dev [restriction] AccessControlEnumerable → VOTER_ROLE
+	* @dev [restriction] AccessControlEnumerable → VOTER
 	* @dev [erc20-transfer]
 	*      [decrement] `_tokenBalance`
 	*      [call][internal] `_deleteWithdrawalRequest`
@@ -294,10 +294,10 @@ interface IIglooFiV1Vault
 	;
 
 	/**
-	* @notice Assign VOTER_ROLE to an address on AccessControlEnumerable
+	* @notice Assign VOTER to an address on AccessControlEnumerable
 	*
 	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
-	* @dev [add] address to VOTER_ROLE on `AccessControlEnumerable`
+	* @dev [add] address to VOTER on `AccessControlEnumerable`
 	*
 	* @param targetAddress {address}
 	*
@@ -312,7 +312,7 @@ interface IIglooFiV1Vault
 	* @notice Remove a voter
 	*
 	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
-	* @dev [remove] address with VOTER_ROLE on `AccessControlEnumerable`
+	* @dev [remove] address with VOTER on `AccessControlEnumerable`
 	*
 	* @param voter {address} Address of the voter to remove
 	*
@@ -327,15 +327,15 @@ interface IIglooFiV1Vault
 	* @notice Update the required approved votes
 	*
 	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
-	* @dev [update] `requiredVotes`
+	* @dev [update] `requiredVoteCount`
 	*
-	* @param newRequiredVotes {uint256}
+	* @param newRequiredVoteCount {uint256}
 	*
-	* @return {uint256} New `requiredVotes`
+	* @return {uint256} New `requiredVoteCount`
 	*
-	* Emits: `UpdatedRequiredVotes`
+	* Emits: `UpdatedRequiredVoteCount`
 	*/
-	function updateRequiredVotes(uint256 newRequiredVotes)
+	function updateRequiredVoteCount(uint256 newRequiredVoteCount)
 		external
 		returns (uint256)
 	;
