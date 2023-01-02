@@ -13,3 +13,10 @@ npx hardhat node
 node script/*.js
 npx hardhat help
 ```
+
+## `.env` example
+
+```
+INFURA_API_KEY
+ETHERSCAN_API_KEY
+```
