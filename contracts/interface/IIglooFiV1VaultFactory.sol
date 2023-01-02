@@ -46,7 +46,7 @@ interface IIglooFiV1VaultFactory {
 	* @notice Get vault deployment fee
 	*
 	* @dev [!restriction]
-	* @dev [view]
+	* @dev [view-uint256]
 	*
 	* @return {uint256}
 	*/
@@ -79,7 +79,7 @@ interface IIglooFiV1VaultFactory {
 	* @dev [create]
 	*
 	* @param requiredApproveVotes {uint256}
-	* @param withdrawalDelayMinutes {uint256}
+	* @param withdrawalDelaySeconds {uint256}
 	* @param voters {address[]} Addresses to be assigned VOTER_ROLE
 	*/
 	function deployVault(
@@ -87,7 +87,7 @@ interface IIglooFiV1VaultFactory {
 		address[] memory voters,
 		string memory name,
 		uint256 requiredApproveVotes,
-		uint256 withdrawalDelayMinutes
+		uint256 withdrawalDelaySeconds
 	)
 		external
 		payable

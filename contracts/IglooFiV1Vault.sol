@@ -10,7 +10,6 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
-import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 // [local]
 import "./interface/IIglooFiV1Vault.sol";
 
@@ -44,17 +43,18 @@ contract IglooFiV1Vault is
 
 	// [uint256][public]
 	uint256 public requiredApproveVotes;
-	uint256 public withdrawalDelayMinutes;
+	uint256 public withdrawalDelaySeconds;
 
 	// [mapping][internal]
-	// Voter Address => Array of WithdrawalRequest
-	mapping (address => uint256[]) internal _withdrawalRequestByCreator;
 	// WithdrawalRequestId => WithdrawalRequest
 	mapping (uint256 => WithdrawalRequest) internal _withdrawalRequest;
 	// WithdrawalRequestId => Voted Voter Addresses Array
 	mapping (uint256 => address[]) internal _withdrawalRequestVotedVoters;
 	// Message => votes
 	mapping(bytes32 => uint256) internal _messageSignatures;
+	// [mapping][public]
+	// Voter Address => Array of WithdrawalRequest
+	mapping (address => uint256[]) public withdrawalRequestByCreator;
 
 
 	/* [constructor] */
@@ -63,7 +63,7 @@ contract IglooFiV1Vault is
 		address[] memory voters,
 		string memory _name,
 		uint256 _requiredApproveVotes,
-		uint256 _withdrawalDelayMinutes
+		uint256 _withdrawalDelaySeconds
 	)
 	{
 		// Set DEFAULT_ADMIN_ROLE
@@ -81,7 +81,7 @@ contract IglooFiV1Vault is
 
 		name = _name;
 		requiredApproveVotes = _requiredApproveVotes;
-		withdrawalDelayMinutes = _withdrawalDelayMinutes;
+		withdrawalDelaySeconds = _withdrawalDelaySeconds;
 	}
 
 
@@ -121,7 +121,7 @@ contract IglooFiV1Vault is
 	*
 	* @dev [delete] `_withdrawalRequest` value
 	*      [delete] `_withdrawalRequestVotedVoters` value
-	*      [delete] `_withdrawalRequestByCreator` value
+	*      [delete] `withdrawalRequestByCreator` value
 	*
 	* @param withdrawalRequestId {uint256}
 	*
@@ -136,17 +136,17 @@ contract IglooFiV1Vault is
 		// [delete] `_withdrawalRequestVotedVoters` value
 		delete _withdrawalRequestVotedVoters[withdrawalRequestId];
 
-		for (uint256 i = 0; i < _withdrawalRequestByCreator[_withdrawalRequest[withdrawalRequestId].creator].length; i++)
+		for (uint256 i = 0; i < withdrawalRequestByCreator[_withdrawalRequest[withdrawalRequestId].creator].length; i++)
 		{
 			// If match found..
 			if (
-				_withdrawalRequestByCreator[
+				withdrawalRequestByCreator[
 					_withdrawalRequest[withdrawalRequestId].creator
 				][i] == withdrawalRequestId
 			)
 			{
-				// [delete] `_withdrawalRequestByCreator` value
-				delete _withdrawalRequestByCreator[
+				// [delete] `withdrawalRequestByCreator` value
+				delete withdrawalRequestByCreator[
 					_withdrawalRequest[withdrawalRequestId].creator
 				][i];
 
@@ -181,15 +181,6 @@ contract IglooFiV1Vault is
 		}
 	}
 
-
-	/// @inheritdoc IIglooFiV1Vault
-	function withdrawalRequestByCreator(address creator)
-		view
-		public
-		returns (uint256[] memory)
-	{
-		return _withdrawalRequestByCreator[creator];
-	}
 
 	/// @inheritdoc IIglooFiV1Vault
 	function withdrawalRequest(uint256 withdrawalRequestId)
@@ -264,8 +255,8 @@ contract IglooFiV1Vault is
 			latestRelevantApproveVoteTime: block.timestamp
 		});
 
-		// [push-into] `_withdrawalRequestByCreator`
-		_withdrawalRequestByCreator[msg.sender].push(_withdrawalRequestId);
+		// [push-into] `withdrawalRequestByCreator`
+		withdrawalRequestByCreator[msg.sender].push(_withdrawalRequestId);
 
 		// [emit]
 		emit CreatedWithdrawalRequest(_withdrawalRequest[_withdrawalRequestId]);
@@ -354,7 +345,7 @@ contract IglooFiV1Vault is
 
 		// [require] WithdrawalRequest time delay passed
 		require(
-			block.timestamp - w.latestRelevantApproveVoteTime >= SafeMath.mul(withdrawalDelayMinutes, 60),
+			block.timestamp - w.latestRelevantApproveVoteTime >= withdrawalDelaySeconds,
 			"Not enough time has passed"
 		);
 
@@ -452,21 +443,21 @@ contract IglooFiV1Vault is
 	}
 
 	/// @inheritdoc IIglooFiV1Vault
-	function updateWithdrawalDelayMinutes(uint256 newWithdrawalDelayMinutes)
+	function updateWithdrawalDelaySeconds(uint256 newWithdrawalDelaySeconds)
 		public
 		onlyRole(DEFAULT_ADMIN_ROLE)
 		returns (uint256)
 	{
-		// [require] newWithdrawalDelayMinutes is greater than OR equal to 0
-		require(newWithdrawalDelayMinutes >= 0, "Invalid newWithdrawalDelayMinutes");
+		// [require] newWithdrawalDelaySeconds is greater than OR equal to 0
+		require(newWithdrawalDelaySeconds >= 0, "Invalid newWithdrawalDelaySeconds");
 
-		// [update] `withdrawalDelayMinutes`
-		withdrawalDelayMinutes = newWithdrawalDelayMinutes;
+		// [update] `withdrawalDelaySeconds`
+		withdrawalDelaySeconds = newWithdrawalDelaySeconds;
 
 		// [emit]
-		emit UpdatedWithdrawalDelayMinutes(withdrawalDelayMinutes);
+		emit UpdatedWithdrawalDelaySeconds(withdrawalDelaySeconds);
 
-		return withdrawalDelayMinutes;
+		return withdrawalDelaySeconds;
 	}
 
 	/// @inheritdoc IIglooFiV1Vault

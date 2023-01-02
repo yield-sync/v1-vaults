@@ -99,10 +99,10 @@ interface IIglooFiV1Vault
 	);
 
 	/**
-	* @dev Emits when `withdrawalDelayMinutes` is updated
+	* @dev Emits when `withdrawalDelaySeconds` is updated
 	*/
-	event UpdatedWithdrawalDelayMinutes(
-		uint256 withdrawalDelayMinutes
+	event UpdatedWithdrawalDelaySeconds(
+		uint256 withdrawalDelaySeconds
 	);
 
 	/**
@@ -178,7 +178,7 @@ interface IIglooFiV1Vault
 	*
 	* @return {uint256}
 	*/
-	function withdrawalDelayMinutes()
+	function withdrawalDelaySeconds()
 		external
 		view
 		returns (uint256)
@@ -197,23 +197,6 @@ interface IIglooFiV1Vault
 		external
 		view
 		returns (string memory)
-	;
-
-
-	/**
-	* @notice Getter for array of withdrawalRequestIds by a given creator
-	*
-	* @dev [!restriction]
-	* @dev [view][mapping]
-	*
-	* @param creator {address}
-	*
-	* @return {uint256[]} Array of `WithdrawalRequestId`
-	*/
-	function withdrawalRequestByCreator(address creator)
-		view
-		external
-		returns (uint256[] memory)
 	;
 
 	/**
@@ -416,18 +399,18 @@ interface IIglooFiV1Vault
 	;
 
 	/**
-	* @notice Update `withdrawalDelayMinutes`
+	* @notice Update `withdrawalDelaySeconds`
 	*
 	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
-	* @dev [update] `withdrawalDelayMinutes` to new value
+	* @dev [update] `withdrawalDelaySeconds` to new value
 	*
-	* @param newWithdrawalDelayMinutes {uint256}
+	* @param newWithdrawalDelaySeconds {uint256}
 	*
-	* @return {uint256} New `withdrawalDelayMinutes`
+	* @return {uint256} New `withdrawalDelaySeconds`
 	*
-	* Emits: `UpdatedWithdrawalDelayMinutes`
+	* Emits: `UpdatedWithdrawalDelaySeconds`
 	*/
-	function updateWithdrawalDelayMinutes(uint256 newWithdrawalDelayMinutes)
+	function updateWithdrawalDelaySeconds(uint256 newWithdrawalDelaySeconds)
 		external
 		returns (uint256)
 	;

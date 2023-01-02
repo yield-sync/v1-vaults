@@ -28,7 +28,9 @@ contract IglooFiV1VaultFactory is
 
 	/* [uint256][internal] */
 	uint256 internal _vaultId;
-	uint256 internal _fee;
+
+	/* [uint256][public] */
+	uint256 public fee;
 
 	// [mapping][internal]
 	// Vault Id => Contract address
@@ -41,7 +43,7 @@ contract IglooFiV1VaultFactory is
 		IGLOO_FI = iglooFi;
 
 		_vaultId = 0;
-		_fee = 0;
+		fee = 0;
 	}
 
 
@@ -74,16 +76,6 @@ contract IglooFiV1VaultFactory is
 
 
 	/// @inheritdoc IIglooFiV1VaultFactory
-	function fee()
-		public
-		view
-		returns (uint256)
-	{
-		return _fee;
-	}
-
-
-	/// @inheritdoc IIglooFiV1VaultFactory
 	function vaultAddress(uint256 vaultId)
 		public
 		view
@@ -99,14 +91,14 @@ contract IglooFiV1VaultFactory is
 		address[] memory voters,
 		string memory name,
 		uint256 requiredApproveVotes,
-		uint256 withdrawalDelayMinutes
+		uint256 withdrawalDelaySeconds
 	)
 		public
 		payable
 		whenNotPaused()
 		returns (address)
 	{
-		require(msg.value >= _fee, "!msg.value");
+		require(msg.value >= fee, "!msg.value");
 
 		IglooFiV1Vault deployedContract;
 
@@ -116,7 +108,7 @@ contract IglooFiV1VaultFactory is
 			voters,
 			name,
 			requiredApproveVotes,
-			withdrawalDelayMinutes
+			withdrawalDelaySeconds
 		);
 
 		// Register vault
@@ -155,7 +147,7 @@ contract IglooFiV1VaultFactory is
 		public
 		authLevelS()
 	{
-		_fee = newFee;
+		fee = newFee;
 	}
 
 	/// @inheritdoc IIglooFiV1VaultFactory
