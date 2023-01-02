@@ -3,9 +3,9 @@ pragma solidity ^0.8.1;
 
 
 /**
-* @title IVaultFactory
+* @title IIglooFiV1VaultFactory
 */
-interface IVaultFactory {
+interface IIglooFiV1VaultFactory {
 	/* [event] */
 	/**
 	* @dev Emits when a vault is deployed
