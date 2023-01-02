@@ -20,7 +20,7 @@ struct WithdrawalRequest {
 /**
 * @title IglooFiV1Vault
 */
-interface IglooFiV1Vault
+interface IIglooFiV1Vault
 {
 	/* [event] */
 	/**
@@ -125,7 +125,7 @@ interface IglooFiV1Vault
 	function INVALID_SIGNATURE()
 		external
 		view
-		returns (uint256)
+		returns (bytes4)
 	;
 
 	/**
@@ -139,7 +139,7 @@ interface IglooFiV1Vault
 	function MAGICVALUE()
 		external
 		view
-		returns (uint256)
+		returns (bytes4)
 	;
 
 	/**
@@ -153,7 +153,7 @@ interface IglooFiV1Vault
 	function VOTER_ROLE()
 		external
 		view
-		returns (uint256)
+		returns (bytes32)
 	;
 
 	/**
@@ -196,7 +196,7 @@ interface IglooFiV1Vault
 	function name()
 		external
 		view
-		returns (string)
+		returns (string memory)
 	;
 
 
@@ -260,7 +260,7 @@ interface IglooFiV1Vault
 	*/
 	function messageSignatures(bytes32 message)
 		view
-		public
+		external
 		returns (uint256)
 	;
 
@@ -275,7 +275,7 @@ interface IglooFiV1Vault
 	* @param _signature {byte}
 	*/
 	function sign(bytes32 _messageHash, bytes memory _signature)
-		public
+		external
 	;
 
 
@@ -395,7 +395,7 @@ interface IglooFiV1Vault
 	*/	
 	function updateName(string memory _name)
 		external
-		returns (address)
+		returns (string memory)
 	;
 
 	/**
@@ -468,4 +468,5 @@ interface IglooFiV1Vault
 	function deleteWithdrawalRequest(uint256 withdrawalRequestId)
 		external
 		returns (uint256)
+	;
 }

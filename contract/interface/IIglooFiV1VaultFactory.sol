@@ -5,8 +5,7 @@ pragma solidity ^0.8.1;
 /**
 * @title IVaultFactory
 */
-interface IVaultFactory
-{
+interface IVaultFactory {
 	/* [event] */
 	/**
 	* @dev Emits when a vault is deployed

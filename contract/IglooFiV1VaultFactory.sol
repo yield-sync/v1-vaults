@@ -102,9 +102,9 @@ contract IglooFiV1VaultFactory is
 	function deployVault(
 		address admin,
 		address[] memory voters,
+		string memory name,
 		uint256 requiredApproveVotes,
-		uint256 withdrawalDelayMinutes,
-		string memory name
+		uint256 withdrawalDelayMinutes
 	)
 		public
 		payable

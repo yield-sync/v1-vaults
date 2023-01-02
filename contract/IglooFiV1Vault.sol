@@ -11,7 +11,6 @@ import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
-import "@openzeppelin/contracts/utils/Address.sol";
 // [local]
 import "./interface/IIglooFiV1Vault.sol";
 
@@ -25,7 +24,6 @@ contract IglooFiV1Vault is
 	IIglooFiV1Vault
 {
 	/* [using] */
-	using Address for address payable;
 	using ECDSA for bytes32;
 	using SafeERC20 for IERC20;
 
@@ -63,9 +61,9 @@ contract IglooFiV1Vault is
 	constructor (
 		address admin,
 		address[] memory voters,
+		string memory _name,
 		uint256 _requiredApproveVotes,
-		uint256 _withdrawalDelayMinutes,
-		string memory name
+		uint256 _withdrawalDelayMinutes
 	)
 	{
 		// Set DEFAULT_ADMIN_ROLE
@@ -81,9 +79,7 @@ contract IglooFiV1Vault is
 		// Initialize WithdrawalRequestId
 		_withdrawalRequestId = 0;
 
-		// Initialize _changeNameRequestId
-		_changeNameRequestId = 0;
-
+		name = _name;
 		requiredApproveVotes = _requiredApproveVotes;
 		withdrawalDelayMinutes = _withdrawalDelayMinutes;
 	}
@@ -163,7 +159,7 @@ contract IglooFiV1Vault is
 	}
 
 
-	/** @inheritdoc IERC1271 */
+	/// @inheritdoc IERC1271
 	function isValidSignature(bytes32 _messageHash, bytes memory _signature)
 		public
 		view
@@ -186,7 +182,7 @@ contract IglooFiV1Vault is
 	}
 
 
-	/** @inheritdoc IIglooFiV1Vault */
+	/// @inheritdoc IIglooFiV1Vault
 	function withdrawalRequestByCreator(address creator)
 		view
 		public
@@ -195,7 +191,7 @@ contract IglooFiV1Vault is
 		return _withdrawalRequestByCreator[creator];
 	}
 
-	/** @inheritdoc IIglooFiV1Vault */
+	/// @inheritdoc IIglooFiV1Vault
 	function withdrawalRequest(uint256 withdrawalRequestId)
 		view
 		public
@@ -204,7 +200,7 @@ contract IglooFiV1Vault is
 		return _withdrawalRequest[withdrawalRequestId];
 	}
 
-	/** @inheritdoc IIglooFiV1Vault */
+	/// @inheritdoc IIglooFiV1Vault
 	function withdrawalRequestVotedVoters(uint256 withdrawalRequestId)
 		view
 		public
@@ -213,7 +209,7 @@ contract IglooFiV1Vault is
 		return _withdrawalRequestVotedVoters[withdrawalRequestId];
 	}
 
-	/** @inheritdoc IIglooFiV1Vault */
+	/// @inheritdoc IIglooFiV1Vault
 	function messageSignatures(bytes32 message)
 		view
 		public
@@ -222,7 +218,7 @@ contract IglooFiV1Vault is
 		return _messageSignatures[message];
 	}
 
-	/** @inheritdoc IIglooFiV1Vault */
+	/// @inheritdoc IIglooFiV1Vault
 	function sign(bytes32 _messageHash, bytes memory _signature)
 		public
 	{
@@ -236,7 +232,7 @@ contract IglooFiV1Vault is
 	}
 	
 
-	/** @inheritdoc IIglooFiV1Vault */
+	/// @inheritdoc IIglooFiV1Vault
 	function createWithdrawalRequest(
 		bool requestETH,
 		address to,
@@ -277,7 +273,7 @@ contract IglooFiV1Vault is
 		return _withdrawalRequestId;
 	}
 
-	/** @inheritdoc IIglooFiV1Vault */
+	/// @inheritdoc IIglooFiV1Vault
 	function voteOnWithdrawalRequest(uint256 withdrawalRequestId, bool vote)
 		public
 		onlyRole(VOTER_ROLE)
@@ -341,7 +337,7 @@ contract IglooFiV1Vault is
 		);
 	}
 
-	/** @inheritdoc IIglooFiV1Vault */
+	/// @inheritdoc IIglooFiV1Vault
 	function processWithdrawalRequests(uint256 withdrawalRequestId)
 		public
 		onlyRole(VOTER_ROLE)
@@ -366,7 +362,9 @@ contract IglooFiV1Vault is
 		if (w.requestETH)
 		{
 			// [transfer]
-			w.to.sendValue(w.amount);
+			(bool success, ) = w.to.call{value: w.amount}("");
+			
+			require(success, "Unable to send value, recipient may have reverted");
 		}
 		else if (IERC165(w.token).supportsInterface(type(IERC20).interfaceId))
 		{
@@ -378,7 +376,7 @@ contract IglooFiV1Vault is
 		}
 		else if (IERC165(w.token).supportsInterface(type(IERC721).interfaceId))
 		{
-			if (IERC721(w.token).ownerOf(address(this)) >= w.amount)
+			if (IERC721(w.token).ownerOf(w.tokenId) == address(this))
 			{
 				// [erc721-transfer]
 				IERC721(w.token).safeTransferFrom(address(this), w.to, w.tokenId);
@@ -393,7 +391,7 @@ contract IglooFiV1Vault is
 	}
 	
 
-	/** @inheritdoc IIglooFiV1Vault */
+	/// @inheritdoc IIglooFiV1Vault
 	function addVoter(address targetAddress)
 		public
 		onlyRole(DEFAULT_ADMIN_ROLE)
@@ -408,7 +406,7 @@ contract IglooFiV1Vault is
 		return targetAddress;
 	}
 
-	/** @inheritdoc IIglooFiV1Vault */
+	/// @inheritdoc IIglooFiV1Vault
 	function removeVoter(address voter)
 		public
 		onlyRole(DEFAULT_ADMIN_ROLE)
@@ -423,11 +421,11 @@ contract IglooFiV1Vault is
 		return voter;
 	}
 
-	/** @inheritdoc IIglooFiV1Vault */
+	/// @inheritdoc IIglooFiV1Vault
 	function updateName(string memory _name)
 		public
 		onlyRole(DEFAULT_ADMIN_ROLE)
-		returns (string)
+		returns (string memory)
 	{
 		// [update]
 		name = _name;
@@ -438,7 +436,7 @@ contract IglooFiV1Vault is
 		return (_name);
 	}
 
-	/** @inheritdoc IIglooFiV1Vault */
+	/// @inheritdoc IIglooFiV1Vault
 	function updateRequiredApproveVotes(uint256 newRequiredApproveVotes)
 		public
 		onlyRole(DEFAULT_ADMIN_ROLE)
@@ -453,7 +451,7 @@ contract IglooFiV1Vault is
 		return (requiredApproveVotes);
 	}
 
-	/** @inheritdoc IIglooFiV1Vault */
+	/// @inheritdoc IIglooFiV1Vault
 	function updateWithdrawalDelayMinutes(uint256 newWithdrawalDelayMinutes)
 		public
 		onlyRole(DEFAULT_ADMIN_ROLE)
@@ -471,7 +469,7 @@ contract IglooFiV1Vault is
 		return withdrawalDelayMinutes;
 	}
 
-	/** @inheritdoc IIglooFiV1Vault */
+	/// @inheritdoc IIglooFiV1Vault
 	function updateWithdrawalRequestLatestRelevantApproveVoteTime(
 		uint256 withdrawalRequestId,
 		uint256 latestRelevantApproveVoteTime
@@ -495,7 +493,7 @@ contract IglooFiV1Vault is
 		return (withdrawalRequestId, latestRelevantApproveVoteTime);
 	}
 
-	/** @inheritdoc IIglooFiV1Vault */
+	/// @inheritdoc IIglooFiV1Vault
 	function deleteWithdrawalRequest(uint256 withdrawalRequestId)
 		public
 		onlyRole(DEFAULT_ADMIN_ROLE)
