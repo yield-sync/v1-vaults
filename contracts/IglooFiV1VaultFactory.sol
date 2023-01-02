@@ -88,8 +88,6 @@ contract IglooFiV1VaultFactory is
 	/// @inheritdoc IIglooFiV1VaultFactory
 	function deployVault(
 		address admin,
-		address[] memory voters,
-		string memory name,
 		uint256 requiredApproveVotes,
 		uint256 withdrawalDelaySeconds
 	)
@@ -105,8 +103,6 @@ contract IglooFiV1VaultFactory is
 		// [deploy] A vault contract
 		deployedContract = new IglooFiV1Vault(
 			admin,
-			voters,
-			name,
 			requiredApproveVotes,
 			withdrawalDelaySeconds
 		);

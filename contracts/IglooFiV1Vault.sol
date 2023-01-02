@@ -8,7 +8,6 @@ import "@openzeppelin/contracts/access/AccessControlEnumerable.sol";
 import "@openzeppelin/contracts/interfaces/IERC1271.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
-import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 // [local]
 import "./interface/IIglooFiV1Vault.sol";
@@ -24,7 +23,6 @@ contract IglooFiV1Vault is
 {
 	/* [using] */
 	using ECDSA for bytes32;
-	using SafeERC20 for IERC20;
 
 
 	/* [state-variable] */
@@ -35,52 +33,36 @@ contract IglooFiV1Vault is
 	// [byte32][public]
 	bytes32 public constant VOTER_ROLE = keccak256("VOTER_ROLE");
 
-	// [string][public]
-	string public name;
-
 	// [uint256][internal]
 	uint256 internal _withdrawalRequestId;
 
 	// [uint256][public]
-	uint256 public requiredApproveVotes;
+	uint256 public requiredVotes;
 	uint256 public withdrawalDelaySeconds;
 
 	// [mapping][internal]
 	// WithdrawalRequestId => WithdrawalRequest
 	mapping (uint256 => WithdrawalRequest) internal _withdrawalRequest;
-	// WithdrawalRequestId => Voted Voter Addresses Array
-	mapping (uint256 => address[]) internal _withdrawalRequestVotedVoters;
 	// Message => votes
-	mapping(bytes32 => uint256) internal _messageSignatures;
-	// [mapping][public]
+	mapping (bytes32 => uint256) internal _messageSignatures;
 	// Voter Address => Array of WithdrawalRequest
-	mapping (address => uint256[]) public withdrawalRequestByCreator;
+	mapping (address => uint256[]) internal _withdrawalRequestByCreator;
 
 
 	/* [constructor] */
 	constructor (
 		address admin,
-		address[] memory voters,
-		string memory _name,
-		uint256 _requiredApproveVotes,
+		uint256 _requiredVotes,
 		uint256 _withdrawalDelaySeconds
 	)
 	{
 		// Set DEFAULT_ADMIN_ROLE
 		_setupRole(DEFAULT_ADMIN_ROLE, admin);
 
-		// [for] each voter address..
-		for (uint256 i = 0; i < voters.length; i++)
-		{
-			// [add] Voter to `AccessControl._roles` as VOTER_ROLE
-			_setupRole(VOTER_ROLE, voters[i]);
-		}
-
 		// Initialize WithdrawalRequestId
 		_withdrawalRequestId = 0;
 
-		name = _name;
-		requiredApproveVotes = _requiredApproveVotes;
+		requiredVotes = _requiredVotes;
 		withdrawalDelaySeconds = _withdrawalDelaySeconds;
 	}
 
@@ -120,8 +102,7 @@ contract IglooFiV1Vault is
 	* @dev [restriction][internal]
 	*
 	* @dev [delete] `_withdrawalRequest` value
-	*      [delete] `_withdrawalRequestVotedVoters` value
-	*      [delete] `withdrawalRequestByCreator` value
+	*      [delete] `_withdrawalRequestByCreator` value
 	*
 	* @param withdrawalRequestId {uint256}
 	*
@@ -133,20 +114,17 @@ contract IglooFiV1Vault is
 		// [delete] `_withdrawalRequest` value
 		delete _withdrawalRequest[withdrawalRequestId];
 
-		// [delete] `_withdrawalRequestVotedVoters` value
-		delete _withdrawalRequestVotedVoters[withdrawalRequestId];
-
-		for (uint256 i = 0; i < withdrawalRequestByCreator[_withdrawalRequest[withdrawalRequestId].creator].length; i++)
+		for (uint256 i = 0; i < _withdrawalRequestByCreator[_withdrawalRequest[withdrawalRequestId].creator].length; i++)
 		{
 			// If match found..
 			if (
-				withdrawalRequestByCreator[
+				_withdrawalRequestByCreator[
 					_withdrawalRequest[withdrawalRequestId].creator
 				][i] == withdrawalRequestId
 			)
 			{
-				// [delete] `withdrawalRequestByCreator` value
-				delete withdrawalRequestByCreator[
+				// [delete] `_withdrawalRequestByCreator` value
+				delete _withdrawalRequestByCreator[
 					_withdrawalRequest[withdrawalRequestId].creator
 				][i];
 
@@ -170,7 +148,7 @@ contract IglooFiV1Vault is
 
 		if (
 			hasRole(VOTER_ROLE, signer) &&
-			_messageSignatures[_messageHash] >= requiredApproveVotes
+			_messageSignatures[_messageHash] >= requiredVotes
 		)
 		{
 			return MAGICVALUE;
@@ -192,12 +170,12 @@ contract IglooFiV1Vault is
 	}
 
 	/// @inheritdoc IIglooFiV1Vault
-	function withdrawalRequestVotedVoters(uint256 withdrawalRequestId)
+	function withdrawalRequestByCreator(address creator)
 		view
 		public
-		returns (address[] memory)
+		returns (uint256[] memory)
 	{
-		return _withdrawalRequestVotedVoters[withdrawalRequestId];
+		return _withdrawalRequestByCreator[creator];
 	}
 
 	/// @inheritdoc IIglooFiV1Vault
@@ -241,22 +219,23 @@ contract IglooFiV1Vault is
 		// [increment] `_withdrawalRequestId`
 		_withdrawalRequestId++;
 
+		address[] memory s;
+
 		// [add] `_withdrawalRequest` value
 		_withdrawalRequest[_withdrawalRequestId] = WithdrawalRequest({
-			id: _withdrawalRequestId,
 			requestETH: requestETH,
 			creator: msg.sender,
 			to: to,
 			token: tokenAddress,
 			amount: amount,
 			tokenId: tokenId,
-			approveVoteCount: 0,
-			denyVoteCount: 0,
-			latestRelevantApproveVoteTime: block.timestamp
+			voteCount: 0,
+			latestRelevantApproveVoteTime: block.timestamp,
+			votedVoters: s
 		});
 
-		// [push-into] `withdrawalRequestByCreator`
-		withdrawalRequestByCreator[msg.sender].push(_withdrawalRequestId);
+		// [push-into] `_withdrawalRequestByCreator`
+		_withdrawalRequestByCreator[msg.sender].push(_withdrawalRequestId);
 
 		// [emit]
 		emit CreatedWithdrawalRequest(_withdrawalRequest[_withdrawalRequestId]);
@@ -269,15 +248,15 @@ contract IglooFiV1Vault is
 		public
 		onlyRole(VOTER_ROLE)
 		validWithdrawalRequest(withdrawalRequestId)
-		returns (bool, uint256, uint256, uint256)
+		returns (bool, uint256, uint256)
 	{
 		// [init]
 		bool voted = false;
 
 		// [for] each voter within WithdrawalRequest
-		for (uint256 i = 0; i < _withdrawalRequestVotedVoters[withdrawalRequestId].length; i++)
+		for (uint256 i = 0; i < _withdrawalRequest[withdrawalRequestId].votedVoters.length; i++)
 		{
-			if (_withdrawalRequestVotedVoters[withdrawalRequestId][i] == msg.sender)
+			if (_withdrawalRequest[withdrawalRequestId].votedVoters[i] == msg.sender)
 			{
 				// Flag
 				voted = true;
@@ -292,29 +271,24 @@ contract IglooFiV1Vault is
 		if (vote)
 		{
 			// [update] `_withdrawalRequest` → [increment] Approve vote count
-			_withdrawalRequest[withdrawalRequestId].approveVoteCount++;
+			_withdrawalRequest[withdrawalRequestId].voteCount++;
 
 			// If required signatures met..
-			if (_withdrawalRequest[withdrawalRequestId].approveVoteCount >= requiredApproveVotes)
+			if (_withdrawalRequest[withdrawalRequestId].voteCount >= requiredVotes)
 			{
 				// [emit]
 				emit WithdrawalRequestReadyToBeProccessed(withdrawalRequestId);
 			}
 		}
-		else
-		{
-			// [update] `_withdrawalRequest` → [increment] Deny vote count
-			_withdrawalRequest[withdrawalRequestId].denyVoteCount++;
-		}
 
 		// [emit]
 		emit VoterVoted(withdrawalRequestId, msg.sender, vote);
 
-		// [update] `_withdrawalRequestVotedVoters` → Mark voter has voted
-		_withdrawalRequestVotedVoters[withdrawalRequestId].push(msg.sender);
+		// [update] `_withdrawalRequest[withdrawalRequestId].votedVoters` → Add msg.sender
+		_withdrawalRequest[withdrawalRequestId].votedVoters.push(msg.sender);
 
 		// If the required signatures has not yet been reached..
-		if (_withdrawalRequest[withdrawalRequestId].approveVoteCount < requiredApproveVotes)
+		if (_withdrawalRequest[withdrawalRequestId].voteCount < requiredVotes)
 		{
 			// [update] latestRelevantApproveVoteTime timestamp
 			_withdrawalRequest[withdrawalRequestId].latestRelevantApproveVoteTime = block.timestamp;
@@ -322,8 +296,7 @@ contract IglooFiV1Vault is
 
 		return (
 			vote,
-			_withdrawalRequest[withdrawalRequestId].approveVoteCount,
-			_withdrawalRequest[withdrawalRequestId].denyVoteCount,
+			_withdrawalRequest[withdrawalRequestId].voteCount,
 			_withdrawalRequest[withdrawalRequestId].latestRelevantApproveVoteTime
 		);
 	}
@@ -339,7 +312,7 @@ contract IglooFiV1Vault is
 		
 		// [require] Required signatures to be met
 		require(
-			w.approveVoteCount >= requiredApproveVotes,
+			w.voteCount >= requiredVotes,
 			"Not enough for votes"
 		);
 
@@ -362,7 +335,7 @@ contract IglooFiV1Vault is
 			if (IERC20(w.token).balanceOf(address(this)) >= w.amount)
 			{
 				// [erc20-transfer]
-				IERC20(w.token).safeTransfer(w.to, w.amount);
+				IERC20(w.token).transfer(w.to, w.amount);
 			}
 		}
 		else if (IERC165(w.token).supportsInterface(type(IERC721).interfaceId))
@@ -370,7 +343,7 @@ contract IglooFiV1Vault is
 			if (IERC721(w.token).ownerOf(w.tokenId) == address(this))
 			{
 				// [erc721-transfer]
-				IERC721(w.token).safeTransferFrom(address(this), w.to, w.tokenId);
+				IERC721(w.token).transferFrom(address(this), w.to, w.tokenId);
 			}
 		}
 
@@ -391,9 +364,6 @@ contract IglooFiV1Vault is
 		// [add] address to VOTER_ROLE on `AccessControlEnumerable`
 		_setupRole(VOTER_ROLE, targetAddress);
 
-		// [emit]
-		emit AddedVoter(targetAddress);
-
 		return targetAddress;
 	}
 
@@ -406,40 +376,22 @@ contract IglooFiV1Vault is
 		// [remove] address with VOTER_ROLE on `AccessControlEnumerable`
 		_revokeRole(VOTER_ROLE, voter);
 
-		// [emit]
-		emit RemovedVoter(voter);
-
 		return voter;
-	}
+	} 
 
 	/// @inheritdoc IIglooFiV1Vault
-	function updateName(string memory _name)
-		public
-		onlyRole(DEFAULT_ADMIN_ROLE)
-		returns (string memory)
-	{
-		// [update]
-		name = _name;
-
-		// [emit]
-		emit UpdatedName(_name);
-
-		return (_name);
-	}
-
-	/// @inheritdoc IIglooFiV1Vault
-	function updateRequiredApproveVotes(uint256 newRequiredApproveVotes)
+	function updateRequiredVotes(uint256 newRequiredVotes)
 		public
 		onlyRole(DEFAULT_ADMIN_ROLE)
 		returns (uint256)
 	{
 		// [update]
-		requiredApproveVotes = newRequiredApproveVotes;
+		requiredVotes = newRequiredVotes;
 
 		// [emit]
-		emit UpdatedRequiredApproveVotes(requiredApproveVotes);
+		emit UpdatedRequiredVotes(requiredVotes);
 
-		return (requiredApproveVotes);
+		return (requiredVotes);
 	}
 
 	/// @inheritdoc IIglooFiV1Vault

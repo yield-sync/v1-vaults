@@ -4,16 +4,15 @@ pragma solidity ^0.8.1;
 
 /* [struct] */
 struct WithdrawalRequest {
-	uint256 id;
 	bool requestETH;
 	address creator;
 	address to;
 	address token;
 	uint256 amount;
 	uint256 tokenId;
-	uint256 approveVoteCount;
-	uint256 denyVoteCount;
+	uint256 voteCount;
 	uint256 latestRelevantApproveVoteTime;
+	address[] votedVoters;
 }
 
 
@@ -71,31 +70,10 @@ interface IIglooFiV1Vault
 	);
 
 	/**
-	* @dev Emits when an address is added to VOTER_ROLE on `AccessControlEnumerable`
+	* @dev Emits when `requiredVotes` are updated
 	*/
-	event AddedVoter(
-		address addedVoter
-	);
-
-	/**
-	* @dev Emits when an address is removed from VOTER_ROLE on `AccessControlEnumerable`
-	*/
-	event RemovedVoter(
-		address addedVoter
-	);
-
-	/**
-	* @dev Emits when `name` is updated
-	*/
-	event UpdatedName(
-		string name
-	);
-
-	/**
-	* @dev Emits when `requiredApproveVotes` are updated
-	*/
-	event UpdatedRequiredApproveVotes(
-		uint256 requiredApproveVotes
+	event UpdatedRequiredVotes(
+		uint256 requiredVotes
 	);
 
 	/**
@@ -164,7 +142,7 @@ interface IIglooFiV1Vault
 	*
 	* @return {uint256}
 	*/
-	function requiredApproveVotes()
+	function requiredVotes()
 		external
 		view
 		returns (uint256)
@@ -184,21 +162,6 @@ interface IIglooFiV1Vault
 		returns (uint256)
 	;
 
-
-	/**
-	* @notice Name
-	*
-	* @dev [!restriction]
-	* @dev [view-string]
-	*
-	* @return {string}
-	*/
-	function name()
-		external
-		view
-		returns (string memory)
-	;
-
 	/**
 	* @notice Getter for `_withdrawalRequest`
 	*
@@ -214,20 +177,21 @@ interface IIglooFiV1Vault
 		view returns (WithdrawalRequest memory)
 	;
 
+
 	/**
-	* @notice Getter for `_withdrawalRequestVotedVoters`
+	* @notice Getter for `withdrawalRequestByCreator`
 	*
 	* @dev [!restriction]
 	* @dev [view][mapping]
 	*
-	* @param withdrawalRequestId {uint256} Id of WithdrawalRequest
+	* @param creator {address}
 	*
-	* @return {WithdrawalRequest}
+	* @return {uint256[]}
 	*/
-	function withdrawalRequestVotedVoters(uint256 withdrawalRequestId)
+	function withdrawalRequestByCreator(address creator)
 		view
 		external
-		returns (address[] memory)
+		returns (uint256[] memory)
 	;
 
 
@@ -302,8 +266,7 @@ interface IIglooFiV1Vault
 	* @param vote {bool} true (approve) or false (deny)
 	*
 	* @return {bool} Vote
-	* @return {bool} approveVoteCount
-	* @return {bool} denyVoteCount
+	* @return {bool} voteCount
 	* @return {bool} lastImpactfulVote
 	*
 	* Emits: `WithdrawalRequestReadyToBeProccessed`
@@ -311,7 +274,7 @@ interface IIglooFiV1Vault
 	*/
 	function voteOnWithdrawalRequest(uint256 withdrawalRequestId, bool vote)
 		external
-		returns (bool, uint256, uint256, uint256)
+		returns (bool, uint256, uint256)
 	;
 
 	/**
@@ -339,8 +302,6 @@ interface IIglooFiV1Vault
 	* @param targetAddress {address}
 	*
 	* @return {address} Voter added
-	*
-	* Emits: `VoterAdded`
 	*/
 	function addVoter(address targetAddress)
 		external
@@ -356,8 +317,6 @@ interface IIglooFiV1Vault
 	* @param voter {address} Address of the voter to remove
 	*
 	* @return {address} Removed voter
-	*
-	* Emits: `VoterRemoved`
 	*/	
 	function removeVoter(address voter)
 		external
@@ -365,35 +324,18 @@ interface IIglooFiV1Vault
 	;
 
 	/**
-	* @notice Update `name`
-	*
-	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
-	* @dev [update] `name`
-	*
-	* @param _name {string} 
-	*
-	* @return {address} Updated `name`
-	*
-	* Emits: `VoterRemoved`
-	*/	
-	function updateName(string memory _name)
-		external
-		returns (string memory)
-	;
-
-	/**
 	* @notice Update the required approved votes
 	*
 	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
-	* @dev [update] `requiredApproveVotes`
+	* @dev [update] `requiredVotes`
 	*
-	* @param newRequiredApproveVotes {uint256}
+	* @param newRequiredVotes {uint256}
 	*
-	* @return {uint256} New `requiredApproveVotes`
+	* @return {uint256} New `requiredVotes`
 	*
-	* Emits: `UpdatedRequiredApproveVotes`
+	* Emits: `UpdatedRequiredVotes`
 	*/
-	function updateRequiredApproveVotes(uint256 newRequiredApproveVotes)
+	function updateRequiredVotes(uint256 newRequiredVotes)
 		external
 		returns (uint256)
 	;

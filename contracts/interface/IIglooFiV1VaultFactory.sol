@@ -78,14 +78,12 @@ interface IIglooFiV1VaultFactory {
 	* @dev [!restriction]
 	* @dev [create]
 	*
+	* @param admin {address}
 	* @param requiredApproveVotes {uint256}
 	* @param withdrawalDelaySeconds {uint256}
-	* @param voters {address[]} Addresses to be assigned VOTER_ROLE
 	*/
 	function deployVault(
 		address admin,
-		address[] memory voters,
-		string memory name,
 		uint256 requiredApproveVotes,
 		uint256 withdrawalDelaySeconds
 	)
@@ -132,7 +130,7 @@ interface IIglooFiV1VaultFactory {
 	* @notice Transfer Ether to the treasury
 	*
 	* @dev [restriction] AccessControlEnumerable → S
-	* @dev [transfer] to treasury
+	* @dev [transfer] to `treasury`
 	*/
 	function transferFunds()
 		external
