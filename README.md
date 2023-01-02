@@ -13,12 +13,3 @@ npx hardhat node
 node scripts/sample-script.js
 npx hardhat help
 ```
-
-# Notes
-
-### Vault Properties
-```
-voteWeights hashmap
-withdrawDelay number
-approvedTokens array
-```

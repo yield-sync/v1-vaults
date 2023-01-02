@@ -11,7 +11,7 @@ interface IVaultFactory
 	/**
 	* @dev Emits when a vault is deployed
 	*/
-	event VaultDeployed (
+	event VaultDeployed(
 		address indexed VaultAddress
 	);
 

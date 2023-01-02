@@ -4,6 +4,7 @@ pragma solidity ^0.8.1;
 
 /* [import] */
 // [!local]
+import "hardhat/console.sol";
 import "@igloo-fi/v1-sdk/contracts/interface/IIglooFiGovernance.sol";
 import "@openzeppelin/contracts/security/Pausable.sol";
 import "@openzeppelin/contracts/utils/Address.sol";

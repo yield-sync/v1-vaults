@@ -26,7 +26,7 @@ interface IglooFiV1Vault
 	/**
 	* @dev
 	*/
-	event EtherRecieved (
+	event EtherRecieved(
 		address msgSender,
 		uint256 EtherRecieved
 	);
@@ -34,21 +34,21 @@ interface IglooFiV1Vault
 	/**
 	* @dev Emits when a `WithdrawalRequest` is deleted
 	*/
-	event DeletedWithdrawalRequest (
+	event DeletedWithdrawalRequest(
 		uint256 WithdrawalRequest
 	);
 
 	/**
 	* @dev Emits when a `WithdrawalRequest` is created
 	*/
-	event CreatedWithdrawalRequest (
+	event CreatedWithdrawalRequest(
 		WithdrawalRequest withdrawalRequest
 	);
 
 	/**
 	* @dev Emits when a voter has voted
 	*/
-	event VoterVoted (
+	event VoterVoted(
 		uint256 withdrawalRequestId,
 		address indexed voter,
 		bool vote
@@ -57,14 +57,14 @@ interface IglooFiV1Vault
 	/**
 	* @dev Emit when a WithdrawalRequest is ready to be processed
 	*/
-	event WithdrawalRequestReadyToBeProccessed (
+	event WithdrawalRequestReadyToBeProccessed(
 		uint256 withdrawalRequestId
 	);
 
 	/**
 	* @dev Emits when tokens are withdrawn
 	*/
-	event TokensWithdrawn (
+	event TokensWithdrawn(
 		address indexed withdrawer,
 		address indexed token,
 		uint256 amount
@@ -73,42 +73,42 @@ interface IglooFiV1Vault
 	/**
 	* @dev Emits when an address is added to VOTER_ROLE on `AccessControlEnumerable`
 	*/
-	event AddedVoter (
+	event AddedVoter(
 		address addedVoter
 	);
 
 	/**
 	* @dev Emits when an address is removed from VOTER_ROLE on `AccessControlEnumerable`
 	*/
-	event RemovedVoter (
+	event RemovedVoter(
 		address addedVoter
 	);
 
 	/**
 	* @dev Emits when `name` is updated
 	*/
-	event UpdatedName (
+	event UpdatedName(
 		string name
 	);
 
 	/**
 	* @dev Emits when `requiredApproveVotes` are updated
 	*/
-	event UpdatedRequiredApproveVotes (
+	event UpdatedRequiredApproveVotes(
 		uint256 requiredApproveVotes
 	);
 
 	/**
 	* @dev Emits when `withdrawalDelayMinutes` is updated
 	*/
-	event UpdatedWithdrawalDelayMinutes (
+	event UpdatedWithdrawalDelayMinutes(
 		uint256 withdrawalDelayMinutes
 	);
 
 	/**
 	* @dev Emits when `_withdrawalRequest[withdrawalRequestId].latestRelevantApproveVoteTime` is updated
 	*/
-	event UpdatedWithdrawalRequestLastSignificantApproveVote (
+	event UpdatedWithdrawalRequestLastSignificantApproveVote(
 		uint256 withdrawalRequestId,
 		uint256 latestRelevantApproveVoteTime
 	);
