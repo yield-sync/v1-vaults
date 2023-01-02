@@ -3,9 +3,11 @@ pragma solidity ^0.8.1;
 
 
 /* [import] */
+// [!local]
 import "@igloo-fi/v1-sdk/contracts/interface/IIglooFiGovernance.sol";
 import "@openzeppelin/contracts/security/Pausable.sol";
-
+import "@openzeppelin/contracts/utils/Address.sol";
+// [local]
 import "./interface/IIglooFiV1VaultFactory.sol";
 import "./IglooFiV1Vault.sol";
 
@@ -17,13 +19,22 @@ contract IglooFiV1VaultFactory is
 	Pausable,
 	IIglooFiVaultFactory
 {
-	/* [state-variable][constant] */
-	address public constant IGLOO_FI;
+	/* [using] */
+	using Address for address payable;
+
 
 	/* [state-variable] */
-	uint256 internal _vaultId;
-	uint256 internal _vaultFee;
+	// [address][public][constant]
+	address public constant IGLOO_FI;
 
+	// [address][public]
+	address public treasury;
+
+	/* [uint256][internal] */
+	uint256 internal _vaultId;
+	uint256 internal _fee;
+
+	// [mapping][internal]
 	// Vault Id => Contract address
 	mapping (uint256 => address) internal _vaultAddress;
 
@@ -42,18 +53,14 @@ contract IglooFiV1VaultFactory is
 	receive ()
 		external
 		payable
-	{
-		revert("Sending Ether directly to this contract is disabled");
-	}
+	{}
 
 
 	/* [fallback] */
 	fallback ()
 		external
 		payable
-	{
-		revert("Sending Ether directly to this contract is disabled");
-	}
+	{}
 
 
 	/* [modifier] */
@@ -79,12 +86,12 @@ contract IglooFiV1VaultFactory is
 	*
 	* @return {uint256}
 	*/
-	function vaultFee()
+	function fee()
 		public
 		view
 		returns (uint256)
 	{
-		return _vaultFee;
+		return _fee;
 	}
 
 
@@ -120,24 +127,28 @@ contract IglooFiV1VaultFactory is
 	* @param voters {address[]} Addresses to be assigned VOTER_ROLE
 	*/
 	function deployVault(
+		address admin,
+		address[] memory voters,
 		uint256 requiredApproveVotes,
 		uint256 withdrawalDelayMinutes,
-		address[] memory voters
+		string memory name
 	)
 		public
 		payable
 		whenNotPaused()
 		returns (address)
 	{
-		require(msg.value >= _vaultFee, "!msg.value");
+		require(msg.value >= _fee, "!msg.value");
 
 		Vault deployedContract;
 
 		// [deploy] A vault contract
 		deployedContract = new Vault(
+			admin,
+			voters,
 			requiredApproveVotes,
 			withdrawalDelayMinutes,
-			voters
+			name
 		);
 
 		// Register vault
@@ -157,7 +168,7 @@ contract IglooFiV1VaultFactory is
 	/**
 	* @notice Toggle pause
 	*
-	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
+	* @dev [restriction] AccessControlEnumerable → S
 	*
 	* @dev [update] pause
 	*/
@@ -176,18 +187,53 @@ contract IglooFiV1VaultFactory is
 	}
 
 	/**
+	* @notice Update fee
+	*
+	* @dev [restriction] AccessControlEnumerable → S
+	*
+	* @dev [update] `_fee`
+	*
+	* @param newFee {uint256}
+	*/
+	function updateFee(uint256 newFee)
+		public
+		authLevelS()
+	{
+		_fee = newFee;
+	}
+
+	/**
+	* @notice Update treasury
+	*
+	* @dev [restriction] AccessControlEnumerable → S
+	*
+	* @dev [update] `treasury`
+	*
+	* @param _treasury {address}
+	*/
+	function updateTreasury(address _treasury)
+		public
+		whenNotPaused()
+		authLevelS()
+	{
+		treasury = _treasury;
+	}
+
+	/**
 	* @notice Set fee for Vault.sol deployment
 	*
-	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
+	* @dev [restriction] AccessControlEnumerable → S
 	*
 	* @dev [update] fee
 	*
 	* @param _fee {uint256} Fee to be set
 	*/
-	function setFeeVault(uint256 _fee)
+	function transferFunds()
 		public
+		whenNotPaused()
 		authLevelS()
 	{
-		_vaultFee = _fee;
+		// [transfer]
+		treasury.sendValue(w.amount);
 	}
 }
