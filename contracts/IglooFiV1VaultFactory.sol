@@ -7,7 +7,6 @@ pragma solidity ^0.8.1;
 import "hardhat/console.sol";
 import "@igloo-fi/v1-sdk/contracts/interface/IIglooFiGovernance.sol";
 import "@openzeppelin/contracts/security/Pausable.sol";
-import "@openzeppelin/contracts/utils/Address.sol";
 // [local]
 import "./interface/IIglooFiV1VaultFactory.sol";
 import "./IglooFiV1Vault.sol";
@@ -18,15 +17,11 @@ import "./IglooFiV1Vault.sol";
 */
 contract IglooFiV1VaultFactory is
 	Pausable,
-	IIglooFiVaultFactory
+	IIglooFiV1VaultFactory
 {
-	/* [using] */
-	using Address for address payable;
-
-
 	/* [state-variable] */
 	// [address][public][constant]
-	address public constant IGLOO_FI;
+	address public IGLOO_FI;
 
 	// [address][public]
 	address public treasury;
@@ -46,7 +41,7 @@ contract IglooFiV1VaultFactory is
 		IGLOO_FI = iglooFi;
 
 		_vaultId = 0;
-		_vaultFee = 0;
+		_fee = 0;
 	}
 
 
@@ -78,7 +73,7 @@ contract IglooFiV1VaultFactory is
 	}
 
 
-	/** @inheritdoc IIglooFiV1VaultFactory */
+	/// @inheritdoc IIglooFiV1VaultFactory
 	function fee()
 		public
 		view
@@ -88,7 +83,7 @@ contract IglooFiV1VaultFactory is
 	}
 
 
-	/** @inheritdoc IIglooFiV1VaultFactory */
+	/// @inheritdoc IIglooFiV1VaultFactory
 	function vaultAddress(uint256 vaultId)
 		public
 		view
@@ -98,7 +93,7 @@ contract IglooFiV1VaultFactory is
 	}
 
 
-	/** @inheritdoc IIglooFiV1VaultFactory */
+	/// @inheritdoc IIglooFiV1VaultFactory
 	function deployVault(
 		address admin,
 		address[] memory voters,
@@ -113,15 +108,15 @@ contract IglooFiV1VaultFactory is
 	{
 		require(msg.value >= _fee, "!msg.value");
 
-		Vault deployedContract;
+		IglooFiV1Vault deployedContract;
 
 		// [deploy] A vault contract
-		deployedContract = new Vault(
+		deployedContract = new IglooFiV1Vault(
 			admin,
 			voters,
+			name,
 			requiredApproveVotes,
-			withdrawalDelayMinutes,
-			name
+			withdrawalDelayMinutes
 		);
 
 		// Register vault
@@ -138,7 +133,7 @@ contract IglooFiV1VaultFactory is
 	}
 
 
-	/** @inheritdoc IIglooFiV1VaultFactory */
+	/// @inheritdoc IIglooFiV1VaultFactory
 	function togglePause()
 		public
 		authLevelS()
@@ -155,7 +150,7 @@ contract IglooFiV1VaultFactory is
 		}
 	}
 
-	/** @inheritdoc IIglooFiV1VaultFactory */
+	/// @inheritdoc IIglooFiV1VaultFactory
 	function updateFee(uint256 newFee)
 		public
 		authLevelS()
@@ -163,7 +158,7 @@ contract IglooFiV1VaultFactory is
 		_fee = newFee;
 	}
 
-	/** @inheritdoc IIglooFiV1VaultFactory */
+	/// @inheritdoc IIglooFiV1VaultFactory
 	function updateTreasury(address _treasury)
 		public
 		whenNotPaused()
@@ -172,13 +167,15 @@ contract IglooFiV1VaultFactory is
 		treasury = _treasury;
 	}
 
-	/** @inheritdoc IIglooFiV1VaultFactory */
+	/// @inheritdoc IIglooFiV1VaultFactory
 	function transferFunds()
 		public
 		whenNotPaused()
 		authLevelS()
 	{
 		// [transfer]
-		treasury.sendValue(w.amount);
+		(bool success, ) = treasury.call{value: address(this).balance}("");
+
+		require(success, "Unable to send value, recipient may have reverted");
 	}
 }

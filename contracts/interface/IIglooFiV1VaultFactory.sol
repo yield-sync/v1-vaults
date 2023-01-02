@@ -85,9 +85,9 @@ interface IIglooFiV1VaultFactory {
 	function deployVault(
 		address admin,
 		address[] memory voters,
+		string memory name,
 		uint256 requiredApproveVotes,
-		uint256 withdrawalDelayMinutes,
-		string memory name
+		uint256 withdrawalDelayMinutes
 	)
 		external
 		payable
