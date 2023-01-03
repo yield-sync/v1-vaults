@@ -3,7 +3,8 @@ const { ethers } = require("hardhat");
 
 
 /* [variables] */
-const iglooFiGovernanceAddress = ethers.utils.getAddress("0x96A4BC19E6947b8C4b3FbC47bAE0dCB32F0037c8")
+const iglooFiGovernanceAddress = ethers.utils.getAddress("0x0000000000000000000000000000000000000000");
+const vitalik = ethers.utils.getAddress("0xd8da6bf26964af9d7eed9e03e53415d37aa96045");
 
 
 describe("IglooFiV1VaultFactory", function () {
@@ -12,12 +13,9 @@ describe("IglooFiV1VaultFactory", function () {
 		async function () {
 			const IglooFiV1VaultFactory = await ethers.getContractFactory("IglooFiV1VaultFactory");
 			const iglooFiV1VaultFactory = await IglooFiV1VaultFactory.deploy(iglooFiGovernanceAddress);
-		
 			const contract = await iglooFiV1VaultFactory.deployed();
 
-			const IGLOO_FI = await contract.IGLOO_FI();
-
-			expect(IGLOO_FI).to.equal(iglooFiGovernanceAddress);
+			expect(await contract.IGLOO_FI()).to.equal(iglooFiGovernanceAddress);
 		}
 	);
 
@@ -26,12 +24,9 @@ describe("IglooFiV1VaultFactory", function () {
 		async function () {
 			const IglooFiV1VaultFactory = await ethers.getContractFactory("IglooFiV1VaultFactory");
 			const iglooFiV1VaultFactory = await IglooFiV1VaultFactory.deploy(iglooFiGovernanceAddress);
-		
 			const contract = await iglooFiV1VaultFactory.deployed();
 
-			const fee = await contract.fee();
-
-			expect(fee).to.equal(0);
+			expect(await contract.fee()).to.equal(0);
 		}
 	);
 });
