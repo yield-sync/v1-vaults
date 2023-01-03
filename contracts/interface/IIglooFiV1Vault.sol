@@ -163,22 +163,6 @@ interface IIglooFiV1Vault
 	;
 
 	/**
-	* @notice Getter for `_withdrawalRequest`
-	*
-	* @dev [!restriction]
-	* @dev [view][mapping]
-	*
-	* @param withdrawalRequestId {uint256}
-	*
-	* @return {WithdrawalRequest}
-	*/
-	function withdrawalRequest(uint256 withdrawalRequestId)
-		external
-		view returns (WithdrawalRequest memory)
-	;
-
-
-	/**
 	* @notice Getter for `creatorWithdrawalRequests`
 	*
 	* @dev [!restriction]
@@ -194,7 +178,6 @@ interface IIglooFiV1Vault
 		returns (uint256[] memory)
 	;
 
-
 	/**
 	* @notice Getter for `_messageSignature`
 	*
@@ -209,6 +192,21 @@ interface IIglooFiV1Vault
 		view
 		external
 		returns (uint256)
+	;
+
+	/**
+	* @notice Getter for `_withdrawalRequest`
+	*
+	* @dev [!restriction]
+	* @dev [view][mapping]
+	*
+	* @param withdrawalRequestId {uint256}
+	*
+	* @return {WithdrawalRequest}
+	*/
+	function withdrawalRequest(uint256 withdrawalRequestId)
+		external
+		view returns (WithdrawalRequest memory)
 	;
 
 

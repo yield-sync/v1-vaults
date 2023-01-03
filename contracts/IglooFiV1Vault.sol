@@ -41,12 +41,12 @@ contract IglooFiV1Vault is
 	uint256 public withdrawalDelaySeconds;
 
 	// [mapping][internal]
-	// WithdrawalRequestId => WithdrawalRequest
-	mapping (uint256 => WithdrawalRequest) internal _withdrawalRequest;
-	// Voter Address => Array of WithdrawalRequest
+	// Creator Address => Array of WithdrawalRequest
 	mapping (address => uint256[]) internal _creatorWithdrawalRequests;
 	// Message => votes
 	mapping (bytes32 => uint256) internal _messageSignatures;
+	// WithdrawalRequestId => WithdrawalRequest
+	mapping (uint256 => WithdrawalRequest) internal _withdrawalRequest;
 
 
 	/* [constructor] */
@@ -59,11 +59,10 @@ contract IglooFiV1Vault is
 		// Set DEFAULT_ADMIN_ROLE
 		_setupRole(DEFAULT_ADMIN_ROLE, admin);
 
-		// Initialize WithdrawalRequestId
-		_withdrawalRequestId = 0;
-
 		requiredVoteCount = _requiredVoteCount;
 		withdrawalDelaySeconds = _withdrawalDelaySeconds;
+		
+		_withdrawalRequestId = 0;
 	}
 
 
@@ -167,15 +166,6 @@ contract IglooFiV1Vault is
 
 
 	/// @inheritdoc IIglooFiV1Vault
-	function withdrawalRequest(uint256 withdrawalRequestId)
-		view
-		public
-		returns (WithdrawalRequest memory)
-	{
-		return _withdrawalRequest[withdrawalRequestId];
-	}
-
-	/// @inheritdoc IIglooFiV1Vault
 	function creatorWithdrawalRequests(address creator)
 		view
 		public
@@ -191,6 +181,15 @@ contract IglooFiV1Vault is
 		returns (uint256)
 	{
 		return _messageSignatures[message];
+	}
+
+	/// @inheritdoc IIglooFiV1Vault
+	function withdrawalRequest(uint256 withdrawalRequestId)
+		view
+		public
+		returns (WithdrawalRequest memory)
+	{
+		return _withdrawalRequest[withdrawalRequestId];
 	}
 
 	/// @inheritdoc IIglooFiV1Vault
@@ -225,7 +224,7 @@ contract IglooFiV1Vault is
 		// [increment] `_withdrawalRequestId`
 		_withdrawalRequestId++;
 
-		address[] memory s;
+		address[] memory votedVoters;
 
 		// [add] `_withdrawalRequest` value
 		_withdrawalRequest[_withdrawalRequestId] = WithdrawalRequest({
@@ -237,7 +236,7 @@ contract IglooFiV1Vault is
 			tokenId: tokenId,
 			voteCount: 0,
 			latestRelevantApproveVoteTime: block.timestamp,
-			votedVoters: s
+			votedVoters: votedVoters
 		});
 
 		// [push-into] `_creatorWithdrawalRequests`
