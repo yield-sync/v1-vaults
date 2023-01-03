@@ -1,8 +1,9 @@
-require('dotenv').config()
-require('@nomicfoundation/hardhat-toolbox');
+require("dotenv").config()
+require("@nomicfoundation/hardhat-chai-matchers")
+require("@nomicfoundation/hardhat-toolbox");
 
 /**
- * @type import('hardhat/config').HardhatUserConfig
+ * @type import("hardhat/config").HardhatUserConfig
  */
 module.exports = {
   solidity: "0.8.10",
