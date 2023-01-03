@@ -49,5 +49,4 @@ describe("IglooFiV1VaultFactory", function () {
 			expect(await contract.fee()).to.equal(1);
 		}
 	);
-
 });
