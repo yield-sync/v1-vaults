@@ -17,7 +17,7 @@ struct WithdrawalRequest {
 
 
 /**
-* @title IglooFiV1Vault
+* @title IIglooFiV1Vault
 */
 interface IIglooFiV1Vault
 {

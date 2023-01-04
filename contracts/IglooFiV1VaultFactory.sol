@@ -3,17 +3,16 @@ pragma solidity ^0.8.1;
 
 
 /* [import] */
-// [!local]
 import "hardhat/console.sol";
 import "@igloo-fi/v1-sdk/contracts/interface/IIglooFiGovernance.sol";
 import "@openzeppelin/contracts/security/Pausable.sol";
-// [local]
+
 import "./interface/IIglooFiV1VaultFactory.sol";
 import "./IglooFiV1Vault.sol";
 
 
 /**
-* @title Igloo Fi V1 Vault Factory
+* @title IglooFiV1VaultFactory
 */
 contract IglooFiV1VaultFactory is
 	Pausable,

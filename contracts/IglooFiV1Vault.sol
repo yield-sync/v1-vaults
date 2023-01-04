@@ -13,7 +13,7 @@ import "./interface/IIglooFiV1Vault.sol";
 
 
 /**
-* @title Igloo Fi V1 Vault
+* @title IglooFiV1Vault
 */
 contract IglooFiV1Vault is
 	AccessControlEnumerable,
