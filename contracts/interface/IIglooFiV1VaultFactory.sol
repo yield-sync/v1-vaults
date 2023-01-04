@@ -95,7 +95,7 @@ interface IIglooFiV1VaultFactory {
 	/**
 	* @notice Toggle pause
 	*
-	* @dev [restriction] AccessControlEnumerable → S
+	* @dev [restriction] IIglooFiGovernance AccessControlEnumerable → DEFAULT_ADMIN_ROLE
 	* @dev [call-internal]
 	*/
 	function togglePause()
@@ -105,7 +105,7 @@ interface IIglooFiV1VaultFactory {
 	/**
 	* @notice Update fee
 	*
-	* @dev [restriction] AccessControlEnumerable → S
+	* @dev [restriction] IIglooFiGovernance AccessControlEnumerable → DEFAULT_ADMIN_ROLE
 	* @dev [update] `_fee`
 	*
 	* @param newFee {uint256}
@@ -117,7 +117,7 @@ interface IIglooFiV1VaultFactory {
 	/**
 	* @notice Update treasury
 	*
-	* @dev [restriction] AccessControlEnumerable → S
+	* @dev [restriction] IIglooFiGovernance AccessControlEnumerable → DEFAULT_ADMIN_ROLE
 	* @dev [update] `treasury`
 	*
 	* @param _treasury {address}
@@ -129,7 +129,7 @@ interface IIglooFiV1VaultFactory {
 	/**
 	* @notice Transfer Ether to the treasury
 	*
-	* @dev [restriction] AccessControlEnumerable → S
+	* @dev [restriction] IIglooFiGovernance AccessControlEnumerable → DEFAULT_ADMIN_ROLE
 	* @dev [transfer] to `treasury`
 	*/
 	function transferFunds()

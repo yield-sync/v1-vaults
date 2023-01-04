@@ -13,7 +13,7 @@ describe("IglooFiV1VaultFactory", function () {
 
 	
 	before('create fixture loader', async () => {
-		[vitalik] = await (ethers).getSigners();
+		//[vitalik] = await (ethers).getSigners();
 	})
 
 

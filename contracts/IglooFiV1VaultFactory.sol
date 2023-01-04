@@ -62,10 +62,10 @@ contract IglooFiV1VaultFactory is
 
 
 	/* [modifier] */
-	modifier authLevelS() {
+	modifier onlyIFGAdmin() {
 		require(
 			IIglooFiGovernance(IGLOO_FI).hasRole(
-				IIglooFiGovernance(IGLOO_FI).S(),
+				IIglooFiGovernance(IGLOO_FI).governanceRoles("DEFAULT_ADMIN_ROLE"),
 				msg.sender
 			),
 			"!auth"
@@ -124,7 +124,7 @@ contract IglooFiV1VaultFactory is
 	/// @inheritdoc IIglooFiV1VaultFactory
 	function togglePause()
 		public
-		authLevelS()
+		onlyIFGAdmin()
 	{
 		if (!paused())
 		{
@@ -141,7 +141,7 @@ contract IglooFiV1VaultFactory is
 	/// @inheritdoc IIglooFiV1VaultFactory
 	function updateFee(uint256 newFee)
 		public
-		authLevelS()
+		onlyIFGAdmin()
 	{
 		fee = newFee;
 	}
@@ -150,7 +150,7 @@ contract IglooFiV1VaultFactory is
 	function updateTreasury(address _treasury)
 		public
 		whenNotPaused()
-		authLevelS()
+		onlyIFGAdmin()
 	{
 		treasury = _treasury;
 	}
@@ -159,7 +159,7 @@ contract IglooFiV1VaultFactory is
 	function transferFunds()
 		public
 		whenNotPaused()
-		authLevelS()
+		onlyIFGAdmin()
 	{
 		// [transfer]
 		(bool success, ) = treasury.call{value: address(this).balance}("");
