@@ -252,7 +252,7 @@ contract IglooFiV1Vault is
 		public
 		onlyRole(VOTER)
 		validWithdrawalRequest(withdrawalRequestId)
-		returns (bool, uint256, uint256)
+		returns (uint256, uint256)
 	{
 		// [init]
 		bool voted = false;
@@ -303,7 +303,6 @@ contract IglooFiV1Vault is
 		}
 
 		return (
-			vote,
 			_withdrawalRequest[withdrawalRequestId].voteCount,
 			_withdrawalRequest[withdrawalRequestId].latestRelevantApproveVoteTime
 		);

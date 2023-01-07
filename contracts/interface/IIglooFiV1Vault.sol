@@ -263,7 +263,6 @@ interface IIglooFiV1Vault
 	* @param withdrawalRequestId {uint256}
 	* @param vote {bool} true (approve) or false (deny)
 	*
-	* @return {bool} Vote
 	* @return {bool} voteCount
 	* @return {bool} lastImpactfulVote
 	*
@@ -272,7 +271,7 @@ interface IIglooFiV1Vault
 	*/
 	function voteOnWithdrawalRequest(uint256 withdrawalRequestId, bool vote)
 		external
-		returns (bool, uint256, uint256)
+		returns (uint256, uint256)
 	;
 
 	/**
