@@ -37,9 +37,10 @@ contract IglooFiV1VaultFactory is
 
 
 	/* [constructor] */
-	constructor (address iglooFi)
+	constructor (address iglooFi, address _treasury)
 	{
 		IGLOO_FI = iglooFi;
+		treasury = _treasury;
 
 		_vaultId = 0;
 		fee = 0;
