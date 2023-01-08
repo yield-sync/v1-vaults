@@ -30,7 +30,7 @@ contract IglooFiV1Vault is
 	bytes4 public constant override MAGICVALUE = 0x1626ba7e;
 
 	// [byte32][public]
-	bytes32 public constant VOTER = keccak256("VOTER");
+	bytes32 public constant override VOTER = keccak256("VOTER");
 
 	// [uint256][internal]
 	uint256 internal _withdrawalRequestId;
