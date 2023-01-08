@@ -142,8 +142,13 @@ contract IglooFiV1VaultFactory is
 	function updateFee(uint256 newFee)
 		public
 		onlyIFGAdmin()
+		returns (uint256)
 	{
 		fee = newFee;
+
+		emit UpdatedFee(fee);
+
+		return (fee);
 	}
 
 	/// @inheritdoc IIglooFiV1VaultFactory
@@ -151,8 +156,13 @@ contract IglooFiV1VaultFactory is
 		public
 		whenNotPaused()
 		onlyIFGAdmin()
+		returns (address)
 	{
 		treasury = _treasury;
+
+		emit UpdatedTreasury(treasury);
+
+		return (treasury);
 	}
 
 	/// @inheritdoc IIglooFiV1VaultFactory

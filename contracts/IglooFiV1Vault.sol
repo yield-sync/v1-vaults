@@ -55,6 +55,9 @@ contract IglooFiV1Vault is
 		uint256 _withdrawalDelaySeconds
 	)
 	{
+		require(_requiredVoteCount < 0, "!_requiredVoteCount");
+
+
 		// Set DEFAULT_ADMIN_ROLE
 		_setupRole(DEFAULT_ADMIN_ROLE, admin);
 
@@ -392,6 +395,8 @@ contract IglooFiV1Vault is
 		onlyRole(DEFAULT_ADMIN_ROLE)
 		returns (uint256)
 	{
+		require(newRequiredVoteCount > 0, "!newRequiredVoteCount");
+
 		// [update]
 		requiredVoteCount = newRequiredVoteCount;
 

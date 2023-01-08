@@ -15,6 +15,21 @@ interface IIglooFiV1VaultFactory {
 	);
 
 	/**
+	* @dev Emits when a `fee` is updated
+	*/
+	event UpdatedFee(
+		uint256 fee
+	);
+
+	/**
+	* @dev Emits when a `treasury` is updated
+	*/
+	event UpdatedTreasury(
+		address treasury
+	);
+
+
+	/**
 	* @notice CONSTANT Address of Igloo Fi Governance contract
 	*
 	* @dev [!restriction]
@@ -112,6 +127,7 @@ interface IIglooFiV1VaultFactory {
 	*/
 	function updateFee(uint256 newFee)
 		external
+		returns (uint256)
 	;
 
 	/**
@@ -124,6 +140,7 @@ interface IIglooFiV1VaultFactory {
 	*/
 	function updateTreasury(address _treasury)
 		external
+		returns (address)
 	;
 
 	/**
