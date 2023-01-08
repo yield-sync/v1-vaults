@@ -19,17 +19,14 @@ contract IglooFiV1VaultFactory is
 	IIglooFiV1VaultFactory
 {
 	/* [state-variable] */
-	// [address][public][constant]
-	address public IGLOO_FI;
-
-	// [address][public]
-	address public treasury;
+	// [address][public][to-be-constant]
+	address public override IGLOO_FI;
 
 	/* [uint256][internal] */
 	uint256 internal _vaultId;
 
 	/* [uint256][public] */
-	uint256 public fee;
+	uint256 public override fee;
 
 	// [mapping][internal]
 	// Vault Id => Contract address
@@ -37,10 +34,9 @@ contract IglooFiV1VaultFactory is
 
 
 	/* [constructor] */
-	constructor (address iglooFi, address _treasury)
+	constructor (address iglooFi)
 	{
 		IGLOO_FI = iglooFi;
-		treasury = _treasury;
 
 		_vaultId = 0;
 		fee = 0;
@@ -79,6 +75,7 @@ contract IglooFiV1VaultFactory is
 	function vaultAddress(uint256 vaultId)
 		public
 		view
+		override
 		returns (address)
 	{
 		return _vaultAddress[vaultId];
@@ -88,11 +85,12 @@ contract IglooFiV1VaultFactory is
 	/// @inheritdoc IIglooFiV1VaultFactory
 	function deployVault(
 		address admin,
-		uint256 requiredApproveVotes,
-		uint256 withdrawalDelaySeconds
+		uint256 _requiredVoteCount,
+		uint256 _withdrawalDelaySeconds
 	)
 		public
 		payable
+		override
 		whenNotPaused()
 		returns (address)
 	{
@@ -103,8 +101,8 @@ contract IglooFiV1VaultFactory is
 		// [deploy] A vault contract
 		deployedContract = new IglooFiV1Vault(
 			admin,
-			requiredApproveVotes,
-			withdrawalDelaySeconds
+			_requiredVoteCount,
+			_withdrawalDelaySeconds
 		);
 
 		// Register vault
@@ -124,6 +122,7 @@ contract IglooFiV1VaultFactory is
 	/// @inheritdoc IIglooFiV1VaultFactory
 	function togglePause()
 		public
+		override
 		onlyIFGAdmin()
 	{
 		if (!paused())
@@ -141,6 +140,7 @@ contract IglooFiV1VaultFactory is
 	/// @inheritdoc IIglooFiV1VaultFactory
 	function updateFee(uint256 newFee)
 		public
+		override
 		onlyIFGAdmin()
 		returns (uint256)
 	{
@@ -152,28 +152,17 @@ contract IglooFiV1VaultFactory is
 	}
 
 	/// @inheritdoc IIglooFiV1VaultFactory
-	function updateTreasury(address _treasury)
+	function transferFunds(address transferTo)
 		public
-		whenNotPaused()
-		onlyIFGAdmin()
-		returns (address)
-	{
-		treasury = _treasury;
-
-		emit UpdatedTreasury(treasury);
-
-		return (treasury);
-	}
-
-	/// @inheritdoc IIglooFiV1VaultFactory
-	function transferFunds()
-		public
+		override
 		whenNotPaused()
 		onlyIFGAdmin()
 	{
+		require(transferTo != address(0), "!transferTo");
+
 		// [transfer]
-		(bool success, ) = treasury.call{value: address(this).balance}("");
+		(bool success, ) = transferTo.call{value: address(this).balance}("");
 
-		require(success, "Unable to send value, recipient may have reverted");
+		require(success, "transferFunds Failed");
 	}
 }

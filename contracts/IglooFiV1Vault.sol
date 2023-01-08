@@ -26,8 +26,8 @@ contract IglooFiV1Vault is
 
 	/* [state-variable] */
 	// [bytes4][public]
-	bytes4 public constant INVALID_SIGNATURE = 0xffffffff;
-	bytes4 public constant MAGICVALUE = 0x1626ba7e;
+	bytes4 public constant override INVALID_SIGNATURE = 0xffffffff;
+	bytes4 public constant override MAGICVALUE = 0x1626ba7e;
 
 	// [byte32][public]
 	bytes32 public constant VOTER = keccak256("VOTER");
@@ -36,8 +36,8 @@ contract IglooFiV1Vault is
 	uint256 internal _withdrawalRequestId;
 
 	// [uint256][public]
-	uint256 public requiredVoteCount;
-	uint256 public withdrawalDelaySeconds;
+	uint256 public override requiredVoteCount;
+	uint256 public override withdrawalDelaySeconds;
 
 	// [mapping][internal]
 	// Creator Address => Array of WithdrawalRequest
@@ -55,7 +55,7 @@ contract IglooFiV1Vault is
 		uint256 _withdrawalDelaySeconds
 	)
 	{
-		require(_requiredVoteCount < 0, "!_requiredVoteCount");
+		require(_requiredVoteCount > 0, "!_requiredVoteCount");
 
 
 		// Set DEFAULT_ADMIN_ROLE
@@ -171,6 +171,7 @@ contract IglooFiV1Vault is
 	function creatorWithdrawalRequests(address creator)
 		view
 		public
+		override
 		returns (uint256[] memory)
 	{
 		return _creatorWithdrawalRequests[creator];
@@ -180,6 +181,7 @@ contract IglooFiV1Vault is
 	function messageSignatures(bytes32 message)
 		view
 		public
+		override
 		returns (uint256)
 	{
 		return _messageSignatures[message];
@@ -189,6 +191,7 @@ contract IglooFiV1Vault is
 	function withdrawalRequest(uint256 withdrawalRequestId)
 		view
 		public
+		override
 		returns (WithdrawalRequest memory)
 	{
 		return _withdrawalRequest[withdrawalRequestId];
@@ -217,6 +220,7 @@ contract IglooFiV1Vault is
 		uint256 tokenId
 	)
 		public
+		override
 		onlyRole(VOTER)
 		returns (uint256)
 	{
@@ -253,6 +257,7 @@ contract IglooFiV1Vault is
 	/// @inheritdoc IIglooFiV1Vault
 	function voteOnWithdrawalRequest(uint256 withdrawalRequestId, bool vote)
 		public
+		override
 		onlyRole(VOTER)
 		validWithdrawalRequest(withdrawalRequestId)
 		returns (uint256, uint256)
@@ -314,6 +319,7 @@ contract IglooFiV1Vault is
 	/// @inheritdoc IIglooFiV1Vault
 	function processWithdrawalRequests(uint256 withdrawalRequestId)
 		public
+		override
 		onlyRole(VOTER)
 		validWithdrawalRequest(withdrawalRequestId)
 	{
@@ -368,6 +374,7 @@ contract IglooFiV1Vault is
 	/// @inheritdoc IIglooFiV1Vault
 	function addVoter(address targetAddress)
 		public
+		override
 		onlyRole(DEFAULT_ADMIN_ROLE)
 		returns (address)
 	{
@@ -392,6 +399,7 @@ contract IglooFiV1Vault is
 	/// @inheritdoc IIglooFiV1Vault
 	function updateRequiredVoteCount(uint256 newRequiredVoteCount)
 		public
+		override
 		onlyRole(DEFAULT_ADMIN_ROLE)
 		returns (uint256)
 	{
@@ -409,6 +417,7 @@ contract IglooFiV1Vault is
 	/// @inheritdoc IIglooFiV1Vault
 	function updateWithdrawalDelaySeconds(uint256 newWithdrawalDelaySeconds)
 		public
+		override
 		onlyRole(DEFAULT_ADMIN_ROLE)
 		returns (uint256)
 	{
@@ -430,6 +439,7 @@ contract IglooFiV1Vault is
 		uint256 latestRelevantApproveVoteTime
 	)
 		public
+		override
 		onlyRole(DEFAULT_ADMIN_ROLE)
 		validWithdrawalRequest(withdrawalRequestId)
 		returns (uint256, uint256)
@@ -451,6 +461,7 @@ contract IglooFiV1Vault is
 	/// @inheritdoc IIglooFiV1Vault
 	function deleteWithdrawalRequest(uint256 withdrawalRequestId)
 		public
+		override
 		onlyRole(DEFAULT_ADMIN_ROLE)
 		validWithdrawalRequest(withdrawalRequestId)
 		returns (uint256)

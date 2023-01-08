@@ -21,13 +21,6 @@ interface IIglooFiV1VaultFactory {
 		uint256 fee
 	);
 
-	/**
-	* @dev Emits when a `treasury` is updated
-	*/
-	event UpdatedTreasury(
-		address treasury
-	);
-
 
 	/**
 	* @notice CONSTANT Address of Igloo Fi Governance contract
@@ -38,20 +31,6 @@ interface IIglooFiV1VaultFactory {
 	* @return {address}
 	*/
 	function IGLOO_FI()
-		external
-		view
-		returns (address)
-	;
-	
-	/**
-	* @notice Address of treasury
-	*
-	* @dev [!restriction]
-	* @dev [view-address]
-	*
-	* @return {address}
-	*/
-	function treasury()
 		external
 		view
 		returns (address)
@@ -79,7 +58,7 @@ interface IIglooFiV1VaultFactory {
 	*
 	* @param vaultId {uint256}
 	*
-	* @return {uint256}
+	* @return {address}
 	*/
 	function vaultAddress(uint256 vaultId)
 		external
@@ -94,13 +73,15 @@ interface IIglooFiV1VaultFactory {
 	* @dev [create]
 	*
 	* @param admin {address}
-	* @param requiredApproveVotes {uint256}
-	* @param withdrawalDelaySeconds {uint256}
+	* @param _requiredVoteCount {uint256}
+	* @param _withdrawalDelaySeconds {uint256}
+	*
+	* @return {address} Deployed vault
 	*/
 	function deployVault(
 		address admin,
-		uint256 requiredApproveVotes,
-		uint256 withdrawalDelaySeconds
+		uint256 _requiredVoteCount,
+		uint256 _withdrawalDelaySeconds
 	)
 		external
 		payable
@@ -124,6 +105,8 @@ interface IIglooFiV1VaultFactory {
 	* @dev [update] `_fee`
 	*
 	* @param newFee {uint256}
+	*
+	* @return {uint256} Updated `fee`
 	*/
 	function updateFee(uint256 newFee)
 		external
@@ -131,25 +114,14 @@ interface IIglooFiV1VaultFactory {
 	;
 
 	/**
-	* @notice Update treasury
-	*
-	* @dev [restriction] IIglooFiGovernance AccessControlEnumerable → DEFAULT_ADMIN_ROLE
-	* @dev [update] `treasury`
-	*
-	* @param _treasury {address}
-	*/
-	function updateTreasury(address _treasury)
-		external
-		returns (address)
-	;
-
-	/**
 	* @notice Transfer Ether to the treasury
 	*
 	* @dev [restriction] IIglooFiGovernance AccessControlEnumerable → DEFAULT_ADMIN_ROLE
 	* @dev [transfer] to `treasury`
+	*
+	* @param transferTo {uint256}
 	*/
-	function transferFunds()
+	function transferFunds(address transferTo)
 		external
 	;
 }
