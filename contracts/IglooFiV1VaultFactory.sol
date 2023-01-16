@@ -3,12 +3,12 @@ pragma solidity ^0.8.1;
 
 
 /* [import] */
-import "hardhat/console.sol";
-import "@igloo-fi/v1-sdk/contracts/interface/IIglooFiGovernance.sol";
-import "@openzeppelin/contracts/security/Pausable.sol";
+import { console } from "hardhat/console.sol";
+import { IIglooFiGovernance } from "@igloo-fi/v1-sdk/contracts/interface/IIglooFiGovernance.sol";
+import { Pausable } from "@openzeppelin/contracts/security/Pausable.sol";
 
-import "./interface/IIglooFiV1VaultFactory.sol";
-import "./IglooFiV1Vault.sol";
+import { IIglooFiV1VaultFactory } from "./interface/IIglooFiV1VaultFactory.sol";
+import { IglooFiV1Vault } from "./IglooFiV1Vault.sol";
 
 
 /**

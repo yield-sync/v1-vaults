@@ -3,13 +3,13 @@ pragma solidity ^0.8.1;
 
 
 /* [import] */
-import "@openzeppelin/contracts/access/AccessControlEnumerable.sol";
-import "@openzeppelin/contracts/interfaces/IERC1271.sol";
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
-import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
+import { AccessControlEnumerable } from "@openzeppelin/contracts/access/AccessControlEnumerable.sol";
+import { IERC1271 } from "@openzeppelin/contracts/interfaces/IERC1271.sol";
+import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import { IERC721 } from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
+import { ECDSA } from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 
-import "./interface/IIglooFiV1Vault.sol";
+import { IIglooFiV1Vault, WithdrawalRequest } from "./interface/IIglooFiV1Vault.sol";
 
 
 /**
@@ -346,7 +346,7 @@ contract IglooFiV1Vault is
 			
 			require(success, "Unable to send value, recipient may have reverted");
 		}
-		else if (IERC165(w.token).supportsInterface(type(IERC20).interfaceId))
+		else if (IERC721(w.token).supportsInterface(type(IERC20).interfaceId))
 		{
 			if (IERC20(w.token).balanceOf(address(this)) >= w.amount)
 			{
@@ -354,7 +354,7 @@ contract IglooFiV1Vault is
 				IERC20(w.token).transfer(w.to, w.amount);
 			}
 		}
-		else if (IERC165(w.token).supportsInterface(type(IERC721).interfaceId))
+		else if (IERC721(w.token).supportsInterface(type(IERC721).interfaceId))
 		{
 			if (IERC721(w.token).ownerOf(w.tokenId) == address(this))
 			{
