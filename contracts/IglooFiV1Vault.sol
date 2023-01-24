@@ -213,7 +213,7 @@ contract IglooFiV1Vault is
 
 	/// @inheritdoc IIglooFiV1Vault
 	function createWithdrawalRequest(
-		bool requestETH,
+		bool requestEther,
 		address to,
 		address tokenAddress,
 		uint256 amount,
@@ -234,7 +234,7 @@ contract IglooFiV1Vault is
 
 		// [add] `_withdrawalRequest` value
 		_withdrawalRequest[_withdrawalRequestId] = WithdrawalRequest({
-			requestETH: requestETH,
+			requestEther: requestEther,
 			creator: msg.sender,
 			to: to,
 			token: tokenAddress,
@@ -339,7 +339,7 @@ contract IglooFiV1Vault is
 		);
 
 		// If WithdrawalRequest is for Ether, erc20, or erc721 and transfer accordingly
-		if (w.requestETH)
+		if (w.requestEther)
 		{
 			// [transfer]
 			(bool success, ) = w.to.call{value: w.amount}("");

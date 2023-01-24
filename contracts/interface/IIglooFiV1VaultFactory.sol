@@ -24,10 +24,8 @@ interface IIglooFiV1VaultFactory {
 
 	/**
 	* @notice CONSTANT Address of Igloo Fi Governance contract
-	*
 	* @dev [!restriction]
 	* @dev [view-address]
-	*
 	* @return {address}
 	*/
 	function IGLOO_FI()
@@ -38,10 +36,8 @@ interface IIglooFiV1VaultFactory {
 
 	/**
 	* @notice Get vault deployment fee
-	*
 	* @dev [!restriction]
 	* @dev [view-uint256]
-	*
 	* @return {uint256}
 	*/
 	function fee()
@@ -52,12 +48,9 @@ interface IIglooFiV1VaultFactory {
 
 	/**
 	* @notice Get vault address
-	*
 	* @dev [!restriction]
 	* @dev [view]
-	*
 	* @param vaultId {uint256}
-	*
 	* @return {address}
 	*/
 	function vaultAddress(uint256 vaultId)
@@ -68,14 +61,11 @@ interface IIglooFiV1VaultFactory {
 
 	/**
 	* @notice Creates a Vault
-	*
 	* @dev [!restriction]
 	* @dev [create]
-	*
 	* @param admin {address}
 	* @param _requiredVoteCount {uint256}
 	* @param _withdrawalDelaySeconds {uint256}
-	*
 	* @return {address} Deployed vault
 	*/
 	function deployVault(
@@ -90,7 +80,6 @@ interface IIglooFiV1VaultFactory {
 
 	/**
 	* @notice Toggle pause
-	*
 	* @dev [restriction] IIglooFiGovernance AccessControlEnumerable → DEFAULT_ADMIN_ROLE
 	* @dev [call-internal]
 	*/
@@ -100,12 +89,9 @@ interface IIglooFiV1VaultFactory {
 
 	/**
 	* @notice Update fee
-	*
 	* @dev [restriction] IIglooFiGovernance AccessControlEnumerable → DEFAULT_ADMIN_ROLE
 	* @dev [update] `_fee`
-	*
 	* @param newFee {uint256}
-	*
 	* @return {uint256} Updated `fee`
 	*/
 	function updateFee(uint256 newFee)
@@ -115,10 +101,8 @@ interface IIglooFiV1VaultFactory {
 
 	/**
 	* @notice Transfer Ether to the treasury
-	*
 	* @dev [restriction] IIglooFiGovernance AccessControlEnumerable → DEFAULT_ADMIN_ROLE
 	* @dev [transfer] to `treasury`
-	*
 	* @param transferTo {uint256}
 	*/
 	function transferFunds(address transferTo)
