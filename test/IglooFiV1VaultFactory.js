@@ -1,16 +1,20 @@
 const { expect } = require("chai");
 const { ethers } = require("hardhat");
-const { useWallet } = require("@nomiclabs/hardhat-ethers");
 
 
 describe("IglooFiV1VaultFactory", async function () {
-	let testIglooFiGovernance;
-	let iglooFiV1VaultFactory;
-
 	// Log the network
 	console.log("Testing on Network:", network.name);
 
-	before('[before] Deploy the IglooFi Governance contract..', async () => {
+	let testIglooFiGovernance;
+	let iglooFiV1VaultFactory;
+
+	/**
+	 * @notice Deploy the contracts
+	 * @dev Deploy TestIglooFiGovernance.sol
+	 * @dev Deploy IglooFiV1VaultFactory.sol
+	*/
+	before("[before] Deploy the IglooFi Governance contract..", async () => {
 		const TestIglooFiGovernance = await ethers.getContractFactory(
 			"TestIglooFiGovernance"
 		);
@@ -28,8 +32,19 @@ describe("IglooFiV1VaultFactory", async function () {
 		iglooFiV1VaultFactory = await iglooFiV1VaultFactory.deployed();
 	})
 
+
+	/**
+	 * @notice Check if initial values are correct
+	*/
 	it(
-		"Should set `IGLOO_FI` to a deployed `TestIglooFiGovernance` address..",
+		"Should be intialized as paused..",
+		async function () {
+			expect(await iglooFiV1VaultFactory.paused()).to.equal(true);
+		}
+	);
+
+	it(
+		"Should initialize `IGLOO_FI` to deployed `TestIglooFiGovernance` address..",
 		async function () {
 			expect(await iglooFiV1VaultFactory.IGLOO_FI()).to.equal(
 				testIglooFiGovernance.address
@@ -38,12 +53,44 @@ describe("IglooFiV1VaultFactory", async function () {
 	);
 
 	it(
-		"Should set `fee` initially to 0..",
+		"Should initialize the `fee` to 0..",
 		async function () {
 			expect(await iglooFiV1VaultFactory.fee()).to.equal(0);
 		}
 	);
 
+
+	/**
+	* @dev pause
+	*/
+	it(
+		"Should toggle pause when the owner calls it..",
+		async function () {
+			await iglooFiV1VaultFactory.togglePause();
+			
+			expect(await iglooFiV1VaultFactory.paused()).to.be.equal(false);
+
+			await iglooFiV1VaultFactory.togglePause();
+
+			expect(await iglooFiV1VaultFactory.paused()).to.be.equal(true);
+		}
+	);
+
+	it(
+		"Should revert `togglePause` when unauthorized msg.sender calls..",
+		async function () {
+			const [, addr1] = await ethers.getSigners();
+
+			await expect(iglooFiV1VaultFactory.connect(addr1).togglePause()).to.be
+				.revertedWith("!auth")
+			;
+		}
+	);
+
+
+	/**
+	* @dev updateFee
+	*/
 	it(
 		"Should update `fee` correctly..",
 		async function () {
@@ -56,7 +103,7 @@ describe("IglooFiV1VaultFactory", async function () {
 	);
 
 	it(
-		"Should revert `updateFee` when unauthorized caller calls..",
+		"Should revert `updateFee` when unauthorized msg.sender calls..",
 		async function () {
 			const [, addr1] = await ethers.getSigners();
 

@@ -35,6 +35,8 @@ contract IglooFiV1VaultFactory is
 	/* [constructor] */
 	constructor (address _IGLOO_FI)
 	{
+		_pause();
+		
 		IGLOO_FI = _IGLOO_FI;
 
 		_vaultIdTracker = 0;
