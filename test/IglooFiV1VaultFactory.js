@@ -2,52 +2,61 @@ const { expect } = require("chai");
 const { ethers } = require("hardhat");
 
 
-/* [variables] */
-const iglooFiGovernanceAddress = ethers.utils.getAddress("0x0000000000000000000000000000000000000000");
-
-
 describe("IglooFiV1VaultFactory", function () {
-	before('', async () => {
-		// Log the network
-		console.log("Testing on Network:", network.name);
+	let testIglooFiGovernance;
+	let iglooFiV1VaultFactory;
 
-		const TestIglooFiGovernance = await ethers.getContractFactory("TestIglooFiGovernance");
-		const iglooFiV1VaultFactory = await TestIglooFiGovernance.deploy();
+	// Log the network
+	console.log("Testing on Network:", network.name);
 
-		console.log(`_FfSPAuditKillers deployed at address: ${TestIglooFiGovernance.address}`);
-		return
+	before('[before] Deploy the IglooFi Governance contract..', async () => {
+		const TestIglooFiGovernance = await ethers.getContractFactory(
+			"TestIglooFiGovernance"
+		);
+
+		const IglooFiV1VaultFactory = await ethers.getContractFactory(
+			"IglooFiV1VaultFactory"
+		);
+
+
+		testIglooFiGovernance = await TestIglooFiGovernance.deploy();
+		testIglooFiGovernance = await testIglooFiGovernance.deployed();
+
+		iglooFiV1VaultFactory = await IglooFiV1VaultFactory.deploy(testIglooFiGovernance.address);
+		iglooFiV1VaultFactory = await iglooFiV1VaultFactory.deployed();
+
+
+		console.log(
+			"Deployed TestIglooFiGovernance:", testIglooFiGovernance.address,
+		);
+
+		console.log(
+			"Deployed IglooFiV1VaultFactory:", iglooFiV1VaultFactory.address
+		);
 	})
 
 	it(
-		"Should set IGLOO_FI to iglooFi",
+		"Should set `IGLOO_FI` to a deployed `TestIglooFiGovernance` address..",
 		async function () {
-			const IglooFiV1VaultFactory = await ethers.getContractFactory("IglooFiV1VaultFactory");
-			const iglooFiV1VaultFactory = await IglooFiV1VaultFactory.deploy(iglooFiGovernanceAddress);
-			const contract = await iglooFiV1VaultFactory.deployed();
-
-			expect(await contract.IGLOO_FI()).to.equal(iglooFiGovernanceAddress);
+			expect(await iglooFiV1VaultFactory.IGLOO_FI()).to.equal(
+				testIglooFiGovernance.address
+			);
 		}
 	);
 
 	it(
-		"Should set fee to 0 in constructor",
+		"Should set `fee` initially to 0..",
 		async function () {
-			const IglooFiV1VaultFactory = await ethers.getContractFactory("IglooFiV1VaultFactory");
-			const iglooFiV1VaultFactory = await IglooFiV1VaultFactory.deploy(iglooFiGovernanceAddress);
-			const contract = await iglooFiV1VaultFactory.deployed();
-
-			expect(await contract.fee()).to.equal(0);
+			expect(await iglooFiV1VaultFactory.fee()).to.equal(0);
 		}
 	);
 
 	it(
-		"Should update fee correctly",
+		"Should update `fee` correctly..",
 		async function () {
-			const IglooFiV1VaultFactory = await ethers.getContractFactory("IglooFiV1VaultFactory");
-			const iglooFiV1VaultFactory = await IglooFiV1VaultFactory.deploy(iglooFiGovernanceAddress);
-			const contract = await iglooFiV1VaultFactory.deployed();
+			await iglooFiV1VaultFactory.updateFee(1);
 
-			expect(await contract.fee()).to.equal(1);
+			expect(await iglooFiV1VaultFactory.fee()).to.equal(1);
 		}
 	);
 });
