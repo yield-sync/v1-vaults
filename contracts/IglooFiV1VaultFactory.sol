@@ -16,7 +16,6 @@ contract IglooFiV1VaultFactory is
 	Pausable,
 	IIglooFiV1VaultFactory
 {
-	/* [state-variable] */
 	// [address][public][to-be-constant]
 	address public override IGLOO_FI;
 
@@ -31,7 +30,6 @@ contract IglooFiV1VaultFactory is
 	mapping (uint256 => address) internal _vaultAddress;
 
 
-	/* [constructor] */
 	constructor (address _IGLOO_FI)
 	{
 		_pause();
@@ -44,21 +42,18 @@ contract IglooFiV1VaultFactory is
 	}
 
 
-	/* [recieve] */
 	receive ()
 		external
 		payable
 	{}
 
 
-	/* [fallback] */
 	fallback ()
 		external
 		payable
 	{}
 
 
-	/* [modifier] */
 	modifier onlyIFGAdmin() {
 		require(
 			IIglooFiGovernance(IGLOO_FI).hasRole(
@@ -121,12 +116,12 @@ contract IglooFiV1VaultFactory is
 
 
 	/// @inheritdoc IIglooFiV1VaultFactory
-	function togglePause()
+	function setPause(bool pause)
 		public
 		override
 		onlyIFGAdmin()
 	{
-		if (!paused())
+		if (pause)
 		{
 			// [call-internal]
 			_pause();

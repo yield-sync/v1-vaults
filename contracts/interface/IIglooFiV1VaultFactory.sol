@@ -79,11 +79,12 @@ interface IIglooFiV1VaultFactory {
 	;
 
 	/**
-	* @notice Toggle pause
+	* @notice Set pause
 	* @dev [restriction] IIglooFiGovernance AccessControlEnumerable → DEFAULT_ADMIN_ROLE
 	* @dev [call-internal]
+	* @param pause {bool}
 	*/
-	function togglePause()
+	function setPause(bool pause)
 		external
 	;
 

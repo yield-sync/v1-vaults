@@ -1,5 +1,5 @@
 const { expect } = require("chai");
-const { ethers } = require("hardhat");
+const { ethers, waffle } = require("hardhat");
 
 
 describe("IglooFiV1VaultFactory", async function () {
@@ -61,27 +61,48 @@ describe("IglooFiV1VaultFactory", async function () {
 
 
 	/**
+	* @dev transferFunds
+	*/
+	it(
+		"Should be able to recieve ether..",
+		async function () {
+			const [, addr1] = await ethers.getSigners();
+			
+			// Send ether to IglooFiV1VaultFactory contract
+			await addr1.sendTransaction({
+				to: iglooFiV1VaultFactory.address,
+				value: ethers.utils.parseEther("1.0"),
+			});
+
+			await expect(
+				await ethers.provider.getBalance(iglooFiV1VaultFactory.address)
+			).to.be.equal(ethers.utils.parseEther("1.0"));
+		}
+	);
+
+
+	/**
 	* @dev pause
 	*/
 	it(
-		"Should toggle pause when the owner calls it..",
+		"Should set pause when the owner calls it..",
 		async function () {
-			await iglooFiV1VaultFactory.togglePause();
+			await iglooFiV1VaultFactory.setPause(false);
 			
 			expect(await iglooFiV1VaultFactory.paused()).to.be.equal(false);
 
-			await iglooFiV1VaultFactory.togglePause();
-
+			await iglooFiV1VaultFactory.setPause(true);
+			
 			expect(await iglooFiV1VaultFactory.paused()).to.be.equal(true);
 		}
 	);
 
 	it(
-		"Should revert `togglePause` when unauthorized msg.sender calls..",
+		"Should revert `setPause` when unauthorized msg.sender calls..",
 		async function () {
 			const [, addr1] = await ethers.getSigners();
 
-			await expect(iglooFiV1VaultFactory.connect(addr1).togglePause())
+			await expect(iglooFiV1VaultFactory.connect(addr1).setPause(false))
 				.to.be.revertedWith("!auth")
 			;
 		}
@@ -94,9 +115,7 @@ describe("IglooFiV1VaultFactory", async function () {
 	it(
 		"Should update `fee` correctly..",
 		async function () {
-			const [owner] = await ethers.getSigners();
-			
-			await iglooFiV1VaultFactory.connect(owner).updateFee(1);
+			await iglooFiV1VaultFactory.updateFee(1);
 
 			expect(await iglooFiV1VaultFactory.fee()).to.equal(1);
 		}
@@ -110,6 +129,47 @@ describe("IglooFiV1VaultFactory", async function () {
 			await expect(iglooFiV1VaultFactory.connect(addr1).updateFee(1))
 				.to.be.revertedWith("!auth")
 			;
+		}
+	);
+
+
+	/**
+	* @dev transferFunds
+	*/
+	it(
+		"Should be able to transfer to an address",
+		async function () {
+			const [, addr1] = await ethers.getSigners();
+			
+			await iglooFiV1VaultFactory.setPause(false);
+
+			const balanceBefore = {
+				addr1: parseFloat(ethers.utils.formatUnits(
+					(await ethers.provider.getBalance(addr1.address)),
+					"ether"
+				)),
+				iglooFiV1VaultFactory: parseFloat(ethers.utils.formatUnits(
+					(await ethers.provider.getBalance(iglooFiV1VaultFactory.address)),
+					"ether"
+				))
+			}
+
+			await iglooFiV1VaultFactory.transferFunds(addr1.address);
+
+			const balanceAfter = {
+				addr1: parseFloat(ethers.utils.formatUnits(
+					(await ethers.provider.getBalance(addr1.address)),
+					"ether"
+				)),
+				iglooFiV1VaultFactory: parseFloat(ethers.utils.formatUnits(
+					(await ethers.provider.getBalance(iglooFiV1VaultFactory.address)),
+					"ether"
+				))
+			}
+
+			await expect(parseFloat(balanceAfter.addr1)).to.be.equal(
+				balanceBefore.addr1 + balanceBefore.iglooFiV1VaultFactory
+			);
 		}
 	);
 });
