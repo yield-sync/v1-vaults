@@ -137,7 +137,7 @@ describe("IglooFiV1VaultFactory", async function () {
 	* @dev transferFunds
 	*/
 	it(
-		"Should be able to transfer to an address",
+		"Should be able to transfer to an address..",
 		async function () {
 			const [, addr1] = await ethers.getSigners();
 			
@@ -170,6 +170,17 @@ describe("IglooFiV1VaultFactory", async function () {
 			await expect(parseFloat(balanceAfter.addr1)).to.be.equal(
 				balanceBefore.addr1 + balanceBefore.iglooFiV1VaultFactory
 			);
+		}
+	);
+
+	it(
+		"Should revert `transferFunds` when unauthorized msg.sender calls..",
+		async function () {
+			const [, addr1] = await ethers.getSigners();
+
+			await expect(
+				iglooFiV1VaultFactory.connect(addr1).transferFunds(addr1.address)
+			).to.be.revertedWith("!auth");
 		}
 	);
 });
