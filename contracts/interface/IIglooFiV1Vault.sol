@@ -21,9 +21,8 @@ struct WithdrawalRequest {
 */
 interface IIglooFiV1Vault
 {
-	/* [event] */
 	/**
-	* @dev
+	* @dev Emit when contract recieves Ether
 	*/
 	event EtherRecieved(
 		address msgSender,
@@ -153,25 +152,12 @@ interface IIglooFiV1Vault
 	;
 
 	/**
-	* @notice Withdrawal delay in minutes
+	* @notice Getter for active WithdrawlRequests
 	* @dev [!restriction]
-	* @dev [view-uint256]
-	* @return {uint256}
-	*/
-	function withdrawalRequestIds()
-		external
-		view
-		returns (uint256[] memory)
-	;
-
-	/**
-	* @notice Getter for `creatorWithdrawalRequests`
-	* @dev [!restriction]
-	* @dev [view][mapping]
-	* @param creator {address}
+	* @dev [view-uint256[]]
 	* @return {uint256[]}
 	*/
-	function creatorWithdrawalRequests(address creator)
+	function activeWithdrawalRequestIds()
 		external
 		view
 		returns (uint256[] memory)
@@ -220,7 +206,7 @@ interface IIglooFiV1Vault
 	* @dev [restriction] AccessControlEnumerable → VOTER
 	* @dev [increment] `_withdrawalRequestId`
 	*      [add] `_withdrawalRequest` value
-	*      [push-into] `_creatorWithdrawalRequests`
+	*      [push-into] `_withdrawalRequestIds`
 	* @param requestEther {bool} If to be withdrawn asset is ETH set to true
 	* @param to {address} Address the withdrawn tokens will be sent
 	* @param tokenAddress {address}

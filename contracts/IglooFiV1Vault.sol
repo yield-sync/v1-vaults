@@ -30,16 +30,13 @@ contract IglooFiV1Vault is
 
 	// [uint256][internal]
 	uint256 internal _withdrawalRequestIdTracker;
+	uint256[] internal _activeWithdrawalRequestIds;
 
 	// [uint256][public]
 	uint256 public override requiredVoteCount;
 	uint256 public override withdrawalDelaySeconds;
-	// NOTE: Instead of having this variable, instead have an array for active withdrawlRequests
-	uint256[] public override withdrawalRequestIds;
 
 	// [mapping][internal]
-	// Creator Address => Array of WithdrawalRequest
-	mapping (address => uint256[]) internal _creatorWithdrawalRequests;
 	// Message => votes
 	mapping (bytes32 => uint256) internal _messageSignatures;
 	// WithdrawalRequestId => WithdrawalRequest
@@ -54,8 +51,6 @@ contract IglooFiV1Vault is
 	{
 		require(_requiredVoteCount > 0, "!_requiredVoteCount");
 
-
-		// Set DEFAULT_ADMIN_ROLE
 		_setupRole(DEFAULT_ADMIN_ROLE, admin);
 
 		requiredVoteCount = _requiredVoteCount;
@@ -79,7 +74,6 @@ contract IglooFiV1Vault is
 	{}
 
 
-	/* [modifier] */
 	modifier validWithdrawalRequest(uint256 withdrawalRequestId)
 	{
 		// [require] `WithdrawalRequest` exists
@@ -92,12 +86,11 @@ contract IglooFiV1Vault is
 	}
 
 
-	/* [function] */
 	/**
 	* @notice Delete WithdrawalRequest
 	* @dev [restriction][internal]
 	* @dev [delete] `_withdrawalRequest` value
-	*      [delete] `_creatorWithdrawalRequests` value
+	*      [delete] `_activeWithdrawalRequestIds` value
 	* @param withdrawalRequestId {uint256}
 	* Emits: `DeletedWithdrawalRequest`
 	*/
@@ -109,23 +102,16 @@ contract IglooFiV1Vault is
 
 		for (
 			uint256 i = 0;
-			i < _creatorWithdrawalRequests[
-				_withdrawalRequest[withdrawalRequestId].creator
-			].length;
+			i < _activeWithdrawalRequestIds.length;
 			i++
 		)
 		{
-			// If match found..
 			if (
-				_creatorWithdrawalRequests[
-					_withdrawalRequest[withdrawalRequestId].creator
-				][i] == withdrawalRequestId
+				_activeWithdrawalRequestIds[i] == withdrawalRequestId
 			)
 			{
-				// [delete] `_creatorWithdrawalRequests` value
-				delete _creatorWithdrawalRequests[
-					_withdrawalRequest[withdrawalRequestId].creator
-				][i];
+				// [delete] `_activeWithdrawalRequestIds` value
+				delete _activeWithdrawalRequestIds[i];
 
 				break;
 			}
@@ -160,13 +146,12 @@ contract IglooFiV1Vault is
 
 
 	/// @inheritdoc IIglooFiV1Vault
-	function creatorWithdrawalRequests(address creator)
-		view
+	function activeWithdrawalRequestIds()
 		public
-		override
+		view
 		returns (uint256[] memory)
 	{
-		return _creatorWithdrawalRequests[creator];
+		return _activeWithdrawalRequestIds;
 	}
 
 	/// @inheritdoc IIglooFiV1Vault
@@ -237,8 +222,8 @@ contract IglooFiV1Vault is
 			votedVoters: votedVoters
 		});
 
-		// [push-into] `_creatorWithdrawalRequests`
-		_creatorWithdrawalRequests[msg.sender].push(_withdrawalRequestIdTracker);
+		// [push-into] `_activeWithdrawalRequestIds`
+		_activeWithdrawalRequestIds.push(_withdrawalRequestIdTracker);
 
 		// [emit]
 		emit CreatedWithdrawalRequest(_withdrawalRequest[_withdrawalRequestIdTracker]);
