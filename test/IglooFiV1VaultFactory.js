@@ -81,8 +81,8 @@ describe("IglooFiV1VaultFactory", async function () {
 		async function () {
 			const [, addr1] = await ethers.getSigners();
 
-			await expect(iglooFiV1VaultFactory.connect(addr1).togglePause()).to.be
-				.revertedWith("!auth")
+			await expect(iglooFiV1VaultFactory.connect(addr1).togglePause())
+				.to.be.revertedWith("!auth")
 			;
 		}
 	);
@@ -107,8 +107,8 @@ describe("IglooFiV1VaultFactory", async function () {
 		async function () {
 			const [, addr1] = await ethers.getSigners();
 
-			await expect(iglooFiV1VaultFactory.connect(addr1).updateFee(1)).to.be
-				.revertedWith("!auth")
+			await expect(iglooFiV1VaultFactory.connect(addr1).updateFee(1))
+				.to.be.revertedWith("!auth")
 			;
 		}
 	);
