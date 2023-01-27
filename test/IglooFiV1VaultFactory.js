@@ -10,8 +10,13 @@ describe("IglooFiV1VaultFactory", function () {
 	before('', async () => {
 		// Log the network
 		console.log("Testing on Network:", network.name);
+
+		const TestIglooFiGovernance = await ethers.getContractFactory("TestIglooFiGovernance");
+		const iglooFiV1VaultFactory = await TestIglooFiGovernance.deploy();
+
+		console.log(`_FfSPAuditKillers deployed at address: ${TestIglooFiGovernance.address}`);
+		return
 	})
-	
 
 	it(
 		"Should set IGLOO_FI to iglooFi",
