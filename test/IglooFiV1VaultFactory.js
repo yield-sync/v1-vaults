@@ -1,8 +1,9 @@
 const { expect } = require("chai");
 const { ethers } = require("hardhat");
+const { useWallet } = require("@nomiclabs/hardhat-ethers");
 
 
-describe("IglooFiV1VaultFactory", function () {
+describe("IglooFiV1VaultFactory", async function () {
 	let testIglooFiGovernance;
 	let iglooFiV1VaultFactory;
 
@@ -14,25 +15,17 @@ describe("IglooFiV1VaultFactory", function () {
 			"TestIglooFiGovernance"
 		);
 
+		testIglooFiGovernance = await TestIglooFiGovernance.deploy();
+		testIglooFiGovernance = await testIglooFiGovernance.deployed();
+
 		const IglooFiV1VaultFactory = await ethers.getContractFactory(
 			"IglooFiV1VaultFactory"
 		);
 
-
-		testIglooFiGovernance = await TestIglooFiGovernance.deploy();
-		testIglooFiGovernance = await testIglooFiGovernance.deployed();
-
-		iglooFiV1VaultFactory = await IglooFiV1VaultFactory.deploy(testIglooFiGovernance.address);
+		iglooFiV1VaultFactory = await IglooFiV1VaultFactory.deploy(
+			testIglooFiGovernance.address
+		);
 		iglooFiV1VaultFactory = await iglooFiV1VaultFactory.deployed();
-
-
-		console.log(
-			"Deployed TestIglooFiGovernance:", testIglooFiGovernance.address,
-		);
-
-		console.log(
-			"Deployed IglooFiV1VaultFactory:", iglooFiV1VaultFactory.address
-		);
 	})
 
 	it(
@@ -54,9 +47,22 @@ describe("IglooFiV1VaultFactory", function () {
 	it(
 		"Should update `fee` correctly..",
 		async function () {
-			await iglooFiV1VaultFactory.updateFee(1);
+			const [owner] = await ethers.getSigners();
+			
+			await iglooFiV1VaultFactory.connect(owner).updateFee(1);
 
 			expect(await iglooFiV1VaultFactory.fee()).to.equal(1);
+		}
+	);
+
+	it(
+		"Should revert `updateFee` when unauthorized caller calls..",
+		async function () {
+			const [, addr1] = await ethers.getSigners();
+
+			await expect(iglooFiV1VaultFactory.connect(addr1).updateFee(1)).to.be
+				.revertedWith("!auth")
+			;
 		}
 	);
 });
