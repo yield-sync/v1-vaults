@@ -3,7 +3,6 @@ pragma solidity ^0.8.1;
 
 
 /* [import] */
-import { console } from "hardhat/console.sol";
 import { IIglooFiGovernance } from "@igloo-fi/v1-sdk/contracts/interface/IIglooFiGovernance.sol";
 import { Pausable } from "@openzeppelin/contracts/security/Pausable.sol";
 
@@ -23,7 +22,7 @@ contract IglooFiV1VaultFactory is
 	address public override IGLOO_FI;
 
 	/* [uint256][internal] */
-	uint256 internal _vaultId;
+	uint256 internal _vaultIdTracker;
 
 	/* [uint256][public] */
 	uint256 public override fee;
@@ -34,11 +33,12 @@ contract IglooFiV1VaultFactory is
 
 
 	/* [constructor] */
-	constructor (address iglooFi)
+	constructor (address _IGLOO_FI)
 	{
-		IGLOO_FI = iglooFi;
+		IGLOO_FI = _IGLOO_FI;
 
-		_vaultId = 0;
+		_vaultIdTracker = 0;
+		
 		fee = 0;
 	}
 
@@ -106,10 +106,10 @@ contract IglooFiV1VaultFactory is
 		);
 
 		// Register vault
-		_vaultAddress[_vaultId] = address(deployedContract);
+		_vaultAddress[_vaultIdTracker] = address(deployedContract);
 
 		// [increment] vaultId
-		_vaultId++;
+		_vaultIdTracker++;
 
 		// [emit]
 		emit VaultDeployed(address(deployedContract));
