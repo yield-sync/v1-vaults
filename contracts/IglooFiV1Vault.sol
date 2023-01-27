@@ -2,7 +2,6 @@
 pragma solidity ^0.8.1;
 
 
-/* [import] */
 import { AccessControlEnumerable } from "@openzeppelin/contracts/access/AccessControlEnumerable.sol";
 import { IERC1271 } from "@openzeppelin/contracts/interfaces/IERC1271.sol";
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
@@ -20,11 +19,8 @@ contract IglooFiV1Vault is
 	IERC1271,
 	IIglooFiV1Vault
 {
-	/* [using] */
 	using ECDSA for bytes32;
 
-
-	/* [state-variable] */
 	// [bytes4][public]
 	bytes4 public constant override INVALID_SIGNATURE = 0xffffffff;
 	bytes4 public constant override MAGICVALUE = 0x1626ba7e;
@@ -33,11 +29,13 @@ contract IglooFiV1Vault is
 	bytes32 public constant override VOTER = keccak256("VOTER");
 
 	// [uint256][internal]
-	uint256 internal _withdrawalRequestId;
+	uint256 internal _withdrawalRequestIdTracker;
 
 	// [uint256][public]
 	uint256 public override requiredVoteCount;
 	uint256 public override withdrawalDelaySeconds;
+	// NOTE: Instead of having this variable, instead have an array for active withdrawlRequests
+	uint256[] public override withdrawalRequestIds;
 
 	// [mapping][internal]
 	// Creator Address => Array of WithdrawalRequest
@@ -48,7 +46,6 @@ contract IglooFiV1Vault is
 	mapping (uint256 => WithdrawalRequest) internal _withdrawalRequest;
 
 
-	/* [constructor] */
 	constructor (
 		address admin,
 		uint256 _requiredVoteCount,
@@ -64,11 +61,10 @@ contract IglooFiV1Vault is
 		requiredVoteCount = _requiredVoteCount;
 		withdrawalDelaySeconds = _withdrawalDelaySeconds;
 		
-		_withdrawalRequestId = 0;
+		_withdrawalRequestIdTracker = 0;
 	}
 
 
-	/* [recieve] */
 	receive ()
 		external
 		payable
@@ -77,7 +73,6 @@ contract IglooFiV1Vault is
 	}
 
 
-	/* [fallback] */
 	fallback ()
 		external
 		payable
@@ -85,7 +80,8 @@ contract IglooFiV1Vault is
 
 
 	/* [modifier] */
-	modifier validWithdrawalRequest(uint256 withdrawalRequestId) {
+	modifier validWithdrawalRequest(uint256 withdrawalRequestId)
+	{
 		// [require] `WithdrawalRequest` exists
 		require(
 			_withdrawalRequest[withdrawalRequestId].creator != address(0),
@@ -99,14 +95,10 @@ contract IglooFiV1Vault is
 	/* [function] */
 	/**
 	* @notice Delete WithdrawalRequest
-	*
 	* @dev [restriction][internal]
-	*
 	* @dev [delete] `_withdrawalRequest` value
 	*      [delete] `_creatorWithdrawalRequests` value
-	*
 	* @param withdrawalRequestId {uint256}
-	*
 	* Emits: `DeletedWithdrawalRequest`
 	*/
 	function _deleteWithdrawalRequest(uint256 withdrawalRequestId)
@@ -227,13 +219,13 @@ contract IglooFiV1Vault is
 		// [require] 'to' is a valid Ethereum address
 		require(to != address(0), "Invalid `to` address");
 
-		// [increment] `_withdrawalRequestId`
-		_withdrawalRequestId++;
+		// [increment] `_withdrawalRequestIdTracker`
+		_withdrawalRequestIdTracker++;
 
 		address[] memory votedVoters;
 
 		// [add] `_withdrawalRequest` value
-		_withdrawalRequest[_withdrawalRequestId] = WithdrawalRequest({
+		_withdrawalRequest[_withdrawalRequestIdTracker] = WithdrawalRequest({
 			requestEther: requestEther,
 			creator: msg.sender,
 			to: to,
@@ -246,12 +238,12 @@ contract IglooFiV1Vault is
 		});
 
 		// [push-into] `_creatorWithdrawalRequests`
-		_creatorWithdrawalRequests[msg.sender].push(_withdrawalRequestId);
+		_creatorWithdrawalRequests[msg.sender].push(_withdrawalRequestIdTracker);
 
 		// [emit]
-		emit CreatedWithdrawalRequest(_withdrawalRequest[_withdrawalRequestId]);
+		emit CreatedWithdrawalRequest(_withdrawalRequest[_withdrawalRequestIdTracker]);
 		
-		return _withdrawalRequestId;
+		return _withdrawalRequestIdTracker;
 	}
 
 	/// @inheritdoc IIglooFiV1Vault

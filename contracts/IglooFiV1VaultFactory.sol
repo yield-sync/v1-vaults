@@ -2,7 +2,6 @@
 pragma solidity ^0.8.1;
 
 
-/* [import] */
 import { IIglooFiGovernance } from "@igloo-fi/v1-sdk/contracts/interface/IIglooFiGovernance.sol";
 import { Pausable } from "@openzeppelin/contracts/security/Pausable.sol";
 
@@ -36,7 +35,7 @@ contract IglooFiV1VaultFactory is
 	constructor (address _IGLOO_FI)
 	{
 		_pause();
-		
+
 		IGLOO_FI = _IGLOO_FI;
 
 		_vaultIdTracker = 0;

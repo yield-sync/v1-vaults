@@ -153,6 +153,18 @@ interface IIglooFiV1Vault
 	;
 
 	/**
+	* @notice Withdrawal delay in minutes
+	* @dev [!restriction]
+	* @dev [view-uint256]
+	* @return {uint256}
+	*/
+	function withdrawalRequestIds()
+		external
+		view
+		returns (uint256[] memory)
+	;
+
+	/**
 	* @notice Getter for `creatorWithdrawalRequests`
 	* @dev [!restriction]
 	* @dev [view][mapping]
@@ -160,8 +172,8 @@ interface IIglooFiV1Vault
 	* @return {uint256[]}
 	*/
 	function creatorWithdrawalRequests(address creator)
-		view
 		external
+		view
 		returns (uint256[] memory)
 	;
 
@@ -173,8 +185,8 @@ interface IIglooFiV1Vault
 	* @return {uint256}
 	*/
 	function messageSignatures(bytes32 message)
-		view
 		external
+		view
 		returns (uint256)
 	;
 
