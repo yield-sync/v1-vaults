@@ -210,17 +210,19 @@ contract IglooFiV1Vault is
 		address[] memory votedVoters;
 
 		// [add] `_withdrawalRequest` value
-		_withdrawalRequest[_withdrawalRequestIdTracker] = WithdrawalRequest({
-			requestEther: requestEther,
-			creator: msg.sender,
-			to: to,
-			token: tokenAddress,
-			amount: amount,
-			tokenId: tokenId,
-			voteCount: 0,
-			latestRelevantApproveVoteTime: block.timestamp,
-			votedVoters: votedVoters
-		});
+		_withdrawalRequest[_withdrawalRequestIdTracker] = WithdrawalRequest(
+			{
+				requestEther: requestEther,
+				creator: msg.sender,
+				to: to,
+				token: tokenAddress,
+				amount: amount,
+				tokenId: tokenId,
+				voteCount: 0,
+				latestRelevantApproveVoteTime: block.timestamp,
+				votedVoters: votedVoters
+			}
+		);
 
 		// [push-into] `_activeWithdrawalRequestIds`
 		_activeWithdrawalRequestIds.push(_withdrawalRequestIdTracker);
