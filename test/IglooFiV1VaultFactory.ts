@@ -1,14 +1,10 @@
-const { expect } = require("chai");
-const { ethers, utils } = require("hardhat");
-
-
-// Log the network
-console.log("Testing on Network:", network.name);
+import { expect } from "chai";
+const { ethers } = require("hardhat");
 
 
 describe("IglooFiV1VaultFactory", async function () {
-	let testIglooFiGovernance;
-	let iglooFiV1VaultFactory;
+	let testIglooFiGovernance: any;
+	let iglooFiV1VaultFactory: any;
 
 
 	/**
@@ -115,7 +111,7 @@ describe("IglooFiV1VaultFactory", async function () {
 				const [, addr1] = await ethers.getSigners();
 	
 				await expect(iglooFiV1VaultFactory.connect(addr1).setPause(false))
-					.to.be.revertedWith("!auth")
+					.to.be.rejectedWith("!auth")
 				;
 			}
 		);
@@ -141,7 +137,7 @@ describe("IglooFiV1VaultFactory", async function () {
 				const [, addr1] = await ethers.getSigners();
 
 				await expect(iglooFiV1VaultFactory.connect(addr1).updateFee(2))
-					.to.be.revertedWith("!auth")
+					.to.be.rejectedWith("!auth")
 				;
 			}
 		);
@@ -181,7 +177,7 @@ describe("IglooFiV1VaultFactory", async function () {
 					))
 				};
 	
-				await expect(parseFloat(balanceAfter.addr1)).to.be.equal(
+				await expect(balanceAfter.addr1).to.be.equal(
 					balanceBefore.addr1 + balanceBefore.iglooFiV1VaultFactory
 				);
 			}
@@ -194,7 +190,7 @@ describe("IglooFiV1VaultFactory", async function () {
 	
 				await expect(
 					iglooFiV1VaultFactory.connect(addr1).transferFunds(addr1.address)
-				).to.be.revertedWith("!auth");
+				).to.be.rejectedWith("!auth");
 			}
 		);
 	});

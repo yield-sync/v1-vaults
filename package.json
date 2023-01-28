@@ -11,15 +11,13 @@
   "keywords": [],
   "author": "harpoonjs.eth",
   "license": "ISC",
-  "dependencies": {
-    "@igloo-fi/v1-sdk": "^0.0.9",
-    "@nomicfoundation/hardhat-toolbox": "^2.0.0",
-    "@openzeppelin/contracts": "^4.6.0",
-    "@openzeppelin/contracts-upgradeable": "^4.6.0",
-    "dotenv": "^16.0.1"
-  },
   "devDependencies": {
+    "@igloo-fi/v1-sdk": "^0.0.9",
     "@nomicfoundation/hardhat-chai-matchers": "^1.0.5",
-    "hardhat": "^2.12.5"
+    "@nomicfoundation/hardhat-toolbox": "^2.0.1",
+    "@openzeppelin/contracts": "^4.8.1",
+    "@openzeppelin/contracts-upgradeable": "^4.8.1",
+    "dotenv": "^16.0.3",
+    "hardhat": "^2.12.6"
   }
 }

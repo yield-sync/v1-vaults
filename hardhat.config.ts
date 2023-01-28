@@ -1,11 +1,13 @@
-require("dotenv").config()
-require("@nomicfoundation/hardhat-chai-matchers")
-require("@nomicfoundation/hardhat-toolbox");
+require("dotenv").config();
+import "@nomicfoundation/hardhat-chai-matchers";
+import "@nomicfoundation/hardhat-toolbox";
+import "@nomiclabs/hardhat-ethers";
+
 
 /**
  * @type import("hardhat/config").HardhatUserConfig
  */
-module.exports = {
+const config: any = {
   solidity: "0.8.10",
   networks: {
     goerli: {
@@ -20,8 +22,17 @@ module.exports = {
       url: `https://mainnet.infura.io/v3/${process.env.INFURA_API_KEY}`,
       accounts: [`0x${process.env.PRIVATE_KEY}`]
     },
+    optimism: {
+      url: `https://mainnet.optimism.io`,
+      accounts: [`0x${process.env.PRIVATE_KEY}`]
+    },
   },
   etherscan: {
-    apiKey: process.env.ETHERSCAN_API_KEY,
+    mainnet: process.env.ETHERSCAN_API_KEY,
+    goerli: process.env.ETHERSCAN_API_KEY,
+    optimisticEthereum: process.env.OPTIMISTIC_ETHERSCAN_API_KEY,
   }
 };
+
+
+export default config;
