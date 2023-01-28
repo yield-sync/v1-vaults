@@ -2,12 +2,14 @@ const { expect } = require("chai");
 const { ethers, waffle } = require("hardhat");
 
 
-describe("IglooFiV1VaultFactory", async function () {
-	// Log the network
-	console.log("Testing on Network:", network.name);
+// Log the network
+console.log("Testing on Network:", network.name);
 
+
+describe("IglooFiV1VaultFactory", async function () {
 	let testIglooFiGovernance;
 	let iglooFiV1VaultFactory;
+
 
 	/**
 	 * @notice Deploy the contracts
@@ -32,36 +34,8 @@ describe("IglooFiV1VaultFactory", async function () {
 		iglooFiV1VaultFactory = await iglooFiV1VaultFactory.deployed();
 	})
 
-
 	/**
-	 * @notice Check if initial values are correct
-	*/
-	it(
-		"Should be intialized as paused..",
-		async function () {
-			expect(await iglooFiV1VaultFactory.paused()).to.equal(true);
-		}
-	);
-
-	it(
-		"Should initialize `IGLOO_FI` to deployed `TestIglooFiGovernance` address..",
-		async function () {
-			expect(await iglooFiV1VaultFactory.IGLOO_FI()).to.equal(
-				testIglooFiGovernance.address
-			);
-		}
-	);
-
-	it(
-		"Should initialize the `fee` to 0..",
-		async function () {
-			expect(await iglooFiV1VaultFactory.fee()).to.equal(0);
-		}
-	);
-
-
-	/**
-	* @dev transferFunds
+	* @dev recieve
 	*/
 	it(
 		"Should be able to recieve ether..",
@@ -81,106 +55,161 @@ describe("IglooFiV1VaultFactory", async function () {
 	);
 
 
-	/**
-	* @dev pause
-	*/
-	it(
-		"Should set pause when the owner calls it..",
-		async function () {
-			await iglooFiV1VaultFactory.setPause(false);
-			
-			expect(await iglooFiV1VaultFactory.paused()).to.be.equal(false);
+	describe("Initialized values", async function () {
+		/**
+		 * @notice Check if initial values are correct
+		*/
+		it(
+			"Should intialize pause as true..",
+			async function () {
+				expect(await iglooFiV1VaultFactory.paused()).to.equal(true);
+			}
+		);
+	
+		it(
+			"Should initialize `IGLOO_FI` to `TestIglooFiGovernance` address..",
+			async function () {
+				expect(await iglooFiV1VaultFactory.IGLOO_FI()).to.equal(
+					testIglooFiGovernance.address
+				);
+			}
+		);
+	
+		it(
+			"Should initialize the `fee` to 0..",
+			async function () {
+				expect(await iglooFiV1VaultFactory.fee()).to.equal(0);
+			}
+		);
+	})
 
-			await iglooFiV1VaultFactory.setPause(true);
-			
-			expect(await iglooFiV1VaultFactory.paused()).to.be.equal(true);
-		}
-	);
 
+/*
 	it(
-		"Should revert `setPause` when unauthorized msg.sender calls..",
+		"Should be able to deploy `IglooFiV1Vault.sol`..",
 		async function () {
 			const [, addr1] = await ethers.getSigners();
 
-			await expect(iglooFiV1VaultFactory.connect(addr1).setPause(false))
-				.to.be.revertedWith("!auth")
-			;
+			await iglooFiV1VaultFactory.deployVault(
+				addr1.address,
+				2,
+				10
+			);
 		}
-	);
+	);*/
+
+
+	/**
+	* @dev setPause
+	*/
+	describe("setPause", async function () {
+		it(
+			"Should be able to set true..",
+			async function () {
+				await iglooFiV1VaultFactory.setPause(false);
+				
+				expect(await iglooFiV1VaultFactory.paused()).to.be.equal(false);
+			}
+		);
+
+		it(
+			"Should be able to set false..",
+			async function () {
+				await iglooFiV1VaultFactory.setPause(true);
+				
+				expect(await iglooFiV1VaultFactory.paused()).to.be.equal(true);
+			}
+		);
+
+		it(
+			"Should revert when unauthorized msg.sender calls..",
+			async function () {
+				const [, addr1] = await ethers.getSigners();
+	
+				await expect(iglooFiV1VaultFactory.connect(addr1).setPause(false))
+					.to.be.revertedWith("!auth")
+				;
+			}
+		);
+	})
 
 
 	/**
 	* @dev updateFee
 	*/
-	it(
-		"Should update `fee` correctly..",
-		async function () {
-			await iglooFiV1VaultFactory.updateFee(1);
+	describe("updateFee", async function () {
+		it(
+			"Should update correctly..",
+			async function () {
+				await iglooFiV1VaultFactory.updateFee(1);
 
-			expect(await iglooFiV1VaultFactory.fee()).to.equal(1);
-		}
-	);
+				expect(await iglooFiV1VaultFactory.fee()).to.equal(1);
+			}
+		);
 
-	it(
-		"Should revert `updateFee` when unauthorized msg.sender calls..",
-		async function () {
-			const [, addr1] = await ethers.getSigners();
+		it(
+			"Should revert when unauthorized msg.sender calls..",
+			async function () {
+				const [, addr1] = await ethers.getSigners();
 
-			await expect(iglooFiV1VaultFactory.connect(addr1).updateFee(1))
-				.to.be.revertedWith("!auth")
-			;
-		}
-	);
+				await expect(iglooFiV1VaultFactory.connect(addr1).updateFee(1))
+					.to.be.revertedWith("!auth")
+				;
+			}
+		);
+	})
 
 
 	/**
 	* @dev transferFunds
 	*/
-	it(
-		"Should be able to transfer to an address..",
-		async function () {
-			const [, addr1] = await ethers.getSigners();
-			
-			await iglooFiV1VaultFactory.setPause(false);
-
-			const balanceBefore = {
-				addr1: parseFloat(ethers.utils.formatUnits(
-					(await ethers.provider.getBalance(addr1.address)),
-					"ether"
-				)),
-				iglooFiV1VaultFactory: parseFloat(ethers.utils.formatUnits(
-					(await ethers.provider.getBalance(iglooFiV1VaultFactory.address)),
-					"ether"
-				))
+	describe("transferFunds", async function () {
+		it(
+			"Should be able to transfer to an address..",
+			async function () {
+				const [, addr1] = await ethers.getSigners();
+				
+				await iglooFiV1VaultFactory.setPause(false);
+	
+				const balanceBefore = {
+					addr1: parseFloat(ethers.utils.formatUnits(
+						(await ethers.provider.getBalance(addr1.address)),
+						"ether"
+					)),
+					iglooFiV1VaultFactory: parseFloat(ethers.utils.formatUnits(
+						(await ethers.provider.getBalance(iglooFiV1VaultFactory.address)),
+						"ether"
+					))
+				}
+	
+				await iglooFiV1VaultFactory.transferFunds(addr1.address);
+	
+				const balanceAfter = {
+					addr1: parseFloat(ethers.utils.formatUnits(
+						(await ethers.provider.getBalance(addr1.address)),
+						"ether"
+					)),
+					iglooFiV1VaultFactory: parseFloat(ethers.utils.formatUnits(
+						(await ethers.provider.getBalance(iglooFiV1VaultFactory.address)),
+						"ether"
+					))
+				}
+	
+				await expect(parseFloat(balanceAfter.addr1)).to.be.equal(
+					balanceBefore.addr1 + balanceBefore.iglooFiV1VaultFactory
+				);
 			}
-
-			await iglooFiV1VaultFactory.transferFunds(addr1.address);
-
-			const balanceAfter = {
-				addr1: parseFloat(ethers.utils.formatUnits(
-					(await ethers.provider.getBalance(addr1.address)),
-					"ether"
-				)),
-				iglooFiV1VaultFactory: parseFloat(ethers.utils.formatUnits(
-					(await ethers.provider.getBalance(iglooFiV1VaultFactory.address)),
-					"ether"
-				))
+		);
+	
+		it(
+			"Should revert when unauthorized msg.sender calls..",
+			async function () {
+				const [, addr1] = await ethers.getSigners();
+	
+				await expect(
+					iglooFiV1VaultFactory.connect(addr1).transferFunds(addr1.address)
+				).to.be.revertedWith("!auth");
 			}
-
-			await expect(parseFloat(balanceAfter.addr1)).to.be.equal(
-				balanceBefore.addr1 + balanceBefore.iglooFiV1VaultFactory
-			);
-		}
-	);
-
-	it(
-		"Should revert `transferFunds` when unauthorized msg.sender calls..",
-		async function () {
-			const [, addr1] = await ethers.getSigners();
-
-			await expect(
-				iglooFiV1VaultFactory.connect(addr1).transferFunds(addr1.address)
-			).to.be.revertedWith("!auth");
-		}
-	);
+		);
+	})
 });
