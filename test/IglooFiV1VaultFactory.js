@@ -1,5 +1,5 @@
 const { expect } = require("chai");
-const { ethers, waffle } = require("hardhat");
+const { ethers, utils } = require("hardhat");
 
 
 // Log the network
@@ -32,7 +32,7 @@ describe("IglooFiV1VaultFactory", async function () {
 			testIglooFiGovernance.address
 		);
 		iglooFiV1VaultFactory = await iglooFiV1VaultFactory.deployed();
-	})
+	});
 
 	/**
 	* @dev recieve
@@ -81,22 +81,7 @@ describe("IglooFiV1VaultFactory", async function () {
 				expect(await iglooFiV1VaultFactory.fee()).to.equal(0);
 			}
 		);
-	})
-
-
-/*
-	it(
-		"Should be able to deploy `IglooFiV1Vault.sol`..",
-		async function () {
-			const [, addr1] = await ethers.getSigners();
-
-			await iglooFiV1VaultFactory.deployVault(
-				addr1.address,
-				2,
-				10
-			);
-		}
-	);*/
+	});
 
 
 	/**
@@ -118,6 +103,9 @@ describe("IglooFiV1VaultFactory", async function () {
 				await iglooFiV1VaultFactory.setPause(true);
 				
 				expect(await iglooFiV1VaultFactory.paused()).to.be.equal(true);
+			
+				// Unpause for the rest of the test
+				await iglooFiV1VaultFactory.setPause(false);
 			}
 		);
 
@@ -131,7 +119,7 @@ describe("IglooFiV1VaultFactory", async function () {
 				;
 			}
 		);
-	})
+	});
 
 
 	/**
@@ -152,12 +140,12 @@ describe("IglooFiV1VaultFactory", async function () {
 			async function () {
 				const [, addr1] = await ethers.getSigners();
 
-				await expect(iglooFiV1VaultFactory.connect(addr1).updateFee(1))
+				await expect(iglooFiV1VaultFactory.connect(addr1).updateFee(2))
 					.to.be.revertedWith("!auth")
 				;
 			}
 		);
-	})
+	});
 
 
 	/**
@@ -168,8 +156,6 @@ describe("IglooFiV1VaultFactory", async function () {
 			"Should be able to transfer to an address..",
 			async function () {
 				const [, addr1] = await ethers.getSigners();
-				
-				await iglooFiV1VaultFactory.setPause(false);
 	
 				const balanceBefore = {
 					addr1: parseFloat(ethers.utils.formatUnits(
@@ -180,7 +166,7 @@ describe("IglooFiV1VaultFactory", async function () {
 						(await ethers.provider.getBalance(iglooFiV1VaultFactory.address)),
 						"ether"
 					))
-				}
+				};
 	
 				await iglooFiV1VaultFactory.transferFunds(addr1.address);
 	
@@ -193,7 +179,7 @@ describe("IglooFiV1VaultFactory", async function () {
 						(await ethers.provider.getBalance(iglooFiV1VaultFactory.address)),
 						"ether"
 					))
-				}
+				};
 	
 				await expect(parseFloat(balanceAfter.addr1)).to.be.equal(
 					balanceBefore.addr1 + balanceBefore.iglooFiV1VaultFactory
@@ -211,5 +197,51 @@ describe("IglooFiV1VaultFactory", async function () {
 				).to.be.revertedWith("!auth");
 			}
 		);
-	})
+	});
+
+
+	/**
+	* @dev deployVault
+	*/
+	describe("deployVault", async function () {
+		it(
+			"Should be able to deploy `IglooFiV1Vault.sol`..",
+			async function () {
+				const [, addr1] = await ethers.getSigners();
+
+				const deployedAddress = await iglooFiV1VaultFactory.deployVault(
+					addr1.address,
+					2,
+					10,
+					{ value: 1 }
+				)
+
+				expect(await iglooFiV1VaultFactory.vaultAddress(0))
+					.to.equal((await deployedAddress.wait()).events[1].args[0])
+				;
+			}
+		);
+
+		describe("Deployed iglooFiV1", async function () {
+			it(
+				"Should have admin set properly..",
+				async function () {
+					const [, addr1] = await ethers.getSigners();
+					
+					let deployedAddress = await iglooFiV1VaultFactory.vaultAddress(0);
+
+					const IglooFiV1Vault = await ethers.getContractFactory("IglooFiV1Vault");
+
+					const iglooFiV1Vault = await IglooFiV1Vault.attach(deployedAddress);
+
+					expect(
+						await iglooFiV1Vault.hasRole(
+							await iglooFiV1Vault.DEFAULT_ADMIN_ROLE(),
+							addr1.address
+						)
+					).to.equal(true);
+				}
+			);
+		});
+	});
 });
