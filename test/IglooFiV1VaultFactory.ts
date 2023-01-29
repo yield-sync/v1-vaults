@@ -60,7 +60,7 @@ describe("IglooFiV1VaultFactory.sol", async function () {
 	/**
 	* @dev Initial values set by constructor
 	*/
-	describe("Initialized values", async function () {
+	describe("Constructor Initialized values", async function () {
 		/**
 		 * @notice Check if initial values are correct
 		*/
@@ -235,7 +235,7 @@ describe("IglooFiV1VaultFactory.sol", async function () {
 			}
 		);
 
-		describe("Factory Deployed: IglooFiV1.sol", async function () {
+		describe("IglooFiV1VaultFactory.sol Deployed: IglooFiV1.sol", async function () {
 			it(
 				"Should have admin set properly..",
 				async function () {

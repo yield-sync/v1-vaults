@@ -20,7 +20,7 @@ describe("IglooFiV1Vault", async function () {
 
 		iglooFiV1Vault = await IglooFiV1Vault.deploy(
 			owner.address,
-			1,
+			2,
 			10
 		);
 		iglooFiV1Vault = await iglooFiV1Vault.deployed();
@@ -48,4 +48,38 @@ describe("IglooFiV1Vault", async function () {
 			}
 		);
 	})
+
+
+	/**
+	* @dev Initial values set by constructor
+	*/
+	describe("Constructor Initialized values", async function () {
+		it(
+			"Should have admin set properly..",
+			async function () {
+				const [owner] = await ethers.getSigners();
+
+				await iglooFiV1Vault.hasRole(
+					await iglooFiV1Vault.DEFAULT_ADMIN_ROLE(),
+					owner.address
+				)
+			}
+		);
+
+		it(
+			"Should intialize requiredVoteCount as 2..",
+			async function () {
+				expect(await iglooFiV1Vault.requiredVoteCount()).to.equal(2);
+			}
+		);
+	
+		it(
+			"Should initialize withdrawalDelaySeconds 10..",
+			async function () {
+				expect(await iglooFiV1Vault.withdrawalDelaySeconds()).to.equal(
+					10
+				);
+			}
+		);
+	});
 });
