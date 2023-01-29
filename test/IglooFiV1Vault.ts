@@ -117,7 +117,7 @@ describe("IglooFiV1Vault", async () => {
 				}
 			)
 		})
-		
+
 		describe("removeVoter", async () => {
 			it(
 				"Should be able to remove address from VOTER role..",
@@ -148,8 +148,31 @@ describe("IglooFiV1Vault", async () => {
 				}
 			)
 		})
-	})
 
+		describe("updateRequiredVoteCount", async () => {
+			it(
+				"Should be able to update requiredVoteCount..",
+				async () => {
+					await iglooFiV1Vault.updateRequiredVoteCount(3)
+	
+					await expect(
+						await iglooFiV1Vault.requiredVoteCount()
+					).to.be.equal(3);
+				}
+			)
+
+			it(
+				"Should revert when unauthorized msg.sender calls..",
+				async () => {
+					const [, addr1] = await ethers.getSigners();
+		
+					await expect(
+						iglooFiV1Vault.connect(addr1).updateRequiredVoteCount(1)
+					).to.be.rejected;
+				}
+			)
+		})
+	})
 
 
 	/**
