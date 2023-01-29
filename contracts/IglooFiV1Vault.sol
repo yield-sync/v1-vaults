@@ -205,9 +205,6 @@ contract IglooFiV1Vault is
 		// [require] 'to' is a valid Ethereum address
 		require(to != address(0), "Invalid `to` address");
 
-		// [increment] `_withdrawalRequestIdTracker`
-		_withdrawalRequestIdTracker++;
-
 		address[] memory votedVoters;
 
 		// [add] `_withdrawalRequest` value
@@ -230,8 +227,11 @@ contract IglooFiV1Vault is
 
 		// [emit]
 		emit CreatedWithdrawalRequest(_withdrawalRequest[_withdrawalRequestIdTracker]);
+
+		// [increment] `_withdrawalRequestIdTracker`
+		_withdrawalRequestIdTracker++;
 		
-		return _withdrawalRequestIdTracker;
+		return _withdrawalRequestIdTracker - 1;
 	}
 
 	/// @inheritdoc IIglooFiV1Vault
