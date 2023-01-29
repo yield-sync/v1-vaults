@@ -41,16 +41,19 @@ describe("IglooFiV1VaultFactory", async function () {
 			// Send ether to IglooFiV1VaultFactory contract
 			await addr1.sendTransaction({
 				to: iglooFiV1VaultFactory.address,
-				value: ethers.utils.parseEther("1.0"),
+				value: ethers.utils.parseEther("1"),
 			});
 
 			await expect(
 				await ethers.provider.getBalance(iglooFiV1VaultFactory.address)
-			).to.be.equal(ethers.utils.parseEther("1.0"));
+			).to.be.equal(ethers.utils.parseEther("1"));
 		}
 	);
 
 
+	/**
+	* @dev Initial values set by constructor
+	*/
 	describe("Initialized values", async function () {
 		/**
 		 * @notice Check if initial values are correct
@@ -154,27 +157,35 @@ describe("IglooFiV1VaultFactory", async function () {
 				const [, addr1] = await ethers.getSigners();
 	
 				const balanceBefore = {
-					addr1: parseFloat(ethers.utils.formatUnits(
-						(await ethers.provider.getBalance(addr1.address)),
-						"ether"
-					)),
-					iglooFiV1VaultFactory: parseFloat(ethers.utils.formatUnits(
-						(await ethers.provider.getBalance(iglooFiV1VaultFactory.address)),
-						"ether"
-					))
+					addr1: parseFloat(
+						ethers.utils.formatUnits(
+							(await ethers.provider.getBalance(addr1.address)),
+							"ether"
+						)
+					),
+					iglooFiV1VaultFactory: parseFloat(
+						ethers.utils.formatUnits(
+							(await ethers.provider.getBalance(iglooFiV1VaultFactory.address)),
+							"ether"
+						)
+					)
 				};
 	
 				await iglooFiV1VaultFactory.transferFunds(addr1.address);
 	
 				const balanceAfter = {
-					addr1: parseFloat(ethers.utils.formatUnits(
-						(await ethers.provider.getBalance(addr1.address)),
-						"ether"
-					)),
-					iglooFiV1VaultFactory: parseFloat(ethers.utils.formatUnits(
-						(await ethers.provider.getBalance(iglooFiV1VaultFactory.address)),
-						"ether"
-					))
+					addr1: parseFloat(
+						ethers.utils.formatUnits(
+							(await ethers.provider.getBalance(addr1.address)),
+							"ether"
+						)
+					),
+					iglooFiV1VaultFactory: parseFloat(
+						ethers.utils.formatUnits(
+							(await ethers.provider.getBalance(iglooFiV1VaultFactory.address)),
+							"ether"
+						)
+					)
 				};
 	
 				await expect(balanceAfter.addr1).to.be.equal(
