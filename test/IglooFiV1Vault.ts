@@ -200,13 +200,6 @@ describe("IglooFiV1Vault", async () => {
 
 
 	/**
-	 * @dev sign
-	 * TODO: Incomploete, need to create tests for this function
-	*/
-	describe("sign", async () => {})
-
-
-	/**
 	 * @dev VOTER
 	*/
 	describe("Auth: VOTER", async () => {
@@ -215,13 +208,41 @@ describe("IglooFiV1Vault", async () => {
 		*/
 		describe("createWithdrawalRequest", async () => {
 			it(
-				"Should be able to create a WithdrawalRequest..",
+				"Should be able to create a requestEther WithdrawalRequest..",
 				async () => {
+					const [, addr1, addr2] = await ethers.getSigners();
 					
+					await iglooFiV1Vault.connect(addr1).createWithdrawalRequest(
+						true,
+						addr2.address,
+						"0x0000000000000000000000000000000000000000",
+						ethers.utils.parseEther(".5"),
+						0
+					)
 					
+					const createdWithdrawalRequest: any = await iglooFiV1Vault.withdrawalRequest(1);
+
+					expect(createdWithdrawalRequest[0]).to.be.true
+					expect(createdWithdrawalRequest[1]).to.be.equal(addr1.address)
+					expect(createdWithdrawalRequest[2]).to.be.equal(addr2.address)
+					expect(createdWithdrawalRequest[3]).to.be.equal(
+						"0x0000000000000000000000000000000000000000"
+					)
+					expect(createdWithdrawalRequest[4]).to.be.equal(
+						ethers.utils.parseEther(".5")
+					)
+					expect(createdWithdrawalRequest[5]).to.be.equal(0)
+					expect(createdWithdrawalRequest[6]).to.be.equal(0)
+					expect(createdWithdrawalRequest[8].length).to.be.equal(0)
 				}
 			)
 		})
 	})
 
+
+	/**
+	 * @dev sign
+	 * TODO: Incomploete, need to create tests for this function
+	*/
+	describe("sign", async () => {})
 });
