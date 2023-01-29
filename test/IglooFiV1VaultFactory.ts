@@ -2,7 +2,7 @@ import { expect } from "chai";
 const { ethers } = require("hardhat");
 
 
-describe("IglooFiV1VaultFactory", async function () {
+describe("IglooFiV1VaultFactory.sol", async function () {
 	let testIglooFiGovernance: any;
 	let iglooFiV1VaultFactory: any;
 
@@ -34,26 +34,27 @@ describe("IglooFiV1VaultFactory", async function () {
 		iglooFiV1VaultFactory = await iglooFiV1VaultFactory.deployed();
 	});
 
-
 	/**
 	* @dev recieve
 	*/
-	it(
-		"Should be able to recieve ether..",
-		async function () {
-			const [, addr1] = await ethers.getSigners();
-			
-			// Send ether to IglooFiV1VaultFactory contract
-			await addr1.sendTransaction({
-				to: iglooFiV1VaultFactory.address,
-				value: ethers.utils.parseEther("1"),
-			});
-
-			await expect(
-				await ethers.provider.getBalance(iglooFiV1VaultFactory.address)
-			).to.be.equal(ethers.utils.parseEther("1"));
-		}
-	);
+	describe("Contract", async function () {
+		it(
+			"Should be able to recieve ether..",
+			async function () {
+				const [, addr1] = await ethers.getSigners();
+				
+				// Send ether to IglooFiV1VaultFactory contract
+				await addr1.sendTransaction({
+					to: iglooFiV1VaultFactory.address,
+					value: ethers.utils.parseEther("1"),
+				});
+	
+				await expect(
+					await ethers.provider.getBalance(iglooFiV1VaultFactory.address)
+				).to.be.equal(ethers.utils.parseEther("1"));
+			}
+		);
+	})
 
 
 	/**
@@ -234,7 +235,7 @@ describe("IglooFiV1VaultFactory", async function () {
 			}
 		);
 
-		describe("Deployed iglooFiV1", async function () {
+		describe("Factory Deployed: IglooFiV1.sol", async function () {
 			it(
 				"Should have admin set properly..",
 				async function () {

@@ -30,20 +30,22 @@ describe("IglooFiV1Vault", async function () {
 	/**
 	* @dev recieve
 	*/
-	it(
-		"Should be able to recieve ether..",
-		async function () {
-			const [, addr1] = await ethers.getSigners();
-			
-			// Send ether to IglooFiV1VaultFactory contract
-			await addr1.sendTransaction({
-				to: iglooFiV1Vault.address,
-				value: ethers.utils.parseEther("1"),
-			});
+	describe("Contract", async function () {
+		it(
+			"Should be able to recieve ether..",
+			async function () {
+				const [, addr1] = await ethers.getSigners();
+				
+				// Send ether to IglooFiV1VaultFactory contract
+				await addr1.sendTransaction({
+					to: iglooFiV1Vault.address,
+					value: ethers.utils.parseEther("1"),
+				});
 
-			await expect(
-				await ethers.provider.getBalance(iglooFiV1Vault.address)
-			).to.be.equal(ethers.utils.parseEther("1"));
-		}
-	);
+				await expect(
+					await ethers.provider.getBalance(iglooFiV1Vault.address)
+				).to.be.equal(ethers.utils.parseEther("1"));
+			}
+		);
+	})
 });
