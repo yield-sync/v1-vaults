@@ -90,126 +90,131 @@ describe("IglooFiV1VaultFactory.sol", async () => {
 
 
 	/**
-	* @dev setPause
+	 * @dev admin
 	*/
-	describe("setPause", async () => {
-		it(
-			"Should be able to set true..",
-			async () => {
-				await iglooFiV1VaultFactory.setPause(false);
+	describe("admin", async () => {
+		/**
+		* @dev setPause
+		*/
+		describe("setPause", async () => {
+			it(
+				"Should be able to set true..",
+				async () => {
+					await iglooFiV1VaultFactory.setPause(false);
+					
+					expect(await iglooFiV1VaultFactory.paused()).to.be.false;
+				}
+			);
+
+			it(
+				"Should be able to set false..",
+				async () => {
+					await iglooFiV1VaultFactory.setPause(true);
+					
+					expect(await iglooFiV1VaultFactory.paused()).to.be.true;
 				
-				expect(await iglooFiV1VaultFactory.paused()).to.be.false;
-			}
-		);
+					// Unpause for the rest of the test
+					await iglooFiV1VaultFactory.setPause(false);
+				}
+			);
 
-		it(
-			"Should be able to set false..",
-			async () => {
-				await iglooFiV1VaultFactory.setPause(true);
-				
-				expect(await iglooFiV1VaultFactory.paused()).to.be.true;
-			
-				// Unpause for the rest of the test
-				await iglooFiV1VaultFactory.setPause(false);
-			}
-		);
-
-		it(
-			"Should revert when unauthorized msg.sender calls..",
-			async () => {
-				const [, addr1] = await ethers.getSigners();
-	
-				await expect(iglooFiV1VaultFactory.connect(addr1).setPause(false))
-					.to.be.rejectedWith("!auth")
-				;
-			}
-		);
-	});
+			it(
+				"Should revert when unauthorized msg.sender calls..",
+				async () => {
+					const [, addr1] = await ethers.getSigners();
+		
+					await expect(iglooFiV1VaultFactory.connect(addr1).setPause(false))
+						.to.be.rejectedWith("!auth")
+					;
+				}
+			);
+		});
 
 
-	/**
-	* @dev updateFee
-	*/
-	describe("updateFee", async () => {
-		it(
-			"Should update correctly..",
-			async () => {
-				await iglooFiV1VaultFactory.updateFee(1);
+		/**
+		* @dev updateFee
+		*/
+		describe("updateFee", async () => {
+			it(
+				"Should update correctly..",
+				async () => {
+					await iglooFiV1VaultFactory.updateFee(1);
 
-				expect(await iglooFiV1VaultFactory.fee()).to.equal(1);
-			}
-		);
+					expect(await iglooFiV1VaultFactory.fee()).to.equal(1);
+				}
+			);
 
-		it(
-			"Should revert when unauthorized msg.sender calls..",
-			async () => {
-				const [, addr1] = await ethers.getSigners();
+			it(
+				"Should revert when unauthorized msg.sender calls..",
+				async () => {
+					const [, addr1] = await ethers.getSigners();
 
-				await expect(iglooFiV1VaultFactory.connect(addr1).updateFee(2))
-					.to.be.rejectedWith("!auth")
-				;
-			}
-		);
-	});
+					await expect(iglooFiV1VaultFactory.connect(addr1).updateFee(2))
+						.to.be.rejectedWith("!auth")
+					;
+				}
+			);
+		});
 
 
-	/**
-	* @dev transferFunds
-	*/
-	describe("transferFunds", async () => {
-		it(
-			"Should be able to transfer to an address..",
-			async () => {
-				const [, addr1] = await ethers.getSigners();
-	
-				const balanceBefore = {
-					addr1: parseFloat(
-						ethers.utils.formatUnits(
-							(await ethers.provider.getBalance(addr1.address)),
-							"ether"
+		/**
+		* @dev transferFunds
+		*/
+		describe("transferFunds", async () => {
+			it(
+				"Should be able to transfer to an address..",
+				async () => {
+					const [, addr1] = await ethers.getSigners();
+		
+					const balanceBefore = {
+						addr1: parseFloat(
+							ethers.utils.formatUnits(
+								(await ethers.provider.getBalance(addr1.address)),
+								"ether"
+							)
+						),
+						iglooFiV1VaultFactory: parseFloat(
+							ethers.utils.formatUnits(
+								(await ethers.provider.getBalance(iglooFiV1VaultFactory.address)),
+								"ether"
+							)
 						)
-					),
-					iglooFiV1VaultFactory: parseFloat(
-						ethers.utils.formatUnits(
-							(await ethers.provider.getBalance(iglooFiV1VaultFactory.address)),
-							"ether"
+					};
+		
+					await iglooFiV1VaultFactory.transferFunds(addr1.address);
+		
+					const balanceAfter = {
+						addr1: parseFloat(
+							ethers.utils.formatUnits(
+								(await ethers.provider.getBalance(addr1.address)),
+								"ether"
+							)
+						),
+						iglooFiV1VaultFactory: parseFloat(
+							ethers.utils.formatUnits(
+								(await ethers.provider.getBalance(iglooFiV1VaultFactory.address)),
+								"ether"
+							)
 						)
-					)
-				};
-	
-				await iglooFiV1VaultFactory.transferFunds(addr1.address);
-	
-				const balanceAfter = {
-					addr1: parseFloat(
-						ethers.utils.formatUnits(
-							(await ethers.provider.getBalance(addr1.address)),
-							"ether"
-						)
-					),
-					iglooFiV1VaultFactory: parseFloat(
-						ethers.utils.formatUnits(
-							(await ethers.provider.getBalance(iglooFiV1VaultFactory.address)),
-							"ether"
-						)
-					)
-				};
-	
-				await expect(balanceAfter.addr1).to.be.equal(
-					balanceBefore.addr1 + balanceBefore.iglooFiV1VaultFactory
-				);
-			}
-		);
-	
-		it(
-			"Should revert when unauthorized msg.sender calls..",
-			async () => {
-				const [, addr1] = await ethers.getSigners();
-	
-				await expect(
-					iglooFiV1VaultFactory.connect(addr1).transferFunds(addr1.address)
-				).to.be.rejectedWith("!auth");
-			}
-		);
+					};
+		
+					await expect(balanceAfter.addr1).to.be.equal(
+						balanceBefore.addr1 + balanceBefore.iglooFiV1VaultFactory
+					);
+				}
+			);
+		
+			it(
+				"Should revert when unauthorized msg.sender calls..",
+				async () => {
+					const [, addr1] = await ethers.getSigners();
+		
+					await expect(
+						iglooFiV1VaultFactory.connect(addr1).transferFunds(addr1.address)
+					).to.be.rejectedWith("!auth");
+				}
+			);
+		});
 	});
 
 

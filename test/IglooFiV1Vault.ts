@@ -172,6 +172,30 @@ describe("IglooFiV1Vault", async () => {
 				}
 			)
 		})
+
+		describe("updateWithdrawalDelaySeconds", async () => {
+			it(
+				"Should be able to update withdrawalDelaySeconds..",
+				async () => {
+					await iglooFiV1Vault.updateWithdrawalDelaySeconds(5)
+	
+					await expect(
+						await iglooFiV1Vault.withdrawalDelaySeconds()
+					).to.be.equal(5);
+				}
+			)
+
+			it(
+				"Should revert when unauthorized msg.sender calls..",
+				async () => {
+					const [, addr1] = await ethers.getSigners();
+		
+					await expect(
+						iglooFiV1Vault.connect(addr1).updateWithdrawalDelaySeconds(0)
+					).to.be.rejected;
+				}
+			)
+		})
 	})
 
 
