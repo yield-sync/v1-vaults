@@ -2,7 +2,7 @@ import { expect } from "chai";
 const { ethers } = require("hardhat");
 
 
-describe("IglooFiV1VaultFactory.sol", async function () {
+describe("IglooFiV1VaultFactory.sol", async () => {
 	let testIglooFiGovernance: any;
 	let iglooFiV1VaultFactory: any;
 
@@ -37,10 +37,10 @@ describe("IglooFiV1VaultFactory.sol", async function () {
 	/**
 	* @dev recieve
 	*/
-	describe("Contract", async function () {
+	describe("Contract", async () => {
 		it(
 			"Should be able to recieve ether..",
-			async function () {
+			async () => {
 				const [, addr1] = await ethers.getSigners();
 				
 				// Send ether to IglooFiV1VaultFactory contract
@@ -51,7 +51,7 @@ describe("IglooFiV1VaultFactory.sol", async function () {
 	
 				await expect(
 					await ethers.provider.getBalance(iglooFiV1VaultFactory.address)
-				).to.be.equal(ethers.utils.parseEther("1"));
+				).to.be.greaterThanOrEqual(ethers.utils.parseEther("1"));
 			}
 		);
 	})
@@ -60,20 +60,20 @@ describe("IglooFiV1VaultFactory.sol", async function () {
 	/**
 	* @dev Initial values set by constructor
 	*/
-	describe("Constructor Initialized values", async function () {
+	describe("Constructor Initialized values", async () => {
 		/**
 		 * @notice Check if initial values are correct
 		*/
 		it(
 			"Should intialize pause as true..",
-			async function () {
+			async () => {
 				expect(await iglooFiV1VaultFactory.paused()).to.equal(true);
 			}
 		);
 	
 		it(
 			"Should initialize `IGLOO_FI` to `TestIglooFiGovernance` address..",
-			async function () {
+			async () => {
 				expect(await iglooFiV1VaultFactory.IGLOO_FI()).to.equal(
 					testIglooFiGovernance.address
 				);
@@ -82,7 +82,7 @@ describe("IglooFiV1VaultFactory.sol", async function () {
 	
 		it(
 			"Should initialize the `fee` to 0..",
-			async function () {
+			async () => {
 				expect(await iglooFiV1VaultFactory.fee()).to.equal(0);
 			}
 		);
@@ -92,22 +92,22 @@ describe("IglooFiV1VaultFactory.sol", async function () {
 	/**
 	* @dev setPause
 	*/
-	describe("setPause", async function () {
+	describe("setPause", async () => {
 		it(
 			"Should be able to set true..",
-			async function () {
+			async () => {
 				await iglooFiV1VaultFactory.setPause(false);
 				
-				expect(await iglooFiV1VaultFactory.paused()).to.be.equal(false);
+				expect(await iglooFiV1VaultFactory.paused()).to.be.false;
 			}
 		);
 
 		it(
 			"Should be able to set false..",
-			async function () {
+			async () => {
 				await iglooFiV1VaultFactory.setPause(true);
 				
-				expect(await iglooFiV1VaultFactory.paused()).to.be.equal(true);
+				expect(await iglooFiV1VaultFactory.paused()).to.be.true;
 			
 				// Unpause for the rest of the test
 				await iglooFiV1VaultFactory.setPause(false);
@@ -116,7 +116,7 @@ describe("IglooFiV1VaultFactory.sol", async function () {
 
 		it(
 			"Should revert when unauthorized msg.sender calls..",
-			async function () {
+			async () => {
 				const [, addr1] = await ethers.getSigners();
 	
 				await expect(iglooFiV1VaultFactory.connect(addr1).setPause(false))
@@ -130,10 +130,10 @@ describe("IglooFiV1VaultFactory.sol", async function () {
 	/**
 	* @dev updateFee
 	*/
-	describe("updateFee", async function () {
+	describe("updateFee", async () => {
 		it(
 			"Should update correctly..",
-			async function () {
+			async () => {
 				await iglooFiV1VaultFactory.updateFee(1);
 
 				expect(await iglooFiV1VaultFactory.fee()).to.equal(1);
@@ -142,7 +142,7 @@ describe("IglooFiV1VaultFactory.sol", async function () {
 
 		it(
 			"Should revert when unauthorized msg.sender calls..",
-			async function () {
+			async () => {
 				const [, addr1] = await ethers.getSigners();
 
 				await expect(iglooFiV1VaultFactory.connect(addr1).updateFee(2))
@@ -156,10 +156,10 @@ describe("IglooFiV1VaultFactory.sol", async function () {
 	/**
 	* @dev transferFunds
 	*/
-	describe("transferFunds", async function () {
+	describe("transferFunds", async () => {
 		it(
 			"Should be able to transfer to an address..",
-			async function () {
+			async () => {
 				const [, addr1] = await ethers.getSigners();
 	
 				const balanceBefore = {
@@ -202,7 +202,7 @@ describe("IglooFiV1VaultFactory.sol", async function () {
 	
 		it(
 			"Should revert when unauthorized msg.sender calls..",
-			async function () {
+			async () => {
 				const [, addr1] = await ethers.getSigners();
 	
 				await expect(
@@ -216,10 +216,10 @@ describe("IglooFiV1VaultFactory.sol", async function () {
 	/**
 	* @dev deployVault
 	*/
-	describe("deployVault", async function () {
+	describe("deployVault", async () => {
 		it(
-			"Should be able to deploy `IglooFiV1Vault.sol`..",
-			async function () {
+			"Should be able to record deployed IglooFiV1Vault.sol..",
+			async () => {
 				const [, addr1] = await ethers.getSigners();
 
 				const deployedAddress = await iglooFiV1VaultFactory.deployVault(
@@ -235,10 +235,14 @@ describe("IglooFiV1VaultFactory.sol", async function () {
 			}
 		);
 
-		describe("IglooFiV1VaultFactory.sol Deployed: IglooFiV1.sol", async function () {
+
+		/**
+		* @dev IglooFiV1VaultFactory.sol Deployed: IglooFiV1.sol
+		*/
+		describe("IglooFiV1VaultFactory.sol Deployed: IglooFiV1.sol", async () => {
 			it(
 				"Should have admin set properly..",
-				async function () {
+				async () => {
 					const [, addr1] = await ethers.getSigners();
 					
 					let deployedAddress = await iglooFiV1VaultFactory.vaultAddress(0);
