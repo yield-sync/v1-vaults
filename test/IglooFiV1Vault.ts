@@ -107,6 +107,24 @@ describe("IglooFiV1Vault", async () => {
 			)
 
 			it(
+				"Should be able to remove address from VOTER role..",
+				async () => {
+					const [,, addr2] = await ethers.getSigners();
+
+					await iglooFiV1Vault.addVoter(addr2.address)
+
+					await iglooFiV1Vault.removeVoter(addr2.address)
+
+					await expect(
+						await iglooFiV1Vault.hasRole(
+							await iglooFiV1Vault.VOTER(),
+							addr2.address
+						)
+					).to.be.false;
+				}
+			)
+
+			it(
 				"Should revert when unauthorized msg.sender calls..",
 				async () => {
 					const [, addr1, addr2] = await ethers.getSigners();
