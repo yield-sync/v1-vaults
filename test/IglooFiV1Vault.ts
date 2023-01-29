@@ -88,7 +88,7 @@ describe("IglooFiV1Vault", async () => {
 	 * @dev sign
 	 * TODO: Incomploete, need to create tests for this function
 	*/
-	describe("admin", async () => {
+	describe("Auth: DEFAULT_ADMIN_ROLE", async () => {
 		describe("addVoter", async () => {
 			it(
 				"Should be able to set up VOTER role for an address..",
@@ -207,15 +207,21 @@ describe("IglooFiV1Vault", async () => {
 
 
 	/**
-	 * @dev createWithdrawalRequest
+	 * @dev VOTER
 	*/
-	describe("createWithdrawalRequest", async () => {
-		it(
-			"Should be able to create a WithdrawalRequest..",
-			async () => {
-				
-				
-			}
-		)
+	describe("Auth: VOTER", async () => {
+		/**
+		 * @dev createWithdrawalRequest
+		*/
+		describe("createWithdrawalRequest", async () => {
+			it(
+				"Should be able to create a WithdrawalRequest..",
+				async () => {
+					
+					
+				}
+			)
+		})
 	})
+
 });

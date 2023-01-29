@@ -92,7 +92,7 @@ describe("IglooFiV1VaultFactory.sol", async () => {
 	/**
 	 * @dev admin
 	*/
-	describe("admin", async () => {
+	describe("Auth: DEFAULT_ADMIN_ROLE", async () => {
 		/**
 		* @dev setPause
 		*/
