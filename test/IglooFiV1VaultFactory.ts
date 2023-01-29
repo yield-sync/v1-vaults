@@ -8,18 +8,22 @@ describe("IglooFiV1VaultFactory", async function () {
 
 
 	/**
-	 * @notice Deploy the contracts
 	 * @dev Deploy TestIglooFiGovernance.sol
-	 * @dev Deploy IglooFiV1VaultFactory.sol
 	*/
-	before("[before] Deploy the IglooFi Governance contract..", async () => {
+	before("[before] Deploy IglooFiGovernance contract..", async () => {
 		const TestIglooFiGovernance = await ethers.getContractFactory(
 			"TestIglooFiGovernance"
 		);
 
 		testIglooFiGovernance = await TestIglooFiGovernance.deploy();
 		testIglooFiGovernance = await testIglooFiGovernance.deployed();
+	});
 
+
+	/**
+	 * @dev Deploy IglooFiV1VaultFactory.sol
+	*/
+	before("[before] Deploy IglooFiV1VaultFactory contracts..", async () => {
 		const IglooFiV1VaultFactory = await ethers.getContractFactory(
 			"IglooFiV1VaultFactory"
 		);
@@ -29,6 +33,7 @@ describe("IglooFiV1VaultFactory", async function () {
 		);
 		iglooFiV1VaultFactory = await iglooFiV1VaultFactory.deployed();
 	});
+
 
 	/**
 	* @dev recieve
