@@ -1,12 +1,10 @@
 import { expect } from "chai";
 const { ethers } = require("hardhat");
 
-
-describe("IglooFiV1VaultFactory.sol", async () => {
+describe("IglooFi V1 Vault Factory", async () => {
 	let testIglooFiGovernance: any;
 	let iglooFiV1VaultFactory: any;
-
-
+	
 	/**
 	 * @dev Deploy TestIglooFiGovernance.sol
 	*/
@@ -18,7 +16,6 @@ describe("IglooFiV1VaultFactory.sol", async () => {
 		testIglooFiGovernance = await TestIglooFiGovernance.deploy();
 		testIglooFiGovernance = await testIglooFiGovernance.deployed();
 	});
-
 
 	/**
 	 * @dev Deploy IglooFiV1VaultFactory.sol
@@ -98,6 +95,17 @@ describe("IglooFiV1VaultFactory.sol", async () => {
 		*/
 		describe("setPause", async () => {
 			it(
+				"Should revert when unauthorized msg.sender calls..",
+				async () => {
+					const [, addr1] = await ethers.getSigners();
+		
+					await expect(iglooFiV1VaultFactory.connect(addr1).setPause(false))
+						.to.be.rejectedWith("!auth")
+					;
+				}
+			);
+			
+			it(
 				"Should be able to set true..",
 				async () => {
 					await iglooFiV1VaultFactory.setPause(false);
@@ -117,17 +125,6 @@ describe("IglooFiV1VaultFactory.sol", async () => {
 					await iglooFiV1VaultFactory.setPause(false);
 				}
 			);
-
-			it(
-				"Should revert when unauthorized msg.sender calls..",
-				async () => {
-					const [, addr1] = await ethers.getSigners();
-		
-					await expect(iglooFiV1VaultFactory.connect(addr1).setPause(false))
-						.to.be.rejectedWith("!auth")
-					;
-				}
-			);
 		});
 
 
@@ -135,15 +132,6 @@ describe("IglooFiV1VaultFactory.sol", async () => {
 		* @dev updateFee
 		*/
 		describe("updateFee", async () => {
-			it(
-				"Should update correctly..",
-				async () => {
-					await iglooFiV1VaultFactory.updateFee(1);
-
-					expect(await iglooFiV1VaultFactory.fee()).to.equal(1);
-				}
-			);
-
 			it(
 				"Should revert when unauthorized msg.sender calls..",
 				async () => {
@@ -154,6 +142,15 @@ describe("IglooFiV1VaultFactory.sol", async () => {
 					;
 				}
 			);
+
+			it(
+				"Should update correctly..",
+				async () => {
+					await iglooFiV1VaultFactory.updateFee(1);
+
+					expect(await iglooFiV1VaultFactory.fee()).to.equal(1);
+				}
+			);
 		});
 
 
@@ -161,6 +158,17 @@ describe("IglooFiV1VaultFactory.sol", async () => {
 		* @dev transferFunds
 		*/
 		describe("transferFunds", async () => {
+			it(
+				"Should revert when unauthorized msg.sender calls..",
+				async () => {
+					const [, addr1] = await ethers.getSigners();
+		
+					await expect(
+						iglooFiV1VaultFactory.connect(addr1).transferFunds(addr1.address)
+					).to.be.rejectedWith("!auth");
+				}
+			);
+
 			it(
 				"Should be able to transfer to an address..",
 				async () => {
@@ -201,17 +209,6 @@ describe("IglooFiV1VaultFactory.sol", async () => {
 					await expect(balanceAfter.addr1).to.be.equal(
 						balanceBefore.addr1 + balanceBefore.iglooFiV1VaultFactory
 					);
-				}
-			);
-		
-			it(
-				"Should revert when unauthorized msg.sender calls..",
-				async () => {
-					const [, addr1] = await ethers.getSigners();
-		
-					await expect(
-						iglooFiV1VaultFactory.connect(addr1).transferFunds(addr1.address)
-					).to.be.rejectedWith("!auth");
 				}
 			);
 		});
@@ -266,4 +263,4 @@ describe("IglooFiV1VaultFactory.sol", async () => {
 			);
 		});
 	});
-});
+})
