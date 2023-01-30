@@ -348,16 +348,16 @@ describe("IglooFi V1 Vault", async () => {
 
 
 				/**
-				 * @dev processWithdrawalRequests
+				 * @dev processWithdrawalRequest
 				*/
-				describe("processWithdrawalRequests", async () => {
+				describe("processWithdrawalRequest", async () => {
 					it(
 						"Should revert when unauthorized msg.sender calls..",
 						async () => {
 							const [,, addr2] = await ethers.getSigners();
 							
 							await expect(
-								iglooFiV1Vault.connect(addr2).processWithdrawalRequests(0)
+								iglooFiV1Vault.connect(addr2).processWithdrawalRequest(0)
 							).to.be.rejected;
 						}
 					);
@@ -370,7 +370,7 @@ describe("IglooFi V1 Vault", async () => {
 							await iglooFiV1Vault.updateRequiredVoteCount(2);
 							
 							await expect(
-								iglooFiV1Vault.connect(addr1).processWithdrawalRequests(0)
+								iglooFiV1Vault.connect(addr1).processWithdrawalRequest(0)
 							).to.be.rejectedWith("Not enough votes");
 	
 							await iglooFiV1Vault.updateRequiredVoteCount(1);
@@ -383,7 +383,7 @@ describe("IglooFi V1 Vault", async () => {
 							const [,addr1, addr2] = await ethers.getSigners();
 							
 							await expect(
-								iglooFiV1Vault.connect(addr1).processWithdrawalRequests(0)
+								iglooFiV1Vault.connect(addr1).processWithdrawalRequest(0)
 							).to.be.rejectedWith("Not enough time has passed");
 						}
 					);
@@ -400,9 +400,9 @@ describe("IglooFi V1 Vault", async () => {
 							// Wait 10 seconds
 							await new Promise(res => setTimeout(res, 10000));
 							
-							await iglooFiV1Vault.connect(addr1).processWithdrawalRequests(0);
-	
-	
+							await iglooFiV1Vault.connect(addr1).processWithdrawalRequest(0);
+
+
 							const recieverBalanceAfter = await ethers.provider.getBalance(
 								addr2.address
 							);
@@ -450,6 +450,56 @@ describe("IglooFi V1 Vault", async () => {
 							expect(createdWithdrawalRequest[8].length).to.be.equal(0);
 						}
 					);
+				});
+
+
+				/**
+				 * @dev voteOnWithdrawalRequest
+				*/
+				describe("voteOnWithdrawalRequest", async () => {
+					it(
+						"Should be able vote on WithdrawalRequest and add voter to _withdrawalRequest[].votedVoters..",
+						async () => {
+							const [, addr1] = await ethers.getSigners();
+							
+							await iglooFiV1Vault.connect(addr1).voteOnWithdrawalRequest(
+								1,
+								true
+							)
+		
+							const createdWithdrawalRequest: any = await iglooFiV1Vault.withdrawalRequest(1);
+		
+							expect(createdWithdrawalRequest[6]).to.be.equal(1);
+							expect(createdWithdrawalRequest[8][0]).to.be.equal(addr1.address);
+						}
+					);
+				});
+
+
+				/**
+				 * @dev processWithdrawalRequest
+				*/
+				describe("processWithdrawalRequest", async () => {
+					it(
+						"Should process WithdrawalRequest for ERC20 token..",
+						async () => {
+							const [, addr1, addr2] = await ethers.getSigners();
+
+							const recieverBalanceBefore = await mockERC20.balanceOf(addr2.address);
+
+							// Wait 10 seconds
+							await new Promise(res => setTimeout(res, 10000));
+							
+							await iglooFiV1Vault.connect(addr1).processWithdrawalRequest(1);
+
+							const recieverBalanceAfter = await mockERC20.balanceOf(addr2.address);
+
+							await expect(
+								ethers.utils.formatUnits(recieverBalanceAfter) - 
+								ethers.utils.formatUnits(recieverBalanceBefore)
+							).to.be.equal(50);
+						}
+					)
 				});
 			});
 		});

@@ -252,7 +252,7 @@ interface IIglooFiV1Vault
 	* @param withdrawalRequestId {uint256} Id of the WithdrawalRequest
 	* Emits: `TokensWithdrawn`
 	*/
-	function processWithdrawalRequests(uint256 withdrawalRequestId)
+	function processWithdrawalRequest(uint256 withdrawalRequestId)
 		external
 	;
 

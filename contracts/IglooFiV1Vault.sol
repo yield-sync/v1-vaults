@@ -77,7 +77,7 @@ contract IglooFiV1Vault is
 
 	modifier validWithdrawalRequest(uint256 withdrawalRequestId)
 	{
-		// [require] `WithdrawalRequest` exists
+		// [require] WithdrawalRequest exists
 		require(
 			_withdrawalRequest[withdrawalRequestId].creator != address(0),
 			"No WithdrawalRequest found"
@@ -300,7 +300,7 @@ contract IglooFiV1Vault is
 	}
 
 	/// @inheritdoc IIglooFiV1Vault
-	function processWithdrawalRequests(uint256 withdrawalRequestId)
+	function processWithdrawalRequest(uint256 withdrawalRequestId)
 		public
 		override
 		onlyRole(VOTER)
