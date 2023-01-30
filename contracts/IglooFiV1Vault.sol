@@ -187,11 +187,12 @@ contract IglooFiV1Vault is
 			_messageSignatures[_messageHash]++;
 		}
 	}
-	
+
 
 	/// @inheritdoc IIglooFiV1Vault
 	function createWithdrawalRequest(
-		bool requestEther,
+		bool forERC20,
+		bool forERC721,
 		address to,
 		address tokenAddress,
 		uint256 amount,
@@ -202,10 +203,7 @@ contract IglooFiV1Vault is
 		onlyRole(VOTER)
 		returns (uint256)
 	{
-		// [require] 'to' is a valid address
 		require(to != address(0), "!to");
-
-		// [require] amount to be valid
 		require(amount > 0, "!amount");
 
 		address[] memory votedVoters;
@@ -213,7 +211,8 @@ contract IglooFiV1Vault is
 		// [add] `_withdrawalRequest` value
 		_withdrawalRequest[_withdrawalRequestIdTracker] = WithdrawalRequest(
 			{
-				requestEther: requestEther,
+				forERC20: forERC20,
+				forERC721: forERC721,
 				creator: msg.sender,
 				to: to,
 				token: tokenAddress,
@@ -321,29 +320,29 @@ contract IglooFiV1Vault is
 			"Not enough time has passed"
 		);
 
-		// If WithdrawalRequest is for Ether, erc20, or erc721 and transfer accordingly
-		if (w.requestEther)
+		// Transfer accordingly
+		if (w.forERC20 && !w.forERC721)
+		{
+			if (IERC20(w.token).balanceOf(address(this)) >= w.amount)
+			{
+				// [ERC20-transfer]
+				IERC20(w.token).transfer(w.to, w.amount);
+			}
+		}
+		else if (w.forERC721 && !w.forERC20)
+		{
+			if (IERC721(w.token).ownerOf(w.tokenId) == address(this))
+			{
+				// [ERC721-transfer]
+				IERC721(w.token).transferFrom(address(this), w.to, w.tokenId);
+			}
+		}
+		else
 		{
 			// [transfer]
 			(bool success, ) = w.to.call{value: w.amount}("");
 			
 			require(success, "Unable to send value, recipient may have reverted");
-		}
-		else if (IERC721(w.token).supportsInterface(type(IERC20).interfaceId))
-		{
-			if (IERC20(w.token).balanceOf(address(this)) >= w.amount)
-			{
-				// [erc20-transfer]
-				IERC20(w.token).transfer(w.to, w.amount);
-			}
-		}
-		else if (IERC721(w.token).supportsInterface(type(IERC721).interfaceId))
-		{
-			if (IERC721(w.token).ownerOf(w.tokenId) == address(this))
-			{
-				// [erc721-transfer]
-				IERC721(w.token).transferFrom(address(this), w.to, w.tokenId);
-			}
 		}
 
 		// [call][internal]
@@ -352,7 +351,7 @@ contract IglooFiV1Vault is
 		// [emit]
 		emit TokensWithdrawn(msg.sender, w.to, w.amount);
 	}
-	
+
 
 	/// @inheritdoc IIglooFiV1Vault
 	function addVoter(address targetAddress)
@@ -377,7 +376,7 @@ contract IglooFiV1Vault is
 		_revokeRole(VOTER, voter);
 
 		return voter;
-	} 
+	}
 
 	/// @inheritdoc IIglooFiV1Vault
 	function updateRequiredVoteCount(uint256 newRequiredVoteCount)

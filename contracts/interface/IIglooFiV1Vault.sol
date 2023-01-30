@@ -4,7 +4,8 @@ pragma solidity ^0.8.1;
 
 /* [struct] */
 struct WithdrawalRequest {
-	bool requestEther;
+	bool forERC20;
+	bool forERC721;
 	address creator;
 	address to;
 	address token;
@@ -207,7 +208,8 @@ interface IIglooFiV1Vault
 	* @dev [increment] `_withdrawalRequestId`
 	*      [add] `_withdrawalRequest` value
 	*      [push-into] `_withdrawalRequestIds`
-	* @param requestEther {bool} If to be withdrawn asset is ETH set to true
+	* @param forERC20 {bool} If to be withdrawn asset is ERC20
+	* @param forERC721 {bool} If to be withdrawn asset is ERC721
 	* @param to {address} Address the withdrawn tokens will be sent
 	* @param tokenAddress {address}
 	* @param amount {uint256} Amount to be withdrawn
@@ -216,7 +218,8 @@ interface IIglooFiV1Vault
 	* Emits: `CreatedWithdrawalRequest`
 	*/
 	function createWithdrawalRequest(
-		bool requestEther,
+		bool forERC20,
+		bool forERC721,
 		address to,
 		address tokenAddress,
 		uint256 amount,
