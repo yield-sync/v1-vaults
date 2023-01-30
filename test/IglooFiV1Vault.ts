@@ -232,7 +232,7 @@ describe("IglooFi V1 Vault", async () => {
 							iglooFiV1Vault.connect(addr2).createWithdrawalRequest(
 								true,
 								addr2.address,
-								"0x0000000000000000000000000000000000000000",
+								ethers.constants.AddressZero,
 								ethers.utils.parseEther(".5"),
 								0
 							)
@@ -248,7 +248,7 @@ describe("IglooFi V1 Vault", async () => {
 						await iglooFiV1Vault.connect(addr1).createWithdrawalRequest(
 							true,
 							addr2.address,
-							"0x0000000000000000000000000000000000000000",
+							ethers.constants.AddressZero,
 							ethers.utils.parseEther(".5"),
 							0
 						);
@@ -259,7 +259,7 @@ describe("IglooFi V1 Vault", async () => {
 						expect(createdWithdrawalRequest[1]).to.be.equal(addr1.address);
 						expect(createdWithdrawalRequest[2]).to.be.equal(addr2.address);
 						expect(createdWithdrawalRequest[3]).to.be.equal(
-							"0x0000000000000000000000000000000000000000"
+							ethers.constants.AddressZero
 						);
 						expect(createdWithdrawalRequest[4]).to.be.equal(
 							ethers.utils.parseEther(".5")
