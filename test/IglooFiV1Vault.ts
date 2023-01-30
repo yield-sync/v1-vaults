@@ -21,7 +21,7 @@ describe("IglooFi V1 Vault", async () => {
 		iglooFiV1Vault = await IglooFiV1Vault.deploy(
 			owner.address,
 			2,
-			10
+			5
 		);
 		iglooFiV1Vault = await iglooFiV1Vault.deployed();
 	});
@@ -88,10 +88,10 @@ describe("IglooFi V1 Vault", async () => {
 			);
 		
 			it(
-				"Should initialize withdrawalDelaySeconds 10..",
+				"Should initialize withdrawalDelaySeconds 5..",
 				async () => {
 					expect(await iglooFiV1Vault.withdrawalDelaySeconds()).to.equal(
-						10
+						5
 					);
 				}
 			);
@@ -196,7 +196,7 @@ describe("IglooFi V1 Vault", async () => {
 						const [, addr1] = await ethers.getSigners();
 			
 						await expect(
-							iglooFiV1Vault.connect(addr1).updateWithdrawalDelaySeconds(5)
+							iglooFiV1Vault.connect(addr1).updateWithdrawalDelaySeconds(10)
 						).to.be.rejected;
 					}
 				);
@@ -204,11 +204,11 @@ describe("IglooFi V1 Vault", async () => {
 				it(
 					"Should be able to update withdrawalDelaySeconds..",
 					async () => {
-						await iglooFiV1Vault.updateWithdrawalDelaySeconds(5)
+						await iglooFiV1Vault.updateWithdrawalDelaySeconds(10)
 		
 						await expect(
 							await iglooFiV1Vault.withdrawalDelaySeconds()
-						).to.be.equal(5);
+						).to.be.equal(10);
 					}
 				);
 			});
@@ -347,6 +347,43 @@ describe("IglooFi V1 Vault", async () => {
 						await expect(
 							iglooFiV1Vault.connect(addr2).processWithdrawalRequests(0)
 						).to.be.rejected;
+					}
+				);
+
+				it(
+					"Should fail to process WithdrawalRequest because not enough time has passed..",
+					async () => {
+						const [,addr1, addr2] = await ethers.getSigners();
+						
+						await expect(
+							iglooFiV1Vault.connect(addr1).processWithdrawalRequests(0)
+						).to.be.rejectedWith("Not enough time has passed");
+					}
+				);
+				
+				it(
+					"Should process WithdrawalRequest..",
+					async () => {
+						const [, addr1, addr2] = await ethers.getSigners();
+
+						const recieverBalanceBefore = await ethers.provider.getBalance(
+							addr2.address
+						);
+
+						// Wait 10 seconds
+						await new Promise(res => setTimeout(res, 10000));
+						
+						await iglooFiV1Vault.connect(addr1).processWithdrawalRequests(0);
+
+
+						const recieverBalanceAfter = await ethers.provider.getBalance(
+							addr2.address
+						);
+
+						await expect(
+							ethers.utils.formatUnits(recieverBalanceAfter) - 
+							ethers.utils.formatUnits(recieverBalanceBefore)
+						).to.be.equal(.5);
 					}
 				);
 			})

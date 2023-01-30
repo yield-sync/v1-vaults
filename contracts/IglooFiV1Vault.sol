@@ -314,7 +314,7 @@ contract IglooFiV1Vault is
 
 		// [require] WithdrawalRequest time delay passed
 		require(
-			block.timestamp - w.latestRelevantApproveVoteTime >= withdrawalDelaySeconds,
+			block.timestamp - w.latestRelevantApproveVoteTime >= withdrawalDelaySeconds * 1 seconds,
 			"Not enough time has passed"
 		);
 
