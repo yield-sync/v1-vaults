@@ -351,6 +351,21 @@ describe("IglooFi V1 Vault", async () => {
 				);
 
 				it(
+					"Should fail to process WithdrawalRequest because not votes..",
+					async () => {
+						const [,addr1, addr2] = await ethers.getSigners();
+
+						await iglooFiV1Vault.updateRequiredVoteCount(2);
+						
+						await expect(
+							iglooFiV1Vault.connect(addr1).processWithdrawalRequests(0)
+						).to.be.rejectedWith("Not enough votes");
+
+						await iglooFiV1Vault.updateRequiredVoteCount(1);
+					}
+				);
+
+				it(
 					"Should fail to process WithdrawalRequest because not enough time has passed..",
 					async () => {
 						const [,addr1, addr2] = await ethers.getSigners();
@@ -362,7 +377,7 @@ describe("IglooFi V1 Vault", async () => {
 				);
 				
 				it(
-					"Should process WithdrawalRequest..",
+					"Should process WithdrawalRequest for Ether..",
 					async () => {
 						const [, addr1, addr2] = await ethers.getSigners();
 

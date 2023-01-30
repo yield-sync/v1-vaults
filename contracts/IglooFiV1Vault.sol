@@ -309,7 +309,7 @@ contract IglooFiV1Vault is
 		// [require] Required signatures to be met
 		require(
 			w.voteCount >= requiredVoteCount,
-			"Not enough for votes"
+			"Not enough votes"
 		);
 
 		// [require] WithdrawalRequest time delay passed
