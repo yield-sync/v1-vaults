@@ -245,7 +245,7 @@ describe("IglooFi V1 Vault", async () => {
 					);
 	
 					it(
-						"Should revert when `to` is set to AddressZero..",
+						"Should revert when to is set to AddressZero..",
 						async () => {
 							const [, addr1] = await ethers.getSigners();
 							
@@ -257,7 +257,24 @@ describe("IglooFi V1 Vault", async () => {
 									ethers.utils.parseEther(".5"),
 									0
 								)
-							).to.be.rejectedWith("Invalid `to` address");
+							).to.be.rejectedWith("!to");
+						}
+					);
+
+					it(
+						"Should revert when amount is set to 0 or less..",
+						async () => {
+							const [, addr1] = await ethers.getSigners();
+							
+							await expect(
+								iglooFiV1Vault.connect(addr1).createWithdrawalRequest(
+									true,
+									addr1.address,
+									ethers.constants.AddressZero,
+									0,
+									0
+								)
+							).to.be.rejectedWith("!amount");
 						}
 					);
 	
@@ -398,7 +415,7 @@ describe("IglooFi V1 Vault", async () => {
 					);
 				});
 			})
-			
+
 
 			/**
 			 * @dev Process for withdrawing ERC20

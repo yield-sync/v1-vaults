@@ -202,8 +202,11 @@ contract IglooFiV1Vault is
 		onlyRole(VOTER)
 		returns (uint256)
 	{
-		// [require] 'to' is a valid Ethereum address
-		require(to != address(0), "Invalid `to` address");
+		// [require] 'to' is a valid address
+		require(to != address(0), "!to");
+
+		// [require] amount to be valid
+		require(amount > 0, "!amount");
 
 		address[] memory votedVoters;
 
