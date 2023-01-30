@@ -297,6 +297,7 @@ describe("IglooFi V1 Vault", async () => {
 				);
 			});
 
+
 			/**
 			 * @dev voteOnWithdrawalRequest
 			*/
@@ -316,7 +317,7 @@ describe("IglooFi V1 Vault", async () => {
 				);
 	
 				it(
-					"Should be able vote on WithdrawalRequest..",
+					"Should be able vote on WithdrawalRequest and add voter to _withdrawalRequest[].votedVoters..",
 					async () => {
 						const [, addr1] = await ethers.getSigners();
 						
@@ -328,6 +329,7 @@ describe("IglooFi V1 Vault", async () => {
 						const createdWithdrawalRequest: any = await iglooFiV1Vault.withdrawalRequest(0);
 	
 						expect(createdWithdrawalRequest[6]).to.be.equal(1);
+						expect(createdWithdrawalRequest[8][0]).to.be.equal(addr1.address);
 					}
 				);
 			});
