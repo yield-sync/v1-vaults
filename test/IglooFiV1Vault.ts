@@ -239,6 +239,23 @@ describe("IglooFi V1 Vault", async () => {
 						).to.be.rejected;
 					}
 				);
+
+				it(
+					"Should revert when `to` is set to AddressZero..",
+					async () => {
+						const [, addr1] = await ethers.getSigners();
+						
+						await expect(
+							iglooFiV1Vault.connect(addr1).createWithdrawalRequest(
+								true,
+								ethers.constants.AddressZero,
+								ethers.constants.AddressZero,
+								ethers.utils.parseEther(".5"),
+								0
+							)
+						).to.be.rejectedWith("Invalid `to` address");
+					}
+				);
 	
 				it(
 					"Should be able to create a WithdrawalRequest for Ether..",
@@ -252,7 +269,7 @@ describe("IglooFi V1 Vault", async () => {
 							ethers.utils.parseEther(".5"),
 							0
 						);
-						
+
 						const createdWithdrawalRequest: any = await iglooFiV1Vault.withdrawalRequest(0);
 	
 						expect(createdWithdrawalRequest[0]).to.be.true;
