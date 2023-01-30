@@ -213,7 +213,7 @@ describe("IglooFi V1 Vault Factory", async () => {
 		});
 	
 	
-		describe("Restriction: *", async () => {
+		describe("!Restriction", async () => {
 			/**
 			* @dev deployVault
 			*/

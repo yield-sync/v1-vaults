@@ -333,6 +333,23 @@ describe("IglooFi V1 Vault", async () => {
 					}
 				);
 			});
+
+
+			/**
+			 * @dev processWithdrawalRequests
+			*/
+			describe("processWithdrawalRequests", async () => {
+				it(
+					"Should revert when unauthorized msg.sender calls..",
+					async () => {
+						const [,, addr2] = await ethers.getSigners();
+						
+						await expect(
+							iglooFiV1Vault.connect(addr2).processWithdrawalRequests(0)
+						).to.be.rejected;
+					}
+				);
+			})
 		});
 
 
