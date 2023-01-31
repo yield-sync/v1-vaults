@@ -265,7 +265,7 @@ contract IglooFiV1Vault is
 		}
 
 		// [require] msg.sender's (voter's) has not voted already
-		require(!voted, "You have already casted a vote for this WithdrawalRequest");
+		require(!voted, "Already voted");
 
 		if (vote)
 		{

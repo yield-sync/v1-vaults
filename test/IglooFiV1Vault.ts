@@ -317,6 +317,15 @@ describe("IglooFi V1 Vault", async () => {
 							expect(createdWithdrawalRequest[10].length).to.be.equal(0);
 						}
 					);
+
+					it(
+						"Should have 0 in _activeWithdrawalRequestIds..",
+						async () => {
+							expect(
+								(await iglooFiV1Vault.activeWithdrawalRequestIds())[0]
+							).to.be.equal(ethers.utils.parseEther("0"));
+						}
+					);
 				});
 
 
@@ -352,6 +361,20 @@ describe("IglooFi V1 Vault", async () => {
 
 							expect(createdWithdrawalRequest[8]).to.be.equal(1);
 							expect(createdWithdrawalRequest[10][0]).to.be.equal(addr1.address);
+						}
+					);
+
+					it(
+						"Should revert with 'Already voted' when attempting to vote again..",
+						async () => {
+							const [, addr1] = await ethers.getSigners();
+							
+							await expect(
+								iglooFiV1Vault.connect(addr1).voteOnWithdrawalRequest(
+									0,
+									true
+								)
+							).to.be.rejectedWith("Already voted");
 						}
 					);
 				});
