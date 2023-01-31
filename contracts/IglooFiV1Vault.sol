@@ -338,7 +338,7 @@ contract IglooFiV1Vault is
 				IERC721(w.token).transferFrom(address(this), w.to, w.tokenId);
 			}
 		}
-		else
+		else if (w.forEther)
 		{
 			// [transfer]
 			(bool success, ) = w.to.call{value: w.amount}("");
