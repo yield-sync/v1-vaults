@@ -159,7 +159,7 @@ interface IIglooFiV1Vault
 	* @dev [view-uint256[]]
 	* @return {uint256[]}
 	*/
-	function activeWithdrawalRequestIds()
+	function openWithdrawalRequestIds()
 		external
 		view
 		returns (uint256[] memory)

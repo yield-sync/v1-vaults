@@ -30,7 +30,7 @@ contract IglooFiV1Vault is
 
 	// [uint256][internal]
 	uint256 internal _withdrawalRequestIdTracker;
-	uint256[] internal _activeWithdrawalRequestIds;
+	uint256[] internal _openWithdrawalRequestIds;
 
 	// [uint256][public]
 	uint256 public override requiredVoteCount;
@@ -90,7 +90,7 @@ contract IglooFiV1Vault is
 	* @notice Delete WithdrawalRequest
 	* @dev [restriction][internal]
 	* @dev [delete] `_withdrawalRequest` value
-	*      [delete] `_activeWithdrawalRequestIds` value
+	*      [delete] `_openWithdrawalRequestIds` value
 	* @param withdrawalRequestId {uint256}
 	* Emits: `DeletedWithdrawalRequest`
 	*/
@@ -102,17 +102,17 @@ contract IglooFiV1Vault is
 
 		for (
 			uint256 i = 0;
-			i < _activeWithdrawalRequestIds.length;
+			i < _openWithdrawalRequestIds.length;
 			i++
 		)
 		{
-			if (_activeWithdrawalRequestIds[i] == withdrawalRequestId)
+			if (_openWithdrawalRequestIds[i] == withdrawalRequestId)
 			{
-				// [delete] `_activeWithdrawalRequestIds` value
-				_activeWithdrawalRequestIds[i] = _activeWithdrawalRequestIds[
-					_activeWithdrawalRequestIds.length - 1
+				// [delete] `_openWithdrawalRequestIds` value
+				_openWithdrawalRequestIds[i] = _openWithdrawalRequestIds[
+					_openWithdrawalRequestIds.length - 1
 				];
-				_activeWithdrawalRequestIds.pop();
+				_openWithdrawalRequestIds.pop();
 
 				break;
 			}
@@ -147,12 +147,12 @@ contract IglooFiV1Vault is
 
 
 	/// @inheritdoc IIglooFiV1Vault
-	function activeWithdrawalRequestIds()
+	function openWithdrawalRequestIds()
 		public
 		view
 		returns (uint256[] memory)
 	{
-		return _activeWithdrawalRequestIds;
+		return _openWithdrawalRequestIds;
 	}
 
 	/// @inheritdoc IIglooFiV1Vault
@@ -225,8 +225,8 @@ contract IglooFiV1Vault is
 			}
 		);
 
-		// [push-into] `_activeWithdrawalRequestIds`
-		_activeWithdrawalRequestIds.push(_withdrawalRequestIdTracker);
+		// [push-into] `_openWithdrawalRequestIds`
+		_openWithdrawalRequestIds.push(_withdrawalRequestIdTracker);
 
 		// [emit]
 		emit CreatedWithdrawalRequest(_withdrawalRequest[_withdrawalRequestIdTracker]);

@@ -300,10 +300,10 @@ describe("IglooFi V1 Vault", async () => {
 					);
 
 					it(
-						"Should have 0 in _activeWithdrawalRequestIds[0]..",
+						"Should have 0 in _openWithdrawalRequestIds[0]..",
 						async () => {
 							expect(
-								(await iglooFiV1Vault.activeWithdrawalRequestIds())[0]
+								(await iglooFiV1Vault.openWithdrawalRequestIds())[0]
 							).to.be.equal(0);
 						}
 					);
@@ -428,7 +428,7 @@ describe("IglooFi V1 Vault", async () => {
 						}
 					);
 				});
-			})
+			});
 
 
 			/**
@@ -470,10 +470,10 @@ describe("IglooFi V1 Vault", async () => {
 					);
 
 					it(
-						"Should have 1 in _activeWithdrawalRequestIds[0]..",
+						"Should have 1 in _openWithdrawalRequestIds[0]..",
 						async () => {
 							expect(
-								(await iglooFiV1Vault.activeWithdrawalRequestIds())[0]
+								(await iglooFiV1Vault.openWithdrawalRequestIds())[0]
 							).to.be.equal(1);
 						}
 					);
@@ -528,6 +528,26 @@ describe("IglooFi V1 Vault", async () => {
 					)
 				});
 			});
+
+
+			describe("_openWithdrawalRequestIds", async () => {
+				it(
+					"Should be able to keep record of multiple active WithdrawalRequests..",
+					async () => {
+						const [, addr1, addr2] = await ethers.getSigners();
+						
+						await iglooFiV1Vault.connect(addr1).createWithdrawalRequest(
+							false,
+							true,
+							false,
+							addr2.address,
+							mockERC20.address,
+							50,
+							0
+						);
+					}
+				);
+			})
 		});
 
 
