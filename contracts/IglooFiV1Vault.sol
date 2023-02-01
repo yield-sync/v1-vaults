@@ -10,7 +10,6 @@ import { ECDSA } from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 
 import { IIglooFiV1Vault, WithdrawalRequest } from "./interface/IIglooFiV1Vault.sol";
 
-
 /**
 * @title IglooFiV1Vault
 */
@@ -110,8 +109,10 @@ contract IglooFiV1Vault is
 				_activeWithdrawalRequestIds[i] == withdrawalRequestId
 			)
 			{
+				
 				// [delete] `_activeWithdrawalRequestIds` value
-				delete _activeWithdrawalRequestIds[i];
+				_activeWithdrawalRequestIds[i] = _activeWithdrawalRequestIds[_activeWithdrawalRequestIds.length - 1];
+				_activeWithdrawalRequestIds.pop();
 
 				break;
 			}
@@ -203,7 +204,6 @@ contract IglooFiV1Vault is
 		onlyRole(VOTER)
 		returns (uint256)
 	{
-		require(to != address(0), "!to");
 		require(amount > 0, "!amount");
 
 		address[] memory votedVoters;

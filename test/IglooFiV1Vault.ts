@@ -247,25 +247,6 @@ describe("IglooFi V1 Vault", async () => {
 					);
 
 					it(
-						"Should revert when to is set to AddressZero..",
-						async () => {
-							const [, addr1] = await ethers.getSigners();
-							
-							await expect(
-								iglooFiV1Vault.connect(addr1).createWithdrawalRequest(
-									true,
-									false,
-									false,
-									ethers.constants.AddressZero,
-									ethers.constants.AddressZero,
-									ethers.utils.parseEther(".5"),
-									0
-								)
-							).to.be.rejectedWith("!to");
-						}
-					);
-
-					it(
 						"Should revert when amount is set to 0 or less..",
 						async () => {
 							const [, addr1] = await ethers.getSigners();
@@ -319,11 +300,11 @@ describe("IglooFi V1 Vault", async () => {
 					);
 
 					it(
-						"Should have 0 in _activeWithdrawalRequestIds..",
+						"Should have 0 in _activeWithdrawalRequestIds[0]..",
 						async () => {
 							expect(
 								(await iglooFiV1Vault.activeWithdrawalRequestIds())[0]
-							).to.be.equal(ethers.utils.parseEther("0"));
+							).to.be.equal(0);
 						}
 					);
 				});
@@ -485,6 +466,15 @@ describe("IglooFi V1 Vault", async () => {
 							expect(createdWithdrawalRequest[7]).to.be.equal(0);
 							expect(createdWithdrawalRequest[8]).to.be.equal(0);
 							expect(createdWithdrawalRequest[10].length).to.be.equal(0);
+						}
+					);
+
+					it(
+						"Should have 1 in _activeWithdrawalRequestIds[0]..",
+						async () => {
+							expect(
+								(await iglooFiV1Vault.activeWithdrawalRequestIds())[0]
+							).to.be.equal(1);
 						}
 					);
 				});
