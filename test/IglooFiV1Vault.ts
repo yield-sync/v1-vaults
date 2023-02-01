@@ -532,7 +532,7 @@ describe("IglooFi V1 Vault", async () => {
 
 			describe("_openWithdrawalRequestIds", async () => {
 				it(
-					"Should be able to keep record of multiple active WithdrawalRequests..",
+					"Should be able to keep record of multiple open WithdrawalRequest Ids..",
 					async () => {
 						const [, addr1, addr2] = await ethers.getSigners();
 						
