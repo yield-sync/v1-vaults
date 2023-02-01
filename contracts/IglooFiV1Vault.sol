@@ -10,6 +10,7 @@ import { ECDSA } from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 
 import { IIglooFiV1Vault, WithdrawalRequest } from "./interface/IIglooFiV1Vault.sol";
 
+
 /**
 * @title IglooFiV1Vault
 */
@@ -105,13 +106,12 @@ contract IglooFiV1Vault is
 			i++
 		)
 		{
-			if (
-				_activeWithdrawalRequestIds[i] == withdrawalRequestId
-			)
+			if (_activeWithdrawalRequestIds[i] == withdrawalRequestId)
 			{
-				
 				// [delete] `_activeWithdrawalRequestIds` value
-				_activeWithdrawalRequestIds[i] = _activeWithdrawalRequestIds[_activeWithdrawalRequestIds.length - 1];
+				_activeWithdrawalRequestIds[i] = _activeWithdrawalRequestIds[
+					_activeWithdrawalRequestIds.length - 1
+				];
 				_activeWithdrawalRequestIds.pop();
 
 				break;
@@ -245,9 +245,6 @@ contract IglooFiV1Vault is
 		validWithdrawalRequest(withdrawalRequestId)
 		returns (uint256, uint256)
 	{
-		// [init]
-		bool voted = false;
-
 		// [for] each voter within WithdrawalRequest
 		for (
 			uint256 i = 0;
@@ -257,15 +254,10 @@ contract IglooFiV1Vault is
 		{
 			if (_withdrawalRequest[withdrawalRequestId].votedVoters[i] == msg.sender)
 			{
-				// Flag
-				voted = true;
-
-				break;
+				revert("Already voted");
 			}
 		}
-
-		// [require] msg.sender's (voter's) has not voted already
-		require(!voted, "Already voted");
+		
 
 		if (vote)
 		{
