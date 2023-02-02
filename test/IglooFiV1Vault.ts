@@ -3,6 +3,7 @@ const { ethers } = require("hardhat");
 
 
 const sevenDaysInSeconds = 7 * 24 * 60 * 60;
+const sixDaysInSeconds = 6 * 24 * 60 * 60;
 
 
 describe("IglooFi V1 Vault", async () => {
@@ -402,6 +403,9 @@ describe("IglooFi V1 Vault", async () => {
 						"Should fail to process WithdrawalRequest because not enough time has passed..",
 						async () => {
 							const [,addr1, addr2] = await ethers.getSigners();
+
+							// Fast-forward 6 days
+							await ethers.provider.send('evm_increaseTime', [sixDaysInSeconds]);
 							
 							await expect(
 								iglooFiV1Vault.connect(addr1).processWithdrawalRequest(0)
