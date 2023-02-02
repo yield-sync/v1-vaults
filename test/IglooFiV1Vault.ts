@@ -619,14 +619,14 @@ describe("IglooFi V1 Vault", async () => {
 						await iglooFiV1Vault.updateWithdrawalRequestLatestRelevantApproveVoteTime(
 							3,
 							true,
-							2
+							10
 						)
 						
 						const afterBlockTimestamp: number = parseInt(
 							(await iglooFiV1Vault.withdrawalRequest(3))[9]
 						);
 
-						expect(beforeBlockTimestamp + 2).to.be.equal(afterBlockTimestamp);
+						expect(beforeBlockTimestamp + 10).to.be.equal(afterBlockTimestamp);
 					}
 				);
 
@@ -640,14 +640,14 @@ describe("IglooFi V1 Vault", async () => {
 						await iglooFiV1Vault.updateWithdrawalRequestLatestRelevantApproveVoteTime(
 							3,
 							false,
-							2
+							10
 						)
 						
 						const afterBlockTimestamp: number = parseInt(
 							(await iglooFiV1Vault.withdrawalRequest(3))[9]
 						);
 
-						expect(beforeBlockTimestamp - 2).to.be.equal(afterBlockTimestamp);
+						expect(beforeBlockTimestamp - 10).to.be.equal(afterBlockTimestamp);
 					}
 				);
 			});
