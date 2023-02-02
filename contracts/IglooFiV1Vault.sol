@@ -100,11 +100,7 @@ contract IglooFiV1Vault is
 		// [delete] `_withdrawalRequest` value
 		delete _withdrawalRequest[withdrawalRequestId];
 
-		for (
-			uint256 i = 0;
-			i < _openWithdrawalRequestIds.length;
-			i++
-		)
+		for (uint256 i = 0; i < _openWithdrawalRequestIds.length; i++)
 		{
 			if (_openWithdrawalRequestIds[i] == withdrawalRequestId)
 			{
@@ -132,10 +128,7 @@ contract IglooFiV1Vault is
 	{
 		address signer = _messageHash.recover(_signature);
 
-		if (
-			hasRole(VOTER, signer) &&
-			_messageSignatures[_messageHash] >= requiredVoteCount
-		)
+		if (hasRole(VOTER, signer) && _messageSignatures[_messageHash] >= requiredVoteCount)
 		{
 			return MAGICVALUE;
 		}
@@ -246,11 +239,7 @@ contract IglooFiV1Vault is
 		returns (uint256, uint256)
 	{
 		// [for] each voter within WithdrawalRequest
-		for (
-			uint256 i = 0;
-			i < _withdrawalRequest[withdrawalRequestId].votedVoters.length;
-			i++
-		)
+		for (uint256 i = 0; i < _withdrawalRequest[withdrawalRequestId].votedVoters.length; i++)
 		{
 			if (_withdrawalRequest[withdrawalRequestId].votedVoters[i] == msg.sender)
 			{
@@ -423,16 +412,16 @@ contract IglooFiV1Vault is
 		if (arithmaticSign)
 		{
 			// [update] WithdrawalRequest within `_withdrawalRequest`
-			_withdrawalRequest[
-				withdrawalRequestId
-			].latestRelevantApproveVoteTime += (timeInSeconds * 1 seconds);
+			_withdrawalRequest[withdrawalRequestId].latestRelevantApproveVoteTime += (
+				timeInSeconds * 1 seconds
+			);
 		}
 		else
 		{
 			// [update] WithdrawalRequest within `_withdrawalRequest`
-			_withdrawalRequest[
-				withdrawalRequestId
-			].latestRelevantApproveVoteTime -= (timeInSeconds * 1 seconds);
+			_withdrawalRequest[withdrawalRequestId].latestRelevantApproveVoteTime -= (
+				timeInSeconds * 1 seconds
+			);
 		}
 
 		// [emit]
