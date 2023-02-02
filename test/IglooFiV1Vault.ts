@@ -545,6 +545,24 @@ describe("IglooFi V1 Vault", async () => {
 							50,
 							0
 						);
+
+						await iglooFiV1Vault.connect(addr1).createWithdrawalRequest(
+							false,
+							true,
+							false,
+							addr2.address,
+							mockERC20.address,
+							50,
+							0
+						);
+
+						expect(
+							(await iglooFiV1Vault.openWithdrawalRequestIds())[0]
+						).to.be.equal(2);
+
+						expect(
+							(await iglooFiV1Vault.openWithdrawalRequestIds())[1]
+						).to.be.equal(3);
 					}
 				);
 			})
