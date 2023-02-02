@@ -423,12 +423,16 @@ contract IglooFiV1Vault is
 		if (arithmaticSign)
 		{
 			// [update] WithdrawalRequest within `_withdrawalRequest`
-			_withdrawalRequest[withdrawalRequestId].latestRelevantApproveVoteTime += (timeInSeconds * 1 seconds);
+			_withdrawalRequest[
+				withdrawalRequestId
+			].latestRelevantApproveVoteTime += (timeInSeconds * 1 seconds);
 		}
 		else
 		{
 			// [update] WithdrawalRequest within `_withdrawalRequest`
-			_withdrawalRequest[withdrawalRequestId].latestRelevantApproveVoteTime -= (timeInSeconds * 1 seconds);
+			_withdrawalRequest[
+				withdrawalRequestId
+			].latestRelevantApproveVoteTime -= (timeInSeconds * 1 seconds);
 		}
 
 		// [emit]
