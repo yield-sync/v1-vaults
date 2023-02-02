@@ -569,6 +569,40 @@ describe("IglooFi V1 Vault", async () => {
 		});
 
 
+		describe("Restriction: DEFAULT_ADMIN_ROLE", async () => {
+			/**
+			 * @dev deleteWithdrawalRequest
+			*/
+			describe("deleteWithdrawalRequest", async () => {
+				it(
+					"Should revert when unauthorized msg.sender calls..",
+					async () => {
+						const [, addr1] = await ethers.getSigners();
+						
+						await expect(
+							iglooFiV1Vault.connect(addr1).deleteWithdrawalRequest(2)
+						).to.be.rejected;
+					}
+				);
+
+				it(
+					"Should be able to delete WithdrawalRequest..",
+					async () => {
+						await iglooFiV1Vault.deleteWithdrawalRequest(2);
+
+						expect(
+							(await iglooFiV1Vault.openWithdrawalRequestIds())[0]
+						).to.be.equal(3);
+
+						expect(
+							(await iglooFiV1Vault.openWithdrawalRequestIds()).length
+						).to.be.equal(1);
+					}
+				);
+			});
+		})
+
+
 		/**
 		 * @dev sign
 		 * TODO: Incomploete, need to create tests for this function
