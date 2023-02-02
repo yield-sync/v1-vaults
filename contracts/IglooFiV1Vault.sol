@@ -411,7 +411,8 @@ contract IglooFiV1Vault is
 	/// @inheritdoc IIglooFiV1Vault
 	function updateWithdrawalRequestLatestRelevantApproveVoteTime(
 		uint256 withdrawalRequestId,
-		uint256 latestRelevantApproveVoteTime
+		bool arithmaticSign,
+		uint256 timeInSeconds
 	)
 		public
 		override
@@ -419,18 +420,27 @@ contract IglooFiV1Vault is
 		validWithdrawalRequest(withdrawalRequestId)
 		returns (uint256, uint256)
 	{
-		// [update] WithdrawalRequest within `_withdrawalRequest`
-		_withdrawalRequest[
-			withdrawalRequestId
-		].latestRelevantApproveVoteTime = latestRelevantApproveVoteTime;
+		if (arithmaticSign)
+		{
+			// [update] WithdrawalRequest within `_withdrawalRequest`
+			_withdrawalRequest[withdrawalRequestId].latestRelevantApproveVoteTime += (timeInSeconds * 1 seconds);
+		}
+		else
+		{
+			// [update] WithdrawalRequest within `_withdrawalRequest`
+			_withdrawalRequest[withdrawalRequestId].latestRelevantApproveVoteTime -= (timeInSeconds * 1 seconds);
+		}
 
 		// [emit]
 		emit UpdatedWithdrawalRequestLastSignificantApproveVote(
 			withdrawalRequestId,
-			latestRelevantApproveVoteTime
+			_withdrawalRequest[withdrawalRequestId].latestRelevantApproveVoteTime
 		);
 
-		return (withdrawalRequestId, latestRelevantApproveVoteTime);
+		return (
+			withdrawalRequestId,
+			_withdrawalRequest[withdrawalRequestId].latestRelevantApproveVoteTime
+		);
 	}
 
 	/// @inheritdoc IIglooFiV1Vault

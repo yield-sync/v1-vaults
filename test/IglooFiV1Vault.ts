@@ -603,7 +603,55 @@ describe("IglooFi V1 Vault", async () => {
 					}
 				);
 			});
-		})
+
+
+			/**
+			 * @dev deleteWithdrawalRequest
+			*/
+			describe("updateWithdrawalRequestLatestRelevantApproveVoteTime", async () => {
+				it(
+					"Should update the latestRelevantApproveVoteTime to ADD seconds..",
+					async () => {
+						const beforeBlockTimestamp: number = parseInt(
+							(await iglooFiV1Vault.withdrawalRequest(3))[9]
+						);
+						
+						await iglooFiV1Vault.updateWithdrawalRequestLatestRelevantApproveVoteTime(
+							3,
+							true,
+							2
+						)
+						
+						const afterBlockTimestamp: number = parseInt(
+							(await iglooFiV1Vault.withdrawalRequest(3))[9]
+						);
+
+						expect(beforeBlockTimestamp + 2).to.be.equal(afterBlockTimestamp);
+					}
+				);
+
+				it(
+					"Should update the latestRelevantApproveVoteTime to SUBTRACT seconds..",
+					async () => {
+						const beforeBlockTimestamp: number = parseInt(
+							(await iglooFiV1Vault.withdrawalRequest(3))[9]
+						);
+
+						await iglooFiV1Vault.updateWithdrawalRequestLatestRelevantApproveVoteTime(
+							3,
+							false,
+							2
+						)
+						
+						const afterBlockTimestamp: number = parseInt(
+							(await iglooFiV1Vault.withdrawalRequest(3))[9]
+						);
+
+						expect(beforeBlockTimestamp - 2).to.be.equal(afterBlockTimestamp);
+					}
+				);
+			});
+		});
 
 
 		/**
@@ -614,7 +662,7 @@ describe("IglooFi V1 Vault", async () => {
 			 * @dev sign
 			 * TODO: Incomploete, need to create tests for this function
 			*/
-			describe("sign", async () => {})
-		})
+			describe("sign", async () => {});
+		});
 	});
 });
