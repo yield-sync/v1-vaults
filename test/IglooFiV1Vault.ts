@@ -2,6 +2,9 @@ import { expect } from "chai";
 const { ethers } = require("hardhat");
 
 
+const sevenDaysInSeconds = 7 * 24 * 60 * 60;
+
+
 describe("IglooFi V1 Vault", async () => {
 	let iglooFiV1Vault: any;
 	let mockERC20: any;
@@ -196,7 +199,9 @@ describe("IglooFi V1 Vault", async () => {
 						const [, addr1] = await ethers.getSigners();
 
 						await expect(
-							iglooFiV1Vault.connect(addr1).updateWithdrawalDelaySeconds(10)
+							iglooFiV1Vault.connect(addr1).updateWithdrawalDelaySeconds(
+								sevenDaysInSeconds
+							)
 						).to.be.rejected;
 					}
 				);
@@ -204,11 +209,13 @@ describe("IglooFi V1 Vault", async () => {
 				it(
 					"Should be able to update withdrawalDelaySeconds..",
 					async () => {
-						await iglooFiV1Vault.updateWithdrawalDelaySeconds(10)
+						await iglooFiV1Vault.updateWithdrawalDelaySeconds(
+							sevenDaysInSeconds
+						)
 
 						await expect(
 							await iglooFiV1Vault.withdrawalDelaySeconds()
-						).to.be.equal(10);
+						).to.be.equal(sevenDaysInSeconds);
 					}
 				);
 			});
@@ -410,9 +417,9 @@ describe("IglooFi V1 Vault", async () => {
 							const recieverBalanceBefore = await ethers.provider.getBalance(
 								addr2.address
 							);
-	
-							// Wait 10 seconds
-							await new Promise(res => setTimeout(res, 10000));
+							
+							// Fast-forward 7 days
+							await ethers.provider.send('evm_increaseTime', [sevenDaysInSeconds]);
 							
 							await iglooFiV1Vault.connect(addr1).processWithdrawalRequest(0);
 
@@ -514,8 +521,8 @@ describe("IglooFi V1 Vault", async () => {
 
 							const recieverBalanceBefore = await mockERC20.balanceOf(addr2.address);
 
-							// Wait 10 seconds
-							await new Promise(res => setTimeout(res, 10000));
+							// Fast-forward 7 days
+							await ethers.provider.send('evm_increaseTime', [sevenDaysInSeconds]);
 							
 							await iglooFiV1Vault.connect(addr1).processWithdrawalRequest(1);
 
