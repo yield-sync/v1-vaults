@@ -576,38 +576,6 @@ describe("IglooFi V1 Vault", async () => {
 			/**
 			 * @dev deleteWithdrawalRequest
 			*/
-			describe("deleteWithdrawalRequest", async () => {
-				it(
-					"Should revert when unauthorized msg.sender calls..",
-					async () => {
-						const [, addr1] = await ethers.getSigners();
-						
-						await expect(
-							iglooFiV1Vault.connect(addr1).deleteWithdrawalRequest(2)
-						).to.be.rejected;
-					}
-				);
-
-				it(
-					"Should be able to delete WithdrawalRequest..",
-					async () => {
-						await iglooFiV1Vault.deleteWithdrawalRequest(2);
-
-						expect(
-							(await iglooFiV1Vault.openWithdrawalRequestIds())[0]
-						).to.be.equal(3);
-
-						expect(
-							(await iglooFiV1Vault.openWithdrawalRequestIds()).length
-						).to.be.equal(1);
-					}
-				);
-			});
-
-
-			/**
-			 * @dev deleteWithdrawalRequest
-			*/
 			describe("updateWithdrawalRequestLatestRelevantApproveVoteTime", async () => {
 				it(
 					"Should update the latestRelevantApproveVoteTime to ADD seconds..",
@@ -648,6 +616,38 @@ describe("IglooFi V1 Vault", async () => {
 						);
 
 						expect(beforeBlockTimestamp - 10).to.be.equal(afterBlockTimestamp);
+					}
+				);
+			});
+
+			
+			/**
+			 * @dev deleteWithdrawalRequest
+			*/
+			describe("deleteWithdrawalRequest", async () => {
+				it(
+					"Should revert when unauthorized msg.sender calls..",
+					async () => {
+						const [, addr1] = await ethers.getSigners();
+						
+						await expect(
+							iglooFiV1Vault.connect(addr1).deleteWithdrawalRequest(2)
+						).to.be.rejected;
+					}
+				);
+
+				it(
+					"Should be able to delete WithdrawalRequest..",
+					async () => {
+						await iglooFiV1Vault.deleteWithdrawalRequest(2);
+
+						expect(
+							(await iglooFiV1Vault.openWithdrawalRequestIds())[0]
+						).to.be.equal(3);
+
+						expect(
+							(await iglooFiV1Vault.openWithdrawalRequestIds()).length
+						).to.be.equal(1);
 					}
 				);
 			});
