@@ -569,6 +569,9 @@ describe("IglooFi V1 Vault", async () => {
 		});
 
 
+		/**
+		* @dev Restriction: DEFAULT_ADMIN_ROLE
+		*/
 		describe("Restriction: DEFAULT_ADMIN_ROLE", async () => {
 			/**
 			 * @dev deleteWithdrawalRequest
@@ -604,9 +607,14 @@ describe("IglooFi V1 Vault", async () => {
 
 
 		/**
-		 * @dev sign
-		 * TODO: Incomploete, need to create tests for this function
+		* @dev !Restriction
 		*/
-		describe("sign", async () => {})
+		describe("!Restriction", async () => {
+			/**
+			 * @dev sign
+			 * TODO: Incomploete, need to create tests for this function
+			*/
+			describe("sign", async () => {})
+		})
 	});
 });
