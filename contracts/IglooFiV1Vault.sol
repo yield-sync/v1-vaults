@@ -39,6 +39,7 @@ contract IglooFiV1Vault is
 	// [mapping][internal]
 	// Message => votes
 	mapping (bytes32 => uint256) internal _messageSignatures;
+	mapping (bytes32 => mapping (address => bool)) internal _messageSignaturesVoterVoted;
 	// WithdrawalRequestId => WithdrawalRequest
 	mapping (uint256 => WithdrawalRequest) internal _withdrawalRequest;
 
@@ -63,9 +64,7 @@ contract IglooFiV1Vault is
 	receive ()
 		external
 		payable
-	{
-		emit EtherRecieved(msg.sender, msg.value);
-	}
+	{}
 
 
 	fallback ()
@@ -149,16 +148,6 @@ contract IglooFiV1Vault is
 	}
 
 	/// @inheritdoc IIglooFiV1Vault
-	function messageSignatures(bytes32 message)
-		view
-		public
-		override
-		returns (uint256)
-	{
-		return _messageSignatures[message];
-	}
-
-	/// @inheritdoc IIglooFiV1Vault
 	function withdrawalRequest(uint256 withdrawalRequestId)
 		view
 		public
@@ -176,8 +165,13 @@ contract IglooFiV1Vault is
 
 		if (hasRole(VOTER, signer))
 		{
-			// [increment] Value in `_messageSignatures`
-			_messageSignatures[_messageHash]++;
+			if (_messageSignaturesVoterVoted[_messageHash][signer] == false) {
+				// [add] `_messageSignaturesVoterVoted` voted address
+				_messageSignaturesVoterVoted[_messageHash][signer] = true;
+
+				// [increment] Value in `_messageSignatures`
+				_messageSignatures[_messageHash]++;
+			}
 		}
 	}
 

@@ -24,14 +24,6 @@ struct WithdrawalRequest {
 interface IIglooFiV1Vault
 {
 	/**
-	* @dev Emit when contract recieves Ether
-	*/
-	event EtherRecieved(
-		address msgSender,
-		uint256 EtherRecieved
-	);
-
-	/**
 	* @dev Emits when a `WithdrawalRequest` is deleted
 	*/
 	event DeletedWithdrawalRequest(
@@ -163,19 +155,6 @@ interface IIglooFiV1Vault
 		external
 		view
 		returns (uint256[] memory)
-	;
-
-	/**
-	* @notice Getter for `_messageSignature`
-	* @dev [!restriction]
-	* @dev [view][mapping]
-	* @param message {bytes32}
-	* @return {uint256}
-	*/
-	function messageSignatures(bytes32 message)
-		external
-		view
-		returns (uint256)
 	;
 
 	/**
