@@ -22,8 +22,7 @@ contract IglooFiV1Vault is
 	using ECDSA for bytes32;
 
 	// [bytes4][public]
-	bytes4 public constant override INVALID_SIGNATURE = 0xffffffff;
-	bytes4 public constant override MAGICVALUE = 0x1626ba7e;
+	bytes4 public constant override MAGIC_VALUE = 0x1626ba7e;
 
 	// [byte32][public]
 	bytes32 public constant override VOTER = keccak256("VOTER");
@@ -38,7 +37,7 @@ contract IglooFiV1Vault is
 
 	// [mapping][internal]
 	// Message => votes
-	mapping (bytes32 => uint256) internal _messageSignatures;
+	mapping (bytes32 => uint256) internal _signedMessages;
 	mapping (bytes32 => mapping (address => bool)) internal _messageSignaturesVoterVoted;
 	// WithdrawalRequestId => WithdrawalRequest
 	mapping (uint256 => WithdrawalRequest) internal _withdrawalRequest;
@@ -127,14 +126,10 @@ contract IglooFiV1Vault is
 	{
 		address signer = _messageHash.recover(_signature);
 
-		if (hasRole(VOTER, signer) && _messageSignatures[_messageHash] >= requiredVoteCount)
-		{
-			return MAGICVALUE;
-		}
-		else
-		{
-			return INVALID_SIGNATURE;
-		}
+		return (
+			hasRole(VOTER, signer) && _signedMessages[_messageHash] >= requiredVoteCount
+			? MAGIC_VALUE : bytes4(0)
+		);
 	}
 
 
@@ -158,7 +153,7 @@ contract IglooFiV1Vault is
 	}
 
 	/// @inheritdoc IIglooFiV1Vault
-	function sign(bytes32 _messageHash, bytes memory _signature)
+	function signMessage(bytes32 _messageHash, bytes memory _signature)
 		public
 	{
 		address signer = _messageHash.recover(_signature);
@@ -169,8 +164,8 @@ contract IglooFiV1Vault is
 				// [add] `_messageSignaturesVoterVoted` voted address
 				_messageSignaturesVoterVoted[_messageHash][signer] = true;
 
-				// [increment] Value in `_messageSignatures`
-				_messageSignatures[_messageHash]++;
+				// [increment] Value in `_signedMessages`
+				_signedMessages[_messageHash]++;
 			}
 		}
 	}

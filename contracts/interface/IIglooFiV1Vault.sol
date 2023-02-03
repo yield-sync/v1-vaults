@@ -84,26 +84,13 @@ interface IIglooFiV1Vault
 		uint256 latestRelevantApproveVoteTime
 	);
 
-
-	/**
-	* @notice Invalid return value for isValidSignature
-	* @dev [!restriction]
-	* @dev [view-bytes4]
-	* @return {uint256}
-	*/
-	function INVALID_SIGNATURE()
-		external
-		view
-		returns (bytes4)
-	;
-
 	/**
 	* @notice Valid return value for isValidSignature
 	* @dev [!restriction]
 	* @dev [view-bytes4]
 	* @return {uint256}
 	*/
-	function MAGICVALUE()
+	function MAGIC_VALUE()
 		external
 		view
 		returns (bytes4)
@@ -177,7 +164,7 @@ interface IIglooFiV1Vault
 	* @param _messageHash {bytes32}
 	* @param _signature {byte}
 	*/
-	function sign(bytes32 _messageHash, bytes memory _signature)
+	function signMessage(bytes32 _messageHash, bytes memory _signature)
 		external
 	;
 
