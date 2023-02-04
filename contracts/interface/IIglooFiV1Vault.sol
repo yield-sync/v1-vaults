@@ -132,6 +132,7 @@ interface IIglooFiV1Vault
 		returns (uint256)
 	;
 
+
 	/**
 	* @notice Getter for active WithdrawlRequests
 	* @dev [!restriction]
@@ -154,18 +155,6 @@ interface IIglooFiV1Vault
 	function withdrawalRequest(uint256 withdrawalRequestId)
 		external
 		view returns (WithdrawalRequest memory)
-	;
-
-
-	/**
-	* @notice Sign a message
-	* @dev [!restriction]
-	* @dev [increment] Value in `messageSignatures`
-	* @param _messageHash {bytes32}
-	* @param _signature {byte}
-	*/
-	function signMessage(bytes32 _messageHash, bytes memory _signature)
-		external
 	;
 
 
@@ -227,6 +216,17 @@ interface IIglooFiV1Vault
 	function processWithdrawalRequest(uint256 withdrawalRequestId)
 		external
 	;
+
+	/**
+	* @notice Sign a message
+	* @dev [restriction] AccessControlEnumerable → VOTER
+	* @dev [increment] Value in `_signedMessageVotes`
+	* @param message {bytes}
+	*/
+	function createSignedMessage(bytes memory message)
+		external
+	;
+
 
 	/**
 	* @notice Assign VOTER to an address on AccessControlEnumerable

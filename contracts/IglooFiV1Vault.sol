@@ -153,24 +153,6 @@ contract IglooFiV1Vault is
 		return _withdrawalRequest[withdrawalRequestId];
 	}
 
-	/// @inheritdoc IIglooFiV1Vault
-	function signMessage(bytes32 _messageHash, bytes memory _signature)
-		public
-	{
-		address signer = _messageHash.recover(_signature);
-
-		if (hasRole(VOTER, signer))
-		{
-			if (_signedMessagesVoterVoted[_messageHash][signer] == false) {
-				// [add] `_signedMessagesVoterVoted` voted address
-				_signedMessagesVoterVoted[_messageHash][signer] = true;
-
-				// [increment] Value in `_signedMessageVotes`
-				_signedMessageVotes[_messageHash]++;
-			}
-		}
-	}
-
 
 	/// @inheritdoc IIglooFiV1Vault
 	function createWithdrawalRequest(
@@ -322,6 +304,22 @@ contract IglooFiV1Vault is
 
 		// [emit]
 		emit TokensWithdrawn(msg.sender, w.to, w.amount);
+	}
+
+	/// @inheritdoc IIglooFiV1Vault
+	function createSignedMessage(bytes memory message)
+		public
+		onlyRole(VOTER)
+	{
+		bytes32 _messageHash = ECDSA.toEthSignedMessageHash(message);
+
+		if (_signedMessagesVoterVoted[_messageHash][msg.sender] == false) {
+			// [add] `_signedMessagesVoterVoted` voted address
+			_signedMessagesVoterVoted[_messageHash][msg.sender] = true;
+
+			// [increment] Value in `_signedMessageVotes`
+			_signedMessageVotes[_messageHash]++;
+		}
 	}
 
 
