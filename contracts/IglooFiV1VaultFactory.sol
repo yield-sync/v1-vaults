@@ -18,6 +18,7 @@ contract IglooFiV1VaultFactory is
 {
 	// [address][public][to-be-constant]
 	address public override IGLOO_FI;
+	address public override IGLOO_FI_V1_VAULTS_MULTI_SIGNED_MESSAGES;
 
 	/* [uint256][internal] */
 	uint256 internal _vaultIdTracker;
@@ -30,11 +31,12 @@ contract IglooFiV1VaultFactory is
 	mapping (uint256 => address) internal _vaultAddress;
 
 
-	constructor (address _IGLOO_FI)
+	constructor (address _IGLOO_FI, address _IGLOO_FI_V1_VAULTS_MULTI_SIGNED_MESSAGES)
 	{
 		_pause();
 
 		IGLOO_FI = _IGLOO_FI;
+		IGLOO_FI_V1_VAULTS_MULTI_SIGNED_MESSAGES = _IGLOO_FI_V1_VAULTS_MULTI_SIGNED_MESSAGES;
 
 		_vaultIdTracker = 0;
 		

@@ -43,7 +43,7 @@ describe("IglooFi V1 Vault Factory", async () => {
 
 		iglooFiV1VaultFactory = await IglooFiV1VaultFactory.deploy(
 			testIglooFiGovernance.address,
-
+			iglooFiV1VaultsMultiSignedMessages.address
 		);
 		iglooFiV1VaultFactory = await iglooFiV1VaultFactory.deployed();
 	});
