@@ -221,9 +221,9 @@ interface IIglooFiV1Vault
 	* @notice Sign a message
 	* @dev [restriction] AccessControlEnumerable → VOTER
 	* @dev [increment] Value in `_signedMessageVotes`
-	
 	*/
-	function createSignedMessage(address a)//bytes memory message) * @paradm message {bytes}
+	//* @param message {bytes}
+	function createSignedMessage()//bytes memory message) 
 		external
 	;
 

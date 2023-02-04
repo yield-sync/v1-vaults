@@ -22,6 +22,8 @@ contract IglooFiV1Vault is
 {
 	using ECDSA for bytes32;
 
+	// [address][to-be-constant]
+	address public IGLOO_FI_V1_MULTI_SIGNED_MESSAGES;
 
 	// [bytes4][public]
 	bytes4 public constant override MAGIC_VALUE = 0x1626ba7e;
@@ -38,14 +40,12 @@ contract IglooFiV1Vault is
 	uint256 public override withdrawalDelaySeconds;
 
 	// [mapping][internal]
-	// Message => votes
-	mapping (bytes32 => uint256) internal _signedMessageVotes;
-	mapping (bytes32 => mapping (address => bool)) internal _signedMessagesVoterVoted;
 	// WithdrawalRequestId => WithdrawalRequest
 	mapping (uint256 => WithdrawalRequest) internal _withdrawalRequest;
 
 
 	constructor (
+		address _IGLOO_FI_V1_MULTI_SIGNED_MESSAGES,
 		address admin,
 		uint256 _requiredVoteCount,
 		uint256 _withdrawalDelaySeconds
@@ -53,6 +53,8 @@ contract IglooFiV1Vault is
 	{
 		require(_requiredVoteCount > 0, "!_requiredVoteCount");
 
+		IGLOO_FI_V1_MULTI_SIGNED_MESSAGES = _IGLOO_FI_V1_MULTI_SIGNED_MESSAGES;
+		
 		_setupRole(DEFAULT_ADMIN_ROLE, admin);
 
 		requiredVoteCount = _requiredVoteCount;
@@ -128,10 +130,7 @@ contract IglooFiV1Vault is
 	{
 		address signer = _messageHash.recover(_signature);
 
-		return (
-			hasRole(VOTER, signer) && _signedMessageVotes[_messageHash] >= requiredVoteCount
-			? MAGIC_VALUE : bytes4(0)
-		);
+		return (true ? MAGIC_VALUE : bytes4(0));
 	}
 
 
@@ -308,11 +307,13 @@ contract IglooFiV1Vault is
 	}
 
 	// @inheritdoc IIglooFiV1Vault
-	function createSignedMessage(address a)//, bytes memory message)
+	function createSignedMessage()//bytes memory message)
 		public
 		onlyRole(VOTER)
 	{
-		IIglooFiV1VaultsMultiSignedMessages(a).createSignedMessage();
+		IIglooFiV1VaultsMultiSignedMessages(IGLOO_FI_V1_MULTI_SIGNED_MESSAGES)
+			.createSignedMessage()
+		;
 		//bytes32 _messageHash = ECDSA.toEthSignedMessageHash(message);
 
 		//if (_signedMessagesVoterVoted[_messageHash][msg.sender] == false) {

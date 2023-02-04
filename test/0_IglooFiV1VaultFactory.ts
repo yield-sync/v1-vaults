@@ -47,7 +47,7 @@ describe("IglooFi V1 Vault Factory", async () => {
 		);
 		iglooFiV1VaultFactory = await iglooFiV1VaultFactory.deployed();
 	});
-	
+
 
 	/**
 	* @dev recieve

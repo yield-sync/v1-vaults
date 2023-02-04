@@ -15,9 +15,10 @@ describe("IglooFi V1 Vault", async () => {
 	
 	
 	/**
+	 * @notice Deploy contract
 	 * @dev Deploy TestIglooFiGovernance.sol
 	*/
-	before("[before] Deploy IglooFiGovernance contract..", async () => {
+	before("[before] Deploy IglooFiGovernance.sol contract..", async () => {
 		const TestIglooFiGovernance = await ethers.getContractFactory("TestIglooFiGovernance");
 
 		testIglooFiGovernance = await TestIglooFiGovernance.deploy();
@@ -26,21 +27,7 @@ describe("IglooFi V1 Vault", async () => {
 
 
 	/**
-	 * @dev Deploy IglooFiV1VaultFactory.sol
-	*/
-	before("[before] Deploy IglooFiV1VaultFactory contracts..", async () => {
-		const IglooFiV1VaultFactory = await ethers.getContractFactory("IglooFiV1VaultFactory");
-
-		iglooFiV1VaultFactory = await IglooFiV1VaultFactory.deploy(testIglooFiGovernance.address);
-
-		iglooFiV1VaultFactory = await iglooFiV1VaultFactory.deployed();
-
-		await iglooFiV1VaultFactory.setPause(false);
-	});
-
-
-	/**
-	 * @notice Deploy the contracts
+	 * @notice Deploy contract
 	 * @dev Deploy IglooFiV1VaultsMultiSignedMessages.sol
 	*/
 	before("[before] Deploy IglooFiV1VaultsMultiSignedMessages.sol..", async () => {
@@ -54,35 +41,39 @@ describe("IglooFi V1 Vault", async () => {
 
 
 	/**
-	 * @notice Deploy the contracts
-	 * @dev Deploy IglooFiV1Vault.sol
+	 * @notice Deploy contract
+	 * @dev Deploy IglooFiV1VaultFactory.sol
 	*/
-	before("[before] Deploy IglooFiV1Vault.sol..", async () => {
-		const [owner] = await ethers.getSigners();
+	before("[before] Deploy IglooFiV1VaultFactory.sol contracts..", async () => {
+		const IglooFiV1VaultFactory = await ethers.getContractFactory("IglooFiV1VaultFactory");
 
-		const IglooFiV1Vault = await ethers.getContractFactory(
-			"IglooFiV1Vault"
+		iglooFiV1VaultFactory = await IglooFiV1VaultFactory.deploy(
+			testIglooFiGovernance.address,
+			iglooFiV1VaultsMultiSignedMessages.address
 		);
 
-		iglooFiV1Vault = await IglooFiV1Vault.deploy(
-			owner.address,
-			2,
-			5
-		);
-		iglooFiV1Vault = await iglooFiV1Vault.deployed();
+		iglooFiV1VaultFactory = await iglooFiV1VaultFactory.deployed();
+
+		await iglooFiV1VaultFactory.setPause(false);
 	});
 
 
 	/**
-	 * @dev Deploy IglooFiV1Vault.sol (Through IglooFiV1VaultFactory.sol)
+	 * @notice Deploy contract
+	 * @dev Factory Deploy IglooFiV1Vault.sol (IglooFiV1VaultFactory.sol)
 	*/
-	before("[before] Deploy IglooFiV1Vault.sol..", async () => {
+	before("[before] Factory deploy IglooFiV1Vault.sol..", async () => {
 		const [owner] = await ethers.getSigners();
 
 		const IglooFiV1Vault = await ethers.getContractFactory("IglooFiV1Vault");
 		
 		// Deploy a vault
-		await iglooFiV1VaultFactory.deployVault(owner.address, 2, 5, { value: 1 });
+		await iglooFiV1VaultFactory.deployVault(
+			owner.address,
+			2,
+			5,
+			{ value: 1 }
+		);
 
 		// Attach the deployed vault's address
 		iglooFiV1Vault = await IglooFiV1Vault.attach(iglooFiV1VaultFactory.vaultAddress(0));
@@ -637,14 +628,11 @@ describe("IglooFi V1 Vault", async () => {
 			
 			describe("createSignedMessage", async () => {
 				it("should work..", async () => {
-			const [, addr1] = await ethers.getSigners();
-					console.log(
-						"iglooFiV1Vault address:", iglooFiV1Vault.address
-					);
+					const [, addr1] = await ethers.getSigners();
 					
-					await iglooFiV1Vault.connect(addr1).createSignedMessage(
-						iglooFiV1VaultsMultiSignedMessages.address
-					);
+					console.log("iglooFiV1Vault address:", await iglooFiV1Vault.address);
+					
+					await iglooFiV1Vault.connect(addr1).createSignedMessage();
 				});
 			});
 		});

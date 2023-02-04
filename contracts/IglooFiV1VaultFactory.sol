@@ -98,6 +98,7 @@ contract IglooFiV1VaultFactory is
 
 		// [deploy] A vault contract
 		deployedContract = new IglooFiV1Vault(
+			IGLOO_FI_V1_VAULTS_MULTI_SIGNED_MESSAGES,
 			admin,
 			_requiredVoteCount,
 			_withdrawalDelaySeconds
