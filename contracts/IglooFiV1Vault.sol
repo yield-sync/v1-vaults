@@ -130,7 +130,7 @@ contract IglooFiV1Vault is
 	{
 		address signer = _messageHash.recover(_signature);
 
-		return (true ? MAGIC_VALUE : bytes4(0));
+		return (hasRole(VOTER, signer) ? MAGIC_VALUE : bytes4(0));
 	}
 
 
@@ -306,23 +306,15 @@ contract IglooFiV1Vault is
 		emit TokensWithdrawn(msg.sender, w.to, w.amount);
 	}
 
-	// @inheritdoc IIglooFiV1Vault
-	function createSignedMessage()//bytes memory message)
+	/// @inheritdoc IIglooFiV1Vault
+	function createSignedMessage(bytes memory message)
 		public
 		onlyRole(VOTER)
 	{
-		IIglooFiV1VaultsMultiSignedMessages(IGLOO_FI_V1_MULTI_SIGNED_MESSAGES)
-			.createSignedMessage()
-		;
-		//bytes32 _messageHash = ECDSA.toEthSignedMessageHash(message);
-
-		//if (_signedMessagesVoterVoted[_messageHash][msg.sender] == false) {
-			// [add] `_signedMessagesVoterVoted` voted address
-		//	_signedMessagesVoterVoted[_messageHash][msg.sender] = true;
-
-			// [increment] Value in `_signedMessageVotes`
-		//	_signedMessageVotes[_messageHash]++;
-		//}
+		IIglooFiV1VaultsMultiSignedMessages(IGLOO_FI_V1_MULTI_SIGNED_MESSAGES).createSignedMessage(
+			msg.sender,
+			message
+		);
 	}
 
 

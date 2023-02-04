@@ -6,5 +6,5 @@ pragma solidity ^0.8.1;
 * @title IIglooFiV1VaultsMultiSignedMessages
 */
 interface IIglooFiV1VaultsMultiSignedMessages {
-	function createSignedMessage() external;
+	function createSignedMessage(address voter, bytes memory message) external;
 }

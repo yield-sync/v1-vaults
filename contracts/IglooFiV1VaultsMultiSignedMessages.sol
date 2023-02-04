@@ -3,7 +3,6 @@ pragma solidity ^0.8.1;
 
 
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
-import "hardhat/console.sol";
 
 import "./interface/IIglooFiV1VaultsMultiSignedMessages.sol";
 
@@ -21,20 +20,17 @@ contract IglooFiV1VaultsMultiSignedMessages is
 	mapping (address => mapping (bytes32 => mapping (address => bool))) internal _signedMessagesVoterVoted;
 
 
-	function createSignedMessage()//bytes memory message)
+	function createSignedMessage(address voter, bytes memory message)
 		external
-		view
 	{
-		console.log("caller", address(msg.sender));
+		bytes32 _messageHash = ECDSA.toEthSignedMessageHash(message);
 
-		//bytes32 _messageHash = ECDSA.toEthSignedMessageHash(message);
-
-		//if (_signedMessagesVoterVoted[msg.sender][_messageHash][msg.sender] == false) {
+		if (_signedMessagesVoterVoted[msg.sender][_messageHash][voter] == false) {
 			// [add] `_signedMessagesVoterVoted` voted address
-			//_signedMessagesVoterVoted[_messageHash][msg.sender] = true;
+			_signedMessagesVoterVoted[msg.sender][_messageHash][voter] = true;
 
 			// [increment] Value in `_signedMessageVotes`
-			//_signedMessageVotes[_messageHash]++;
-		//}
+			_signedMessageVotes[msg.sender][_messageHash]++;
+		}
 	}
 }
