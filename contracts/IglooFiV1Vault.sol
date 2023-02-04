@@ -9,6 +9,7 @@ import { IERC721 } from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import { ECDSA } from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 
 import { IIglooFiV1Vault, WithdrawalRequest } from "./interface/IIglooFiV1Vault.sol";
+import "./interface/IIglooFiV1VaultsMultiSignedMessages.sol";
 
 
 /**
@@ -306,20 +307,21 @@ contract IglooFiV1Vault is
 		emit TokensWithdrawn(msg.sender, w.to, w.amount);
 	}
 
-	/// @inheritdoc IIglooFiV1Vault
-	function createSignedMessage(bytes memory message)
+	// @inheritdoc IIglooFiV1Vault
+	function createSignedMessage(address a)//, bytes memory message)
 		public
 		onlyRole(VOTER)
 	{
-		bytes32 _messageHash = ECDSA.toEthSignedMessageHash(message);
+		IIglooFiV1VaultsMultiSignedMessages(a).createSignedMessage();
+		//bytes32 _messageHash = ECDSA.toEthSignedMessageHash(message);
 
-		if (_signedMessagesVoterVoted[_messageHash][msg.sender] == false) {
+		//if (_signedMessagesVoterVoted[_messageHash][msg.sender] == false) {
 			// [add] `_signedMessagesVoterVoted` voted address
-			_signedMessagesVoterVoted[_messageHash][msg.sender] = true;
+		//	_signedMessagesVoterVoted[_messageHash][msg.sender] = true;
 
 			// [increment] Value in `_signedMessageVotes`
-			_signedMessageVotes[_messageHash]++;
-		}
+		//	_signedMessageVotes[_messageHash]++;
+		//}
 	}
 
 

@@ -228,7 +228,7 @@ describe("IglooFi V1 Vault Factory", async () => {
 							2,
 							10,
 							{ value: 1 }
-						)
+						);
 		
 						expect(await iglooFiV1VaultFactory.vaultAddress(0))
 							.to.equal((await deployedAddress.wait()).events[1].args[0])
@@ -246,10 +246,12 @@ describe("IglooFi V1 Vault Factory", async () => {
 						async () => {
 							const [, addr1] = await ethers.getSigners();
 							
-							let deployedAddress = await iglooFiV1VaultFactory.vaultAddress(0);
-		
 							const IglooFiV1Vault = await ethers.getContractFactory("IglooFiV1Vault");
+							
+							// Retreive the deployed vault's address
+							const deployedAddress = await iglooFiV1VaultFactory.vaultAddress(0);
 		
+							// Attach the deployed vault's address
 							const iglooFiV1Vault = await IglooFiV1Vault.attach(deployedAddress);
 		
 							expect(

@@ -7,8 +7,25 @@ const sixDaysInSeconds = 6 * 24 * 60 * 60;
 
 
 describe("IglooFi V1 Vault", async () => {
+	let iglooFiV1VaultsMultiSignedMessages: any;
 	let iglooFiV1Vault: any;
 	let mockERC20: any;
+
+
+	/**
+	 * @notice Deploy the contracts
+	 * @dev Deploy IglooFiV1VaultsMultiSignedMessages.sol
+	*/
+	before("[before] Deploy IglooFiV1VaultsMultiSignedMessages.sol..", async () => {
+		const [owner] = await ethers.getSigners();
+
+		const IglooFiV1VaultsMultiSignedMessages = await ethers.getContractFactory(
+			"IglooFiV1VaultsMultiSignedMessages"
+		);
+
+		iglooFiV1VaultsMultiSignedMessages = await IglooFiV1VaultsMultiSignedMessages.deploy();
+		iglooFiV1VaultsMultiSignedMessages = await iglooFiV1VaultsMultiSignedMessages.deployed();
+	});
 
 
 	/**
@@ -576,7 +593,21 @@ describe("IglooFi V1 Vault", async () => {
 						).to.be.equal(3);
 					}
 				);
-			})
+			});
+
+			
+			describe("createSignedMessage", async () => {
+				it("should work..", async () => {
+			const [, addr1] = await ethers.getSigners();
+					console.log(
+						"iglooFiV1Vault address:", iglooFiV1Vault.address
+					);
+					
+					await iglooFiV1Vault.connect(addr1).createSignedMessage(
+						iglooFiV1VaultsMultiSignedMessages.address
+					);
+				});
+			});
 		});
 
 
@@ -662,18 +693,6 @@ describe("IglooFi V1 Vault", async () => {
 					}
 				);
 			});
-		});
-
-
-		/**
-		* @dev !Restriction
-		*/
-		describe("!Restriction", async () => {
-			/**
-			 * @dev sign
-			 * TODO: Incomploete, need to create tests for this function
-			*/
-			describe("sign", async () => {});
 		});
 	});
 });
