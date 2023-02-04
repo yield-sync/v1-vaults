@@ -5,6 +5,7 @@ describe("IglooFi V1 Vault Factory", async () => {
 	let testIglooFiGovernance: any;
 	let iglooFiV1VaultFactory: any;
 	
+
 	/**
 	 * @dev Deploy TestIglooFiGovernance.sol
 	*/
@@ -16,6 +17,7 @@ describe("IglooFi V1 Vault Factory", async () => {
 		testIglooFiGovernance = await TestIglooFiGovernance.deploy();
 		testIglooFiGovernance = await testIglooFiGovernance.deployed();
 	});
+
 
 	/**
 	 * @dev Deploy IglooFiV1VaultFactory.sol
@@ -30,6 +32,7 @@ describe("IglooFi V1 Vault Factory", async () => {
 		);
 		iglooFiV1VaultFactory = await iglooFiV1VaultFactory.deployed();
 	});
+	
 
 	/**
 	* @dev recieve

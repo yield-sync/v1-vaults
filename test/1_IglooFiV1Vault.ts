@@ -7,9 +7,36 @@ const sixDaysInSeconds = 6 * 24 * 60 * 60;
 
 
 describe("IglooFi V1 Vault", async () => {
+	let iglooFiV1VaultFactory: any;
+	let testIglooFiGovernance: any;
 	let iglooFiV1VaultsMultiSignedMessages: any;
 	let iglooFiV1Vault: any;
 	let mockERC20: any;
+	
+	
+	/**
+	 * @dev Deploy TestIglooFiGovernance.sol
+	*/
+	before("[before] Deploy IglooFiGovernance contract..", async () => {
+		const TestIglooFiGovernance = await ethers.getContractFactory("TestIglooFiGovernance");
+
+		testIglooFiGovernance = await TestIglooFiGovernance.deploy();
+		testIglooFiGovernance = await testIglooFiGovernance.deployed();
+	});
+
+
+	/**
+	 * @dev Deploy IglooFiV1VaultFactory.sol
+	*/
+	before("[before] Deploy IglooFiV1VaultFactory contracts..", async () => {
+		const IglooFiV1VaultFactory = await ethers.getContractFactory("IglooFiV1VaultFactory");
+
+		iglooFiV1VaultFactory = await IglooFiV1VaultFactory.deploy(testIglooFiGovernance.address);
+
+		iglooFiV1VaultFactory = await iglooFiV1VaultFactory.deployed();
+
+		await iglooFiV1VaultFactory.setPause(false);
+	});
 
 
 	/**
@@ -17,8 +44,6 @@ describe("IglooFi V1 Vault", async () => {
 	 * @dev Deploy IglooFiV1VaultsMultiSignedMessages.sol
 	*/
 	before("[before] Deploy IglooFiV1VaultsMultiSignedMessages.sol..", async () => {
-		const [owner] = await ethers.getSigners();
-
 		const IglooFiV1VaultsMultiSignedMessages = await ethers.getContractFactory(
 			"IglooFiV1VaultsMultiSignedMessages"
 		);
@@ -45,6 +70,22 @@ describe("IglooFi V1 Vault", async () => {
 			5
 		);
 		iglooFiV1Vault = await iglooFiV1Vault.deployed();
+	});
+
+
+	/**
+	 * @dev Deploy IglooFiV1Vault.sol (Through IglooFiV1VaultFactory.sol)
+	*/
+	before("[before] Deploy IglooFiV1Vault.sol..", async () => {
+		const [owner] = await ethers.getSigners();
+
+		const IglooFiV1Vault = await ethers.getContractFactory("IglooFiV1Vault");
+		
+		// Deploy a vault
+		await iglooFiV1VaultFactory.deployVault(owner.address, 2, 5, { value: 1 });
+
+		// Attach the deployed vault's address
+		iglooFiV1Vault = await IglooFiV1Vault.attach(iglooFiV1VaultFactory.vaultAddress(0));
 	});
 
 
@@ -111,9 +152,7 @@ describe("IglooFi V1 Vault", async () => {
 			it(
 				"Should initialize withdrawalDelaySeconds 5..",
 				async () => {
-					expect(await iglooFiV1Vault.withdrawalDelaySeconds()).to.equal(
-						5
-					);
+					expect(await iglooFiV1Vault.withdrawalDelaySeconds()).to.equal(5);
 				}
 			);
 		});
