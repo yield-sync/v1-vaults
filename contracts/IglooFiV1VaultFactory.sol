@@ -44,19 +44,7 @@ contract IglooFiV1VaultFactory is
 	}
 
 
-	receive ()
-		external
-		payable
-	{}
-
-
-	fallback ()
-		external
-		payable
-	{}
-
-
-	modifier onlyIFGAdmin() {
+	modifier onlyIglooFiGovernanceAdmin() {
 		require(
 			IIglooFiGovernance(IGLOO_FI).hasRole(
 				IIglooFiGovernance(IGLOO_FI).governanceRoles("DEFAULT_ADMIN_ROLE"),
@@ -122,7 +110,7 @@ contract IglooFiV1VaultFactory is
 	function setPause(bool pause)
 		public
 		override
-		onlyIFGAdmin()
+		onlyIglooFiGovernanceAdmin()
 	{
 		if (pause)
 		{
@@ -140,14 +128,11 @@ contract IglooFiV1VaultFactory is
 	function updateFee(uint256 newFee)
 		public
 		override
-		onlyIFGAdmin()
-		returns (uint256)
+		onlyIglooFiGovernanceAdmin()
 	{
 		fee = newFee;
 
 		emit UpdatedFee(fee);
-
-		return (fee);
 	}
 
 	/// @inheritdoc IIglooFiV1VaultFactory
@@ -155,7 +140,7 @@ contract IglooFiV1VaultFactory is
 		public
 		override
 		whenNotPaused()
-		onlyIFGAdmin()
+		onlyIglooFiGovernanceAdmin()
 	{
 		require(transferTo != address(0), "!transferTo");
 

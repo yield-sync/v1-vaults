@@ -20,6 +20,15 @@ contract IglooFiV1VaultsMultiSignedMessages is
 	mapping (address => mapping (bytes32 => mapping (address => bool))) internal _signedMessagesVoterVoted;
 
 
+	function signedMessageVotes(address vaultAddress, bytes32 _messageHash)
+		public
+		view
+		returns (uint256)
+	{
+		return _signedMessageVotes[vaultAddress][_messageHash];
+	}
+
+
 	function createSignedMessage(address voter, bytes memory message)
 		external
 	{

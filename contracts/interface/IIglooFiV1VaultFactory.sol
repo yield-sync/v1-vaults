@@ -50,12 +50,10 @@ interface IIglooFiV1VaultFactory {
 	* @notice Get vault deployment fee
 	* @dev [!restriction]
 	* @dev [view-uint256]
-	* @return {uint256}
 	*/
 	function fee()
 		external
 		view
-		returns (uint256)
 	;
 
 	/**

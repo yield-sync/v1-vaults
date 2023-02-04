@@ -9,7 +9,7 @@ import { IERC721 } from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import { ECDSA } from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 
 import { IIglooFiV1Vault, WithdrawalRequest } from "./interface/IIglooFiV1Vault.sol";
-import "./interface/IIglooFiV1VaultsMultiSignedMessages.sol";
+import { IIglooFiV1VaultsMultiSignedMessages } from "./interface/IIglooFiV1VaultsMultiSignedMessages.sol";
 
 
 /**
@@ -62,18 +62,6 @@ contract IglooFiV1Vault is
 		
 		_withdrawalRequestIdTracker = 0;
 	}
-
-
-	receive ()
-		external
-		payable
-	{}
-
-
-	fallback ()
-		external
-		payable
-	{}
 
 
 	modifier validWithdrawalRequest(uint256 withdrawalRequestId)
@@ -130,7 +118,14 @@ contract IglooFiV1Vault is
 	{
 		address signer = _messageHash.recover(_signature);
 
-		return (hasRole(VOTER, signer) ? MAGIC_VALUE : bytes4(0));
+		return (
+			hasRole(VOTER, signer) &&
+			IIglooFiV1VaultsMultiSignedMessages(IGLOO_FI_V1_MULTI_SIGNED_MESSAGES).signedMessageVotes(
+				address(this),
+				_messageHash
+			) >= requiredVoteCount
+				? MAGIC_VALUE : bytes4(0)
+		);
 	}
 
 
@@ -323,24 +318,18 @@ contract IglooFiV1Vault is
 		public
 		override
 		onlyRole(DEFAULT_ADMIN_ROLE)
-		returns (address)
 	{
 		// [add] address to VOTER on `AccessControlEnumerable`
 		_setupRole(VOTER, targetAddress);
-
-		return targetAddress;
 	}
 
 	/// @inheritdoc IIglooFiV1Vault
 	function removeVoter(address voter)
 		public
 		onlyRole(DEFAULT_ADMIN_ROLE)
-		returns (address)
 	{
 		// [remove] address with VOTER on `AccessControlEnumerable`
 		_revokeRole(VOTER, voter);
-
-		return voter;
 	}
 
 	/// @inheritdoc IIglooFiV1Vault
@@ -348,7 +337,6 @@ contract IglooFiV1Vault is
 		public
 		override
 		onlyRole(DEFAULT_ADMIN_ROLE)
-		returns (uint256)
 	{
 		require(newRequiredVoteCount > 0, "!newRequiredVoteCount");
 
@@ -357,8 +345,6 @@ contract IglooFiV1Vault is
 
 		// [emit]
 		emit UpdatedRequiredVoteCount(requiredVoteCount);
-
-		return (requiredVoteCount);
 	}
 
 	/// @inheritdoc IIglooFiV1Vault

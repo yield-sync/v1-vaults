@@ -233,11 +233,9 @@ interface IIglooFiV1Vault
 	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
 	* @dev [add] address to VOTER on `AccessControlEnumerable`
 	* @param targetAddress {address}
-	* @return {address} Voter added
 	*/
 	function addVoter(address targetAddress)
 		external
-		returns (address)
 	;
 
 	/**
@@ -245,11 +243,9 @@ interface IIglooFiV1Vault
 	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
 	* @dev [remove] address with VOTER on `AccessControlEnumerable`
 	* @param voter {address} Address of the voter to remove
-	* @return {address} Removed voter
 	*/	
 	function removeVoter(address voter)
 		external
-		returns (address)
 	;
 
 	/**
@@ -257,12 +253,10 @@ interface IIglooFiV1Vault
 	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
 	* @dev [update] `requiredVoteCount`
 	* @param newRequiredVoteCount {uint256}
-	* @return {uint256} New `requiredVoteCount`
 	* Emits: `UpdatedRequiredVoteCount`
 	*/
 	function updateRequiredVoteCount(uint256 newRequiredVoteCount)
 		external
-		returns (uint256)
 	;
 
 	/**
