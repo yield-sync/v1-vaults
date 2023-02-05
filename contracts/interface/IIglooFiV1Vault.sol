@@ -220,9 +220,8 @@ interface IIglooFiV1Vault
 	* @dev [increment] Value in `_signedMessageVotes`
 	* @param message {bytes} to sign
 	*/
-	function createSignedMessage(bytes memory message) 
+	function signMessage(bytes memory message) 
 		external
-		returns (bytes32)
 	;
 
 

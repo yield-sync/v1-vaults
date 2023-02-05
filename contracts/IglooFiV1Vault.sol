@@ -307,12 +307,11 @@ contract IglooFiV1Vault is
 	}
 
 	/// @inheritdoc IIglooFiV1Vault
-	function createSignedMessage(bytes memory message)
+	function signMessage(bytes memory message)
 		public
 		onlyRole(VOTER)
-		returns (bytes32)
 	{
-		return IIglooFiV1VaultsMultiSignedMessages(IGLOO_FI_V1_MULTI_SIGNED_MESSAGES).createSignedMessage(
+		IIglooFiV1VaultsMultiSignedMessages(IGLOO_FI_V1_MULTI_SIGNED_MESSAGES).signMessage(
 			msg.sender,
 			message
 		);

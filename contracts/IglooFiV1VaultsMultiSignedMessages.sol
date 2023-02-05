@@ -8,53 +8,47 @@ import "./interface/IIglooFiV1VaultsMultiSignedMessages.sol";
 
 
 /**
- * This is where the message signature record should live. This should keep record of who
- * has voted and who has not 
+ * @title IglooFiV1VaultsMultiSignedMessages
 */
 contract IglooFiV1VaultsMultiSignedMessages is
 	IIglooFiV1VaultsMultiSignedMessages
 {
 	// [mapping][internal]
-	mapping (address => bytes32[]) internal _openSignedMessage;
+	mapping (address => mapping (bytes => bytes32)) internal _messageToSignedMessage;
+
 	mapping (address => mapping (bytes32 => uint256)) internal _signedMessageVotes;
+	
 	mapping (address => mapping (bytes32 => mapping (address => bool))) internal _signedMessagesVoterVoted;
 
 
-	function openSignedMessage(address vaultAddress, uint256 index)
-		public
-		view
-		returns (bytes32)
-	{
-		return _openSignedMessage[vaultAddress][index];
-	}
-
-	function signedMessageVotes(address vaultAddress, bytes32 _messageHash)
+	function signedMessageVotes(address vaultAddress, bytes32 signedMessage)
 		public
 		view
 		returns (uint256)
 	{
-		return _signedMessageVotes[vaultAddress][_messageHash];
+		return _signedMessageVotes[vaultAddress][signedMessage];
 	}
 
 
-	function createSignedMessage(address voter, bytes memory message)
+	function signMessage(address voter, bytes memory message)
 		external
-		returns (bytes32)
 	{
-		bytes32 _messageHash = ECDSA.toEthSignedMessageHash(message);
+		bytes32 signedMessage = ECDSA.toEthSignedMessageHash(message);
 
-		console.logBytes32(_messageHash);
-
-		if (_signedMessagesVoterVoted[msg.sender][_messageHash][voter] == false) {
-			// [add] `_signedMessagesVoterVoted` voted address
-			_signedMessagesVoterVoted[msg.sender][_messageHash][voter] = true;
-
-			// [increment] Value in `_signedMessageVotes`
-			_signedMessageVotes[msg.sender][_messageHash] = 1;
-
-			_openSignedMessage[msg.sender].push(_messageHash);
+		if (_messageToSignedMessage[msg.sender][message] == 0)
+		{
+			_messageToSignedMessage[msg.sender][message] = signedMessage;
 		}
 
-		return _messageHash;
+		if (_signedMessagesVoterVoted[msg.sender][signedMessage][voter] == false)
+		{
+			// [add] `_signedMessagesVoterVoted` voted address
+			_signedMessagesVoterVoted[msg.sender][signedMessage][voter] = true;
+
+			// [increment] Value in `_signedMessageVotes`
+			_signedMessageVotes[msg.sender][signedMessage] += 1;
+		}
+
+		console.log(_signedMessageVotes[msg.sender][signedMessage]);
 	}
 }

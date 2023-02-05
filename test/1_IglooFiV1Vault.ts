@@ -628,15 +628,16 @@ describe("IglooFi V1 Vault", async () => {
 			
 			describe("createSignedMessage", async () => {
 				it("should work..", async () => {
-					const [, addr1] = await ethers.getSigners();
+					const [, addr1, addr2] = await ethers.getSigners();
+
+					await iglooFiV1Vault.addVoter(addr2.address);
 					
-					await iglooFiV1Vault.connect(addr1).createSignedMessage(
+					await iglooFiV1Vault.connect(addr1).signMessage(
 						ethers.utils.toUtf8Bytes("Hello, world!")
 					);
 
-					console.log(
-						"test",
-						await iglooFiV1VaultsMultiSignedMessages.openSignedMessage(iglooFiV1Vault.address, 0)
+					await iglooFiV1Vault.connect(addr2).signMessage(
+						ethers.utils.toUtf8Bytes("Hello, world!")
 					);
 				});
 			});
