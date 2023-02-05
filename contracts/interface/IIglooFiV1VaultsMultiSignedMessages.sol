@@ -12,5 +12,8 @@ interface IIglooFiV1VaultsMultiSignedMessages {
 		returns (uint256)
 	;
 
-	function createSignedMessage(address voter, bytes memory message) external;
+	function createSignedMessage(address voter, bytes memory message)
+		external
+		returns (bytes32)
+	;
 }

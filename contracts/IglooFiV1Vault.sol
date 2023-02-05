@@ -64,6 +64,18 @@ contract IglooFiV1Vault is
 	}
 
 
+	receive ()
+		external
+		payable
+	{}
+
+
+	fallback ()
+		external
+		payable
+	{}
+
+
 	modifier validWithdrawalRequest(uint256 withdrawalRequestId)
 	{
 		// [require] WithdrawalRequest exists
@@ -189,7 +201,7 @@ contract IglooFiV1Vault is
 		_openWithdrawalRequestIds.push(_withdrawalRequestIdTracker);
 
 		// [emit]
-		emit CreatedWithdrawalRequest(_withdrawalRequest[_withdrawalRequestIdTracker]);
+		emit CreatedWithdrawalRequest(_withdrawalRequestIdTracker);
 
 		// [increment] `_withdrawalRequestIdTracker`
 		_withdrawalRequestIdTracker++;
@@ -203,7 +215,6 @@ contract IglooFiV1Vault is
 		override
 		onlyRole(VOTER)
 		validWithdrawalRequest(withdrawalRequestId)
-		returns (uint256, uint256)
 	{
 		// [for] each voter within WithdrawalRequest
 		for (uint256 i = 0; i < _withdrawalRequest[withdrawalRequestId].votedVoters.length; i++)
@@ -214,7 +225,6 @@ contract IglooFiV1Vault is
 			}
 		}
 		
-
 		if (vote)
 		{
 			// [update] `_withdrawalRequest` → [increment] Approve vote count
@@ -240,11 +250,6 @@ contract IglooFiV1Vault is
 			// [update] latestRelevantApproveVoteTime timestamp
 			_withdrawalRequest[withdrawalRequestId].latestRelevantApproveVoteTime = block.timestamp;
 		}
-
-		return (
-			_withdrawalRequest[withdrawalRequestId].voteCount,
-			_withdrawalRequest[withdrawalRequestId].latestRelevantApproveVoteTime
-		);
 	}
 
 	/// @inheritdoc IIglooFiV1Vault
@@ -305,8 +310,9 @@ contract IglooFiV1Vault is
 	function createSignedMessage(bytes memory message)
 		public
 		onlyRole(VOTER)
+		returns (bytes32)
 	{
-		IIglooFiV1VaultsMultiSignedMessages(IGLOO_FI_V1_MULTI_SIGNED_MESSAGES).createSignedMessage(
+		return IIglooFiV1VaultsMultiSignedMessages(IGLOO_FI_V1_MULTI_SIGNED_MESSAGES).createSignedMessage(
 			msg.sender,
 			message
 		);
@@ -352,18 +358,15 @@ contract IglooFiV1Vault is
 		public
 		override
 		onlyRole(DEFAULT_ADMIN_ROLE)
-		returns (uint256)
 	{
 		// [require] newWithdrawalDelaySeconds is greater than OR equal to 0
-		require(newWithdrawalDelaySeconds >= 0, "Invalid newWithdrawalDelaySeconds");
+		require(newWithdrawalDelaySeconds >= 0, "!newWithdrawalDelaySeconds");
 
 		// [update] `withdrawalDelaySeconds`
 		withdrawalDelaySeconds = newWithdrawalDelaySeconds;
 
 		// [emit]
 		emit UpdatedWithdrawalDelaySeconds(withdrawalDelaySeconds);
-
-		return withdrawalDelaySeconds;
 	}
 
 	/// @inheritdoc IIglooFiV1Vault
@@ -376,7 +379,6 @@ contract IglooFiV1Vault is
 		override
 		onlyRole(DEFAULT_ADMIN_ROLE)
 		validWithdrawalRequest(withdrawalRequestId)
-		returns (uint256, uint256)
 	{
 		if (arithmaticSign)
 		{
@@ -398,11 +400,6 @@ contract IglooFiV1Vault is
 			withdrawalRequestId,
 			_withdrawalRequest[withdrawalRequestId].latestRelevantApproveVoteTime
 		);
-
-		return (
-			withdrawalRequestId,
-			_withdrawalRequest[withdrawalRequestId].latestRelevantApproveVoteTime
-		);
 	}
 
 	/// @inheritdoc IIglooFiV1Vault
@@ -411,11 +408,8 @@ contract IglooFiV1Vault is
 		override
 		onlyRole(DEFAULT_ADMIN_ROLE)
 		validWithdrawalRequest(withdrawalRequestId)
-		returns (uint256)
 	{
 		// [call][internal]
 		_deleteWithdrawalRequest(withdrawalRequestId);
-
-		return withdrawalRequestId;
 	}
 }

@@ -50,10 +50,12 @@ interface IIglooFiV1VaultFactory {
 	* @notice Get vault deployment fee
 	* @dev [!restriction]
 	* @dev [view-uint256]
+	* @return {uint256}
 	*/
 	function fee()
 		external
 		view
+		returns (uint256)
 	;
 
 	/**
@@ -103,11 +105,9 @@ interface IIglooFiV1VaultFactory {
 	* @dev [restriction] IIglooFiGovernance AccessControlEnumerable → DEFAULT_ADMIN_ROLE
 	* @dev [update] `_fee`
 	* @param newFee {uint256}
-	* @return {uint256} Updated `fee`
 	*/
 	function updateFee(uint256 newFee)
 		external
-		returns (uint256)
 	;
 
 	/**

@@ -34,7 +34,7 @@ interface IIglooFiV1Vault
 	* @dev Emits when a `WithdrawalRequest` is created
 	*/
 	event CreatedWithdrawalRequest(
-		WithdrawalRequest withdrawalRequest
+		uint256 withdrawalRequest
 	);
 
 	/**
@@ -194,14 +194,11 @@ interface IIglooFiV1Vault
 	*      [update] `_withdrawalRequestVotedVoters`
 	* @param withdrawalRequestId {uint256}
 	* @param vote {bool} true (approve) or false (deny)
-	* @return {bool} voteCount
-	* @return {bool} lastImpactfulVote
 	* Emits: `WithdrawalRequestReadyToBeProccessed`
 	* Emits: `VoterVoted`
 	*/
 	function voteOnWithdrawalRequest(uint256 withdrawalRequestId, bool vote)
 		external
-		returns (uint256, uint256)
 	;
 
 	/**
@@ -225,6 +222,7 @@ interface IIglooFiV1Vault
 	*/
 	function createSignedMessage(bytes memory message) 
 		external
+		returns (bytes32)
 	;
 
 
@@ -264,12 +262,10 @@ interface IIglooFiV1Vault
 	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
 	* @dev [update] `withdrawalDelaySeconds` to new value
 	* @param newWithdrawalDelaySeconds {uint256}
-	* @return {uint256} New `withdrawalDelaySeconds`
 	* Emits: `UpdatedWithdrawalDelaySeconds`
 	*/
 	function updateWithdrawalDelaySeconds(uint256 newWithdrawalDelaySeconds)
 		external
-		returns (uint256)
 	;
 
 	/**
@@ -279,8 +275,6 @@ interface IIglooFiV1Vault
 	* @param withdrawalRequestId {uint256}
 	* @param arithmaticSign {bool} true → Add | false → Subtract 
 	* @param timeInSeconds {uint256}
-	* @return {uint256} `withdrawalRequestId`
-	* @return {uint256} `newLatestRelevantApproveVoteTime`
 	* Emits: `UpdatedWithdrawalRequestLastSignificantApproveVote`
 	*/
 	function updateWithdrawalRequestLatestRelevantApproveVoteTime(
@@ -289,7 +283,6 @@ interface IIglooFiV1Vault
 		uint256 timeInSeconds
 	)
 		external
-		returns (uint256, uint256)
 	;
 
 	/**
@@ -297,11 +290,9 @@ interface IIglooFiV1Vault
 	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
 	* @dev [call][internal] {_deleteWithdrawalRequest}
 	* @param withdrawalRequestId {uint256}
-	* @return {bool} Status
 	* Emits: `DeletedWithdrawalRequest`
 	*/
 	function deleteWithdrawalRequest(uint256 withdrawalRequestId)
 		external
-		returns (uint256)
 	;
 }

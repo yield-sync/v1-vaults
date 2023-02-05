@@ -44,6 +44,18 @@ contract IglooFiV1VaultFactory is
 	}
 
 
+	receive ()
+		external
+		payable
+	{}
+
+
+	fallback ()
+		external
+		payable
+	{}
+
+
 	modifier onlyIglooFiGovernanceAdmin() {
 		require(
 			IIglooFiGovernance(IGLOO_FI).hasRole(
@@ -142,8 +154,6 @@ contract IglooFiV1VaultFactory is
 		whenNotPaused()
 		onlyIglooFiGovernanceAdmin()
 	{
-		require(transferTo != address(0), "!transferTo");
-
 		// [transfer]
 		(bool success, ) = transferTo.call{value: address(this).balance}("");
 
