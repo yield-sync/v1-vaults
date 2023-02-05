@@ -627,14 +627,41 @@ describe("IglooFi V1 Vault", async () => {
 
 			
 			describe("createSignedMessage", async () => {
-				it("should work..", async () => {
-					const [, addr1, addr2] = await ethers.getSigners();
+				it(
+					"Should revert when unauthorized msg.sender calls..",
+					async () => {
+						const [,, addr2] = await ethers.getSigners();
+						
+						await expect(
+							iglooFiV1Vault.connect(addr2).signMessage(
+								ethers.utils.toUtf8Bytes("Hello, world!")
+							)
+						).to.be.rejected;
+					}
+				);
 
-					await iglooFiV1Vault.addVoter(addr2.address);
+				it("should allow an address to sign a message..", async () => {
+					const [, addr1] = await ethers.getSigners();
 					
 					await iglooFiV1Vault.connect(addr1).signMessage(
 						ethers.utils.toUtf8Bytes("Hello, world!")
 					);
+
+					await expect().to.be.equal(1);
+				});
+
+				it("should NOT allow double vote on a signed message..", async () => {
+					const [, addr1] = await ethers.getSigners();
+
+					await iglooFiV1Vault.connect(addr1).signMessage(
+						ethers.utils.toUtf8Bytes("Hello, world!")
+					);
+				});
+
+				it("should allow an address to sign a message..", async () => {
+					const [,, addr2] = await ethers.getSigners();
+
+					await iglooFiV1Vault.addVoter(addr2.address);
 
 					await iglooFiV1Vault.connect(addr2).signMessage(
 						ethers.utils.toUtf8Bytes("Hello, world!")
