@@ -135,8 +135,7 @@ contract IglooFiV1Vault is
 			IIglooFiV1VaultsMultiSignedMessages(IGLOO_FI_V1_MULTI_SIGNED_MESSAGES).signedMessageVotes(
 				address(this),
 				_messageHash
-			) >= requiredVoteCount
-				? MAGIC_VALUE : bytes4(0)
+			) >= requiredVoteCount ? MAGIC_VALUE : bytes4(0)
 		);
 	}
 

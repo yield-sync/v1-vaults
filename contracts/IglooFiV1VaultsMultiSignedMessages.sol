@@ -16,12 +16,11 @@ contract IglooFiV1VaultsMultiSignedMessages is
 {
 	// [mapping][internal]
 	mapping (address => mapping (bytes => bytes32)) internal _messageToSignedMessage;
-
 	mapping (address => mapping (bytes32 => uint256)) internal _signedMessageVotes;
-	
 	mapping (address => mapping (bytes32 => mapping (address => bool))) internal _signedMessagesVoterVoted;
 
 
+	/// @inheritdoc IIglooFiV1VaultsMultiSignedMessages
 	function messageToSignedMessage(address vaultAddress, bytes memory message)
 		public
 		view
@@ -30,6 +29,7 @@ contract IglooFiV1VaultsMultiSignedMessages is
 		return _messageToSignedMessage[vaultAddress][message];
 	}
 	
+	/// @inheritdoc IIglooFiV1VaultsMultiSignedMessages
 	function signedMessageVotes(address vaultAddress, bytes32 signedMessage)
 		public
 		view
@@ -39,13 +39,16 @@ contract IglooFiV1VaultsMultiSignedMessages is
 	}
 
 
+	/// @inheritdoc IIglooFiV1VaultsMultiSignedMessages
 	function signMessage(address voter, bytes memory message)
 		external
 	{
+		// Sign message
 		bytes32 signedMessage = ECDSA.toEthSignedMessageHash(message);
 
 		if (_messageToSignedMessage[msg.sender][message] == 0)
 		{
+			// [add] `_messageToSignedMessage` signed message
 			_messageToSignedMessage[msg.sender][message] = signedMessage;
 		}
 
