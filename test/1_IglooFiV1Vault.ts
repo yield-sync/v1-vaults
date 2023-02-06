@@ -640,14 +640,24 @@ describe("IglooFi V1 Vault", async () => {
 					}
 				);
 
-				it("should allow an address to sign a message..", async () => {
+				it("should allow address 1 to sign a message..", async () => {
 					const [, addr1] = await ethers.getSigners();
 					
 					await iglooFiV1Vault.connect(addr1).signMessage(
 						ethers.utils.toUtf8Bytes("Hello, world!")
 					);
 
-					await expect().to.be.equal(1);
+					const signedMessage = await iglooFiV1VaultsMultiSignedMessages.messageToSignedMessage(
+						iglooFiV1Vault.address,
+						ethers.utils.toUtf8Bytes("Hello, world!")
+					);
+
+					await expect(
+						await iglooFiV1VaultsMultiSignedMessages.signedMessageVotes(
+							iglooFiV1Vault.address,
+							signedMessage
+						)
+					).to.be.equal(1);
 				});
 
 				it("should NOT allow double vote on a signed message..", async () => {
@@ -656,9 +666,21 @@ describe("IglooFi V1 Vault", async () => {
 					await iglooFiV1Vault.connect(addr1).signMessage(
 						ethers.utils.toUtf8Bytes("Hello, world!")
 					);
+
+					const signedMessage = await iglooFiV1VaultsMultiSignedMessages.messageToSignedMessage(
+						iglooFiV1Vault.address,
+						ethers.utils.toUtf8Bytes("Hello, world!")
+					);
+
+					await expect(
+						await iglooFiV1VaultsMultiSignedMessages.signedMessageVotes(
+							iglooFiV1Vault.address,
+							signedMessage
+						)
+					).to.be.equal(1);
 				});
 
-				it("should allow an address to sign a message..", async () => {
+				it("should allow address 2 to sign a message..", async () => {
 					const [,, addr2] = await ethers.getSigners();
 
 					await iglooFiV1Vault.addVoter(addr2.address);
@@ -666,6 +688,18 @@ describe("IglooFi V1 Vault", async () => {
 					await iglooFiV1Vault.connect(addr2).signMessage(
 						ethers.utils.toUtf8Bytes("Hello, world!")
 					);
+
+					const signedMessage = await iglooFiV1VaultsMultiSignedMessages.messageToSignedMessage(
+						iglooFiV1Vault.address,
+						ethers.utils.toUtf8Bytes("Hello, world!")
+					);
+
+					await expect(
+						await iglooFiV1VaultsMultiSignedMessages.signedMessageVotes(
+							iglooFiV1Vault.address,
+							signedMessage
+						)
+					).to.be.equal(2);
 				});
 			});
 		});

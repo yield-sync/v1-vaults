@@ -4,6 +4,7 @@ pragma solidity ^0.8.1;
 
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "hardhat/console.sol";
+
 import "./interface/IIglooFiV1VaultsMultiSignedMessages.sol";
 
 
@@ -56,7 +57,5 @@ contract IglooFiV1VaultsMultiSignedMessages is
 			// [increment] Value in `_signedMessageVotes`
 			_signedMessageVotes[msg.sender][signedMessage] += 1;
 		}
-
-		console.log(_signedMessageVotes[msg.sender][signedMessage]);
 	}
 }
