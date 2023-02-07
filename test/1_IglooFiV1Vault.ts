@@ -28,28 +28,13 @@ describe("IglooFi V1 Vault", async () => {
 
 	/**
 	 * @notice Deploy contract
-	 * @dev Deploy IglooFiV1VaultsMultiSignedMessages.sol
-	*/
-	before("[before] Deploy IglooFiV1VaultsMultiSignedMessages.sol..", async () => {
-		const IglooFiV1VaultsMultiSignedMessages = await ethers.getContractFactory(
-			"IglooFiV1VaultsMultiSignedMessages"
-		);
-
-		iglooFiV1VaultsMultiSignedMessages = await IglooFiV1VaultsMultiSignedMessages.deploy();
-		iglooFiV1VaultsMultiSignedMessages = await iglooFiV1VaultsMultiSignedMessages.deployed();
-	});
-
-
-	/**
-	 * @notice Deploy contract
 	 * @dev Deploy IglooFiV1VaultFactory.sol
 	*/
 	before("[before] Deploy IglooFiV1VaultFactory.sol contracts..", async () => {
 		const IglooFiV1VaultFactory = await ethers.getContractFactory("IglooFiV1VaultFactory");
 
 		iglooFiV1VaultFactory = await IglooFiV1VaultFactory.deploy(
-			testIglooFiGovernance.address,
-			iglooFiV1VaultsMultiSignedMessages.address
+			testIglooFiGovernance.address
 		);
 
 		iglooFiV1VaultFactory = await iglooFiV1VaultFactory.deployed();
@@ -623,84 +608,6 @@ describe("IglooFi V1 Vault", async () => {
 						).to.be.equal(3);
 					}
 				);
-			});
-
-			
-			describe("createSignedMessage", async () => {
-				it(
-					"Should revert when unauthorized msg.sender calls..",
-					async () => {
-						const [,, addr2] = await ethers.getSigners();
-						
-						await expect(
-							iglooFiV1Vault.connect(addr2).signMessage(
-								ethers.utils.toUtf8Bytes("Hello, world!")
-							)
-						).to.be.rejected;
-					}
-				);
-
-				it("should allow address 1 to sign a message..", async () => {
-					const [, addr1] = await ethers.getSigners();
-					
-					await iglooFiV1Vault.connect(addr1).signMessage(
-						ethers.utils.toUtf8Bytes("Hello, world!")
-					);
-
-					const signedMessage = await iglooFiV1VaultsMultiSignedMessages.messageToSignedMessage(
-						iglooFiV1Vault.address,
-						ethers.utils.toUtf8Bytes("Hello, world!")
-					);
-
-					await expect(
-						await iglooFiV1VaultsMultiSignedMessages.signedMessageVotes(
-							iglooFiV1Vault.address,
-							signedMessage
-						)
-					).to.be.equal(1);
-				});
-
-				it("should NOT allow double vote on a signed message..", async () => {
-					const [, addr1] = await ethers.getSigners();
-
-					await iglooFiV1Vault.connect(addr1).signMessage(
-						ethers.utils.toUtf8Bytes("Hello, world!")
-					);
-
-					const signedMessage = await iglooFiV1VaultsMultiSignedMessages.messageToSignedMessage(
-						iglooFiV1Vault.address,
-						ethers.utils.toUtf8Bytes("Hello, world!")
-					);
-
-					await expect(
-						await iglooFiV1VaultsMultiSignedMessages.signedMessageVotes(
-							iglooFiV1Vault.address,
-							signedMessage
-						)
-					).to.be.equal(1);
-				});
-
-				it("should allow address 2 to sign a message..", async () => {
-					const [,, addr2] = await ethers.getSigners();
-
-					await iglooFiV1Vault.addVoter(addr2.address);
-
-					await iglooFiV1Vault.connect(addr2).signMessage(
-						ethers.utils.toUtf8Bytes("Hello, world!")
-					);
-
-					const signedMessage = await iglooFiV1VaultsMultiSignedMessages.messageToSignedMessage(
-						iglooFiV1Vault.address,
-						ethers.utils.toUtf8Bytes("Hello, world!")
-					);
-
-					await expect(
-						await iglooFiV1VaultsMultiSignedMessages.signedMessageVotes(
-							iglooFiV1Vault.address,
-							signedMessage
-						)
-					).to.be.equal(2);
-				});
 			});
 		});
 

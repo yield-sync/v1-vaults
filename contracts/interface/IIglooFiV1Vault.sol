@@ -214,16 +214,6 @@ interface IIglooFiV1Vault
 		external
 	;
 
-	/**
-	* @notice Sign a message
-	* @dev [restriction] AccessControlEnumerable → VOTER
-	* @dev [increment] Value in `_signedMessageVotes`
-	* @param message {bytes} to sign
-	*/
-	function signMessage(bytes memory message) 
-		external
-	;
-
 
 	/**
 	* @notice Assign VOTER to an address on AccessControlEnumerable

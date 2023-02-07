@@ -21,19 +21,6 @@ describe("IglooFi V1 Vault Factory", async () => {
 
 
 	/**
-	 * @dev Deploy IglooFiV1VaultsMultiSignedMessages.sol
-	*/
-	before("[before] Deploy IglooFiV1VaultsMultiSignedMessages.sol contract..", async () => {
-		const IglooFiV1VaultsMultiSignedMessages = await ethers.getContractFactory(
-			"IglooFiV1VaultsMultiSignedMessages"
-		);
-
-		iglooFiV1VaultsMultiSignedMessages = await IglooFiV1VaultsMultiSignedMessages.deploy();
-		iglooFiV1VaultsMultiSignedMessages = await iglooFiV1VaultsMultiSignedMessages.deployed();
-	});
-
-
-	/**
 	 * @dev Deploy IglooFiV1VaultFactory.sol
 	*/
 	before("[before] Deploy IglooFiV1VaultFactory.sol contracts..", async () => {
@@ -42,8 +29,7 @@ describe("IglooFi V1 Vault Factory", async () => {
 		);
 
 		iglooFiV1VaultFactory = await IglooFiV1VaultFactory.deploy(
-			testIglooFiGovernance.address,
-			iglooFiV1VaultsMultiSignedMessages.address
+			testIglooFiGovernance.address
 		);
 		iglooFiV1VaultFactory = await iglooFiV1VaultFactory.deployed();
 	});

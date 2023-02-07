@@ -33,18 +33,6 @@ interface IIglooFiV1VaultFactory {
 		view
 		returns (address)
 	;
-	
-	/**
-	* @notice CONSTANT Address of Igloo Fi V1 Vaults Multi Signed Messages
-	* @dev [!restriction]
-	* @dev [view-address]
-	* @return {address}
-	*/
-	function IGLOO_FI_V1_VAULTS_MULTI_SIGNED_MESSAGES()
-		external
-		view
-		returns (address)
-	;
 
 	/**
 	* @notice Get vault deployment fee

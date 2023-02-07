@@ -3,13 +3,10 @@ pragma solidity ^0.8.1;
 
 
 import { AccessControlEnumerable } from "@openzeppelin/contracts/access/AccessControlEnumerable.sol";
-import { IERC1271 } from "@openzeppelin/contracts/interfaces/IERC1271.sol";
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { IERC721 } from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
-import { ECDSA } from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 
 import { IIglooFiV1Vault, WithdrawalRequest } from "./interface/IIglooFiV1Vault.sol";
-import { IIglooFiV1VaultsMultiSignedMessages } from "./interface/IIglooFiV1VaultsMultiSignedMessages.sol";
 
 
 /**
@@ -17,14 +14,8 @@ import { IIglooFiV1VaultsMultiSignedMessages } from "./interface/IIglooFiV1Vault
 */
 contract IglooFiV1Vault is
 	AccessControlEnumerable,
-	IERC1271,
 	IIglooFiV1Vault
 {
-	using ECDSA for bytes32;
-
-	// [address][to-be-constant]
-	address public IGLOO_FI_V1_MULTI_SIGNED_MESSAGES;
-
 	// [bytes4][public]
 	bytes4 public constant override MAGIC_VALUE = 0x1626ba7e;
 
@@ -45,15 +36,12 @@ contract IglooFiV1Vault is
 
 
 	constructor (
-		address _IGLOO_FI_V1_MULTI_SIGNED_MESSAGES,
 		address admin,
 		uint256 _requiredVoteCount,
 		uint256 _withdrawalDelaySeconds
 	)
 	{
 		require(_requiredVoteCount > 0, "!_requiredVoteCount");
-
-		IGLOO_FI_V1_MULTI_SIGNED_MESSAGES = _IGLOO_FI_V1_MULTI_SIGNED_MESSAGES;
 		
 		_setupRole(DEFAULT_ADMIN_ROLE, admin);
 
@@ -119,26 +107,6 @@ contract IglooFiV1Vault is
 		// [emit]
 		emit DeletedWithdrawalRequest(withdrawalRequestId);
 	}
-
-
-	/// @inheritdoc IERC1271
-	function isValidSignature(bytes32 _messageHash, bytes memory _signature)
-		public
-		view
-		override
-		returns (bytes4 magicValue)
-	{
-		address signer = _messageHash.recover(_signature);
-
-		return (
-			hasRole(VOTER, signer) &&
-			IIglooFiV1VaultsMultiSignedMessages(IGLOO_FI_V1_MULTI_SIGNED_MESSAGES).signedMessageVotes(
-				address(this),
-				_messageHash
-			) >= requiredVoteCount ? MAGIC_VALUE : bytes4(0)
-		);
-	}
-
 
 	/// @inheritdoc IIglooFiV1Vault
 	function openWithdrawalRequestIds()
@@ -303,17 +271,6 @@ contract IglooFiV1Vault is
 
 		// [emit]
 		emit TokensWithdrawn(msg.sender, w.to, w.amount);
-	}
-
-	/// @inheritdoc IIglooFiV1Vault
-	function signMessage(bytes memory message)
-		public
-		onlyRole(VOTER)
-	{
-		IIglooFiV1VaultsMultiSignedMessages(IGLOO_FI_V1_MULTI_SIGNED_MESSAGES).signMessage(
-			msg.sender,
-			message
-		);
 	}
 
 
