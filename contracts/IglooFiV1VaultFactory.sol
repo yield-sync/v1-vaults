@@ -17,7 +17,7 @@ contract IglooFiV1VaultFactory is
 	IIglooFiV1VaultFactory
 {
 	// [address][public][to-be-constant]
-	address public override IGLOO_FI;
+	address public override IGLOO_FI_GOVERNANCE;
 
 	/* [uint256][internal] */
 	uint256 internal _vaultIdTracker;
@@ -30,11 +30,11 @@ contract IglooFiV1VaultFactory is
 	mapping (uint256 => address) internal _vaultAddress;
 
 
-	constructor (address _IGLOO_FI)
+	constructor (address _IGLOO_FI_GOVERNANCE)
 	{
 		_pause();
 
-		IGLOO_FI = _IGLOO_FI;
+		IGLOO_FI_GOVERNANCE = _IGLOO_FI_GOVERNANCE;
 
 		_vaultIdTracker = 0;
 		
@@ -56,8 +56,8 @@ contract IglooFiV1VaultFactory is
 
 	modifier onlyIglooFiGovernanceAdmin() {
 		require(
-			IIglooFiGovernance(IGLOO_FI).hasRole(
-				IIglooFiGovernance(IGLOO_FI).governanceRoles("DEFAULT_ADMIN_ROLE"),
+			IIglooFiGovernance(IGLOO_FI_GOVERNANCE).hasRole(
+				IIglooFiGovernance(IGLOO_FI_GOVERNANCE).governanceRoles("DEFAULT_ADMIN_ROLE"),
 				msg.sender
 			),
 			"!auth"
