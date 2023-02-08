@@ -108,6 +108,7 @@ contract IglooFiV1Vault is
 		emit DeletedWithdrawalRequest(withdrawalRequestId);
 	}
 
+
 	/// @inheritdoc IIglooFiV1Vault
 	function openWithdrawalRequestIds()
 		public
