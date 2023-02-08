@@ -28,7 +28,7 @@ interface IIglooFiV1VaultFactory {
 	* @dev [view-address]
 	* @return {address}
 	*/
-	function IGLOO_FI()
+	function IGLOO_FI_GOVERNANCE()
 		external
 		view
 		returns (address)
