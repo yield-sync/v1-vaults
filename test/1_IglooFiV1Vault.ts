@@ -669,6 +669,36 @@ describe("IglooFi V1 Vault", async () => {
 			
 			describe("createSignedMessage", async () => {
 				it(
+					"Should return addr1..",
+					async () => {
+						const [, addr1] = await ethers.getSigners();
+
+						const hash = await iglooFiV1VaultsMultiSignedMessages.randomHash()
+					
+						const _messageHash = await iglooFiV1VaultsMultiSignedMessages
+							.connect(addr1)
+							.getSignedMessage(hash)
+						;
+						
+						let _signature = await addr1.signMessage(_messageHash);
+
+						//_signature = _signature.substr(0, 130) + (_signature.substr(130) == "00" ? "1b" : "1c");
+
+						console.log("_messageHash:", _messageHash);
+						console.log("_signature:", _signature)
+
+				
+						const signer = await iglooFiV1VaultsMultiSignedMessages.connect(addr1).recoverSigner(
+							_messageHash,
+							_signature
+						);
+
+						expect(signer).to.be.equal(addr1.address);
+					}
+				);
+
+
+				it(
 					"Should revert when unauthorized msg.sender calls..",
 					async () => {
 						const [,, addr2] = await ethers.getSigners();
