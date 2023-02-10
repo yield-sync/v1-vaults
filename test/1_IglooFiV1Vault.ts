@@ -9,7 +9,6 @@ const sixDaysInSeconds = 6 * 24 * 60 * 60;
 describe("IglooFi V1 Vault", async () => {
 	let iglooFiV1VaultFactory: any;
 	let testIglooFiGovernance: any;
-	let iglooFiV1VaultsMultiSignedMessages: any;
 	let iglooFiV1Vault: any;
 	let mockERC20: any;
 	
@@ -55,6 +54,7 @@ describe("IglooFi V1 Vault", async () => {
 		// Deploy a vault
 		await iglooFiV1VaultFactory.deployVault(
 			owner.address,
+			ethers.constants.AddressZero,
 			2,
 			5,
 			{ value: 1 }

@@ -85,15 +85,15 @@ interface IIglooFiV1Vault
 	);
 
 	/**
-	* @notice Valid return value for isValidSignature
+	* @notice Address of signature manager
 	* @dev [!restriction]
-	* @dev [view-bytes4]
-	* @return {uint256}
+	* @dev [view-address]
+	* @return {address}
 	*/
-	function MAGIC_VALUE()
+	function signatureManager()
 		external
 		view
-		returns (bytes4)
+		returns (address)
 	;
 
 	/**
@@ -214,6 +214,16 @@ interface IIglooFiV1Vault
 		external
 	;
 
+
+	/**
+	* @notice Update Signature Manager Contract
+	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
+	* @dev [update] `signatureManager`
+	* @param _signatureManager {address}
+	*/
+	function updateSignatureManager(address _signatureManager)
+		external
+	;
 
 	/**
 	* @notice Assign VOTER to an address on AccessControlEnumerable

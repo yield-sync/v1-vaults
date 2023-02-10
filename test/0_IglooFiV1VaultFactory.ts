@@ -3,7 +3,6 @@ const { ethers } = require("hardhat");
 
 describe("IglooFi V1 Vault Factory", async () => {
 	let testIglooFiGovernance: any;
-	let iglooFiV1VaultsMultiSignedMessages: any;
 	let iglooFiV1VaultFactory: any;
 	
 
@@ -71,9 +70,9 @@ describe("IglooFi V1 Vault Factory", async () => {
 			);
 		
 			it(
-				"Should initialize `IGLOO_FI` to `TestIglooFiGovernance` address..",
+				"Should initialize `IGLOO_FI_GOVERNANCE` to `TestIglooFiGovernance` address..",
 				async () => {
-					expect(await iglooFiV1VaultFactory.IGLOO_FI()).to.equal(
+					expect(await iglooFiV1VaultFactory.IGLOO_FI_GOVERNANCE()).to.equal(
 						testIglooFiGovernance.address
 					);
 				}
@@ -229,6 +228,7 @@ describe("IglooFi V1 Vault Factory", async () => {
 		
 						const deployedAddress = await iglooFiV1VaultFactory.deployVault(
 							addr1.address,
+							ethers.constants.AddressZero,
 							2,
 							10,
 							{ value: 1 }

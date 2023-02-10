@@ -3,6 +3,7 @@ pragma solidity ^0.8.1;
 
 
 import { AccessControlEnumerable } from "@openzeppelin/contracts/access/AccessControlEnumerable.sol";
+import { IERC1271 } from "@openzeppelin/contracts/interfaces/IERC1271.sol";
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { IERC721 } from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 
@@ -14,10 +15,11 @@ import { IIglooFiV1Vault, WithdrawalRequest } from "./interface/IIglooFiV1Vault.
 */
 contract IglooFiV1Vault is
 	AccessControlEnumerable,
+	IERC1271,
 	IIglooFiV1Vault
 {
 	// [bytes4][public]
-	bytes4 public constant override MAGIC_VALUE = 0x1626ba7e;
+	address public override signatureManager;
 
 	// [byte32][public]
 	bytes32 public constant override VOTER = keccak256("VOTER");
@@ -37,6 +39,7 @@ contract IglooFiV1Vault is
 
 	constructor (
 		address admin,
+		address _signatureManager,
 		uint256 _requiredVoteCount,
 		uint256 _withdrawalDelaySeconds
 	)
@@ -45,6 +48,7 @@ contract IglooFiV1Vault is
 		
 		_setupRole(DEFAULT_ADMIN_ROLE, admin);
 
+		signatureManager = _signatureManager;
 		requiredVoteCount = _requiredVoteCount;
 		withdrawalDelaySeconds = _withdrawalDelaySeconds;
 		
@@ -106,6 +110,17 @@ contract IglooFiV1Vault is
 
 		// [emit]
 		emit DeletedWithdrawalRequest(withdrawalRequestId);
+	}
+
+
+	/// @inheritdoc IERC1271
+	function isValidSignature(bytes32 _messageHash, bytes memory _signature)
+		public
+		view
+		override
+		returns (bytes4 magicValue)
+	{
+		return IERC1271(signatureManager).isValidSignature(_messageHash, _signature);
 	}
 
 
@@ -274,6 +289,15 @@ contract IglooFiV1Vault is
 		emit TokensWithdrawn(msg.sender, w.to, w.amount);
 	}
 
+
+	/// @inheritdoc IIglooFiV1Vault
+	function updateSignatureManager(address _signatureManager)
+		public
+		override
+		onlyRole(DEFAULT_ADMIN_ROLE)
+	{
+		signatureManager = _signatureManager;
+	}
 
 	/// @inheritdoc IIglooFiV1Vault
 	function addVoter(address targetAddress)

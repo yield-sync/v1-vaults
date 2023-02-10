@@ -63,13 +63,15 @@ interface IIglooFiV1VaultFactory {
 	* @notice Creates a Vault
 	* @dev [!restriction]
 	* @dev [create]
-	* @param admin {address}
+	* @param _admin {address}
+	* @param _signatureManager {address}
 	* @param _requiredVoteCount {uint256}
 	* @param _withdrawalDelaySeconds {uint256}
 	* @return {address} Deployed vault
 	*/
 	function deployVault(
-		address admin,
+		address _admin,
+		address _signatureManager,
 		uint256 _requiredVoteCount,
 		uint256 _withdrawalDelaySeconds
 	)
