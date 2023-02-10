@@ -3,12 +3,10 @@ pragma solidity ^0.8.1;
 
 
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
+import "hardhat/console.sol";
 
 import "./interface/IIglooFiV1VaultsMultiSignedMessages.sol";
 
-// temp
-import "hardhat/console.sol";
-import { ECDSA } from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 
 /**
  * @title IglooFiV1VaultsMultiSignedMessages
@@ -66,31 +64,5 @@ contract IglooFiV1VaultsMultiSignedMessages is
 			// [increment] Value in `_signedMessageVotes`
 			_signedMessageVotes[msg.sender][signedMessage] += 1;
 		}
-	}
-
-
-	function randomHash() public view returns(bytes32) {
-        return keccak256(abi.encodePacked(block.number));
-    }
-
-	function getSignedMessage(bytes memory _message)
-		public
-		pure
-		returns (bytes32)
-	{
-		return ECDSA.toEthSignedMessageHash(_message);
-	}
-
-
-	function recoverSigner(bytes32 _messageHash, bytes memory _signature)
-		public
-		view
-		returns (address)
-	{
-		address signer = ECDSA.recover(_messageHash, _signature);
-
-		console.log(signer, msg.sender);
-
-		return signer;
 	}
 }

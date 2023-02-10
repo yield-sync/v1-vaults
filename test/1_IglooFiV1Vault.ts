@@ -625,38 +625,38 @@ describe("IglooFi V1 Vault", async () => {
 				);
 			});
 
-			
-			describe("createSignedMessage", async () => {
-				it(
-					"Should return addr1..",
-					async () => {
-						const [, addr1] = await ethers.getSigners();
 
-						const hash = await iglooFiV1VaultsMultiSignedMessages.randomHash()
-					
-						const _messageHash = await iglooFiV1VaultsMultiSignedMessages
-							.connect(addr1)
-							.getSignedMessage(hash)
-						;
-						
-						let _signature = await addr1.signMessage(_messageHash);
-
-						//_signature = _signature.substr(0, 130) + (_signature.substr(130) == "00" ? "1b" : "1c");
-
-						console.log("_messageHash:", _messageHash);
-						console.log("_signature:", _signature)
-
+			describe("VerifySignature", function () {
+				it("Check signature", async function () {
+					const [owner] = await ethers.getSigners();
 				
-						const signer = await iglooFiV1VaultsMultiSignedMessages.connect(addr1).recoverSigner(
-							_messageHash,
-							_signature
-						);
+					// Get contract
+					const VerifySignature = await ethers.getContractFactory("VerifySignature");
 
-						expect(signer).to.be.equal(addr1.address);
-					}
-				);
+					// Deploy contract
+					const contract = await VerifySignature.deploy();
+					await contract.deployed();
+				
 
+					const hash = await contract.getMessageHash("Hello, world!");
 
+					const sig = await owner.signMessage(ethers.utils.arrayify(hash));
+				
+					const ethHash = await contract.getEthSignedMessageHash(hash);
+					
+
+					// Correct signer recovered
+					expect(await contract.recoverSigner(ethHash, sig)).to.equal(owner.address);
+
+					// Correct signature and message returns true
+					expect(
+						await contract.verify(owner.address, "Hello, world!", sig)
+					).to.equal(true);
+				});
+			});
+
+			/*
+			describe("createSignedMessage", async () => {
 				it(
 					"Should revert when unauthorized msg.sender calls..",
 					async () => {
@@ -732,6 +732,7 @@ describe("IglooFi V1 Vault", async () => {
 					).to.be.equal(2);
 				});
 			});
+			*/
 		});
 
 

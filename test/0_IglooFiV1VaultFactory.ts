@@ -85,9 +85,9 @@ describe("IglooFi V1 Vault Factory", async () => {
 			);
 		
 			it(
-				"Should initialize `IGLOO_FI` to `TestIglooFiGovernance` address..",
+				"Should initialize `IGLOO_FI_GOVERNANCE` to `TestIglooFiGovernance` address..",
 				async () => {
-					expect(await iglooFiV1VaultFactory.IGLOO_FI()).to.equal(
+					expect(await iglooFiV1VaultFactory.IGLOO_FI_GOVERNANCE()).to.equal(
 						testIglooFiGovernance.address
 					);
 				}
