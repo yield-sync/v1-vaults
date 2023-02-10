@@ -640,17 +640,17 @@ describe("IglooFi V1 Vault", async () => {
 
 					const hash = await contract.getMessageHash("Hello, world!");
 
-					const sig = await owner.signMessage(ethers.utils.arrayify(hash));
+					const signature = await owner.signMessage(ethers.utils.arrayify(hash));
 				
 					const ethHash = await contract.getEthSignedMessageHash(hash);
 					
 
 					// Correct signer recovered
-					expect(await contract.recoverSigner(ethHash, sig)).to.equal(owner.address);
+					expect(await contract.recoverSigner(ethHash, signature)).to.equal(owner.address);
 
 					// Correct signature and message returns true
 					expect(
-						await contract.verify(owner.address, "Hello, world!", sig)
+						await contract.verify(owner.address, "Hello, world!", signature)
 					).to.equal(true);
 				});
 			});
