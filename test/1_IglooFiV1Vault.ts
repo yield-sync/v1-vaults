@@ -11,6 +11,7 @@ describe("IglooFi V1 Vault", async () => {
 	let iglooFiV1VaultFactory: any;
 	let iglooFiV1Vault: any;
 	let mockERC20: any;
+	let mockSignatureManager: any;
 	
 	
 	/**
@@ -76,6 +77,16 @@ describe("IglooFi V1 Vault", async () => {
 		mockERC20 = await mockERC20.deployed();
 	});
 
+	/**
+	 * @notice Deploy the contracts
+	 * @dev Deploy MockERC20.sol
+	*/
+	before("[before] Deploy MockSignatureManager.sol..", async () => {
+		const MockSignatureManager = await ethers.getContractFactory("MockSignatureManager");
+
+		mockSignatureManager = await MockSignatureManager.deploy();
+		mockSignatureManager = await mockSignatureManager.deployed();
+	});
 
 	/**
 	* @dev IglooFiV1Vault.sol
@@ -151,24 +162,14 @@ describe("IglooFi V1 Vault", async () => {
 				);
 
 				it(
-					"Should be able to detect a non-ERC1271 signature manager contract..",
-					async () => {
-						const [, addr1] = await ethers.getSigners();
-
-						await expect(
-							iglooFiV1Vault.updateSignatureManager(mockIglooFiGovernance.address)
-						).to.be.rejectedWith("!_signatureManager");
-					}
-				);
-
-				it(
 					"Should be able to set a signature manager contract..",
 					async () => {
-						const [, addr1] = await ethers.getSigners();
 
-						await expect(
-							iglooFiV1Vault.updateSignatureManager(mockIglooFiGovernance.address)
-						).to.be.true;
+						await iglooFiV1Vault.updateSignatureManager(mockSignatureManager.address);
+						
+						expect(await iglooFiV1Vault.signatureManager()).to.be.equal(
+							mockSignatureManager.address
+						);
 					}
 				);
 			});
@@ -470,7 +471,7 @@ describe("IglooFi V1 Vault", async () => {
 					it(
 						"Should fail to process WithdrawalRequest because not enough time has passed..",
 						async () => {
-							const [,addr1, addr2] = await ethers.getSigners();
+							const [, addr1] = await ethers.getSigners();
 
 							// Fast-forward 6 days
 							await ethers.provider.send('evm_increaseTime', [sixDaysInSeconds]);
