@@ -7,21 +7,21 @@ const sixDaysInSeconds = 6 * 24 * 60 * 60;
 
 
 describe("IglooFi V1 Vault", async () => {
+	let mockIglooFiGovernance: any;
 	let iglooFiV1VaultFactory: any;
-	let testIglooFiGovernance: any;
 	let iglooFiV1Vault: any;
 	let mockERC20: any;
 	
 	
 	/**
 	 * @notice Deploy contract
-	 * @dev Deploy TestIglooFiGovernance.sol
+	 * @dev Deploy MockIglooFiGovernance.sol
 	*/
 	before("[before] Deploy IglooFiGovernance.sol contract..", async () => {
-		const TestIglooFiGovernance = await ethers.getContractFactory("TestIglooFiGovernance");
+		const MockIglooFiGovernance = await ethers.getContractFactory("MockIglooFiGovernance");
 
-		testIglooFiGovernance = await TestIglooFiGovernance.deploy();
-		testIglooFiGovernance = await testIglooFiGovernance.deployed();
+		mockIglooFiGovernance = await MockIglooFiGovernance.deploy();
+		mockIglooFiGovernance = await mockIglooFiGovernance.deployed();
 	});
 
 
@@ -33,7 +33,7 @@ describe("IglooFi V1 Vault", async () => {
 		const IglooFiV1VaultFactory = await ethers.getContractFactory("IglooFiV1VaultFactory");
 
 		iglooFiV1VaultFactory = await IglooFiV1VaultFactory.deploy(
-			testIglooFiGovernance.address
+			mockIglooFiGovernance.address
 		);
 
 		iglooFiV1VaultFactory = await iglooFiV1VaultFactory.deployed();
@@ -138,6 +138,42 @@ describe("IglooFi V1 Vault", async () => {
 		 * @dev Restriction: DEFAULT_ADMIN_ROLE
 		*/
 		describe("Restriction: DEFAULT_ADMIN_ROLE", async () => {
+			describe("updateSignatureManager", async () => {
+				it(
+					"Should revert when unauthorized msg.sender calls..",
+					async () => {
+						const [, addr1] = await ethers.getSigners();
+
+						await expect(
+							iglooFiV1Vault.connect(addr1).updateSignatureManager(addr1.address)
+						).to.be.rejected;
+					}
+				);
+
+				it(
+					"Should be able to detect a non-ERC1271 signature manager contract..",
+					async () => {
+						const [, addr1] = await ethers.getSigners();
+
+						await expect(
+							iglooFiV1Vault.updateSignatureManager(mockIglooFiGovernance.address)
+						).to.be.rejectedWith("!_signatureManager");
+					}
+				);
+
+				it(
+					"Should be able to set a signature manager contract..",
+					async () => {
+						const [, addr1] = await ethers.getSigners();
+
+						await expect(
+							iglooFiV1Vault.updateSignatureManager(mockIglooFiGovernance.address)
+						).to.be.true;
+					}
+				);
+			});
+
+
 			describe("addVoter", async () => {
 				it(
 					"Should revert when unauthorized msg.sender calls..",

@@ -2,20 +2,20 @@ import { expect } from "chai";
 const { ethers } = require("hardhat");
 
 describe("IglooFi V1 Vault Factory", async () => {
-	let testIglooFiGovernance: any;
+	let mockIglooFiGovernance: any;
 	let iglooFiV1VaultFactory: any;
 	
 
 	/**
-	 * @dev Deploy TestIglooFiGovernance.sol
+	 * @dev Deploy MockIglooFiGovernance.sol
 	*/
-	before("[before] Deploy TestIglooFiGovernance.sol contract..", async () => {
-		const TestIglooFiGovernance = await ethers.getContractFactory(
-			"TestIglooFiGovernance"
+	before("[before] Deploy MockIglooFiGovernance.sol contract..", async () => {
+		const MockIglooFiGovernance = await ethers.getContractFactory(
+			"MockIglooFiGovernance"
 		);
 
-		testIglooFiGovernance = await TestIglooFiGovernance.deploy();
-		testIglooFiGovernance = await testIglooFiGovernance.deployed();
+		mockIglooFiGovernance = await MockIglooFiGovernance.deploy();
+		mockIglooFiGovernance = await mockIglooFiGovernance.deployed();
 	});
 
 
@@ -28,7 +28,7 @@ describe("IglooFi V1 Vault Factory", async () => {
 		);
 
 		iglooFiV1VaultFactory = await IglooFiV1VaultFactory.deploy(
-			testIglooFiGovernance.address
+			mockIglooFiGovernance.address
 		);
 		iglooFiV1VaultFactory = await iglooFiV1VaultFactory.deployed();
 	});
@@ -70,10 +70,10 @@ describe("IglooFi V1 Vault Factory", async () => {
 			);
 		
 			it(
-				"Should initialize `IGLOO_FI_GOVERNANCE` to `TestIglooFiGovernance` address..",
+				"Should initialize `IGLOO_FI_GOVERNANCE` to `MockIglooFiGovernance` address..",
 				async () => {
 					expect(await iglooFiV1VaultFactory.IGLOO_FI_GOVERNANCE()).to.equal(
-						testIglooFiGovernance.address
+						mockIglooFiGovernance.address
 					);
 				}
 			);

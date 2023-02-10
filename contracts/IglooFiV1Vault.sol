@@ -4,6 +4,7 @@ pragma solidity ^0.8.1;
 
 import { AccessControlEnumerable } from "@openzeppelin/contracts/access/AccessControlEnumerable.sol";
 import { IERC1271 } from "@openzeppelin/contracts/interfaces/IERC1271.sol";
+import { IERC165 } from "@openzeppelin/contracts/utils/introspection/IERC165.sol";
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { IERC721 } from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 
@@ -296,6 +297,11 @@ contract IglooFiV1Vault is
 		override
 		onlyRole(DEFAULT_ADMIN_ROLE)
 	{
+		require(
+			IERC165(_signatureManager).supportsInterface(type(IERC1271).interfaceId) == true,
+			"!_signatureManager"
+		);
+
 		signatureManager = _signatureManager;
 	}
 
