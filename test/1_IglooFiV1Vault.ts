@@ -636,17 +636,15 @@ describe("IglooFi V1 Vault", async () => {
 					// Deploy contract
 					const contract = await VerifySignature.deploy();
 					await contract.deployed();
-				
 
 					const hash = await contract.getMessageHash("Hello, world!");
-
 					const signature = await owner.signMessage(ethers.utils.arrayify(hash));
-				
 					const ethHash = await contract.getEthSignedMessageHash(hash);
-					
 
 					// Correct signer recovered
-					expect(await contract.recoverSigner(ethHash, signature)).to.equal(owner.address);
+					expect(
+						await contract.recoverSigner(ethHash, signature)
+					).to.equal(owner.address);
 
 					// Correct signature and message returns true
 					expect(

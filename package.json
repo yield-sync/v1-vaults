@@ -9,7 +9,7 @@
     "url": "git+https://github.com/igloo-fi/v1-vaults.git"
   },
   "keywords": [],
-  "author": "harpoonjs.eth",
+  "author": "Aleem Ahmed",
   "license": "ISC",
   "devDependencies": {
     "@igloo-fi/v1-sdk": "^0.0.9",
