@@ -26,6 +26,15 @@ contract VerifySignature {
 	}
 
 	///
+	function ECDSA_toTypedDataHash (bytes32 _domainSeparator, bytes32 _structHash)
+		public
+		pure
+		returns (bytes32)
+	{
+		return ECDSA.toTypedDataHash(_domainSeparator, _structHash);
+	}
+
+	///
 	function ECDSA_recover(bytes32 _ethSignedMessageHash, bytes memory _signature)
 		public
 		pure

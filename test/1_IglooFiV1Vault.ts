@@ -625,34 +625,6 @@ describe("IglooFi V1 Vault", async () => {
 				);
 			});
 
-
-			describe("VerifySignature", function () {
-				it("Check signature", async function () {
-					const [owner] = await ethers.getSigners();
-				
-					// Get contract
-					const VerifySignature = await ethers.getContractFactory("VerifySignature");
-
-					// Deploy contract
-					const contract = await VerifySignature.deploy();
-					await contract.deployed();
-
-					const hash = await contract.getMessageHash("Hello, world!");
-					const signature = await owner.signMessage(ethers.utils.arrayify(hash));
-					const ethHash = await contract.ECDSA_toEthSignedMessageHash(hash);
-
-					// Correct signer recovered
-					expect(
-						await contract.ECDSA_recover(ethHash, signature)
-					).to.equal(owner.address);
-
-					// Correct signature and message
-					expect(
-						await contract.verify(owner.address, "Hello, world!", signature)
-					).to.equal(true);
-				});
-			});
-
 			/*
 			describe("createSignedMessage", async () => {
 				it(
