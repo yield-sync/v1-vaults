@@ -33,6 +33,19 @@ describe("IglooFi V1 Vault Factory", async () => {
 
 
 	/**
+	 * @dev Deploy IglooFiV1VaultsMultiSignedMessages.sol
+	*/
+	before("[before] Deploy IglooFiV1VaultsMultiSignedMessages.sol contract..", async () => {
+		const IglooFiV1VaultsMultiSignedMessages = await ethers.getContractFactory(
+			"IglooFiV1VaultsMultiSignedMessages"
+		);
+
+		iglooFiV1VaultsMultiSignedMessages = await IglooFiV1VaultsMultiSignedMessages.deploy();
+		iglooFiV1VaultsMultiSignedMessages = await iglooFiV1VaultsMultiSignedMessages.deployed();
+	});
+
+
+	/**
 	 * @dev Deploy IglooFiV1VaultFactory.sol
 	*/
 	before("[before] Deploy IglooFiV1VaultFactory.sol contracts..", async () => {
@@ -42,11 +55,16 @@ describe("IglooFi V1 Vault Factory", async () => {
 
 		iglooFiV1VaultFactory = await IglooFiV1VaultFactory.deploy(
 <<<<<<< HEAD
+<<<<<<< HEAD
 			mockIglooFiGovernance.address
 =======
 			testIglooFiGovernance.address,
 			iglooFiV1VaultsMultiSignedMessages.address
 >>>>>>> a110a79 (Initial files for branch)
+=======
+			testIglooFiGovernance.address,
+			iglooFiV1VaultsMultiSignedMessages.address
+>>>>>>> 14c5fd210a9f10bf2dd7fbe49ab4583babef70da
 		);
 		iglooFiV1VaultFactory = await iglooFiV1VaultFactory.deployed();
 	});
@@ -88,10 +106,17 @@ describe("IglooFi V1 Vault Factory", async () => {
 			);
 		
 			it(
+<<<<<<< HEAD
 				"Should initialize `IGLOO_FI_GOVERNANCE` to `MockIglooFiGovernance` address..",
 				async () => {
 					expect(await iglooFiV1VaultFactory.IGLOO_FI_GOVERNANCE()).to.equal(
 						mockIglooFiGovernance.address
+=======
+				"Should initialize `IGLOO_FI_GOVERNANCE` to `TestIglooFiGovernance` address..",
+				async () => {
+					expect(await iglooFiV1VaultFactory.IGLOO_FI_GOVERNANCE()).to.equal(
+						testIglooFiGovernance.address
+>>>>>>> 14c5fd210a9f10bf2dd7fbe49ab4583babef70da
 					);
 				}
 			);
