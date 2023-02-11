@@ -14,13 +14,9 @@ import "./interface/IIglooFiV1VaultsMultiSignedMessages.sol";
 contract IglooFiV1VaultsMultiSignedMessages is
 	IIglooFiV1VaultsMultiSignedMessages
 {
-<<<<<<< HEAD
-=======
-	// temp
 	using ECDSA for bytes32;
 
 
->>>>>>> 14c5fd210a9f10bf2dd7fbe49ab4583babef70da
 	// [mapping][internal]
 	mapping (address => mapping (bytes => bytes32)) internal _messageToSignedMessage;
 	mapping (address => mapping (bytes32 => uint256)) internal _signedMessageVotes;
