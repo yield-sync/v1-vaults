@@ -3,6 +3,7 @@ const { ethers } = require("hardhat");
 
 describe("IglooFi V1 Vault Factory", async () => {
 	let mockIglooFiGovernance: any;
+	let iglooFiV1VaultsMultiSignedMessages: any;
 	let iglooFiV1VaultFactory: any;
 	
 
@@ -33,6 +34,19 @@ describe("IglooFi V1 Vault Factory", async () => {
 
 
 	/**
+	 * @dev Deploy IglooFiV1VaultsMultiSignedMessages.sol
+	*/
+	before("[before] Deploy IglooFiV1VaultsMultiSignedMessages.sol contract..", async () => {
+		const IglooFiV1VaultsMultiSignedMessages = await ethers.getContractFactory(
+			"IglooFiV1VaultsMultiSignedMessages"
+		);
+
+		iglooFiV1VaultsMultiSignedMessages = await IglooFiV1VaultsMultiSignedMessages.deploy();
+		iglooFiV1VaultsMultiSignedMessages = await iglooFiV1VaultsMultiSignedMessages.deployed();
+	});
+
+
+	/**
 	 * @dev Deploy IglooFiV1VaultFactory.sol
 	*/
 	before("[before] Deploy IglooFiV1VaultFactory.sol contracts..", async () => {
@@ -41,12 +55,7 @@ describe("IglooFi V1 Vault Factory", async () => {
 		);
 
 		iglooFiV1VaultFactory = await IglooFiV1VaultFactory.deploy(
-<<<<<<< HEAD
 			mockIglooFiGovernance.address
-=======
-			testIglooFiGovernance.address,
-			iglooFiV1VaultsMultiSignedMessages.address
->>>>>>> a110a79 (Initial files for branch)
 		);
 		iglooFiV1VaultFactory = await iglooFiV1VaultFactory.deployed();
 	});
@@ -246,7 +255,6 @@ describe("IglooFi V1 Vault Factory", async () => {
 		
 						const deployedAddress = await iglooFiV1VaultFactory.deployVault(
 							addr1.address,
-							ethers.constants.AddressZero,
 							2,
 							10,
 							{ value: 1 }

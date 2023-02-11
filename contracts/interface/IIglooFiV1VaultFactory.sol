@@ -35,18 +35,6 @@ interface IIglooFiV1VaultFactory {
 	;
 
 	/**
-	* @notice CONSTANT Address of Igloo Fi V1 Vaults Multi Signed Messages
-	* @dev [!restriction]
-	* @dev [view-address]
-	* @return {address}
-	*/
-	function IGLOO_FI_V1_VAULTS_MULTI_SIGNED_MESSAGES()
-		external
-		view
-		returns (address)
-	;
-
-	/**
 	* @notice Get vault deployment fee
 	* @dev [!restriction]
 	* @dev [view-uint256]
@@ -76,14 +64,12 @@ interface IIglooFiV1VaultFactory {
 	* @dev [!restriction]
 	* @dev [create]
 	* @param _admin {address}
-	* @param _signatureManager {address}
 	* @param _requiredVoteCount {uint256}
 	* @param _withdrawalDelaySeconds {uint256}
 	* @return {address} Deployed vault
 	*/
 	function deployVault(
 		address _admin,
-		address _signatureManager,
 		uint256 _requiredVoteCount,
 		uint256 _withdrawalDelaySeconds
 	)
@@ -119,6 +105,16 @@ interface IIglooFiV1VaultFactory {
 	* @param transferTo {uint256}
 	*/
 	function transferFunds(address transferTo)
+		external
+	;
+
+	/**
+	* @notice Updates default signature manager
+	* @dev [restriction] IIglooFiGovernance AccessControlEnumerable → DEFAULT_ADMIN_ROLE
+	* @dev [update] `signatureMaanger`
+	* @param _signatureManager {address}
+	*/
+	function updateSignatureManager(address _signatureManager)
 		external
 	;
 }

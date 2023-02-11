@@ -128,19 +128,7 @@ contract IglooFiV1Vault is
 		override
 		returns (bytes4 magicValue)
 	{
-<<<<<<< HEAD
 		return IERC1271(signatureManager).isValidSignature(_messageHash, _signature);
-=======
-		address signer = _messageHash.recover(_signature);
-
-		return (
-			hasRole(VOTER, signer) &&
-			IIglooFiV1VaultsMultiSignedMessages(IGLOO_FI_V1_MULTI_SIGNED_MESSAGES).signedMessageVotes(
-				address(this),
-				_messageHash
-			) >= requiredVoteCount ? MAGIC_VALUE : bytes4(0)
-		);
->>>>>>> a110a79 (Initial files for branch)
 	}
 
 

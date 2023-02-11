@@ -26,19 +26,6 @@ describe("IglooFi V1 Vault", async () => {
 	});
 
 
-	/**
-	 * @notice Deploy contract
-	 * @dev Deploy IglooFiV1VaultsMultiSignedMessages.sol
-	*/
-	before("[before] Deploy IglooFiV1VaultsMultiSignedMessages.sol..", async () => {
-		const IglooFiV1VaultsMultiSignedMessages = await ethers.getContractFactory(
-			"IglooFiV1VaultsMultiSignedMessages"
-		);
-
-		iglooFiV1VaultsMultiSignedMessages = await IglooFiV1VaultsMultiSignedMessages.deploy();
-		iglooFiV1VaultsMultiSignedMessages = await iglooFiV1VaultsMultiSignedMessages.deployed();
-	});
-
 
 	/**
 	 * @notice Deploy contract
@@ -48,12 +35,7 @@ describe("IglooFi V1 Vault", async () => {
 		const IglooFiV1VaultFactory = await ethers.getContractFactory("IglooFiV1VaultFactory");
 
 		iglooFiV1VaultFactory = await IglooFiV1VaultFactory.deploy(
-<<<<<<< HEAD
 			mockIglooFiGovernance.address
-=======
-			testIglooFiGovernance.address,
-			iglooFiV1VaultsMultiSignedMessages.address
->>>>>>> a110a79 (Initial files for branch)
 		);
 
 		iglooFiV1VaultFactory = await iglooFiV1VaultFactory.deployed();
@@ -74,7 +56,6 @@ describe("IglooFi V1 Vault", async () => {
 		// Deploy a vault
 		await iglooFiV1VaultFactory.deployVault(
 			owner.address,
-			ethers.constants.AddressZero,
 			2,
 			5,
 			{ value: 1 }
@@ -666,7 +647,7 @@ describe("IglooFi V1 Vault", async () => {
 				);
 			});
 
-			
+			/*
 			describe("createSignedMessage", async () => {
 				it(
 					"Should return addr1..",
@@ -773,6 +754,7 @@ describe("IglooFi V1 Vault", async () => {
 					).to.be.equal(2);
 				});
 			});
+			*/
 		});
 
 

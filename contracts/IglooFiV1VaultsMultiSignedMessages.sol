@@ -16,7 +16,10 @@ import { ECDSA } from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 contract IglooFiV1VaultsMultiSignedMessages is
 	IIglooFiV1VaultsMultiSignedMessages
 {
+<<<<<<< HEAD
 	// temp
+=======
+>>>>>>> 8b5b20a61f1368c051dbcb1b3de18aa3f3b15912
 	using ECDSA for bytes32;
 
 
