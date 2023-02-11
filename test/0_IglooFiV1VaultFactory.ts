@@ -3,6 +3,7 @@ const { ethers } = require("hardhat");
 
 describe("IglooFi V1 Vault Factory", async () => {
 	let mockIglooFiGovernance: any;
+	let iglooFiV1VaultsMultiSignedMessages: any;
 	let iglooFiV1VaultFactory: any;
 	
 
@@ -54,17 +55,7 @@ describe("IglooFi V1 Vault Factory", async () => {
 		);
 
 		iglooFiV1VaultFactory = await IglooFiV1VaultFactory.deploy(
-<<<<<<< HEAD
-<<<<<<< HEAD
 			mockIglooFiGovernance.address
-=======
-			testIglooFiGovernance.address,
-			iglooFiV1VaultsMultiSignedMessages.address
->>>>>>> a110a79 (Initial files for branch)
-=======
-			testIglooFiGovernance.address,
-			iglooFiV1VaultsMultiSignedMessages.address
->>>>>>> 14c5fd210a9f10bf2dd7fbe49ab4583babef70da
 		);
 		iglooFiV1VaultFactory = await iglooFiV1VaultFactory.deployed();
 	});
@@ -106,17 +97,10 @@ describe("IglooFi V1 Vault Factory", async () => {
 			);
 		
 			it(
-<<<<<<< HEAD
 				"Should initialize `IGLOO_FI_GOVERNANCE` to `MockIglooFiGovernance` address..",
 				async () => {
 					expect(await iglooFiV1VaultFactory.IGLOO_FI_GOVERNANCE()).to.equal(
 						mockIglooFiGovernance.address
-=======
-				"Should initialize `IGLOO_FI_GOVERNANCE` to `TestIglooFiGovernance` address..",
-				async () => {
-					expect(await iglooFiV1VaultFactory.IGLOO_FI_GOVERNANCE()).to.equal(
-						testIglooFiGovernance.address
->>>>>>> 14c5fd210a9f10bf2dd7fbe49ab4583babef70da
 					);
 				}
 			);
@@ -271,7 +255,6 @@ describe("IglooFi V1 Vault Factory", async () => {
 		
 						const deployedAddress = await iglooFiV1VaultFactory.deployVault(
 							addr1.address,
-							ethers.constants.AddressZero,
 							2,
 							10,
 							{ value: 1 }
