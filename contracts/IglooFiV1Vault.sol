@@ -23,9 +23,6 @@ contract IglooFiV1Vault is
 	using ECDSA for bytes32;
 
 
-	// [address][to-be-constant]
-	address public IGLOO_FI_V1_MULTI_SIGNED_MESSAGES;
-
 	// [bytes4][public]
 	address public override signatureManager;
 

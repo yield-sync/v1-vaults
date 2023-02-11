@@ -2,10 +2,6 @@ import { expect } from "chai";
 const { ethers } = require("hardhat");
 
 
-const sevenDaysInSeconds = 7 * 24 * 60 * 60;
-const sixDaysInSeconds = 6 * 24 * 60 * 60;
-
-
 describe("Verify Signature", async () => {
 	describe("VerifySignature.sol Contract", () => {
 		describe("ethSignedMessageHash", () => {
