@@ -1,4 +1,6 @@
 import { expect } from "chai";
+import { Contract } from "ethers";
+
 const { ethers } = require("hardhat");
 
 
@@ -7,11 +9,11 @@ const sixDaysInSeconds = 6 * 24 * 60 * 60;
 
 
 describe("IglooFi V1 Vault", async () => {
-	let mockIglooFiGovernance: any;
-	let iglooFiV1VaultFactory: any;
-	let iglooFiV1Vault: any;
-	let mockERC20: any;
-	let mockSignatureManager: any;
+	let mockIglooFiGovernance: Contract;
+	let iglooFiV1VaultFactory: Contract;
+	let iglooFiV1Vault: Contract;
+	let mockERC20: Contract;
+	let mockSignatureManager: Contract;
 	
 	
 	/**

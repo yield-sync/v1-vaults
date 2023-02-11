@@ -1,9 +1,11 @@
 import { expect } from "chai";
+import { Contract } from "ethers";
+
 const { ethers } = require("hardhat");
 
 
 describe("Mock Signature Manager", async () => {
-	let mockSignatureManager: any;
+	let mockSignatureManager: Contract;
 
 	/**
 	 * @notice Deploy contract

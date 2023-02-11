@@ -1,22 +1,26 @@
 import { expect } from "chai";
+import { Contract, ContractFactory } from "ethers";
+
 const { ethers } = require("hardhat");
 
+
 describe("IglooFi V1 Vault Factory", async () => {
-	let mockIglooFiGovernance: any;
-	let iglooFiV1VaultsMultiSignedMessages: any;
-	let iglooFiV1VaultFactory: any;
+	let mockIglooFiGovernance: Contract;
+	let iglooFiV1VaultsMultiSignedMessages: Contract;
+	let iglooFiV1VaultFactory: Contract;
 	
 
 	/**
 	 * @dev Deploy MockIglooFiGovernance.sol
 	*/
 	before("[before] Deploy MockIglooFiGovernance.sol contract..", async () => {
-		const MockIglooFiGovernance = await ethers.getContractFactory(
+		const MockIglooFiGovernance: ContractFactory = await ethers.getContractFactory(
 			"MockIglooFiGovernance"
 		);
 
-		mockIglooFiGovernance = await MockIglooFiGovernance.deploy();
-		mockIglooFiGovernance = await mockIglooFiGovernance.deployed();
+		mockIglooFiGovernance = await (
+			await MockIglooFiGovernance.deploy()
+		).deployed();
 	});
 
 
@@ -24,25 +28,13 @@ describe("IglooFi V1 Vault Factory", async () => {
 	 * @dev Deploy IglooFiV1VaultsMultiSignedMessages.sol
 	*/
 	before("[before] Deploy IglooFiV1VaultsMultiSignedMessages.sol contract..", async () => {
-		const IglooFiV1VaultsMultiSignedMessages = await ethers.getContractFactory(
+		const IglooFiV1VaultsMultiSignedMessages: ContractFactory = await ethers.getContractFactory(
 			"IglooFiV1VaultsMultiSignedMessages"
 		);
 
-		iglooFiV1VaultsMultiSignedMessages = await IglooFiV1VaultsMultiSignedMessages.deploy();
-		iglooFiV1VaultsMultiSignedMessages = await iglooFiV1VaultsMultiSignedMessages.deployed();
-	});
-
-
-	/**
-	 * @dev Deploy IglooFiV1VaultsMultiSignedMessages.sol
-	*/
-	before("[before] Deploy IglooFiV1VaultsMultiSignedMessages.sol contract..", async () => {
-		const IglooFiV1VaultsMultiSignedMessages = await ethers.getContractFactory(
-			"IglooFiV1VaultsMultiSignedMessages"
-		);
-
-		iglooFiV1VaultsMultiSignedMessages = await IglooFiV1VaultsMultiSignedMessages.deploy();
-		iglooFiV1VaultsMultiSignedMessages = await iglooFiV1VaultsMultiSignedMessages.deployed();
+		iglooFiV1VaultsMultiSignedMessages = await (
+			await IglooFiV1VaultsMultiSignedMessages.deploy()
+		).deployed();
 	});
 
 
@@ -50,21 +42,23 @@ describe("IglooFi V1 Vault Factory", async () => {
 	 * @dev Deploy IglooFiV1VaultFactory.sol
 	*/
 	before("[before] Deploy IglooFiV1VaultFactory.sol contracts..", async () => {
-		const IglooFiV1VaultFactory = await ethers.getContractFactory(
+		const IglooFiV1VaultFactory: ContractFactory = await ethers.getContractFactory(
 			"IglooFiV1VaultFactory"
 		);
 
-		iglooFiV1VaultFactory = await IglooFiV1VaultFactory.deploy(
-			mockIglooFiGovernance.address
-		);
-		iglooFiV1VaultFactory = await iglooFiV1VaultFactory.deployed();
+		iglooFiV1VaultFactory = await (
+			await IglooFiV1VaultFactory.deploy(mockIglooFiGovernance.address)
+		).deployed();
 	});
 
 
 	/**
-	* @dev recieve
+	* @dev IglooFiV1VaultFactory
 	*/
 	describe("IglooFiV1VaultFactory.sol Contract", async () => {
+		/**
+		* @dev recieve
+		*/
 		it(
 			"Should be able to recieve ether..",
 			async () => {
