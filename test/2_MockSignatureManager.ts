@@ -30,6 +30,10 @@ describe("Mock Signature Manager", async () => {
 				// [contract]
 				const hash = await mockSignatureManager.getMessageHash("Hello, world!");
 
+				const hash2 = ethers.utils.soliditySHA3("Hello, world!");
+				console.log(hash, hash2);
+				
+
 				const ethHash = await mockSignatureManager.ECDSA_toEthSignedMessageHash(hash);
 
 				// [hardhat] Sign Message

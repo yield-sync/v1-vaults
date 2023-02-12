@@ -6,7 +6,6 @@ const { ethers } = require("hardhat");
 
 describe("IglooFi V1 Vault Factory", async () => {
 	let mockIglooFiGovernance: Contract;
-	let iglooFiV1VaultsMultiSignedMessages: Contract;
 	let iglooFiV1VaultFactory: Contract;
 	
 
@@ -20,20 +19,6 @@ describe("IglooFi V1 Vault Factory", async () => {
 
 		mockIglooFiGovernance = await (
 			await MockIglooFiGovernance.deploy()
-		).deployed();
-	});
-
-
-	/**
-	 * @dev Deploy IglooFiV1VaultsMultiSignedMessages.sol
-	*/
-	before("[before] Deploy IglooFiV1VaultsMultiSignedMessages.sol contract..", async () => {
-		const IglooFiV1VaultsMultiSignedMessages: ContractFactory = await ethers.getContractFactory(
-			"IglooFiV1VaultsMultiSignedMessages"
-		);
-
-		iglooFiV1VaultsMultiSignedMessages = await (
-			await IglooFiV1VaultsMultiSignedMessages.deploy()
 		).deployed();
 	});
 

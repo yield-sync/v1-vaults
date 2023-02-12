@@ -9,7 +9,6 @@ import { IERC721 } from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import { ECDSA } from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 
 import { IIglooFiV1Vault, WithdrawalRequest } from "./interface/IIglooFiV1Vault.sol";
-import { IIglooFiV1VaultsMultiSignedMessages } from "./interface/IIglooFiV1VaultsMultiSignedMessages.sol";
 
 
 /**
