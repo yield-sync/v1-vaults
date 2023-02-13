@@ -30,10 +30,10 @@ describe("Mock Signature Manager", async () => {
 				// [contract]
 				const hash = await mockSignatureManager.getMessageHash("Hello, world!");
 
-				const ethHash = await mockSignatureManager.ECDSA_toEthSignedMessageHash(hash);
-
 				// [hardhat] Sign Message
 				const signature = await owner.signMessage(ethers.utils.arrayify(hash));
+
+				const ethHash = await mockSignatureManager.ECDSA_toEthSignedMessageHash(hash);
 
 				// Correct signer recovered
 				expect(
@@ -54,48 +54,19 @@ describe("Mock Signature Manager", async () => {
 			it("Check signature2..", async () => {
 				const [owner] = await ethers.getSigners();
 
-				const msg = {
-					// All properties on a domain are optional
-					domain: {
-						name: 'DApp Name',
-						version: '1',
-						chainId: 31337,
-						verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC'
-					},
+				const typedDataHash = await mockSignatureManager.toTypedDataHash(
+					await mockSignatureManager.getDomainSeperator(),
+					await mockSignatureManager.getStructHash()
+				);
 
-					// The named list of all type definitions
-					types: {
-						Person: [
-							{ name: 'name', type: 'string' },
-							{ name: 'wallet', type: 'address' }
-						],
-						Mail: [
-							{ name: 'from', type: 'Person' },
-							{ name: 'to', type: 'Person' },
-							{ name: 'contents', type: 'string' }
-						]
-					},
-
-					// The data to sign
-					value: {
-						from: {
-							name: 'Cow',
-							wallet: '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826'
-						},
-						to: {
-							name: 'Bob',
-							wallet: '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB'
-						},
-						contents: 'Hello, Bob!'
-					}
-				};
-
-				const signature = await owner._signTypedData(msg.domain, msg.types, msg.value);
-
+				// [hardhat] Sign Message
+				const signature = await owner.signMessage(ethers.utils.arrayify(typedDataHash));
+				
+				const signedHash = await mockSignatureManager.ECDSA_toEthSignedMessageHash(typedDataHash)
 
 				console.log("signature:", signature)
-				await mockSignatureManager.ECDSA_recover(msg, signature)
-				
+				console.log("recovered:", await mockSignatureManager.ECDSA_recover(signedHash, signature));
+				console.log("owner:", owner.address);
 			});
 
 			it("domain separator returns properly", async () => {

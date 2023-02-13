@@ -3,6 +3,7 @@ pragma solidity ^0.8.1;
 
 
 import { ECDSA } from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
+import "@openzeppelin/contracts/utils/cryptography/EIP712.sol";
 import { IERC1271 } from "@openzeppelin/contracts/interfaces/IERC1271.sol";
 import "hardhat/console.sol";
 
@@ -11,8 +12,14 @@ import "hardhat/console.sol";
  * @title MockSignatureManager
 */
 contract MockSignatureManager is
-	IERC1271
+	IERC1271,
+	EIP712
 {
+	constructor ()
+		EIP712("name", "1")
+	{}
+
+
 	using ECDSA for bytes32;
 
 
@@ -58,6 +65,27 @@ contract MockSignatureManager is
 		returns (uint256)
 	{
 		return _signedMessageVotes[vaultAddress][signedMessage];
+	}
+
+
+	function getDomainSeperator() public view returns (bytes32) {
+		return _domainSeparatorV4();
+	}
+
+
+	function getStructHash() public pure returns (bytes32) {
+		return keccak256(
+			abi.encode(
+				keccak256("set(address sender,uint x)"),
+				address(0),
+				1
+			)
+		);
+	}
+
+
+	function toTypedDataHash(bytes32 domainSeparator, bytes32 structHash) public pure returns (bytes32) {
+		return ECDSA.toTypedDataHash(domainSeparator, structHash);
 	}
 
 
