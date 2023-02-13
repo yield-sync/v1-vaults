@@ -30,10 +30,6 @@ describe("Mock Signature Manager", async () => {
 				// [contract]
 				const hash = await mockSignatureManager.getMessageHash("Hello, world!");
 
-				const hash2 = ethers.utils.soliditySHA3("Hello, world!");
-				console.log(hash, hash2);
-				
-
 				const ethHash = await mockSignatureManager.ECDSA_toEthSignedMessageHash(hash);
 
 				// [hardhat] Sign Message
@@ -55,8 +51,51 @@ describe("Mock Signature Manager", async () => {
 		 * @notice Typed Data Hash
 		*/
 		describe("typedDataHash", async () => {
-			it("Check signature..", async () => {
+			it("Check signature2..", async () => {
 				const [owner] = await ethers.getSigners();
+
+				const msg = {
+					// All properties on a domain are optional
+					domain: {
+						name: 'DApp Name',
+						version: '1',
+						chainId: 31337,
+						verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC'
+					},
+
+					// The named list of all type definitions
+					types: {
+						Person: [
+							{ name: 'name', type: 'string' },
+							{ name: 'wallet', type: 'address' }
+						],
+						Mail: [
+							{ name: 'from', type: 'Person' },
+							{ name: 'to', type: 'Person' },
+							{ name: 'contents', type: 'string' }
+						]
+					},
+
+					// The data to sign
+					value: {
+						from: {
+							name: 'Cow',
+							wallet: '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826'
+						},
+						to: {
+							name: 'Bob',
+							wallet: '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB'
+						},
+						contents: 'Hello, Bob!'
+					}
+				};
+
+				const signature = await owner._signTypedData(msg.domain, msg.types, msg.value);
+
+
+				console.log("signature:", signature)
+				await mockSignatureManager.ECDSA_recover(msg, signature)
+				
 			});
 
 			it("domain separator returns properly", async () => {
