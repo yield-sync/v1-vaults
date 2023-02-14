@@ -85,11 +85,13 @@ contract MockSignatureManager is
 	*/
 	function verifySignature(address _signer, string memory _message, bytes memory _signature)
 		public
-		pure
+		view
 		returns (bool)
 	{
 		bytes32 messageHash = keccak256(abi.encodePacked(_message));
 		bytes32 ethSignedMessageHash = ECDSA.toEthSignedMessageHash(messageHash);
+
+		console.logBytes32(ethSignedMessageHash);
 
 		return ECDSA.recover(ethSignedMessageHash, _signature) == _signer;
 	}

@@ -6,12 +6,13 @@ const { ethers } = require("hardhat");
 
 describe("Mock Signature Manager", async () => {
 	let mockSignatureManager: Contract;
+	let mockDapp: Contract;
 
 	/**
 	 * @notice Deploy contract
 	 * @dev Deploy MockSignatureManager.sol
 	*/
-	before("[before] Deploy IglooFiGovernance.sol contract..", async () => {
+	before("[before] Deploy MockSignatureManager.sol contract..", async () => {
 		const MockSignatureManager = await ethers.getContractFactory("MockSignatureManager");
 
 		mockSignatureManager = await MockSignatureManager.deploy();
@@ -19,11 +20,23 @@ describe("Mock Signature Manager", async () => {
 	});
 
 
+	/**
+	 * @notice Deploy contract
+	 * @dev Deploy MockDapp.sol
+	*/
+	before("[before] Deploy MockDapp.sol contract..", async () => {
+		const MockDapp = await ethers.getContractFactory("MockDapp");
+
+		mockDapp = await MockDapp.deploy();
+		mockDapp = await mockDapp.deployed();
+	});
+
+
 	describe("MockSignatureManager.sol Contract", async () => {
 		/**
 		 * @notice Eth Signed Message Hash
 		*/
-		describe("Regular Hash", async () => {
+		describe("[ERC-191] Signed Hash", async () => {
 			it("Check signature..", async () => {
 				const [owner] = await ethers.getSigners();
 			
@@ -33,8 +46,9 @@ describe("Mock Signature Manager", async () => {
 				// [hardhat] Sign hash
 				const signature = await owner.signMessage(ethers.utils.arrayify(hash));
 
-				// [contract]
+				// [contract] prefixes with \x19Ethereum Signed Message
 				const ethHash = await mockSignatureManager.ECDSA_toEthSignedMessageHash(hash);
+				console.log(ethHash);
 
 				// Correct signer recovered
 				expect(
@@ -49,32 +63,6 @@ describe("Mock Signature Manager", async () => {
 		});
 
 
-		describe("[ERC-191] ethSignedMessageHash", async () => {
-			it("Check signature..", async () => {
-				const [owner] = await ethers.getSigners();
-			
-				// [ethers] prefixed with \x19Ethereum Signed Message
-				const hash = await ethers.utils.hashMessage("hello world");
-				
-				// [hardhat] Sign Message
-				const signature = await owner.signMessage(ethers.utils.arrayify(hash));
-
-				// [contract]
-				const ethHash = await mockSignatureManager.ECDSA_toEthSignedMessageHash(hash);
-
-				// Correct signer recovered
-				expect(
-					await mockSignatureManager.ECDSA_recover(hash, signature)
-				).to.equal(owner.address);
-
-				// Correct signature and message
-				expect(
-					await mockSignatureManager.verifySignature(owner.address, "hello world", signature)
-				).to.equal(true);
-			});
-		})
-
-
 		/**
 		 * @notice Typed Data Hash
 		*/
@@ -83,8 +71,8 @@ describe("Mock Signature Manager", async () => {
 				const [owner] = await ethers.getSigners();
 
 				const typedDataHash = await mockSignatureManager.ECDSA_toTypedDataHash(
-					await mockSignatureManager.getDomainSeperator(),
-					await mockSignatureManager.getStructHash()
+					await mockDapp.getDomainSeperator(),
+					await mockDapp.getStructHash()
 				);
 
 				// [hardhat] Sign Message
