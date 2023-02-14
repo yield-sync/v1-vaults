@@ -27,14 +27,25 @@ describe("Mock Signature Manager", async () => {
 			it("Check signature..", async () => {
 				const [owner] = await ethers.getSigners();
 			
-				// [contract]
-				const hash = await mockSignatureManager.getMessageHash("Hello, world!");
-
-				// [hardhat] Sign Message
+				// [ethers] Get hash of string
+				const hash = await ethers.utils.keccak256(ethers.utils.toUtf8Bytes("Hello World"));
+				
+				const ethHash = await mockSignatureManager.ECDSA_toEthSignedMessageHash(
+					ethers.utils.toUtf8Bytes("Hello World")
+				);
+					
+				// Make this..
+				console.log(ethHash);
+				// Equal this.. (use only ethers library here )
+				console.log(await ethers.utils.hashMessage(
+					ethers.utils.toUtf8Bytes("Hello World")
+				));
+				
+				console.log(hash);
+				
+				// [ethers] Wallet Sign Message
 				const signature = await owner.signMessage(ethers.utils.arrayify(hash));
-
-				const ethHash = await mockSignatureManager.ECDSA_toEthSignedMessageHash(hash);
-
+				
 				// Correct signer recovered
 				expect(
 					await mockSignatureManager.ECDSA_recover(ethHash, signature)
@@ -42,7 +53,7 @@ describe("Mock Signature Manager", async () => {
 
 				// Correct signature and message
 				expect(
-					await mockSignatureManager.verify(owner.address, "Hello, world!", signature)
+					await mockSignatureManager.verify(owner.address, "Hello World", signature)
 				).to.equal(true);
 			});
 		});
@@ -51,10 +62,10 @@ describe("Mock Signature Manager", async () => {
 		 * @notice Typed Data Hash
 		*/
 		describe("typedDataHash", async () => {
-			it("Check signature2..", async () => {
+			it("Check signature..", async () => {
 				const [owner] = await ethers.getSigners();
 
-				const typedDataHash = await mockSignatureManager.toTypedDataHash(
+				const typedDataHash = await mockSignatureManager.ECDSA_toTypedDataHash(
 					await mockSignatureManager.getDomainSeperator(),
 					await mockSignatureManager.getStructHash()
 				);

@@ -53,74 +53,15 @@ contract MockSignatureManager is
 
 
 	/**
-	* @notice Total Signs
-	* @dev [view-uint256]
-	* @dev [!restriction]
-	* @param vaultAddress {address}
-	* @param signedMessage {bytes32}
-	*/
-	function signedMessageVotes(address vaultAddress, bytes32 signedMessage)
-		public
-		view
-		returns (uint256)
-	{
-		return _signedMessageVotes[vaultAddress][signedMessage];
-	}
-
-
-	function getDomainSeperator() public view returns (bytes32) {
-		return _domainSeparatorV4();
-	}
-
-
-	function getStructHash() public pure returns (bytes32) {
-		return keccak256(
-			abi.encode(
-				keccak256("set(address sender,uint x)"),
-				address(0),
-				1
-			)
-		);
-	}
-
-
-	function toTypedDataHash(bytes32 domainSeparator, bytes32 structHash) public pure returns (bytes32) {
-		return ECDSA.toTypedDataHash(domainSeparator, structHash);
-	}
-
-
-	/**
-	* @notice Hashs a given _message
-	* @param _message {string} to be hashed
-	*/
-	function getMessageHash(string memory _message)
-		public
-		pure
-		returns (bytes32)
-	{
-		return keccak256(abi.encodePacked(_message));
-	}
-
-	/**
 	* @notice Signs the given hash and returns it
-	* @param _messageHash {string} to be hashed
+	* @param s {string} to be hashed
 	*/
-	function ECDSA_toEthSignedMessageHash(bytes32 _messageHash)
+	function ECDSA_toEthSignedMessageHash(bytes memory s)
 		public
 		pure
 		returns (bytes32)
 	{
-		return ECDSA.toEthSignedMessageHash(_messageHash);
-	}
-
-	/**
-	*/
-	function ECDSA_toTypedDataHash(bytes32 _domainSeparator, bytes32 _structHash)
-		public
-		pure
-		returns (bytes32)
-	{
-		return ECDSA.toTypedDataHash(_domainSeparator, _structHash);
+		return ECDSA.toEthSignedMessageHash(s);
 	}
 
 	/**
@@ -149,36 +90,28 @@ contract MockSignatureManager is
 	}
 
 
-	///
-	function messageToSignedMessage(address vaultAddress, bytes memory message)
-		public
-		view
-		returns (bytes32)
-	{
-		return _messageToSignedMessage[vaultAddress][message];
+	/********************************************************/
+
+	function getDomainSeperator() public view returns (bytes32) {
+		return _domainSeparatorV4();
 	}
 
 
-	///
-	function signMessage(address voter, bytes memory message)
-		external
+	function getStructHash() public pure returns (bytes32) {
+		return keccak256(
+			abi.encode(
+				keccak256("set(address sender,uint x)"),
+				address(0),
+				1
+			)
+		);
+	}
+
+	function ECDSA_toTypedDataHash(bytes32 _domainSeparator, bytes32 _structHash)
+		public
+		pure
+		returns (bytes32)
 	{
-		// Sign message
-		bytes32 signedMessage = ECDSA.toEthSignedMessageHash(message);
-
-		if (_messageToSignedMessage[msg.sender][message] == 0)
-		{
-			// [add] `_messageToSignedMessage` signed message
-			_messageToSignedMessage[msg.sender][message] = signedMessage;
-		}
-
-		if (_signedMessagesVoterVoted[msg.sender][signedMessage][voter] == false)
-		{
-			// [add] `_signedMessagesVoterVoted` voted address
-			_signedMessagesVoterVoted[msg.sender][signedMessage][voter] = true;
-
-			// [increment] Value in `_signedMessageVotes`
-			_signedMessageVotes[msg.sender][signedMessage] += 1;
-		}
+		return ECDSA.toTypedDataHash(_domainSeparator, _structHash);
 	}
 }
