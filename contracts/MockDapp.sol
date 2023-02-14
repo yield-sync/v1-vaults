@@ -21,12 +21,6 @@ contract MockDapp is
 	}
 
 	function getStructHash() public pure returns (bytes32) {
-		return keccak256(
-			abi.encode(
-				keccak256("set(address sender,uint x)"),
-				address(0),
-				1
-			)
-		);
+		return keccak256(abi.encode(keccak256("Point(address a,uint x)"),address(0), 1));
 	}
 }
