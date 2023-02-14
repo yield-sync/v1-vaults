@@ -40,19 +40,18 @@ describe("Mock Signature Manager", async () => {
 			it("Check signature..", async () => {
 				const [owner] = await ethers.getSigners();
 			
-				// [ethers] Get hash of string
+				// [ethers] Get hash
 				const hash = await ethers.utils.keccak256(ethers.utils.toUtf8Bytes("hello world"));
 				
 				// [hardhat] Sign hash
 				const signature = await owner.signMessage(ethers.utils.arrayify(hash));
 
-				// [contract] prefixes with \x19Ethereum Signed Message
-				const ethHash = await mockSignatureManager.ECDSA_toEthSignedMessageHash(hash);
-				console.log(ethHash);
+				// [contract] takes: {bytes32} - prefixes with \x19Ethereum Signed Message
+				const ethSignedHash = await mockSignatureManager.ECDSA_toEthSignedMessageHash(hash);
 
 				// Correct signer recovered
 				expect(
-					await mockSignatureManager.ECDSA_recover(ethHash, signature)
+					await mockSignatureManager.ECDSA_recover(ethSignedHash, signature)
 				).to.equal(owner.address);
 
 				// Correct signature and message
@@ -70,19 +69,22 @@ describe("Mock Signature Manager", async () => {
 			it("Check signature..", async () => {
 				const [owner] = await ethers.getSigners();
 
-				const typedDataHash = await mockSignatureManager.ECDSA_toTypedDataHash(
+				// [contract] Get hash
+				const hash = await mockSignatureManager.ECDSA_toTypedDataHash(
 					await mockDapp.getDomainSeperator(),
 					await mockDapp.getStructHash()
 				);
 
 				// [hardhat] Sign Message
-				const signature = await owner.signMessage(ethers.utils.arrayify(typedDataHash));
-				
-				const signedHash = await mockSignatureManager.ECDSA_toEthSignedMessageHash(typedDataHash)
+				const signature = await owner.signMessage(ethers.utils.arrayify(hash));
 
-				console.log("signature:", signature)
-				console.log("recovered:", await mockSignatureManager.ECDSA_recover(signedHash, signature));
-				console.log("owner:", owner.address);
+				// [contract] takes: {bytes32} - prefixes with \x19Ethereum Signed Message
+				const ethSignedHash = await mockSignatureManager.ECDSA_toEthSignedMessageHash(hash)
+
+				// Correct signer recovered
+				expect(
+					await mockSignatureManager.ECDSA_recover(ethSignedHash, signature)
+				).to.equal(owner.address);
 			});
 		});
 	});
