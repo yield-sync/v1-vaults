@@ -13,7 +13,7 @@ contract MockDapp is
 	EIP712
 {
 	constructor ()
-		EIP712("name", "1")
+		EIP712("MockDapp", "1")
 	{}
 
 

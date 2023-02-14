@@ -4,6 +4,9 @@ import { Contract } from "ethers";
 const { ethers } = require("hardhat");
 
 
+const chainId = 31337;
+
+
 describe("Mock Signature Manager", async () => {
 	let mockSignatureManager: Contract;
 	let mockDapp: Contract;
@@ -71,9 +74,9 @@ describe("Mock Signature Manager", async () => {
 
 				const msg = {
 					domain: {
-						name: 'name',
+						name: 'MockDapp',
 						version: '1',
-						chainId: 31337,
+						chainId: chainId,
 						verifyingContract: mockDapp.address
 					},
 					types: {
