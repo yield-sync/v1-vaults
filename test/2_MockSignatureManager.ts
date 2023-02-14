@@ -23,29 +23,19 @@ describe("Mock Signature Manager", async () => {
 		/**
 		 * @notice Eth Signed Message Hash
 		*/
-		describe("ethSignedMessageHash", async () => {
+		describe("Regular Hash", async () => {
 			it("Check signature..", async () => {
 				const [owner] = await ethers.getSigners();
 			
 				// [ethers] Get hash of string
-				const hash = await ethers.utils.keccak256(ethers.utils.toUtf8Bytes("Hello World"));
+				const hash = await ethers.utils.keccak256(ethers.utils.toUtf8Bytes("hello world"));
 				
-				const ethHash = await mockSignatureManager.ECDSA_toEthSignedMessageHash(
-					ethers.utils.toUtf8Bytes("Hello World")
-				);
-					
-				// Make this..
-				console.log(ethHash);
-				// Equal this.. (use only ethers library here )
-				console.log(await ethers.utils.hashMessage(
-					ethers.utils.toUtf8Bytes("Hello World")
-				));
-				
-				console.log(hash);
-				
-				// [ethers] Wallet Sign Message
+				// [hardhat] Sign hash
 				const signature = await owner.signMessage(ethers.utils.arrayify(hash));
-				
+
+				// [contract]
+				const ethHash = await mockSignatureManager.ECDSA_toEthSignedMessageHash(hash);
+
 				// Correct signer recovered
 				expect(
 					await mockSignatureManager.ECDSA_recover(ethHash, signature)
@@ -53,15 +43,42 @@ describe("Mock Signature Manager", async () => {
 
 				// Correct signature and message
 				expect(
-					await mockSignatureManager.verify(owner.address, "Hello World", signature)
+					await mockSignatureManager.verifySignature(owner.address, "hello world", signature)
 				).to.equal(true);
 			});
 		});
 
+
+		describe("[ERC-191] ethSignedMessageHash", async () => {
+			it("Check signature..", async () => {
+				const [owner] = await ethers.getSigners();
+			
+				// [ethers] prefixed with \x19Ethereum Signed Message
+				const hash = await ethers.utils.hashMessage("hello world");
+				
+				// [hardhat] Sign Message
+				const signature = await owner.signMessage(ethers.utils.arrayify(hash));
+
+				// [contract]
+				const ethHash = await mockSignatureManager.ECDSA_toEthSignedMessageHash(hash);
+
+				// Correct signer recovered
+				expect(
+					await mockSignatureManager.ECDSA_recover(hash, signature)
+				).to.equal(owner.address);
+
+				// Correct signature and message
+				expect(
+					await mockSignatureManager.verifySignature(owner.address, "hello world", signature)
+				).to.equal(true);
+			});
+		})
+
+
 		/**
 		 * @notice Typed Data Hash
 		*/
-		describe("typedDataHash", async () => {
+		describe("[EIP-712] typedDataHash", async () => {
 			it("Check signature..", async () => {
 				const [owner] = await ethers.getSigners();
 
@@ -78,10 +95,6 @@ describe("Mock Signature Manager", async () => {
 				console.log("signature:", signature)
 				console.log("recovered:", await mockSignatureManager.ECDSA_recover(signedHash, signature));
 				console.log("owner:", owner.address);
-			});
-
-			it("domain separator returns properly", async () => {
-				const [owner] = await ethers.getSigners();			
 			});
 		});
 	});

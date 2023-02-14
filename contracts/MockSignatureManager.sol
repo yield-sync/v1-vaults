@@ -77,8 +77,13 @@ contract MockSignatureManager is
 		return ECDSA.recover(_ethSignedMessageHash, _signature);
 	}
 
-	///
-	function verify(address _signer, string memory _message, bytes memory _signature)
+	/**
+	* @notice Verify signature
+	* @param _signer {address}
+	* @param _message {string}
+	* @param _signature {bytes}
+	*/
+	function verifySignature(address _signer, string memory _message, bytes memory _signature)
 		public
 		pure
 		returns (bool)
