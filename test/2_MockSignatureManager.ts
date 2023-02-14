@@ -69,12 +69,28 @@ describe("Mock Signature Manager", async () => {
 			it("Check signature..", async () => {
 				const [owner] = await ethers.getSigners();
 
-				// [contract] Get hash
-				const hash = await mockSignatureManager.ECDSA_toTypedDataHash(
-					await mockDapp.getDomainSeperator(),
-					await mockDapp.getStructHash()
-				);
+				const msg = {
+					domain: {
+						name: 'name',
+						version: '1',
+						chainId: 31337,
+						verifyingContract: mockDapp.address
+					},
+					types: {
+						Point: [
+							{ name: 'a', type: 'address' },
+							{ name: 'x', type: 'uint' }
+						]
+					},
+					value: {
+						a: ethers.constants.AddressZero,
+						x: 1
+					},
+				}
 
+				// [hardhat] Get hash
+				const hash = ethers.utils._TypedDataEncoder.hash(msg.domain, msg.types, msg.value)
+				
 				// [hardhat] Sign Message
 				const signature = await owner.signMessage(ethers.utils.arrayify(hash));
 

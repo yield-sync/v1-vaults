@@ -58,19 +58,6 @@ contract MockSignatureManager is
 	}
 
 	/**
-	 * @notice Get hash of TypedData
-	 * @param _domainSeparator {bytes32}
-	 * @param _structHash {bytes32}
-	*/
-	function ECDSA_toTypedDataHash(bytes32 _domainSeparator, bytes32 _structHash)
-		public
-		pure
-		returns (bytes32)
-	{
-		return ECDSA.toTypedDataHash(_domainSeparator, _structHash);
-	}
-
-	/**
 	* @notice Recovers the signer from a signed message hash
 	* @param _ethSignedMessageHash {bytes32}
 	* @param _signature {bytes}
