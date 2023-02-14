@@ -58,19 +58,6 @@ contract MockSignatureManager is
 	}
 
 	/**
-	* @notice Recovers the signer from a signed message hash
-	* @param _ethSignedMessageHash {bytes32}
-	* @param _signature {bytes}
-	*/
-	function ECDSA_recover(bytes32 _ethSignedMessageHash, bytes memory _signature)
-		public
-		pure
-		returns (address)
-	{
-		return ECDSA.recover(_ethSignedMessageHash, _signature);
-	}
-
-	/**
 	 * @notice Get hash of TypedData
 	 * @param _domainSeparator {bytes32}
 	 * @param _structHash {bytes32}
@@ -81,6 +68,19 @@ contract MockSignatureManager is
 		returns (bytes32)
 	{
 		return ECDSA.toTypedDataHash(_domainSeparator, _structHash);
+	}
+
+	/**
+	* @notice Recovers the signer from a signed message hash
+	* @param _ethSignedMessageHash {bytes32}
+	* @param _signature {bytes}
+	*/
+	function ECDSA_recover(bytes32 _ethSignedMessageHash, bytes memory _signature)
+		public
+		pure
+		returns (address)
+	{
+		return ECDSA.recover(_ethSignedMessageHash, _signature);
 	}
 
 	/**
