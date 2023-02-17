@@ -86,4 +86,32 @@ contract MockSignatureManager is
 
 		return ECDSA.recover(ethSignedMessageHash, _signature) == _signer;
 	}
-}
+
+
+	// Returns the address that signed a given string message
+    function verifyString(
+		string memory message,
+		uint8 v,
+		bytes32 r,
+		bytes32 s
+	)
+		public
+		view
+		returns (address signer)
+	{
+		console.logBytes32(ECDSA.toEthSignedMessageHash(abi.encodePacked(message)));
+
+		return ECDSA.recover(ECDSA.toEthSignedMessageHash(abi.encodePacked(message)), v, r, s);
+    }
+
+
+	// Returns the address that signed a given string message
+	function verifyHash(
+		bytes32 hash,
+		uint8 v,
+		bytes32 r,
+		bytes32 s
+	) public pure returns (address) {
+		return ECDSA.recover(ECDSA.toEthSignedMessageHash(hash), v, r, s);
+	}
+	}

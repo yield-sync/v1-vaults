@@ -37,38 +37,73 @@ describe("Mock Signature Manager", async () => {
 
 	describe("MockSignatureManager.sol Contract", async () => {
 		/**
-		 * @notice Eth Signed Message Hash
-		*/
-		describe("[ERC-191] Signed Hash", async () => {
+		 * @notice [hardhat] Signing a String Message
+		 */
+		describe("[hardhat] Signing a String Message", async () => {
 			it("Check signature..", async () => {
 				const [owner] = await ethers.getSigners();
 			
-				// [ethers] Get hash
-				const hash = await ethers.utils.keccak256(ethers.utils.toUtf8Bytes("hello world"));
-				
 				// [hardhat] Sign hash
-				const signature = await owner.signMessage(ethers.utils.arrayify(hash));
+				const signature = await owner.signMessage("hello world");
 
-				// [contract] takes: {bytes32} - prefixes with \x19Ethereum Signed Message
-				const ethSignedHash = await mockSignatureManager.ECDSA_toEthSignedMessageHash(hash);
-
+				// [ethers] Split signature
+				let sig = ethers.utils.splitSignature(signature);
+				
 				// Correct signer recovered
 				expect(
-					await mockSignatureManager.ECDSA_recover(ethSignedHash, signature)
+					await mockSignatureManager.verifyString("hello world", sig.v, sig.r, sig.s)
 				).to.equal(owner.address);
+			});
+		});
 
-				// Correct signature and message
-				expect(
-					await mockSignatureManager.verifySignature(owner.address, "hello world", signature)
-				).to.equal(true);
+		
+		/**
+		 * @notice [ERC-191][hardhat] Signing a Digest Hash
+		 */
+		describe("[ERC-191][hardhat] Signing a Digest Hash", async () => {
+			it("Check signature..", async () => {
+				const [owner] = await ethers.getSigners();
+
+				let messageHash = ethers.utils.id("Hello World");
+
+				// Note: messageHash is a string, that is 66-bytes long, to sign the
+				//       binary value, we must convert it to the 32 byte Array that
+				//       the string represents
+				//
+				// i.e.
+				//   // 66-byte string
+				//   "0x592fa743889fc7f92ac2a37bb1f5ba1daf2a5c84741ca0e0061d243a2e6707ba"
+				//
+				//   ... vs ...
+				//
+				//  // 32 entry Uint8Array
+				//  [ 89, 47, 167, 67, 136, 159, 199, 249, 42, 194, 163,
+				//    123, 177, 245, 186, 29, 175, 42, 92, 132, 116, 28,
+				//    160, 224, 6, 29, 36, 58, 46, 103, 7, 186]
+
+				let messageHashBytes = ethers.utils.arrayify(messageHash)
+
+				// Sign the binary data
+				let flatSig = await owner.signMessage(messageHashBytes);
+
+				// For Solidity, we need the expanded-format of a signature
+				let sig = ethers.utils.splitSignature(flatSig);
+
+				// Call the verifyHash function
+				let recovered = await mockSignatureManager.verifyHash(
+					messageHash, sig.v, sig.r, sig.s
+				);
+
+				// Correct signer recovered
+				expect(recovered).to.equal(owner.address);
 			});
 		});
 
 
 		/**
-		 * @notice Typed Data Hash
+		 * @notice [EIP-712] Signing typedDataHash
 		*/
-		describe("[EIP-712] typedDataHash", async () => {
+		describe("[EIP-712] Signing typedDataHash", async () => {
 			it("Check signature..", async () => {
 				const [owner] = await ethers.getSigners();
 
@@ -91,7 +126,7 @@ describe("Mock Signature Manager", async () => {
 					},
 				}
 
-				// [hardhat] Get hash
+				// [ethers] Get hash
 				const hash = ethers.utils._TypedDataEncoder.hash(msg.domain, msg.types, msg.value)
 				
 				// [hardhat] Sign Message
