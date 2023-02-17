@@ -44,19 +44,6 @@ contract MockSignatureManager is
 		}
 	}
 
-
-	/**
-	* @notice Signs the given hash and returns it
-	* @param _message {string} to be hashed
-	*/
-	function ECDSA_toEthSignedMessageHash(bytes memory _message)
-		public
-		pure
-		returns (bytes32)
-	{
-		return ECDSA.toEthSignedMessageHash(_message);
-	}
-
 	/**
 	* @notice Recovers the signer from a signed message hash
 	* @param _ethSignedMessageHash {bytes32}
