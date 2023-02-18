@@ -45,24 +45,6 @@ contract MockSignatureManager is
 	}
 
 
-	/**
-	* @notice Verify signature
-	* @param _signer {address}
-	* @param _message {string}
-	* @param _signature {bytes}
-	*/
-	function verifySignature(address _signer, string memory _message, bytes memory _signature)
-		public
-		pure
-		returns (bool)
-	{
-		bytes32 messageHash = keccak256(abi.encodePacked(_message));
-		bytes32 ethSignedMessageHash = ECDSA.toEthSignedMessageHash(messageHash);
-
-		return ECDSA.recover(ethSignedMessageHash, _signature) == _signer;
-	}
-
-
 	// Returns the address that signed a given string message
     function verifyString(
 		string memory message,
@@ -77,7 +59,7 @@ contract MockSignatureManager is
 		console.logBytes32(ECDSA.toEthSignedMessageHash(abi.encodePacked(message)));
 
 		return ECDSA.recover(ECDSA.toEthSignedMessageHash(abi.encodePacked(message)), v, r, s);
-    }
+	}
 
 
 	// Returns the address that signed a given string message
@@ -89,4 +71,4 @@ contract MockSignatureManager is
 	) public pure returns (address) {
 		return ECDSA.recover(ECDSA.toEthSignedMessageHash(hash), v, r, s);
 	}
-	}
+}

@@ -89,13 +89,10 @@ describe("Mock Signature Manager", async () => {
 				// For Solidity, we need the expanded-format of a signature
 				let sig = ethers.utils.splitSignature(flatSig);
 
-				// Call the verifyHash function
-				let recovered = await mockSignatureManager.verifyHash(
-					messageHash, sig.v, sig.r, sig.s
-				);
-
 				// Correct signer recovered
-				expect(recovered).to.equal(owner.address);
+				expect(await mockSignatureManager.verifyHash(messageHash, sig.v, sig.r, sig.s))
+					.to.equal(owner.address)
+				;
 			});
 		});
 
