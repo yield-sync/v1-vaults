@@ -37,9 +37,9 @@ describe("Mock Signature Manager", async () => {
 
 	describe("MockSignatureManager.sol Contract", async () => {
 		/**
-		 * @notice [hardhat] Signing a String Message
+		 * @notice [hardhat][string] Signing a String Message
 		 */
-		describe("[hardhat] Signing a String Message", async () => {
+		describe("[hardhat][string] Signing a String Message", async () => {
 			it("Check signature..", async () => {
 				const [owner] = await ethers.getSigners();
 			
@@ -58,9 +58,9 @@ describe("Mock Signature Manager", async () => {
 
 		
 		/**
-		 * @notice [ERC-191][hardhat] Signing a Digest Hash
+		 * @notice [hardhat][ERC-191] Signing a Digest Hash
 		 */
-		describe("[ERC-191][hardhat] Signing a Digest Hash", async () => {
+		describe("[hardhat][ERC-191] Signing a Digest Hash", async () => {
 			it("Check signature..", async () => {
 				const [owner] = await ethers.getSigners();
 
@@ -101,9 +101,9 @@ describe("Mock Signature Manager", async () => {
 
 
 		/**
-		 * @notice [EIP-712] Signing typedDataHash
+		 * @notice [hardhat][EIP-712] Signing typedDataHash
 		*/
-		describe("[EIP-712] Signing typedDataHash", async () => {
+		describe("[hardhat][EIP-712] Signing typedDataHash", async () => {
 			it("Check signature..", async () => {
 				const [owner] = await ethers.getSigners();
 
@@ -131,14 +131,14 @@ describe("Mock Signature Manager", async () => {
 				
 				// [hardhat] Sign Message
 				const signature = await owner.signMessage(ethers.utils.arrayify(hash));
-
-				// [contract] takes: {bytes32} - prefixes with \x19Ethereum Signed Message
-				const ethSignedHash = await mockSignatureManager.ECDSA_toEthSignedMessageHash(hash)
+				
+				// For Solidity, we need the expanded-format of a signature
+				const sig = ethers.utils.splitSignature(signature)
 
 				// Correct signer recovered
-				expect(
-					await mockSignatureManager.ECDSA_recover(ethSignedHash, signature)
-				).to.equal(owner.address);
+				expect(await mockSignatureManager.verifyHash(hash, sig.v, sig.r, sig.s))
+					.to.equal(owner.address)
+				;
 			});
 		});
 	});

@@ -44,18 +44,6 @@ contract MockSignatureManager is
 		}
 	}
 
-	/**
-	* @notice Recovers the signer from a signed message hash
-	* @param _ethSignedMessageHash {bytes32}
-	* @param _signature {bytes}
-	*/
-	function ECDSA_recover(bytes32 _ethSignedMessageHash, bytes memory _signature)
-		public
-		pure
-		returns (address)
-	{
-		return ECDSA.recover(_ethSignedMessageHash, _signature);
-	}
 
 	/**
 	* @notice Verify signature
