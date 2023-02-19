@@ -89,20 +89,30 @@ describe("Mock Signature Manager", async () => {
 				// For Solidity, we need the expanded-format of a signature
 				const sig = ethers.utils.splitSignature(signature);
 
-				console.log(
-					"ss",
-					owner.address,
-					await mockSignatureManager.isValidSignature(
-						messageHash,
-						signature
-					)
-				);
-
 				// Correct signer recovered
 				expect(await mockSignatureManager.verifyHashSignature(messageHash, sig.v, sig.r, sig.s))
 					.to.equal(owner.address)
 				;
 			});
+
+
+			it("Should pass `isValidSignature()`", async () => {
+				const [owner] = await ethers.getSigners();
+
+				const messageHash = ethers.utils.id("Hello World");
+
+				const messageHashBytes = ethers.utils.arrayify(messageHash)
+
+				// Sign the binary data
+				const signature = await owner.signMessage(messageHashBytes);
+
+				console.log(
+					await mockSignatureManager.isValidSignature(
+						messageHash,
+						signature
+					)
+				);
+			})
 		});
 
 
