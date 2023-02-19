@@ -6,12 +6,16 @@ import { ECDSA } from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import { IERC1271 } from "@openzeppelin/contracts/interfaces/IERC1271.sol";
 import "hardhat/console.sol";
 
+import { IIglooFiV1Vault } from "./interface/IIglooFiV1Vault.sol";
 
-struct SignatureObject {
+
+// Instead of doing this, add the vault interface to the sdk
+interface IIIglooFiV1Vault is IIglooFiV1Vault {}
+
+
+struct MessageHashData {
 	address signer;
 	address[] votedVoters;
-	bytes32 messageHash;
-	string message;
 	uint256 votes;
 }
 
@@ -26,7 +30,8 @@ contract MockSignatureManager is
 
 
 	// [mapping][internal]
-	mapping (address => SignatureObject[]) vaultSignatureObject;
+	mapping (address => bytes32[]) public vaultMessageHashes;
+	mapping (address => mapping (bytes32 => MessageHashData)) public vaultMessageHashData;
 
 
 	/// @inheritdoc IERC1271
@@ -35,16 +40,19 @@ contract MockSignatureManager is
 		view
 		override
 		returns (bytes4 magicValue)
-	{	
+	{
+		MessageHashData memory messageHashData = vaultMessageHashData[msg.sender][_messageHash];
+
+		address recovered = ECDSA.recover(ECDSA.toEthSignedMessageHash(_messageHash), _signature);
+
+		require(recovered != address(0), "!recovered");
+
+		if (messageHashData.votes > 3) {
+
+		}
+
 		if (true)
 		{
-			address recovered = ECDSA.recover(
-				ECDSA.toEthSignedMessageHash(_messageHash),
-				_signature
-			);
-
-			require(recovered != address(0), "!recovered");
-
 			return ERC1271_MAGIC_VALUE;
 		}
 		else
@@ -84,6 +92,7 @@ contract MockSignatureManager is
 	}
 
 
-	function signMessageHash(address iglooFiV1Vault, bytes32 messageHash) public {
-	}
+	function signMessageHash(address iglooFiV1Vault, bytes32 messageHash)
+		public
+	{}
 }
