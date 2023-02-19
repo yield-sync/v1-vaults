@@ -51,7 +51,7 @@ describe("Mock Signature Manager", async () => {
 				
 				// Correct signer recovered
 				expect(
-					await mockSignatureManager.verifyString("hello world", sig.v, sig.r, sig.s)
+					await mockSignatureManager.verifyStringSignature("hello world", sig.v, sig.r, sig.s)
 				).to.equal(owner.address);
 			});
 		});
@@ -90,7 +90,7 @@ describe("Mock Signature Manager", async () => {
 				let sig = ethers.utils.splitSignature(flatSig);
 
 				// Correct signer recovered
-				expect(await mockSignatureManager.verifyHash(messageHash, sig.v, sig.r, sig.s))
+				expect(await mockSignatureManager.verifyHashSignature(messageHash, sig.v, sig.r, sig.s))
 					.to.equal(owner.address)
 				;
 			});
@@ -133,7 +133,7 @@ describe("Mock Signature Manager", async () => {
 				const sig = ethers.utils.splitSignature(signature)
 
 				// Correct signer recovered
-				expect(await mockSignatureManager.verifyHash(hash, sig.v, sig.r, sig.s))
+				expect(await mockSignatureManager.verifyHashSignature(hash, sig.v, sig.r, sig.s))
 					.to.equal(owner.address)
 				;
 			});

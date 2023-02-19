@@ -13,16 +13,12 @@ import "hardhat/console.sol";
 contract MockSignatureManager is
 	IERC1271
 {
-	using ECDSA for bytes32;
-
-
 	bytes4 public constant ERC1271_MAGIC_VALUE = 0x1626ba7e;
 
 
 	// [mapping][internal]
-	mapping (address => mapping (bytes => bytes32)) internal _messageToSignedMessage;
-	mapping (address => mapping (bytes32 => uint256)) internal _signedMessageVotes;
-	mapping (address => mapping (bytes32 => mapping (address => bool))) internal _signedMessagesVoterVoted;
+	mapping (address => mapping (bytes32 => address)) messageHashSigner;
+	mapping (address => mapping (uint256 => uint256)) messageHashVotes;
 
 
 	/// @inheritdoc IERC1271
@@ -45,30 +41,30 @@ contract MockSignatureManager is
 	}
 
 
-	// Returns the address that signed a given string message
-    function verifyString(
+    function verifyStringSignature(
 		string memory message,
 		uint8 v,
 		bytes32 r,
 		bytes32 s
 	)
 		public
-		view
-		returns (address signer)
+		pure
+		returns (address)
 	{
-		console.logBytes32(ECDSA.toEthSignedMessageHash(abi.encodePacked(message)));
-
 		return ECDSA.recover(ECDSA.toEthSignedMessageHash(abi.encodePacked(message)), v, r, s);
 	}
 
 
-	// Returns the address that signed a given string message
-	function verifyHash(
+	function verifyHashSignature(
 		bytes32 hash,
 		uint8 v,
 		bytes32 r,
 		bytes32 s
-	) public pure returns (address) {
+	)
+		public
+		pure
+		returns (address)
+	{
 		return ECDSA.recover(ECDSA.toEthSignedMessageHash(hash), v, r, s);
 	}
 }
