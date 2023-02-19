@@ -12,7 +12,7 @@
   "author": "Aleem Ahmed",
   "license": "ISC",
   "devDependencies": {
-    "@igloo-fi/v1-sdk": "^0.0.9",
+    "@igloo-fi/v1-sdk": "^0.0.11",
     "@nomicfoundation/hardhat-chai-matchers": "^1.0.5",
     "@nomicfoundation/hardhat-toolbox": "^2.0.1",
     "@openzeppelin/contracts": "^4.8.1",

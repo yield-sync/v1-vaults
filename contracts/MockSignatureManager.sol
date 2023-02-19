@@ -2,15 +2,10 @@
 pragma solidity ^0.8.1;
 
 
+import "@igloo-fi/v1-sdk/contracts/interface/IIglooFiV1Vault.sol";
 import { ECDSA } from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import { IERC1271 } from "@openzeppelin/contracts/interfaces/IERC1271.sol";
 import "hardhat/console.sol";
-
-import { IIglooFiV1Vault } from "./interface/IIglooFiV1Vault.sol";
-
-
-// Instead of doing this, add the vault interface to the sdk
-interface IIIglooFiV1Vault is IIglooFiV1Vault {}
 
 
 struct MessageHashData {
@@ -45,17 +40,16 @@ contract MockSignatureManager is
 
 		address recovered = ECDSA.recover(ECDSA.toEthSignedMessageHash(_messageHash), _signature);
 
-		require(recovered != address(0), "!recovered");
+		require(recovered != messageHashData.signer, "!recovered");
 
-		if (messageHashData.votes > 3) {
+		require(
+			messageHashData.votes >= IIglooFiV1Vault(msg.sender).requiredVoteCount(),
+			"!messageHashData.votes"
+		);
 
-		}
+		return ERC1271_MAGIC_VALUE;
 
-		if (true)
-		{
-			return ERC1271_MAGIC_VALUE;
-		}
-		else
+		if (false)
 		{
 			console.logBytes(_signature);
 			console.logBytes32(_messageHash);
@@ -64,7 +58,7 @@ contract MockSignatureManager is
 	}
 
 
-    function verifyStringSignature(
+	function verifyStringSignature(
 		string memory message,
 		uint8 v,
 		bytes32 r,
