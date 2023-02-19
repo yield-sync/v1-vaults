@@ -7,6 +7,15 @@ import { IERC1271 } from "@openzeppelin/contracts/interfaces/IERC1271.sol";
 import "hardhat/console.sol";
 
 
+struct SignatureObject {
+	address signer;
+	address[] votedVoters;
+	bytes32 messageHash;
+	string message;
+	uint256 votes;
+}
+
+
 /**
  * @title MockSignatureManager
 */
@@ -17,8 +26,7 @@ contract MockSignatureManager is
 
 
 	// [mapping][internal]
-	mapping (address => mapping (bytes32 => address)) messageHashSigner;
-	mapping (address => mapping (uint256 => uint256)) messageHashVotes;
+	mapping (address => SignatureObject[]) vaultSignatureObject;
 
 
 	/// @inheritdoc IERC1271
@@ -30,10 +38,13 @@ contract MockSignatureManager is
 	{	
 		if (true)
 		{
-			console.log(
-				ECDSA.recover(ECDSA.toEthSignedMessageHash(_messageHash), _signature)
+			address recovered = ECDSA.recover(
+				ECDSA.toEthSignedMessageHash(_messageHash),
+				_signature
 			);
-			
+
+			require(recovered != address(0), "!recovered");
+
 			return ERC1271_MAGIC_VALUE;
 		}
 		else
@@ -70,5 +81,9 @@ contract MockSignatureManager is
 		returns (address)
 	{
 		return ECDSA.recover(ECDSA.toEthSignedMessageHash(hash), v, r, s);
+	}
+
+
+	function signMessageHash(address iglooFiV1Vault, bytes32 messageHash) public {
 	}
 }
