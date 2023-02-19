@@ -48,13 +48,6 @@ contract MockSignatureManager is
 		);
 
 		return ERC1271_MAGIC_VALUE;
-
-		if (false)
-		{
-			console.logBytes(_signature);
-			console.logBytes32(_messageHash);
-			return bytes4(0);
-		}
 	}
 
 
