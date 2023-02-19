@@ -47,7 +47,7 @@ describe("Mock Signature Manager", async () => {
 				const signature = await owner.signMessage("hello world");
 
 				// [ethers] Split signature
-				let sig = ethers.utils.splitSignature(signature);
+				let sig = ethers.utils.splitSignature(signature);				
 				
 				// Correct signer recovered
 				expect(
@@ -64,7 +64,7 @@ describe("Mock Signature Manager", async () => {
 			it("Check signature..", async () => {
 				const [owner] = await ethers.getSigners();
 
-				let messageHash = ethers.utils.id("Hello World");
+				const messageHash = ethers.utils.id("Hello World");
 
 				// Note: messageHash is a string, that is 66-bytes long, to sign the
 				//       binary value, we must convert it to the 32 byte Array that
@@ -81,13 +81,22 @@ describe("Mock Signature Manager", async () => {
 				//    123, 177, 245, 186, 29, 175, 42, 92, 132, 116, 28,
 				//    160, 224, 6, 29, 36, 58, 46, 103, 7, 186]
 
-				let messageHashBytes = ethers.utils.arrayify(messageHash)
+				const messageHashBytes = ethers.utils.arrayify(messageHash)
 
 				// Sign the binary data
-				let flatSig = await owner.signMessage(messageHashBytes);
+				const signature = await owner.signMessage(messageHashBytes);
 
 				// For Solidity, we need the expanded-format of a signature
-				let sig = ethers.utils.splitSignature(flatSig);
+				const sig = ethers.utils.splitSignature(signature);
+
+				console.log(
+					"ss",
+					owner.address,
+					await mockSignatureManager.isValidSignature(
+						messageHash,
+						signature
+					)
+				);
 
 				// Correct signer recovered
 				expect(await mockSignatureManager.verifyHashSignature(messageHash, sig.v, sig.r, sig.s))
@@ -124,16 +133,16 @@ describe("Mock Signature Manager", async () => {
 				}
 
 				// [ethers] Get hash
-				const hash = ethers.utils._TypedDataEncoder.hash(msg.domain, msg.types, msg.value)
+				const messageHash = ethers.utils._TypedDataEncoder.hash(msg.domain, msg.types, msg.value)
 				
 				// [hardhat] Sign Message
-				const signature = await owner.signMessage(ethers.utils.arrayify(hash));
+				const signature = await owner.signMessage(ethers.utils.arrayify(messageHash));
 				
 				// For Solidity, we need the expanded-format of a signature
 				const sig = ethers.utils.splitSignature(signature)
 
 				// Correct signer recovered
-				expect(await mockSignatureManager.verifyHashSignature(hash, sig.v, sig.r, sig.s))
+				expect(await mockSignatureManager.verifyHashSignature(messageHash, sig.v, sig.r, sig.s))
 					.to.equal(owner.address)
 				;
 			});
