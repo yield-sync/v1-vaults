@@ -44,7 +44,7 @@ describe("Mock Signature Manager", async () => {
 				const [owner] = await ethers.getSigners();
 			
 				// [hardhat] Sign hash
-				const signature = await owner.signMessage("hello world");
+				const signature = await owner.signMessage("Hello, world!");
 
 				// [ethers] Split signature
 				const splitSignature = ethers.utils.splitSignature(signature);				
@@ -52,7 +52,7 @@ describe("Mock Signature Manager", async () => {
 				// Correct signer recovered
 				expect(
 					await mockSignatureManager.verifyStringSignature(
-						"hello world",
+						"Hello, world!",
 						splitSignature.v,
 						splitSignature.r,
 						splitSignature.s
@@ -69,7 +69,7 @@ describe("Mock Signature Manager", async () => {
 			it("Check signature..", async () => {
 				const [owner] = await ethers.getSigners();
 
-				const messageHash = ethers.utils.id("Hello World");
+				const messageHash = ethers.utils.id("Hello, world!");
 
 				const messageHashBytes = ethers.utils.arrayify(messageHash)
 
@@ -94,7 +94,7 @@ describe("Mock Signature Manager", async () => {
 			it("Should pass `isValidSignature()`", async () => {
 				const [owner] = await ethers.getSigners();
 
-				const messageHash = ethers.utils.id("Hello World");
+				const messageHash = ethers.utils.id("Hello, world!");
 
 				const messageHashBytes = ethers.utils.arrayify(messageHash);
 
@@ -119,7 +119,7 @@ describe("Mock Signature Manager", async () => {
 			it("Check signature..", async () => {
 				const [owner] = await ethers.getSigners();
 
-				const msg = {
+				const message = {
 					domain: {
 						name: 'MockDapp',
 						version: '1',
@@ -139,12 +139,16 @@ describe("Mock Signature Manager", async () => {
 				};
 				
 				/**
-				 * @dev To get the payload use the line below:
-				 *     ethers.utils._TypedDataEncoder.getPayload(msg.domain, msg.types, msg.value);
+				 * @dev To get the payload use the line below
+				 * ethers.utils._TypedDataEncoder.getPayload(msg.domain, msg.types, msg.value);
 				*/
 				
 				// [ethers] Get hash
-				const messageHash = ethers.utils._TypedDataEncoder.hash(msg.domain, msg.types, msg.value)
+				const messageHash = ethers.utils._TypedDataEncoder.hash(
+					message.domain,
+					message.types,
+					message.value
+				)
 
 				// [hardhat] Sign Message
 				const signature = await owner.signMessage(ethers.utils.arrayify(messageHash));
