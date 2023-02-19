@@ -30,7 +30,9 @@ contract MockSignatureManager is
 	{	
 		if (true)
 		{
-			console.log(ECDSA.recover(ECDSA.toEthSignedMessageHash(_messageHash), _signature));
+			console.log(
+				ECDSA.recover(ECDSA.toEthSignedMessageHash(_messageHash), _signature)
+			);
 			
 			return ERC1271_MAGIC_VALUE;
 		}
