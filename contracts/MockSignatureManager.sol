@@ -36,17 +36,19 @@ contract MockSignatureManager is
 		override
 		returns (bytes4 magicValue)
 	{
-		MessageHashData memory messageHashData = vaultMessageHashData[msg.sender][_messageHash];
-
 		address recovered = ECDSA.recover(ECDSA.toEthSignedMessageHash(_messageHash), _signature);
 
-		require(recovered != messageHashData.signer, "!recovered");
+		console.log(recovered);
 
+		/*
+		MessageHashData memory messageHashData = vaultMessageHashData[msg.sender][_messageHash];
+
+		require(recovered != messageHashData.signer, "!recovered");
 		require(
 			messageHashData.votes >= IIglooFiV1Vault(msg.sender).requiredVoteCount(),
 			"!messageHashData.votes"
 		);
-
+		*/
 		return ERC1271_MAGIC_VALUE;
 	}
 

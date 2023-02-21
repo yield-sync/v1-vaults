@@ -101,13 +101,12 @@ describe("Mock Signature Manager", async () => {
 				// Sign the binary data
 				const signature = await owner.signMessage(messageHashBytes);
 
-				
-				await mockSignatureManager.isValidSignature(
-					messageHash,
-					signature
-				)
-
-				expect(true).to.be.equal(true);
+				expect(
+					await mockSignatureManager.isValidSignature(
+						messageHash,
+						signature
+					)
+				).to.be.equal("0x1626ba7e");
 			})
 		});
 
@@ -155,6 +154,11 @@ describe("Mock Signature Manager", async () => {
 				
 				// For Solidity, we need the expanded-format of a signature
 				const splitSignature = ethers.utils.splitSignature(signature);
+
+				await mockSignatureManager.isValidSignature(
+					messageHash,
+					signature
+				)
 
 				// Correct signer recovered
 				expect(
