@@ -40,16 +40,21 @@ contract MockSignatureManager is
 
 		console.log(recovered);
 
-		/*
-		MessageHashData memory messageHashData = vaultMessageHashData[msg.sender][_messageHash];
+		//MessageHashData memory messageHashData = vaultMessageHashData[msg.sender][_messageHash];
 
-		require(recovered != messageHashData.signer, "!recovered");
-		require(
-			messageHashData.votes >= IIglooFiV1Vault(msg.sender).requiredVoteCount(),
-			"!messageHashData.votes"
-		);
-		*/
-		return ERC1271_MAGIC_VALUE;
+		if (
+			//recovered != messageHashData.signer &&
+			//messageHashData.votes >= IIglooFiV1Vault(msg.sender).requiredVoteCount()
+			true
+		)
+		{
+			return ERC1271_MAGIC_VALUE;
+		}
+		else
+		{
+			//return bytes4(0);
+			return ERC1271_MAGIC_VALUE;
+		}
 	}
 
 
@@ -81,7 +86,20 @@ contract MockSignatureManager is
 	}
 
 
-	function signMessageHash(address iglooFiV1Vault, bytes32 messageHash)
+	function signMessageHash(address iglooFiV1Vault, bytes32 _messageHash, bytes memory _signature)
 		public
-	{}
+		returns (bool)
+	{
+		address[] memory votedVoters;
+
+		address recovered = ECDSA.recover(ECDSA.toEthSignedMessageHash(_messageHash), _signature);
+
+		vaultMessageHashData[iglooFiV1Vault][_messageHash] = MessageHashData({
+			signer: recovered,
+			votedVoters: votedVoters,
+			votes: 0
+		});
+
+		return true;
+	}
 }

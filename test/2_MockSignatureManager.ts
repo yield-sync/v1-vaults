@@ -107,7 +107,7 @@ describe("Mock Signature Manager", async () => {
 						signature
 					)
 				).to.be.equal("0x1626ba7e");
-			})
+			});
 		});
 
 
