@@ -2,16 +2,17 @@
 pragma solidity ^0.8.1;
 
 
-import "@igloo-fi/v1-sdk/contracts/interface/IIglooFiV1Vault.sol";
+import { IIglooFiV1Vault } from "@igloo-fi/v1-sdk/contracts/interface/IIglooFiV1Vault.sol";
 import { ECDSA } from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import { IERC1271 } from "@openzeppelin/contracts/interfaces/IERC1271.sol";
 import "hardhat/console.sol";
 
 
 struct MessageHashData {
+	bytes signature;
 	address signer;
-	address[] votedVoters;
-	uint256 votes;
+	address[] signedVoters;
+	uint256 signatureCount;
 }
 
 
@@ -21,6 +22,7 @@ struct MessageHashData {
 contract MockSignatureManager is
 	IERC1271
 {
+	bytes32 public constant VOTER = keccak256("VOTER");
 	bytes4 public constant ERC1271_MAGIC_VALUE = 0x1626ba7e;
 
 
@@ -40,12 +42,11 @@ contract MockSignatureManager is
 
 		console.log(recovered);
 
-		//MessageHashData memory messageHashData = vaultMessageHashData[msg.sender][_messageHash];
+		MessageHashData memory messageHashData = vaultMessageHashData[msg.sender][_messageHash];
 
 		if (
-			//recovered != messageHashData.signer &&
-			//messageHashData.votes >= IIglooFiV1Vault(msg.sender).requiredVoteCount()
-			true
+			recovered != messageHashData.signer &&
+			messageHashData.signatureCount >= IIglooFiV1Vault(msg.sender).requiredVoteCount()
 		)
 		{
 			return ERC1271_MAGIC_VALUE;
@@ -90,15 +91,31 @@ contract MockSignatureManager is
 		public
 		returns (bool)
 	{
-		address[] memory votedVoters;
+		require(IIglooFiV1Vault(iglooFiV1Vault).hasRole(VOTER, msg.sender), "!auth");
 
-		address recovered = ECDSA.recover(ECDSA.toEthSignedMessageHash(_messageHash), _signature);
+		MessageHashData memory m = vaultMessageHashData[iglooFiV1Vault][_messageHash];
 
-		vaultMessageHashData[iglooFiV1Vault][_messageHash] = MessageHashData({
-			signer: recovered,
-			votedVoters: votedVoters,
-			votes: 0
-		});
+		for (uint i = 0; i < m.signedVoters.length; i++) {
+			require(m.signedVoters[i] != msg.sender, "Already signed");
+		}
+
+		if (m.signer == address(0)) {
+			address[] memory initialsignedVoters;
+
+			address recovered = ECDSA.recover(ECDSA.toEthSignedMessageHash(_messageHash), _signature);
+
+			require(IIglooFiV1Vault(iglooFiV1Vault).hasRole(VOTER, recovered), "!auth");
+
+			vaultMessageHashData[iglooFiV1Vault][_messageHash] = MessageHashData({
+				signature: _signature,
+				signer: recovered,
+				signedVoters: initialsignedVoters,
+				signatureCount: 0
+			});
+		}
+
+		vaultMessageHashData[iglooFiV1Vault][_messageHash].signedVoters.push(msg.sender);
+		vaultMessageHashData[iglooFiV1Vault][_messageHash].signatureCount++;
 
 		return true;
 	}

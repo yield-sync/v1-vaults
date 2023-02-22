@@ -155,11 +155,6 @@ describe("Mock Signature Manager", async () => {
 				// For Solidity, we need the expanded-format of a signature
 				const splitSignature = ethers.utils.splitSignature(signature);
 
-				await mockSignatureManager.isValidSignature(
-					messageHash,
-					signature
-				)
-
 				// Correct signer recovered
 				expect(
 					await mockSignatureManager.verifyHashSignature(

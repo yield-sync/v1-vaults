@@ -165,7 +165,7 @@ contract IglooFiV1Vault is
 	{
 		require(amount > 0, "!amount");
 
-		address[] memory votedVoters;
+		address[] memory initialVotedVoters;
 
 		// [add] `_withdrawalRequest` value
 		_withdrawalRequest[_withdrawalRequestIdTracker] = WithdrawalRequest(
@@ -180,7 +180,7 @@ contract IglooFiV1Vault is
 				tokenId: tokenId,
 				voteCount: 0,
 				latestRelevantApproveVoteTime: block.timestamp,
-				votedVoters: votedVoters
+				votedVoters: initialVotedVoters
 			}
 		);
 
