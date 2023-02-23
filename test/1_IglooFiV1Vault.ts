@@ -194,7 +194,7 @@ describe("IglooFi V1 Vault", async () => {
 					async () => {
 						const [, addr1] = await ethers.getSigners();
 
-						await iglooFiV1Vault.addVoter(addr1.address)
+						await iglooFiV1Vault.addVoter(addr1.address);
 
 						await expect(
 							await iglooFiV1Vault.hasRole(

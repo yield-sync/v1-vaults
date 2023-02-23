@@ -8,6 +8,9 @@ const chainId = 31337;
 
 
 describe("Mock Signature Manager", async () => {
+	let mockIglooFiGovernance: Contract;
+	let iglooFiV1VaultFactory: Contract;
+	let iglooFiV1Vault: Contract;
 	let mockSignatureManager: Contract;
 	let mockDapp: Contract;
 
@@ -20,6 +23,60 @@ describe("Mock Signature Manager", async () => {
 
 		mockSignatureManager = await MockSignatureManager.deploy();
 		mockSignatureManager = await mockSignatureManager.deployed();
+	});
+
+	/**
+	 * @notice Deploy contract
+	 * @dev Deploy MockIglooFiGovernance.sol
+	*/
+	before("[before] Deploy IglooFiGovernance.sol contract..", async () => {
+		const MockIglooFiGovernance = await ethers.getContractFactory("MockIglooFiGovernance");
+
+		mockIglooFiGovernance = await MockIglooFiGovernance.deploy();
+		mockIglooFiGovernance = await mockIglooFiGovernance.deployed();
+	});
+
+	/**
+	 * @notice Deploy contract
+	 * @dev Deploy IglooFiV1VaultFactory.sol
+	*/
+	before("[before] Deploy IglooFiV1VaultFactory.sol contracts..", async () => {
+		const IglooFiV1VaultFactory = await ethers.getContractFactory("IglooFiV1VaultFactory");
+
+		iglooFiV1VaultFactory = await IglooFiV1VaultFactory.deploy(
+			mockIglooFiGovernance.address
+		);
+
+		iglooFiV1VaultFactory = await iglooFiV1VaultFactory.deployed();
+
+		await iglooFiV1VaultFactory.setPause(false);
+	});
+
+
+	/**
+	 * @notice Deploy contract
+	 * @dev Factory Deploy IglooFiV1Vault.sol (IglooFiV1VaultFactory.sol)
+	*/
+	before("[before] Factory deploy IglooFiV1Vault.sol..", async () => {
+		const [owner, addr1, addr2] = await ethers.getSigners();
+
+		const IglooFiV1Vault = await ethers.getContractFactory("IglooFiV1Vault");
+		
+		// Deploy a vault
+		await iglooFiV1VaultFactory.deployVault(
+			owner.address,
+			2,
+			5,
+			{ value: 1 }
+		);
+
+		// Attach the deployed vault's address
+		iglooFiV1Vault = await IglooFiV1Vault.attach(iglooFiV1VaultFactory.vaultAddress(0));
+
+		await iglooFiV1Vault.addVoter(addr1.address);
+		await iglooFiV1Vault.addVoter(addr2.address);
+
+		await iglooFiV1Vault.updateSignatureManager(mockSignatureManager.address);
 	});
 
 
@@ -91,22 +148,84 @@ describe("Mock Signature Manager", async () => {
 			});
 
 
-			it("Should pass `isValidSignature()`", async () => {
-				const [owner] = await ethers.getSigners();
+			it("Should be able to create a vaultMessageHashData value..", async () => {
+				const [, addr1] = await ethers.getSigners();
 
 				const messageHash = ethers.utils.id("Hello, world!");
 
-				const messageHashBytes = ethers.utils.arrayify(messageHash);
+				const signature = await addr1.signMessage(ethers.utils.arrayify(messageHash));
 
-				// Sign the binary data
-				const signature = await owner.signMessage(messageHashBytes);
+				// [contract]
+				await mockSignatureManager.connect(addr1).signMessageHash(
+					iglooFiV1Vault.address,
+					messageHash,
+					signature
+				);
 
+				// [contract]
+				const retrievedBytes32 = await mockSignatureManager.vaultMessageHashes(
+					iglooFiV1Vault.address
+				);
+
+				expect(retrievedBytes32[0]).to.be.equal(messageHash);
+
+				const messageHashData = await mockSignatureManager.vaultMessageHashData(
+					iglooFiV1Vault.address,
+					retrievedBytes32[0]
+				);
+				
+				expect(messageHashData[0]).to.be.equal(signature);
+				expect(messageHashData[1]).to.be.equal(addr1.address);
+				expect(messageHashData[2][0]).to.be.equal(addr1.address);
+				expect(messageHashData[3]).to.be.equal(1);
+			});
+
+
+			it("Should fail iglooFiV1Vault.isValidSignature() due to not enough votes..", async () => {
+				// [contract]
+				const retrievedBytes32 = await mockSignatureManager.vaultMessageHashes(
+					iglooFiV1Vault.address
+				);
+
+				const messageHashData = await mockSignatureManager.vaultMessageHashData(
+					iglooFiV1Vault.address,
+					retrievedBytes32[0]
+				);
+				
 				expect(
-					await mockSignatureManager.isValidSignature(
-						messageHash,
-						signature
+					await iglooFiV1Vault.isValidSignature(
+						retrievedBytes32[0],
+						messageHashData[0]
 					)
-				).to.be.equal("0x1626ba7e");
+				).to.be.equal("0x00000000")
+			});
+
+			it("Should pass iglooFiV1Vault.isValidSignature() due to enough votes..", async () => {
+				const [, , addr2] = await ethers.getSigners();
+
+				// [contract]
+				const retrievedBytes32 = await mockSignatureManager.vaultMessageHashes(
+					iglooFiV1Vault.address
+				);
+
+				const messageHashData = await mockSignatureManager.vaultMessageHashData(
+					iglooFiV1Vault.address,
+					retrievedBytes32[0]
+				);
+					
+				// [contract]
+				await mockSignatureManager.connect(addr2).signMessageHash(
+					iglooFiV1Vault.address,
+					retrievedBytes32[0],
+					messageHashData[0]
+				);
+				
+				expect(
+					await iglooFiV1Vault.isValidSignature(
+						retrievedBytes32[0],
+						messageHashData[0]
+					)
+				).to.be.equal("0x1626ba7e")
 			});
 		});
 

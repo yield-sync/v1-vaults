@@ -27,8 +27,8 @@ contract MockSignatureManager is
 
 
 	// [mapping][internal]
-	mapping (address => bytes32[]) public vaultMessageHashes;
-	mapping (address => mapping (bytes32 => MessageHashData)) public vaultMessageHashData;
+	mapping (address => bytes32[]) internal _vaultMessageHashes;
+	mapping (address => mapping (bytes32 => MessageHashData)) internal _vaultMessageHashData;
 
 
 	/// @inheritdoc IERC1271
@@ -40,12 +40,11 @@ contract MockSignatureManager is
 	{
 		address recovered = ECDSA.recover(ECDSA.toEthSignedMessageHash(_messageHash), _signature);
 
-		console.log(recovered);
 
-		MessageHashData memory messageHashData = vaultMessageHashData[msg.sender][_messageHash];
+		MessageHashData memory messageHashData = _vaultMessageHashData[msg.sender][_messageHash];
 
 		if (
-			recovered != messageHashData.signer &&
+			recovered == messageHashData.signer &&
 			messageHashData.signatureCount >= IIglooFiV1Vault(msg.sender).requiredVoteCount()
 		)
 		{
@@ -53,12 +52,11 @@ contract MockSignatureManager is
 		}
 		else
 		{
-			//return bytes4(0);
-			return ERC1271_MAGIC_VALUE;
+			return bytes4(0);
 		}
 	}
 
-
+	
 	function verifyStringSignature(
 		string memory message,
 		uint8 v,
@@ -87,13 +85,44 @@ contract MockSignatureManager is
 	}
 
 
-	function signMessageHash(address iglooFiV1Vault, bytes32 _messageHash, bytes memory _signature)
+	/**
+	 * @dev [getter] `_vaultMessageHashes`
+	 * @param _iglooFiV1Vault {address}
+	 */
+	function vaultMessageHashes(address _iglooFiV1Vault)
 		public
-		returns (bool)
+		view
+		returns (bytes32[] memory)
 	{
-		require(IIglooFiV1Vault(iglooFiV1Vault).hasRole(VOTER, msg.sender), "!auth");
+		return _vaultMessageHashes[_iglooFiV1Vault];
+	}
 
-		MessageHashData memory m = vaultMessageHashData[iglooFiV1Vault][_messageHash];
+	/**
+	 * @dev [getter] `_vaultMessageHashData`
+	 * @param _iglooFiV1Vault {address}
+	 * @param _messageHash {bytes32}
+	 */
+	function vaultMessageHashData(address _iglooFiV1Vault, bytes32 _messageHash)
+		public
+		view
+		returns (MessageHashData memory)
+	{
+		return _vaultMessageHashData[_iglooFiV1Vault][_messageHash];
+	}
+
+
+	/**
+	 * @dev [create] `_vaultMessageHashData` value
+	 * @param _iglooFiV1Vault {address}
+	 * @param _messageHash {bytes32}
+	 * @param _signature {bytes}
+	 */
+	function signMessageHash(address _iglooFiV1Vault, bytes32 _messageHash, bytes memory _signature)
+		public
+	{
+		require(IIglooFiV1Vault(_iglooFiV1Vault).hasRole(VOTER, msg.sender), "!auth");
+
+		MessageHashData memory m = _vaultMessageHashData[_iglooFiV1Vault][_messageHash];
 
 		for (uint i = 0; i < m.signedVoters.length; i++) {
 			require(m.signedVoters[i] != msg.sender, "Already signed");
@@ -104,19 +133,19 @@ contract MockSignatureManager is
 
 			address recovered = ECDSA.recover(ECDSA.toEthSignedMessageHash(_messageHash), _signature);
 
-			require(IIglooFiV1Vault(iglooFiV1Vault).hasRole(VOTER, recovered), "!auth");
+			require(IIglooFiV1Vault(_iglooFiV1Vault).hasRole(VOTER, recovered), "!auth");
 
-			vaultMessageHashData[iglooFiV1Vault][_messageHash] = MessageHashData({
+			_vaultMessageHashData[_iglooFiV1Vault][_messageHash] = MessageHashData({
 				signature: _signature,
 				signer: recovered,
 				signedVoters: initialsignedVoters,
 				signatureCount: 0
 			});
+
+			_vaultMessageHashes[_iglooFiV1Vault].push(_messageHash);
 		}
 
-		vaultMessageHashData[iglooFiV1Vault][_messageHash].signedVoters.push(msg.sender);
-		vaultMessageHashData[iglooFiV1Vault][_messageHash].signatureCount++;
-
-		return true;
+		_vaultMessageHashData[_iglooFiV1Vault][_messageHash].signedVoters.push(msg.sender);
+		_vaultMessageHashData[_iglooFiV1Vault][_messageHash].signatureCount++;
 	}
 }
