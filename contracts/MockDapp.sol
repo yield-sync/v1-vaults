@@ -32,7 +32,7 @@ contract MockDapp is
 		return keccak256(abi.encode(keccak256("Score(address player,uint points)"), player, points));
 	}
 
-	function hashTypedDataV4(bytes32 _structHash) public view override returns (bytes32) {
-		return EIP712._hashTypedDataV4(_structHash);
+	function hashTypedDataV4(bytes32 structHash) public view override returns (bytes32) {
+		return EIP712._hashTypedDataV4(structHash);
 	}
 }
