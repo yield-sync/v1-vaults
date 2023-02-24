@@ -94,32 +94,6 @@ describe("Mock Signature Manager", async () => {
 
 	describe("MockSignatureManager.sol Contract", async () => {
 		/**
-		 * @notice [hardhat][string] Signing a String Message
-		 */
-		describe("[hardhat][string] Signing a String Message", async () => {
-			it("Check signature..", async () => {
-				const [owner] = await ethers.getSigners();
-			
-				// [hardhat] Sign hash
-				const signature = await owner.signMessage("Hello, world!");
-
-				// [ethers] Split signature
-				const splitSignature = ethers.utils.splitSignature(signature);				
-				
-				// Correct signer recovered
-				expect(
-					await mockSignatureManager.verifyStringSignature(
-						"Hello, world!",
-						splitSignature.v,
-						splitSignature.r,
-						splitSignature.s
-					)
-				).to.equal(owner.address);
-			});
-		});
-
-		
-		/**
 		 * @notice [hardhat][ERC-191] Signing a Digest Hash
 		 */
 		describe("[hardhat][ERC-191] Signing a Digest Hash", async () => {
@@ -151,7 +125,7 @@ describe("Mock Signature Manager", async () => {
 
 				// Correct signer recovered
 				expect(
-					await mockSignatureManager.verifyHashSignature(
+					await mockSignatureManager.recoverSigner(
 						messageHash,
 						splitSignature.v,
 						splitSignature.r,
@@ -302,7 +276,7 @@ describe("Mock Signature Manager", async () => {
 
 				// Correct signer recovered
 				expect(
-					await mockSignatureManager.verifyHashSignature(
+					await mockSignatureManager.recoverSigner(
 						messageHash,
 						splitSignature.v,
 						splitSignature.r,

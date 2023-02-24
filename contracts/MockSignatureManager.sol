@@ -56,22 +56,15 @@ contract MockSignatureManager is
 		}
 	}
 
-	
-	function verifyStringSignature(
-		string memory message,
-		uint8 v,
-		bytes32 r,
-		bytes32 s
-	)
-		public
-		pure
-		returns (address)
-	{
-		return ECDSA.recover(ECDSA.toEthSignedMessageHash(abi.encodePacked(message)), v, r, s);
-	}
 
-
-	function verifyHashSignature(
+	/**
+	 * @dev Recover Signer
+	 * @param hash {bytes32}
+	 * @param v {uint8}
+	 * @param r {bytes32}
+	 * @param s {bytes32}
+	 */
+	function recoverSigner(
 		bytes32 hash,
 		uint8 v,
 		bytes32 r,
