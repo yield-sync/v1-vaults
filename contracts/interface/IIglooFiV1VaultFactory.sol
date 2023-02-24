@@ -37,6 +37,19 @@ interface IIglooFiV1VaultFactory {
 	;
 
 	/**
+	* @notice Address for Signature Manager
+	* @dev [!restriction]
+	* @dev [view-address]
+	* @return {address}
+	*/
+	function signatureManager()
+		external
+		view
+		returns (address)
+	;
+
+
+	/**
 	* @notice Get vault deployment fee
 	* @dev [!restriction]
 	* @dev [view-uint256]
