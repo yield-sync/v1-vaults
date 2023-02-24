@@ -21,7 +21,9 @@ contract MockDapp is
 		return _domainSeparatorV4();
 	}
 
-	function getStructHash(address a, uint x) public pure returns (bytes32) {
-		return keccak256(abi.encode(keccak256("Point(address a,uint x)"), a, x));
+	function getStructHash(address player, uint points) public pure returns (bytes32) {
+		return keccak256(
+			abi.encode(keccak256("Score(address player,uint points)"), player, points)
+		);
 	}
 }

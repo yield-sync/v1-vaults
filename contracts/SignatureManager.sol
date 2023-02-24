@@ -5,7 +5,6 @@ pragma solidity ^0.8.1;
 import { IIglooFiV1Vault } from "@igloo-fi/v1-sdk/contracts/interface/IIglooFiV1Vault.sol";
 import { ECDSA } from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import { IERC1271 } from "@openzeppelin/contracts/interfaces/IERC1271.sol";
-import "hardhat/console.sol";
 
 
 struct MessageHashData {
@@ -17,9 +16,9 @@ struct MessageHashData {
 
 
 /**
- * @title MockSignatureManager
+ * @title SignatureManager
 */
-contract MockSignatureManager is
+contract SignatureManager is
 	IERC1271
 {
 	bytes32 public constant VOTER = keccak256("VOTER");
@@ -43,27 +42,22 @@ contract MockSignatureManager is
 
 		MessageHashData memory messageHashData = _vaultMessageHashData[msg.sender][_messageHash];
 
-		if (
+		return (
 			recovered == messageHashData.signer &&
 			messageHashData.signatureCount >= IIglooFiV1Vault(msg.sender).requiredVoteCount()
-		)
-		{
-			return ERC1271_MAGIC_VALUE;
-		}
-		else
-		{
-			return bytes4(0);
-		}
+		) ? ERC1271_MAGIC_VALUE : bytes4(0);
 	}
 
 
 	/**
-	 * @dev Recover Signer
+	 * @notice Recover Signer
+	 * @dev [!restriction]
+	 * @dev [pure]
 	 * @param hash {bytes32}
 	 * @param v {uint8}
 	 * @param r {bytes32}
 	 * @param s {bytes32}
-	 */
+	*/
 	function recoverSigner(
 		bytes32 hash,
 		uint8 v,
@@ -77,11 +71,12 @@ contract MockSignatureManager is
 		return ECDSA.recover(ECDSA.toEthSignedMessageHash(hash), v, r, s);
 	}
 
-
 	/**
-	 * @dev [getter] `_vaultMessageHashes`
+	 * @notice Getter for `_vaultMessageHashes`
+	 * @dev [!restriction]
+	 * @dev [view][mapping]
 	 * @param _iglooFiV1Vault {address}
-	 */
+	*/
 	function vaultMessageHashes(address _iglooFiV1Vault)
 		public
 		view
@@ -91,10 +86,12 @@ contract MockSignatureManager is
 	}
 
 	/**
-	 * @dev [getter] `_vaultMessageHashData`
+	 * @notice Getter for `_vaultMessageHashData`
+	 * @dev [!restriction][public]
+	 * @dev [view][mapping]
 	 * @param _iglooFiV1Vault {address}
 	 * @param _messageHash {bytes32}
-	 */
+	*/
 	function vaultMessageHashData(address _iglooFiV1Vault, bytes32 _messageHash)
 		public
 		view
@@ -105,11 +102,13 @@ contract MockSignatureManager is
 
 
 	/**
+	 * @notice Sign a Message Hash
+	 * @dev [!restriction][public]
 	 * @dev [create] `_vaultMessageHashData` value
 	 * @param _iglooFiV1Vault {address}
 	 * @param _messageHash {bytes32}
 	 * @param _signature {bytes}
-	 */
+	*/
 	function signMessageHash(address _iglooFiV1Vault, bytes32 _messageHash, bytes memory _signature)
 		public
 	{

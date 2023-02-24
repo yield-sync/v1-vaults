@@ -13,7 +13,7 @@ describe("IglooFi V1 Vault", async () => {
 	let iglooFiV1VaultFactory: Contract;
 	let iglooFiV1Vault: Contract;
 	let mockERC20: Contract;
-	let mockSignatureManager: Contract;
+	let signatureManager: Contract;
 	
 	
 	/**
@@ -83,11 +83,11 @@ describe("IglooFi V1 Vault", async () => {
 	 * @notice Deploy the contracts
 	 * @dev Deploy MockERC20.sol
 	*/
-	before("[before] Deploy MockSignatureManager.sol..", async () => {
-		const MockSignatureManager = await ethers.getContractFactory("MockSignatureManager");
+	before("[before] Deploy SignatureManager.sol..", async () => {
+		const SignatureManager = await ethers.getContractFactory("SignatureManager");
 
-		mockSignatureManager = await MockSignatureManager.deploy();
-		mockSignatureManager = await mockSignatureManager.deployed();
+		signatureManager = await SignatureManager.deploy();
+		signatureManager = await signatureManager.deployed();
 	});
 
 	/**
@@ -167,10 +167,10 @@ describe("IglooFi V1 Vault", async () => {
 					"Should be able to set a signature manager contract..",
 					async () => {
 
-						await iglooFiV1Vault.updateSignatureManager(mockSignatureManager.address);
+						await iglooFiV1Vault.updateSignatureManager(signatureManager.address);
 						
 						expect(await iglooFiV1Vault.signatureManager()).to.be.equal(
-							mockSignatureManager.address
+							signatureManager.address
 						);
 					}
 				);

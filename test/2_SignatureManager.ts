@@ -11,18 +11,18 @@ describe("Mock Signature Manager", async () => {
 	let mockIglooFiGovernance: Contract;
 	let iglooFiV1VaultFactory: Contract;
 	let iglooFiV1Vault: Contract;
-	let mockSignatureManager: Contract;
+	let signatureManager: Contract;
 	let mockDapp: Contract;
 
 	/**
 	 * @notice Deploy contract
-	 * @dev Deploy MockSignatureManager.sol
+	 * @dev Deploy SignatureManager.sol
 	*/
-	before("[before] Deploy MockSignatureManager.sol contract..", async () => {
-		const MockSignatureManager = await ethers.getContractFactory("MockSignatureManager");
+	before("[before] Deploy SignatureManager.sol contract..", async () => {
+		const SignatureManager = await ethers.getContractFactory("SignatureManager");
 
-		mockSignatureManager = await MockSignatureManager.deploy();
-		mockSignatureManager = await mockSignatureManager.deployed();
+		signatureManager = await SignatureManager.deploy();
+		signatureManager = await signatureManager.deployed();
 	});
 
 	/**
@@ -76,7 +76,7 @@ describe("Mock Signature Manager", async () => {
 		await iglooFiV1Vault.addVoter(addr1.address);
 		await iglooFiV1Vault.addVoter(addr2.address);
 
-		await iglooFiV1Vault.updateSignatureManager(mockSignatureManager.address);
+		await iglooFiV1Vault.updateSignatureManager(signatureManager.address);
 	});
 
 
@@ -92,10 +92,10 @@ describe("Mock Signature Manager", async () => {
 	});
 
 
-	describe("MockSignatureManager.sol Contract", async () => {
+	describe("SignatureManager.sol Contract", async () => {
 		/**
 		 * @notice [hardhat][ERC-191] Signing a Digest Hash
-		 */
+		*/
 		describe("[hardhat][ERC-191] Signing a Digest Hash", async () => {
 			it("Should not allow signing by anyone but wallet with VOTER role..", async () => {
 				const [, , , addr3] = await ethers.getSigners();
@@ -105,7 +105,7 @@ describe("Mock Signature Manager", async () => {
 				const signature = await addr3.signMessage(ethers.utils.arrayify(messageHash));
 
 				await expect(
-					mockSignatureManager.connect(addr3).signMessageHash(
+					signatureManager.connect(addr3).signMessageHash(
 						iglooFiV1Vault.address,
 						messageHash,
 						signature
@@ -125,7 +125,7 @@ describe("Mock Signature Manager", async () => {
 
 				// Correct signer recovered
 				expect(
-					await mockSignatureManager.recoverSigner(
+					await signatureManager.recoverSigner(
 						messageHash,
 						splitSignature.v,
 						splitSignature.r,
@@ -134,20 +134,20 @@ describe("Mock Signature Manager", async () => {
 				).to.equal(addr1.address);
 
 				// [contract]
-				await mockSignatureManager.connect(addr1).signMessageHash(
+				await signatureManager.connect(addr1).signMessageHash(
 					iglooFiV1Vault.address,
 					messageHash,
 					signature
 				);
 
 				// [contract]
-				const retrievedBytes32 = await mockSignatureManager.vaultMessageHashes(
+				const retrievedBytes32 = await signatureManager.vaultMessageHashes(
 					iglooFiV1Vault.address
 				);
 
 				expect(retrievedBytes32[0]).to.be.equal(messageHash);
 
-				const messageHashData = await mockSignatureManager.vaultMessageHashData(
+				const messageHashData = await signatureManager.vaultMessageHashData(
 					iglooFiV1Vault.address,
 					retrievedBytes32[0]
 				);
@@ -162,18 +162,18 @@ describe("Mock Signature Manager", async () => {
 				const [, addr1] = await ethers.getSigners();
 
 				// [contract]
-				const retrievedBytes32 = await mockSignatureManager.vaultMessageHashes(
+				const retrievedBytes32 = await signatureManager.vaultMessageHashes(
 					iglooFiV1Vault.address
 				);
 
-				const messageHashData = await mockSignatureManager.vaultMessageHashData(
+				const messageHashData = await signatureManager.vaultMessageHashData(
 					iglooFiV1Vault.address,
 					retrievedBytes32[0]
 				);
 
 				// [contract]
 				await expect(
-					mockSignatureManager.connect(addr1).signMessageHash(
+					signatureManager.connect(addr1).signMessageHash(
 						iglooFiV1Vault.address,
 						retrievedBytes32[0],
 						messageHashData[0]
@@ -183,11 +183,11 @@ describe("Mock Signature Manager", async () => {
 
 			it("Should fail iglooFiV1Vault.isValidSignature() due to not enough votes..", async () => {
 				// [contract]
-				const retrievedBytes32 = await mockSignatureManager.vaultMessageHashes(
+				const retrievedBytes32 = await signatureManager.vaultMessageHashes(
 					iglooFiV1Vault.address
 				);
 
-				const messageHashData = await mockSignatureManager.vaultMessageHashData(
+				const messageHashData = await signatureManager.vaultMessageHashData(
 					iglooFiV1Vault.address,
 					retrievedBytes32[0]
 				);
@@ -204,17 +204,17 @@ describe("Mock Signature Manager", async () => {
 				const [, , addr2] = await ethers.getSigners();
 
 				// [contract]
-				const retrievedBytes32 = await mockSignatureManager.vaultMessageHashes(
+				const retrievedBytes32 = await signatureManager.vaultMessageHashes(
 					iglooFiV1Vault.address
 				);
 
-				const messageHashData = await mockSignatureManager.vaultMessageHashData(
+				const messageHashData = await signatureManager.vaultMessageHashData(
 					iglooFiV1Vault.address,
 					retrievedBytes32[0]
 				);
 					
 				// [contract]
-				await mockSignatureManager.connect(addr2).signMessageHash(
+				await signatureManager.connect(addr2).signMessageHash(
 					iglooFiV1Vault.address,
 					retrievedBytes32[0],
 					messageHashData[0]
@@ -234,8 +234,8 @@ describe("Mock Signature Manager", async () => {
 		 * @notice [hardhat][EIP-712] Signing typedDataHash
 		*/
 		describe("[hardhat][EIP-712] Signing typedDataHash", async () => {
-			it("Check signature..", async () => {
-				const [owner, addr1] = await ethers.getSigners();
+			it("Should be able to sign and verify a a typedDataHash successfully..", async () => {
+				const [, addr1] = await ethers.getSigners();
 
 				const message = {
 					domain: {
@@ -245,14 +245,14 @@ describe("Mock Signature Manager", async () => {
 						verifyingContract: mockDapp.address
 					},
 					types: {
-						Point: [
-							{ name: 'a', type: 'address' },
-							{ name: 'x', type: 'uint' }
+						Score: [
+							{ name: 'player', type: 'address' },
+							{ name: 'points', type: 'uint' }
 						]
 					},
 					value: {
-						a: ethers.constants.AddressZero,
-						x: 1
+						player: ethers.constants.AddressZero,
+						points: 1
 					}
 				};
 				
@@ -276,7 +276,7 @@ describe("Mock Signature Manager", async () => {
 
 				// Correct signer recovered
 				expect(
-					await mockSignatureManager.recoverSigner(
+					await signatureManager.recoverSigner(
 						messageHash,
 						splitSignature.v,
 						splitSignature.r,
@@ -285,20 +285,20 @@ describe("Mock Signature Manager", async () => {
 				).to.equal(addr1.address);
 
 				// [contract]
-				await mockSignatureManager.connect(addr1).signMessageHash(
+				await signatureManager.connect(addr1).signMessageHash(
 					iglooFiV1Vault.address,
 					messageHash,
 					signature
 				);
 
 				// [contract]
-				const retrievedBytes32 = await mockSignatureManager.vaultMessageHashes(
+				const retrievedBytes32 = await signatureManager.vaultMessageHashes(
 					iglooFiV1Vault.address
 				);
 
 				expect(retrievedBytes32[1]).to.be.equal(messageHash);
 
-				const messageHashData = await mockSignatureManager.vaultMessageHashData(
+				const messageHashData = await signatureManager.vaultMessageHashData(
 					iglooFiV1Vault.address,
 					retrievedBytes32[1]
 				);
