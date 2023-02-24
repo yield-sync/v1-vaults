@@ -129,6 +129,7 @@ contract IglooFiV1Vault is
 	function openWithdrawalRequestIds()
 		public
 		view
+		override
 		returns (uint256[] memory)
 	{
 		return _openWithdrawalRequestIds;
@@ -313,6 +314,7 @@ contract IglooFiV1Vault is
 	/// @inheritdoc IIglooFiV1Vault
 	function removeVoter(address voter)
 		public
+		override
 		onlyRole(DEFAULT_ADMIN_ROLE)
 	{
 		// [remove] address with VOTER on `AccessControlEnumerable`
