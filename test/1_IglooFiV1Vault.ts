@@ -1,4 +1,6 @@
 import { expect } from "chai";
+import { Contract } from "ethers";
+
 const { ethers } = require("hardhat");
 
 
@@ -7,11 +9,11 @@ const sixDaysInSeconds = 6 * 24 * 60 * 60;
 
 
 describe("IglooFi V1 Vault", async () => {
-	let mockIglooFiGovernance: any;
-	let iglooFiV1VaultFactory: any;
-	let iglooFiV1Vault: any;
-	let mockERC20: any;
-	let mockSignatureManager: any;
+	let mockIglooFiGovernance: Contract;
+	let iglooFiV1VaultFactory: Contract;
+	let iglooFiV1Vault: Contract;
+	let mockERC20: Contract;
+	let signatureManager: Contract;
 	
 	
 	/**
@@ -24,6 +26,7 @@ describe("IglooFi V1 Vault", async () => {
 		mockIglooFiGovernance = await MockIglooFiGovernance.deploy();
 		mockIglooFiGovernance = await mockIglooFiGovernance.deployed();
 	});
+
 
 
 	/**
@@ -55,7 +58,6 @@ describe("IglooFi V1 Vault", async () => {
 		// Deploy a vault
 		await iglooFiV1VaultFactory.deployVault(
 			owner.address,
-			ethers.constants.AddressZero,
 			2,
 			5,
 			{ value: 1 }
@@ -81,11 +83,11 @@ describe("IglooFi V1 Vault", async () => {
 	 * @notice Deploy the contracts
 	 * @dev Deploy MockERC20.sol
 	*/
-	before("[before] Deploy MockSignatureManager.sol..", async () => {
-		const MockSignatureManager = await ethers.getContractFactory("MockSignatureManager");
+	before("[before] Deploy SignatureManager.sol..", async () => {
+		const SignatureManager = await ethers.getContractFactory("SignatureManager");
 
-		mockSignatureManager = await MockSignatureManager.deploy();
-		mockSignatureManager = await mockSignatureManager.deployed();
+		signatureManager = await SignatureManager.deploy();
+		signatureManager = await signatureManager.deployed();
 	});
 
 	/**
@@ -165,10 +167,10 @@ describe("IglooFi V1 Vault", async () => {
 					"Should be able to set a signature manager contract..",
 					async () => {
 
-						await iglooFiV1Vault.updateSignatureManager(mockSignatureManager.address);
+						await iglooFiV1Vault.updateSignatureManager(signatureManager.address);
 						
 						expect(await iglooFiV1Vault.signatureManager()).to.be.equal(
-							mockSignatureManager.address
+							signatureManager.address
 						);
 					}
 				);
@@ -192,7 +194,7 @@ describe("IglooFi V1 Vault", async () => {
 					async () => {
 						const [, addr1] = await ethers.getSigners();
 
-						await iglooFiV1Vault.addVoter(addr1.address)
+						await iglooFiV1Vault.addVoter(addr1.address);
 
 						await expect(
 							await iglooFiV1Vault.hasRole(

@@ -18,6 +18,8 @@ contract IglooFiV1VaultFactory is
 {
 	// [address][public][to-be-constant]
 	address public override IGLOO_FI_GOVERNANCE;
+	// [address][public]
+	address public signatureManager;
 
 	/* [uint256][internal] */
 	uint256 internal _vaultIdTracker;
@@ -81,7 +83,6 @@ contract IglooFiV1VaultFactory is
 	/// @inheritdoc IIglooFiV1VaultFactory
 	function deployVault(
 		address _admin,
-		address _signatureManager,
 		uint256 _requiredVoteCount,
 		uint256 _withdrawalDelaySeconds
 	)
@@ -98,7 +99,7 @@ contract IglooFiV1VaultFactory is
 		// [deploy] A vault contract
 		deployedContract = new IglooFiV1Vault(
 			_admin,
-			_signatureManager,
+			signatureManager,
 			_requiredVoteCount,
 			_withdrawalDelaySeconds
 		);
@@ -157,5 +158,16 @@ contract IglooFiV1VaultFactory is
 		(bool success, ) = transferTo.call{value: address(this).balance}("");
 
 		require(success, "transferFunds Failed");
+	}
+
+
+	/// @inheritdoc IIglooFiV1VaultFactory
+	function updateSignatureManager(address _signatureManager)
+		public
+		override
+		whenNotPaused()
+		onlyIglooFiGovernanceAdmin()
+	{
+		signatureManager = _signatureManager;
 	}
 }

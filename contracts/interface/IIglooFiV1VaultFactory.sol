@@ -64,14 +64,12 @@ interface IIglooFiV1VaultFactory {
 	* @dev [!restriction]
 	* @dev [create]
 	* @param _admin {address}
-	* @param _signatureManager {address}
 	* @param _requiredVoteCount {uint256}
 	* @param _withdrawalDelaySeconds {uint256}
 	* @return {address} Deployed vault
 	*/
 	function deployVault(
 		address _admin,
-		address _signatureManager,
 		uint256 _requiredVoteCount,
 		uint256 _withdrawalDelaySeconds
 	)
@@ -107,6 +105,16 @@ interface IIglooFiV1VaultFactory {
 	* @param transferTo {uint256}
 	*/
 	function transferFunds(address transferTo)
+		external
+	;
+
+	/**
+	* @notice Updates default signature manager
+	* @dev [restriction] IIglooFiGovernance AccessControlEnumerable → DEFAULT_ADMIN_ROLE
+	* @dev [update] `signatureMaanger`
+	* @param _signatureManager {address}
+	*/
+	function updateSignatureManager(address _signatureManager)
 		external
 	;
 }
