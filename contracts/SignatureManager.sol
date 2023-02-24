@@ -48,6 +48,7 @@ contract SignatureManager is
 	function recoverSigner(bytes32 hash, uint8 v, bytes32 r, bytes32 s)
 		public
 		pure
+		override
 		returns (address)
 	{
 		return ECDSA.recover(ECDSA.toEthSignedMessageHash(hash), v, r, s);
@@ -58,6 +59,7 @@ contract SignatureManager is
 	function vaultMessageHashes(address _iglooFiV1Vault)
 		public
 		view
+		override
 		returns (bytes32[] memory)
 	{
 		return _vaultMessageHashes[_iglooFiV1Vault];
@@ -68,6 +70,7 @@ contract SignatureManager is
 	function vaultMessageHashData(address _iglooFiV1Vault, bytes32 _messageHash)
 		public
 		view
+		override
 		returns (MessageHashData memory)
 	{
 		return _vaultMessageHashData[_iglooFiV1Vault][_messageHash];
@@ -77,6 +80,7 @@ contract SignatureManager is
 	/// @inheritdoc ISignatureManager
 	function signMessageHash(address _iglooFiV1Vault, bytes32 _messageHash, bytes memory _signature)
 		public
+		override
 	{
 		require(IIglooFiV1Vault(_iglooFiV1Vault).hasRole(VOTER, msg.sender), "!auth");
 
