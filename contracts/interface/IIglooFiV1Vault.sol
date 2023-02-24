@@ -66,6 +66,13 @@ interface IIglooFiV1Vault
 		uint256 latestRelevantApproveVoteTime
 	);
 
+
+	receive () external payable;
+
+
+	fallback () external payable;
+
+
 	/**
 	* @notice Address of signature manager
 	* @dev [!restriction]

@@ -18,6 +18,12 @@ interface IIglooFiV1VaultFactory {
 	event UpdatedFee(uint256 fee);
 
 
+	receive () external payable;
+
+
+	fallback () external payable;
+
+
 	/**
 	* @notice CONSTANT Address of Igloo Fi Governance contract
 	* @dev [!restriction]

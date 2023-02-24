@@ -47,12 +47,14 @@ contract IglooFiV1VaultFactory is
 	receive ()
 		external
 		payable
+		override
 	{}
 
 
 	fallback ()
 		external
 		payable
+		override
 	{}
 
 
