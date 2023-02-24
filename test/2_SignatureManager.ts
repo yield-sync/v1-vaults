@@ -247,15 +247,15 @@ describe("Mock Signature Manager", async () => {
 
 				const message = {
 					domain: {
-						name: 'MockDapp',
-						version: '1',
+						name: "MockDapp",
+						version: "1",
 						chainId: chainId,
 						verifyingContract: mockDapp.address
 					},
 					types: {
 						Score: [
-							{ name: 'player', type: 'address' },
-							{ name: 'points', type: 'uint' }
+							{ name: "player", type: "address" },
+							{ name: "points", type: "uint" }
 						]
 					},
 					value: {
