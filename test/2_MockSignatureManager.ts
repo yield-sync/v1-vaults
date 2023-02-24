@@ -147,8 +147,23 @@ describe("Mock Signature Manager", async () => {
 				).to.equal(owner.address);
 			});
 
+			it("Should not allow signing by anyone but wallet with VOTER role..", async () => {
+				const [, , , addr3] = await ethers.getSigners();
 
-			it("Should be able to create a vaultMessageHashData value..", async () => {
+				const messageHash = ethers.utils.id("Hello, world!");
+
+				const signature = await addr3.signMessage(ethers.utils.arrayify(messageHash));
+
+				await expect(
+					mockSignatureManager.connect(addr3).signMessageHash(
+						iglooFiV1Vault.address,
+						messageHash,
+						signature
+					)
+				).to.be.rejectedWith("!auth");
+			});
+
+			it("Should allow a VOTER to sign a messageHash bytes32 and create a vaultMessageHashData value..", async () => {
 				const [, addr1] = await ethers.getSigners();
 
 				const messageHash = ethers.utils.id("Hello, world!");
@@ -180,6 +195,28 @@ describe("Mock Signature Manager", async () => {
 				expect(messageHashData[3]).to.be.equal(1);
 			});
 
+			it("Should not allow double signing..", async () => {
+				const [, addr1] = await ethers.getSigners();
+
+				// [contract]
+				const retrievedBytes32 = await mockSignatureManager.vaultMessageHashes(
+					iglooFiV1Vault.address
+				);
+
+				const messageHashData = await mockSignatureManager.vaultMessageHashData(
+					iglooFiV1Vault.address,
+					retrievedBytes32[0]
+				);
+
+				// [contract]
+				await expect(
+					mockSignatureManager.connect(addr1).signMessageHash(
+						iglooFiV1Vault.address,
+						retrievedBytes32[0],
+						messageHashData[0]
+					)
+				).to.be.rejectedWith("Already signed");
+			});
 
 			it("Should fail iglooFiV1Vault.isValidSignature() due to not enough votes..", async () => {
 				// [contract]
@@ -197,7 +234,7 @@ describe("Mock Signature Manager", async () => {
 						retrievedBytes32[0],
 						messageHashData[0]
 					)
-				).to.be.equal("0x00000000")
+				).to.be.equal("0x00000000");
 			});
 
 			it("Should pass iglooFiV1Vault.isValidSignature() due to enough votes..", async () => {
@@ -225,7 +262,7 @@ describe("Mock Signature Manager", async () => {
 						retrievedBytes32[0],
 						messageHashData[0]
 					)
-				).to.be.equal("0x1626ba7e")
+				).to.be.equal("0x1626ba7e");
 			});
 		});
 
@@ -253,7 +290,7 @@ describe("Mock Signature Manager", async () => {
 					value: {
 						a: ethers.constants.AddressZero,
 						x: 1
-					},
+					}
 				};
 				
 				/**
@@ -266,7 +303,7 @@ describe("Mock Signature Manager", async () => {
 					message.domain,
 					message.types,
 					message.value
-				)
+				);
 
 				// [hardhat] Sign Message
 				const signature = await owner.signMessage(ethers.utils.arrayify(messageHash));
