@@ -6,20 +6,15 @@ import { IIglooFiV1Vault } from "@igloo-fi/v1-sdk/contracts/interface/IIglooFiV1
 import { ECDSA } from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import { IERC1271 } from "@openzeppelin/contracts/interfaces/IERC1271.sol";
 
-
-struct MessageHashData {
-	bytes signature;
-	address signer;
-	address[] signedVoters;
-	uint256 signatureCount;
-}
+import { ISignatureManager, MessageHashData } from "./interface/ISignatureManager.sol";
 
 
 /**
  * @title SignatureManager
 */
 contract SignatureManager is
-	IERC1271
+	IERC1271,
+	ISignatureManager
 {
 	bytes32 public constant VOTER = keccak256("VOTER");
 	bytes4 public constant ERC1271_MAGIC_VALUE = 0x1626ba7e;
@@ -49,21 +44,9 @@ contract SignatureManager is
 	}
 
 
-	/**
-	 * @notice Recover Signer
-	 * @dev [!restriction]
-	 * @dev [pure]
-	 * @param hash {bytes32}
-	 * @param v {uint8}
-	 * @param r {bytes32}
-	 * @param s {bytes32}
-	*/
-	function recoverSigner(
-		bytes32 hash,
-		uint8 v,
-		bytes32 r,
-		bytes32 s
-	)
+	
+	/// @inheritdoc ISignatureManager
+	function recoverSigner(bytes32 hash, uint8 v, bytes32 r, bytes32 s)
 		public
 		pure
 		returns (address)
@@ -71,12 +54,8 @@ contract SignatureManager is
 		return ECDSA.recover(ECDSA.toEthSignedMessageHash(hash), v, r, s);
 	}
 
-	/**
-	 * @notice Getter for `_vaultMessageHashes`
-	 * @dev [!restriction]
-	 * @dev [view][mapping]
-	 * @param _iglooFiV1Vault {address}
-	*/
+	
+	/// @inheritdoc ISignatureManager
 	function vaultMessageHashes(address _iglooFiV1Vault)
 		public
 		view
@@ -85,13 +64,8 @@ contract SignatureManager is
 		return _vaultMessageHashes[_iglooFiV1Vault];
 	}
 
-	/**
-	 * @notice Getter for `_vaultMessageHashData`
-	 * @dev [!restriction][public]
-	 * @dev [view][mapping]
-	 * @param _iglooFiV1Vault {address}
-	 * @param _messageHash {bytes32}
-	*/
+	
+	/// @inheritdoc ISignatureManager
 	function vaultMessageHashData(address _iglooFiV1Vault, bytes32 _messageHash)
 		public
 		view
@@ -100,15 +74,8 @@ contract SignatureManager is
 		return _vaultMessageHashData[_iglooFiV1Vault][_messageHash];
 	}
 
-
-	/**
-	 * @notice Sign a Message Hash
-	 * @dev [!restriction][public]
-	 * @dev [create] `_vaultMessageHashData` value
-	 * @param _iglooFiV1Vault {address}
-	 * @param _messageHash {bytes32}
-	 * @param _signature {bytes}
-	*/
+	
+	/// @inheritdoc ISignatureManager
 	function signMessageHash(address _iglooFiV1Vault, bytes32 _messageHash, bytes memory _signature)
 		public
 	{
