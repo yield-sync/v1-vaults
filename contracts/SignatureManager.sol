@@ -45,17 +45,6 @@ contract SignatureManager is
 
 
 	/// @inheritdoc ISignatureManager
-	function recoverSigner(bytes32 hash, uint8 v, bytes32 r, bytes32 s)
-		public
-		pure
-		override
-		returns (address)
-	{
-		return ECDSA.recover(ECDSA.toEthSignedMessageHash(hash), v, r, s);
-	}
-
-	
-	/// @inheritdoc ISignatureManager
 	function vaultMessageHashes(address _iglooFiV1Vault)
 		public
 		view
@@ -64,7 +53,6 @@ contract SignatureManager is
 	{
 		return _vaultMessageHashes[_iglooFiV1Vault];
 	}
-
 	
 	/// @inheritdoc ISignatureManager
 	function vaultMessageHashData(address _iglooFiV1Vault, bytes32 _messageHash)

@@ -16,21 +16,6 @@ struct MessageHashData {
 interface ISignatureManager
 {
 	/**
-	 * @notice Recover Signer
-	 * @dev [!restriction]
-	 * @dev [pure]
-	 * @param hash {bytes32}
-	 * @param v {uint8}
-	 * @param r {bytes32}
-	 * @param s {bytes32}
-	*/
-	function recoverSigner(bytes32 hash, uint8 v, bytes32 r, bytes32 s)
-		external
-		pure
-		returns (address)
-	;
-
-	/**
 	 * @notice Getter for `_vaultMessageHashes`
 	 * @dev [!restriction]
 	 * @dev [view][mapping]

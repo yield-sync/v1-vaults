@@ -113,6 +113,27 @@ describe("Mock Signature Manager", async () => {
 				).to.be.rejectedWith("!auth");
 			});
 
+			it("Should be able to recover the original address..", async () => {
+				const [, , , addr3] = await ethers.getSigners();
+
+				const messageHash = ethers.utils.id("Hello, world!");
+
+				const signature = await addr3.signMessage(ethers.utils.arrayify(messageHash));
+
+				// For Solidity, we need the expanded-format of a signature
+				const splitSignature = ethers.utils.splitSignature(signature);
+
+				// Correct signer recovered
+				expect(
+					await mockDapp.recoverSigner(
+						messageHash,
+						splitSignature.v,
+						splitSignature.r,
+						splitSignature.s
+					)
+				).to.equal(addr3.address);
+			});
+
 			it("Should allow a VOTER to sign a bytes32 messageHash and create a vaultMessageHashData value..", async () => {
 				const [, addr1] = await ethers.getSigners();
 
@@ -120,20 +141,7 @@ describe("Mock Signature Manager", async () => {
 
 				const signature = await addr1.signMessage(ethers.utils.arrayify(messageHash));
 
-				// For Solidity, we need the expanded-format of a signature
-				const splitSignature = ethers.utils.splitSignature(signature);
-
-				// Correct signer recovered
-				expect(
-					await signatureManager.recoverSigner(
-						messageHash,
-						splitSignature.v,
-						splitSignature.r,
-						splitSignature.s
-					)
-				).to.equal(addr1.address);
-
-				// [contract]
+				// [contract] Sign message hash
 				await signatureManager.connect(addr1).signMessageHash(
 					iglooFiV1Vault.address,
 					messageHash,
@@ -275,21 +283,9 @@ describe("Mock Signature Manager", async () => {
 
 				// [hardhat] Sign Message
 				const signature = await addr1.signMessage(ethers.utils.arrayify(messageHash));
-				
-				// For Solidity, we need the expanded-format of a signature
-				const splitSignature = ethers.utils.splitSignature(signature);
 
-				// Correct signer recovered
-				expect(
-					await signatureManager.recoverSigner(
-						messageHash,
-						splitSignature.v,
-						splitSignature.r,
-						splitSignature.s
-					)
-				).to.equal(addr1.address);
 
-				// [contract]
+				// [contract] Sign message hash
 				await signatureManager.connect(addr1).signMessageHash(
 					iglooFiV1Vault.address,
 					messageHash,

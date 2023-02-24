@@ -2,13 +2,15 @@
 pragma solidity ^0.8.1;
 
 
-import "@openzeppelin/contracts/utils/cryptography/EIP712.sol";
+import { ECDSA } from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
+import { EIP712 } from "@openzeppelin/contracts/utils/cryptography/EIP712.sol";
 
 
 interface IMockDapp {
 	function getDomainSeperator() external view returns (bytes32);
 	function getStructHash(address player, uint points) external pure returns (bytes32);
 	function hashTypedDataV4(bytes32 _structHash) external view returns (bytes32);
+	function recoverSigner(bytes32 hash, uint8 v, bytes32 r, bytes32 s) external pure returns (address);
 }
 
 
@@ -22,8 +24,7 @@ contract MockDapp is
 	constructor ()
 		EIP712("MockDapp", "1")
 	{}
-
-
+	
 	function getDomainSeperator() public view override returns (bytes32) {
 		return _domainSeparatorV4();
 	}
@@ -34,5 +35,9 @@ contract MockDapp is
 
 	function hashTypedDataV4(bytes32 structHash) public view override returns (bytes32) {
 		return EIP712._hashTypedDataV4(structHash);
+	}
+
+	function recoverSigner(bytes32 hash, uint8 v, bytes32 r, bytes32 s) public pure override returns (address) {
+		return ECDSA.recover(ECDSA.toEthSignedMessageHash(hash), v, r, s);
 	}
 }
