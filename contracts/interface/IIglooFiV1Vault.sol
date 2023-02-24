@@ -67,11 +67,15 @@ interface IIglooFiV1Vault
 	);
 
 
-	receive () external payable;
+	receive ()
+		external
+		payable
+	;
 
-
-	fallback () external payable;
-
+	fallback ()
+		external
+		payable
+	;
 
 	/**
 	* @notice Address of signature manager

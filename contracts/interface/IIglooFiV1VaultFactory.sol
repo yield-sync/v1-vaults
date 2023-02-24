@@ -18,10 +18,16 @@ interface IIglooFiV1VaultFactory {
 	event UpdatedFee(uint256 fee);
 
 
-	receive () external payable;
+	receive ()
+		external
+		payable
+	;
 
 
-	fallback () external payable;
+	fallback ()
+		external
+		payable
+	;
 
 
 	/**
