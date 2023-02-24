@@ -134,8 +134,8 @@ contract IglooFiV1Vault is
 
 	/// @inheritdoc IIglooFiV1Vault
 	function withdrawalRequest(uint256 withdrawalRequestId)
-		view
 		public
+		view
 		override
 		returns (WithdrawalRequest memory)
 	{
@@ -278,7 +278,7 @@ contract IglooFiV1Vault is
 			// [transfer]
 			(bool success, ) = w.to.call{value: w.amount}("");
 			
-			require(success, "Unable to send value, recipient may have reverted");
+			require(success, "Unable to send value");
 		}
 
 		// [call][internal]

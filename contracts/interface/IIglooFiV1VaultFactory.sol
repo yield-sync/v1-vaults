@@ -10,7 +10,7 @@ interface IIglooFiV1VaultFactory {
 	/**
 	* @dev Emits when a vault is deployed
 	*/
-	event VaultDeployed(address indexed VaultAddress);
+	event VaultDeployed(address indexed vaultAddress);
 
 	/**
 	* @dev Emits when a `fee` is updated
@@ -24,7 +24,7 @@ interface IIglooFiV1VaultFactory {
 	* @dev [view-address]
 	* @return {address}
 	*/
-	function IGLOO_FI_GOVERNANCE()
+	function iglooFiGovernance()
 		external
 		view
 		returns (address)

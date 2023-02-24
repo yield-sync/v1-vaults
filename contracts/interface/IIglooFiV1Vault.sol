@@ -26,7 +26,7 @@ interface IIglooFiV1Vault
 	/**
 	* @dev Emits when a `WithdrawalRequest` is deleted
 	*/
-	event DeletedWithdrawalRequest(uint256 WithdrawalRequest);
+	event DeletedWithdrawalRequest(uint256 withdrawalRequest);
 
 	/**
 	* @dev Emits when a `WithdrawalRequest` is created

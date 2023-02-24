@@ -16,8 +16,8 @@ contract IglooFiV1VaultFactory is
 	Pausable,
 	IIglooFiV1VaultFactory
 {
-	// [address][public][to-be-constant]
-	address public override IGLOO_FI_GOVERNANCE;
+	// [address][public]
+	address public override iglooFiGovernance;
 	// [address][public]
 	address public signatureManager;
 
@@ -32,11 +32,11 @@ contract IglooFiV1VaultFactory is
 	mapping (uint256 => address) internal _vaultAddress;
 
 
-	constructor (address _IGLOO_FI_GOVERNANCE)
+	constructor (address _iglooFiGovernance)
 	{
 		_pause();
 
-		IGLOO_FI_GOVERNANCE = _IGLOO_FI_GOVERNANCE;
+		iglooFiGovernance = _iglooFiGovernance;
 
 		_vaultIdTracker = 0;
 		
@@ -58,8 +58,8 @@ contract IglooFiV1VaultFactory is
 
 	modifier onlyIglooFiGovernanceAdmin() {
 		require(
-			IIglooFiGovernance(IGLOO_FI_GOVERNANCE).hasRole(
-				IIglooFiGovernance(IGLOO_FI_GOVERNANCE).governanceRoles("DEFAULT_ADMIN_ROLE"),
+			IIglooFiGovernance(iglooFiGovernance).hasRole(
+				IIglooFiGovernance(iglooFiGovernance).governanceRoles("DEFAULT_ADMIN_ROLE"),
 				msg.sender
 			),
 			"!auth"
@@ -152,7 +152,7 @@ contract IglooFiV1VaultFactory is
 		// [transfer]
 		(bool success, ) = transferTo.call{value: address(this).balance}("");
 
-		require(success, "transferFunds Failed");
+		require(success, "Failed");
 	}
 
 

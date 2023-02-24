@@ -1,9 +1,13 @@
 {
-  "extends": "solhint:default",
+  "extends": "solhint:recommended",
   "plugins": [],
   "rules": {
-    "avoid-suicide": "error",
-    "avoid-sha3": "warn",
-    "quotes": "warn"
+    "avoid-low-level-calls": "off",
+    "compiler-version": ["error", "^0.8.1"],
+    "func-name-mixedcase": "off",
+    "quotes": ["error", "double"],
+    "no-empty-blocks": "off",
+    "no-global-import": "warn",
+    "not-rely-on-time": "off"
   }
 }
