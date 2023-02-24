@@ -44,7 +44,6 @@ contract SignatureManager is
 	}
 
 
-	
 	/// @inheritdoc ISignatureManager
 	function recoverSigner(bytes32 hash, uint8 v, bytes32 r, bytes32 s)
 		public
@@ -90,7 +89,10 @@ contract SignatureManager is
 		if (m.signer == address(0)) {
 			address[] memory initialsignedVoters;
 
-			address recovered = ECDSA.recover(ECDSA.toEthSignedMessageHash(_messageHash), _signature);
+			address recovered = ECDSA.recover(
+				ECDSA.toEthSignedMessageHash(_messageHash),
+				_signature
+			);
 
 			require(IIglooFiV1Vault(_iglooFiV1Vault).hasRole(VOTER, recovered), "!auth");
 
