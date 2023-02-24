@@ -123,30 +123,6 @@ describe("Mock Signature Manager", async () => {
 		 * @notice [hardhat][ERC-191] Signing a Digest Hash
 		 */
 		describe("[hardhat][ERC-191] Signing a Digest Hash", async () => {
-			it("Check signature..", async () => {
-				const [owner] = await ethers.getSigners();
-
-				const messageHash = ethers.utils.id("Hello, world!");
-
-				const messageHashBytes = ethers.utils.arrayify(messageHash)
-
-				// Sign the binary data
-				const signature = await owner.signMessage(messageHashBytes);
-
-				// For Solidity, we need the expanded-format of a signature
-				const splitSignature = ethers.utils.splitSignature(signature);
-
-				// Correct signer recovered
-				expect(
-					await mockSignatureManager.verifyHashSignature(
-						messageHash,
-						splitSignature.v,
-						splitSignature.r,
-						splitSignature.s
-					)
-				).to.equal(owner.address);
-			});
-
 			it("Should not allow signing by anyone but wallet with VOTER role..", async () => {
 				const [, , , addr3] = await ethers.getSigners();
 
@@ -163,12 +139,25 @@ describe("Mock Signature Manager", async () => {
 				).to.be.rejectedWith("!auth");
 			});
 
-			it("Should allow a VOTER to sign a messageHash bytes32 and create a vaultMessageHashData value..", async () => {
+			it("Should allow a VOTER to sign a bytes32 messageHash and create a vaultMessageHashData value..", async () => {
 				const [, addr1] = await ethers.getSigners();
 
 				const messageHash = ethers.utils.id("Hello, world!");
 
 				const signature = await addr1.signMessage(ethers.utils.arrayify(messageHash));
+
+				// For Solidity, we need the expanded-format of a signature
+				const splitSignature = ethers.utils.splitSignature(signature);
+
+				// Correct signer recovered
+				expect(
+					await mockSignatureManager.verifyHashSignature(
+						messageHash,
+						splitSignature.v,
+						splitSignature.r,
+						splitSignature.s
+					)
+				).to.equal(addr1.address);
 
 				// [contract]
 				await mockSignatureManager.connect(addr1).signMessageHash(
@@ -272,7 +261,7 @@ describe("Mock Signature Manager", async () => {
 		*/
 		describe("[hardhat][EIP-712] Signing typedDataHash", async () => {
 			it("Check signature..", async () => {
-				const [owner] = await ethers.getSigners();
+				const [owner, addr1] = await ethers.getSigners();
 
 				const message = {
 					domain: {
@@ -306,7 +295,7 @@ describe("Mock Signature Manager", async () => {
 				);
 
 				// [hardhat] Sign Message
-				const signature = await owner.signMessage(ethers.utils.arrayify(messageHash));
+				const signature = await addr1.signMessage(ethers.utils.arrayify(messageHash));
 				
 				// For Solidity, we need the expanded-format of a signature
 				const splitSignature = ethers.utils.splitSignature(signature);
@@ -319,7 +308,31 @@ describe("Mock Signature Manager", async () => {
 						splitSignature.r,
 						splitSignature.s
 					)
-				).to.equal(owner.address);
+				).to.equal(addr1.address);
+
+				// [contract]
+				await mockSignatureManager.connect(addr1).signMessageHash(
+					iglooFiV1Vault.address,
+					messageHash,
+					signature
+				);
+
+				// [contract]
+				const retrievedBytes32 = await mockSignatureManager.vaultMessageHashes(
+					iglooFiV1Vault.address
+				);
+
+				expect(retrievedBytes32[1]).to.be.equal(messageHash);
+
+				const messageHashData = await mockSignatureManager.vaultMessageHashData(
+					iglooFiV1Vault.address,
+					retrievedBytes32[1]
+				);
+				
+				expect(messageHashData[0]).to.be.equal(signature);
+				expect(messageHashData[1]).to.be.equal(addr1.address);
+				expect(messageHashData[2][0]).to.be.equal(addr1.address);
+				expect(messageHashData[3]).to.be.equal(1);
 			});
 		});
 	});
