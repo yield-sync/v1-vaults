@@ -1,10 +1,10 @@
 import { expect } from "chai";
-import { Bytes, Contract, ContractFactory } from "ethers";
+import { Bytes, Contract, ContractFactory, Signature, TypedDataDomain, TypedDataField } from "ethers";
 
 const { ethers } = require("hardhat");
 
 
-const chainId = 31337;
+const chainId: number = 31337;
 
 
 describe("Mock Signature Manager", async () => {
@@ -100,9 +100,9 @@ describe("Mock Signature Manager", async () => {
 			it("Should not allow signing by anyone but wallet with VOTER role..", async () => {
 				const [, , , addr3] = await ethers.getSigners();
 
-				const messageHash: string = ethers.utils.id("Hello, world!");
+				const messageHash: Bytes = ethers.utils.id("Hello, world!");
 
-				const signature: string = await addr3.signMessage(ethers.utils.arrayify(messageHash));
+				const signature: Signature = await addr3.signMessage(ethers.utils.arrayify(messageHash));
 
 				await expect(
 					signatureManager.connect(addr3).signMessageHash(
@@ -116,7 +116,7 @@ describe("Mock Signature Manager", async () => {
 			it("Should be able to recover the original address..", async () => {
 				const [, , , addr3] = await ethers.getSigners();
 
-				const messageHash: string = ethers.utils.id("Hello, world!");
+				const messageHash: Bytes = ethers.utils.id("Hello, world!");
 
 				const signature: string = await addr3.signMessage(ethers.utils.arrayify(messageHash));
 
@@ -130,9 +130,9 @@ describe("Mock Signature Manager", async () => {
 			it("Should allow a VOTER to sign a bytes32 messageHash and create a vaultMessageHashData value..", async () => {
 				const [, addr1] = await ethers.getSigners();
 
-				const messageHash: string = ethers.utils.id("Hello, world!");
+				const messageHash: Bytes = ethers.utils.id("Hello, world!");
 
-				const signature: string = await addr1.signMessage(ethers.utils.arrayify(messageHash));
+				const signature: Signature = await addr1.signMessage(ethers.utils.arrayify(messageHash));
 
 				// [contract] Sign message hash
 				await signatureManager.connect(addr1).signMessageHash(iglooFiV1Vault.address, messageHash, signature);
@@ -142,7 +142,7 @@ describe("Mock Signature Manager", async () => {
 
 				expect(retrievedBytes32[0]).to.be.equal(messageHash);
 
-				const messageHashData = await signatureManager.vaultMessageHashData(
+				const messageHashData: Bytes = await signatureManager.vaultMessageHashData(
 					iglooFiV1Vault.address,
 					retrievedBytes32[0]
 				);
@@ -159,7 +159,7 @@ describe("Mock Signature Manager", async () => {
 				// [contract]
 				const retrievedBytes32 = await signatureManager.vaultMessageHashes(iglooFiV1Vault.address);
 
-				const messageHashData = await signatureManager.vaultMessageHashData(
+				const messageHashData: Bytes = await signatureManager.vaultMessageHashData(
 					iglooFiV1Vault.address,
 					retrievedBytes32[0]
 				);
@@ -194,7 +194,7 @@ describe("Mock Signature Manager", async () => {
 				// [contract]
 				const retrievedBytes32 = await signatureManager.vaultMessageHashes(iglooFiV1Vault.address);
 
-				const messageHashData = await signatureManager.vaultMessageHashData(
+				const messageHashData: Bytes = await signatureManager.vaultMessageHashData(
 					iglooFiV1Vault.address,
 					retrievedBytes32[0]
 				);
@@ -220,7 +220,11 @@ describe("Mock Signature Manager", async () => {
 			it("Should be able to sign and verify a a typedDataHash successfully..", async () => {
 				const [, addr1] = await ethers.getSigners();
 
-				const message = {
+				const message: {
+					domain: TypedDataDomain,
+					types: Record<string, Array<TypedDataField>>,
+					value: Record<string, any>
+				} = {
 					domain: {
 						name: "MockDapp",
 						version: "1",
@@ -245,7 +249,7 @@ describe("Mock Signature Manager", async () => {
 				*/
 				
 				// [ethers] Get hash
-				const messageHash: string = ethers.utils._TypedDataEncoder.hash(
+				const messageHash: Bytes = ethers.utils._TypedDataEncoder.hash(
 					message.domain,
 					message.types,
 					message.value
@@ -257,17 +261,17 @@ describe("Mock Signature Manager", async () => {
 				).to.be.equal(messageHash);		
 
 				// [hardhat] Sign Message
-				const signature: string = await addr1.signMessage(ethers.utils.arrayify(messageHash));
+				const signature: Signature = await addr1.signMessage(ethers.utils.arrayify(messageHash));
 
 				// [contract] Sign message hash
 				await signatureManager.connect(addr1).signMessageHash(iglooFiV1Vault.address, messageHash, signature);
 
 				// [contract]
-				const retrievedBytes32 = await signatureManager.vaultMessageHashes(iglooFiV1Vault.address);
+				const retrievedBytes32: Bytes = await signatureManager.vaultMessageHashes(iglooFiV1Vault.address);
 
 				expect(retrievedBytes32[1]).to.be.equal(messageHash);
 
-				const messageHashData = await signatureManager.vaultMessageHashData(
+				const messageHashData: Bytes = await signatureManager.vaultMessageHashData(
 					iglooFiV1Vault.address,
 					retrievedBytes32[1]
 				);
