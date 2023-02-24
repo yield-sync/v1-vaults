@@ -26,55 +26,37 @@ interface IIglooFiV1Vault
 	/**
 	* @dev Emits when a `WithdrawalRequest` is deleted
 	*/
-	event DeletedWithdrawalRequest(
-		uint256 WithdrawalRequest
-	);
+	event DeletedWithdrawalRequest(uint256 WithdrawalRequest);
 
 	/**
 	* @dev Emits when a `WithdrawalRequest` is created
 	*/
-	event CreatedWithdrawalRequest(
-		uint256 withdrawalRequest
-	);
+	event CreatedWithdrawalRequest(uint256 withdrawalRequest);
 
 	/**
 	* @dev Emits when a voter has voted
 	*/
-	event VoterVoted(
-		uint256 withdrawalRequestId,
-		address indexed voter,
-		bool vote
-	);
+	event VoterVoted(uint256 withdrawalRequestId, address indexed voter, bool vote);
 
 	/**
 	* @dev Emit when a WithdrawalRequest is ready to be processed
 	*/
-	event WithdrawalRequestReadyToBeProccessed(
-		uint256 withdrawalRequestId
-	);
+	event WithdrawalRequestReadyToBeProccessed(uint256 withdrawalRequestId);
 
 	/**
 	* @dev Emits when tokens are withdrawn
 	*/
-	event TokensWithdrawn(
-		address indexed withdrawer,
-		address indexed token,
-		uint256 amount
-	);
+	event TokensWithdrawn(address indexed withdrawer, address indexed token, uint256 amount);
 
 	/**
 	* @dev Emits when `requiredVoteCount` are updated
 	*/
-	event UpdatedRequiredVoteCount(
-		uint256 requiredVoteCount
-	);
+	event UpdatedRequiredVoteCount(uint256 requiredVoteCount);
 
 	/**
 	* @dev Emits when `withdrawalDelaySeconds` is updated
 	*/
-	event UpdatedWithdrawalDelaySeconds(
-		uint256 withdrawalDelaySeconds
-	);
+	event UpdatedWithdrawalDelaySeconds(uint256 withdrawalDelaySeconds);
 
 	/**
 	* @dev Emits when `_withdrawalRequest[withdrawalRequestId].latestRelevantApproveVoteTime` is updated

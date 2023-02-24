@@ -2,6 +2,7 @@ require("dotenv").config();
 import "@nomicfoundation/hardhat-chai-matchers";
 import "@nomicfoundation/hardhat-toolbox";
 import "@nomiclabs/hardhat-ethers";
+import "@nomiclabs/hardhat-solhint";
 
 
 /**

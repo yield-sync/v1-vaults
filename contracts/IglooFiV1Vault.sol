@@ -75,10 +75,7 @@ contract IglooFiV1Vault is
 	modifier validWithdrawalRequest(uint256 withdrawalRequestId)
 	{
 		// [require] WithdrawalRequest exists
-		require(
-			_withdrawalRequest[withdrawalRequestId].creator != address(0),
-			"No WithdrawalRequest found"
-		);
+		require(_withdrawalRequest[withdrawalRequestId].creator != address(0), "No WithdrawalRequest found");
 		
 		_;
 	}
@@ -103,9 +100,7 @@ contract IglooFiV1Vault is
 			if (_openWithdrawalRequestIds[i] == withdrawalRequestId)
 			{
 				// [delete] `_openWithdrawalRequestIds` value
-				_openWithdrawalRequestIds[i] = _openWithdrawalRequestIds[
-					_openWithdrawalRequestIds.length - 1
-				];
+				_openWithdrawalRequestIds[i] = _openWithdrawalRequestIds[_openWithdrawalRequestIds.length - 1];
 				_openWithdrawalRequestIds.pop();
 
 				break;
@@ -367,16 +362,12 @@ contract IglooFiV1Vault is
 		if (arithmaticSign)
 		{
 			// [update] WithdrawalRequest within `_withdrawalRequest`
-			_withdrawalRequest[withdrawalRequestId].latestRelevantApproveVoteTime += (
-				timeInSeconds * 1 seconds
-			);
+			_withdrawalRequest[withdrawalRequestId].latestRelevantApproveVoteTime += (timeInSeconds * 1 seconds);
 		}
 		else
 		{
 			// [update] WithdrawalRequest within `_withdrawalRequest`
-			_withdrawalRequest[withdrawalRequestId].latestRelevantApproveVoteTime -= (
-				timeInSeconds * 1 seconds
-			);
+			_withdrawalRequest[withdrawalRequestId].latestRelevantApproveVoteTime -= (timeInSeconds * 1 seconds);
 		}
 
 		// [emit]

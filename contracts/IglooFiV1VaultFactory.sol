@@ -97,12 +97,7 @@ contract IglooFiV1VaultFactory is
 		IglooFiV1Vault deployedContract;
 
 		// [deploy] A vault contract
-		deployedContract = new IglooFiV1Vault(
-			_admin,
-			signatureManager,
-			_requiredVoteCount,
-			_withdrawalDelaySeconds
-		);
+		deployedContract = new IglooFiV1Vault(_admin, signatureManager, _requiredVoteCount, _withdrawalDelaySeconds);
 
 		// Register vault
 		_vaultAddress[_vaultIdTracker] = address(deployedContract);

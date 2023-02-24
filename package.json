@@ -15,6 +15,7 @@
     "@igloo-fi/v1-sdk": "^0.0.12",
     "@nomicfoundation/hardhat-chai-matchers": "^1.0.5",
     "@nomicfoundation/hardhat-toolbox": "^2.0.1",
+    "@nomiclabs/hardhat-solhint": "^3.0.0",
     "@openzeppelin/contracts": "^4.8.1",
     "@openzeppelin/contracts-upgradeable": "^4.8.1",
     "dotenv": "^16.0.3",

@@ -10,16 +10,12 @@ interface IIglooFiV1VaultFactory {
 	/**
 	* @dev Emits when a vault is deployed
 	*/
-	event VaultDeployed(
-		address indexed VaultAddress
-	);
+	event VaultDeployed(address indexed VaultAddress);
 
 	/**
 	* @dev Emits when a `fee` is updated
 	*/
-	event UpdatedFee(
-		uint256 fee
-	);
+	event UpdatedFee(uint256 fee);
 
 
 	/**
