@@ -267,6 +267,11 @@ describe("Mock Signature Manager", async () => {
 					message.types,
 					message.value
 				);
+				
+				// Test for onchain generated hash
+				expect(
+					await mockDapp.hashTypedDataV4(await mockDapp.getStructHash(ethers.constants.AddressZero, 1))
+				).to.be.equal(messageHash);		
 
 				// [hardhat] Sign Message
 				const signature = await addr1.signMessage(ethers.utils.arrayify(messageHash));

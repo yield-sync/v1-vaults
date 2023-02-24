@@ -8,6 +8,7 @@ import "@openzeppelin/contracts/utils/cryptography/EIP712.sol";
 interface IMockDapp {
 	function getDomainSeperator() external view returns (bytes32);
 	function getStructHash(address player, uint points) external pure returns (bytes32);
+	function hashTypedDataV4(bytes32 _structHash) external view returns (bytes32);
 }
 
 
@@ -29,5 +30,9 @@ contract MockDapp is
 
 	function getStructHash(address player, uint points) public pure override returns (bytes32) {
 		return keccak256(abi.encode(keccak256("Score(address player,uint points)"), player, points));
+	}
+
+	function hashTypedDataV4(bytes32 _structHash) public view override returns (bytes32) {
+		return EIP712._hashTypedDataV4(_structHash);
 	}
 }
