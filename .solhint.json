@@ -5,6 +5,7 @@
     "avoid-low-level-calls": "off",
     "compiler-version": ["error", "^0.8.1"],
     "func-name-mixedcase": "off",
+    "func-order": "off",
     "quotes": ["error", "double"],
     "max-line-length": ["error", 120],
     "no-empty-blocks": "off",
