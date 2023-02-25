@@ -51,12 +51,7 @@ describe("IglooFi V1 Vault", async () => {
 		const IglooFiV1Vault = await ethers.getContractFactory("IglooFiV1Vault");
 		
 		// Deploy a vault
-		await iglooFiV1VaultFactory.deployVault(
-			owner.address,
-			2,
-			5,
-			{ value: 1 }
-		);
+		await iglooFiV1VaultFactory.deployVault(owner.address, 2, 5, { value: 1 });
 
 		// Attach the deployed vault's address
 		iglooFiV1Vault = await IglooFiV1Vault.attach(iglooFiV1VaultFactory.vaultAddress(0));
