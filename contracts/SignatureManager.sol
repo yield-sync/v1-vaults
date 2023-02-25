@@ -38,6 +38,7 @@ contract SignatureManager is
 
 		return (
 			recovered == messageHashData.signer &&
+			_vaultMessageHashes[msg.sender][_vaultMessageHashes[msg.sender].length -1] == _messageHash &&
 			messageHashData.signatureCount >= IIglooFiV1Vault(payable(msg.sender)).requiredVoteCount()
 		) ? ERC1271_MAGIC_VALUE : bytes4(0);
 	}
