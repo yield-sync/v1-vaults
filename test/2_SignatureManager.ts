@@ -269,6 +269,20 @@ describe("Mock Signature Manager", async () => {
 				expect(messageHashData[2][0]).to.be.equal(addr1.address);
 				expect(messageHashData[3]).to.be.equal(1);
 			});
+
+			it("Should fail iglooFiV1Vault.isValidSignature() due to not being latest signature..", async () => {
+				// [contract]
+				const retrievedBytes32 = await signatureManager.vaultMessageHashes(iglooFiV1Vault.address);
+
+				const messageHashData = await signatureManager.vaultMessageHashData(
+					iglooFiV1Vault.address,
+					retrievedBytes32[0]
+				);
+				
+				expect(
+					await iglooFiV1Vault.isValidSignature(retrievedBytes32[0], messageHashData[0])
+				).to.be.equal("0x00000000");
+			});
 		});
 	});
 });
