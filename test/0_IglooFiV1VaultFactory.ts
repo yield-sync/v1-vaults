@@ -13,13 +13,9 @@ describe("IglooFi V1 Vault Factory", async () => {
 	 * @dev Deploy MockIglooFiGovernance.sol
 	*/
 	before("[before] Deploy MockIglooFiGovernance.sol contract..", async () => {
-		const MockIglooFiGovernance: ContractFactory = await ethers.getContractFactory(
-			"MockIglooFiGovernance"
-		);
+		const MockIglooFiGovernance: ContractFactory = await ethers.getContractFactory("MockIglooFiGovernance");
 
-		mockIglooFiGovernance = await (
-			await MockIglooFiGovernance.deploy()
-		).deployed();
+		mockIglooFiGovernance = await (await MockIglooFiGovernance.deploy()).deployed();
 	});
 
 
@@ -27,13 +23,9 @@ describe("IglooFi V1 Vault Factory", async () => {
 	 * @dev Deploy IglooFiV1VaultFactory.sol
 	*/
 	before("[before] Deploy IglooFiV1VaultFactory.sol contracts..", async () => {
-		const IglooFiV1VaultFactory: ContractFactory = await ethers.getContractFactory(
-			"IglooFiV1VaultFactory"
-		);
+		const IglooFiV1VaultFactory: ContractFactory = await ethers.getContractFactory("IglooFiV1VaultFactory");
 
-		iglooFiV1VaultFactory = await (
-			await IglooFiV1VaultFactory.deploy(mockIglooFiGovernance.address)
-		).deployed();
+		iglooFiV1VaultFactory = await (await IglooFiV1VaultFactory.deploy(mockIglooFiGovernance.address)).deployed();
 	});
 
 
@@ -106,9 +98,7 @@ describe("IglooFi V1 Vault Factory", async () => {
 					async () => {
 						const [, addr1] = await ethers.getSigners();
 			
-						await expect(iglooFiV1VaultFactory.connect(addr1).setPause(false))
-							.to.be.rejectedWith("!auth")
-						;
+						await expect(iglooFiV1VaultFactory.connect(addr1).setPause(false)).to.be.rejectedWith("!auth");
 					}
 				);
 	
@@ -144,9 +134,7 @@ describe("IglooFi V1 Vault Factory", async () => {
 					async () => {
 						const [, addr1] = await ethers.getSigners();
 	
-						await expect(iglooFiV1VaultFactory.connect(addr1).updateFee(2))
-							.to.be.rejectedWith("!auth")
-						;
+						await expect(iglooFiV1VaultFactory.connect(addr1).updateFee(2)).to.be.rejectedWith("!auth");
 					}
 				);
 	
@@ -183,14 +171,11 @@ describe("IglooFi V1 Vault Factory", async () => {
 			
 						const balanceBefore = {
 							addr1: parseFloat(
-								ethers.utils.formatUnits(
-									(await ethers.provider.getBalance(addr1.address)),
-									"ether"
-								)
+								ethers.utils.formatUnits(await ethers.provider.getBalance(addr1.address), "ether")
 							),
 							iglooFiV1VaultFactory: parseFloat(
 								ethers.utils.formatUnits(
-									(await ethers.provider.getBalance(iglooFiV1VaultFactory.address)),
+									await ethers.provider.getBalance(iglooFiV1VaultFactory.address),
 									"ether"
 								)
 							)
@@ -200,14 +185,11 @@ describe("IglooFi V1 Vault Factory", async () => {
 			
 						const balanceAfter = {
 							addr1: parseFloat(
-								ethers.utils.formatUnits(
-									(await ethers.provider.getBalance(addr1.address)),
-									"ether"
-								)
+								ethers.utils.formatUnits(await ethers.provider.getBalance(addr1.address), "ether")
 							),
 							iglooFiV1VaultFactory: parseFloat(
 								ethers.utils.formatUnits(
-									(await ethers.provider.getBalance(iglooFiV1VaultFactory.address)),
+									await ethers.provider.getBalance(iglooFiV1VaultFactory.address),
 									"ether"
 								)
 							)
@@ -239,9 +221,9 @@ describe("IglooFi V1 Vault Factory", async () => {
 							{ value: 1 }
 						);
 		
-						expect(await iglooFiV1VaultFactory.vaultAddress(0))
-							.to.equal((await deployedAddress.wait()).events[1].args[0])
-						;
+						expect(await iglooFiV1VaultFactory.vaultAddress(0)).to.equal(
+							(await deployedAddress.wait()).events[1].args[0]
+						);
 					}
 				);
 		
@@ -264,10 +246,7 @@ describe("IglooFi V1 Vault Factory", async () => {
 							const iglooFiV1Vault = await IglooFiV1Vault.attach(deployedAddress);
 		
 							expect(
-								await iglooFiV1Vault.hasRole(
-									await iglooFiV1Vault.DEFAULT_ADMIN_ROLE(),
-									addr1.address
-								)
+								await iglooFiV1Vault.hasRole(await iglooFiV1Vault.DEFAULT_ADMIN_ROLE(), addr1.address)
 							).to.equal(true);
 						}
 					);

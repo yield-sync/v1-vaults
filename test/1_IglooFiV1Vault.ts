@@ -23,8 +23,7 @@ describe("IglooFi V1 Vault", async () => {
 	before("[before] Deploy IglooFiGovernance.sol contract..", async () => {
 		const MockIglooFiGovernance = await ethers.getContractFactory("MockIglooFiGovernance");
 
-		mockIglooFiGovernance = await MockIglooFiGovernance.deploy();
-		mockIglooFiGovernance = await mockIglooFiGovernance.deployed();
+		mockIglooFiGovernance = await (await MockIglooFiGovernance.deploy()).deployed();
 	});
 
 
@@ -36,11 +35,7 @@ describe("IglooFi V1 Vault", async () => {
 	before("[before] Deploy IglooFiV1VaultFactory.sol contracts..", async () => {
 		const IglooFiV1VaultFactory = await ethers.getContractFactory("IglooFiV1VaultFactory");
 
-		iglooFiV1VaultFactory = await IglooFiV1VaultFactory.deploy(
-			mockIglooFiGovernance.address
-		);
-
-		iglooFiV1VaultFactory = await iglooFiV1VaultFactory.deployed();
+		iglooFiV1VaultFactory = await (await IglooFiV1VaultFactory.deploy()).deployed();
 
 		await iglooFiV1VaultFactory.setPause(false);
 	});
@@ -124,10 +119,7 @@ describe("IglooFi V1 Vault", async () => {
 				async () => {
 					const [owner] = await ethers.getSigners();
 
-					await iglooFiV1Vault.hasRole(
-						await iglooFiV1Vault.DEFAULT_ADMIN_ROLE(),
-						owner.address
-					)
+					await iglooFiV1Vault.hasRole(await iglooFiV1Vault.DEFAULT_ADMIN_ROLE(), owner.address);
 				}
 			);
 
@@ -169,9 +161,7 @@ describe("IglooFi V1 Vault", async () => {
 
 						await iglooFiV1Vault.updateSignatureManager(signatureManager.address);
 						
-						expect(await iglooFiV1Vault.signatureManager()).to.be.equal(
-							signatureManager.address
-						);
+						expect(await iglooFiV1Vault.signatureManager()).to.be.equal(signatureManager.address);
 					}
 				);
 			});
@@ -183,9 +173,7 @@ describe("IglooFi V1 Vault", async () => {
 					async () => {
 						const [, addr1, addr2] = await ethers.getSigners();
 
-						await expect(
-							iglooFiV1Vault.connect(addr1).addVoter(addr2.address)
-						).to.be.rejected;
+						await expect(iglooFiV1Vault.connect(addr1).addVoter(addr2.address)).to.be.rejected;
 					}
 				);
 
@@ -197,10 +185,7 @@ describe("IglooFi V1 Vault", async () => {
 						await iglooFiV1Vault.addVoter(addr1.address);
 
 						await expect(
-							await iglooFiV1Vault.hasRole(
-								await iglooFiV1Vault.VOTER(),
-								addr1.address
-							)
+							await iglooFiV1Vault.hasRole(await iglooFiV1Vault.VOTER(), addr1.address)
 						).to.be.true;
 					}
 				);
@@ -213,9 +198,7 @@ describe("IglooFi V1 Vault", async () => {
 					async () => {
 						const [, addr1] = await ethers.getSigners();
 
-						await expect(
-							iglooFiV1Vault.connect(addr1).removeVoter(addr1.address)
-						).to.be.rejected;
+						await expect(iglooFiV1Vault.connect(addr1).removeVoter(addr1.address)).to.be.rejected;
 					}
 				);
 
@@ -229,10 +212,7 @@ describe("IglooFi V1 Vault", async () => {
 						await iglooFiV1Vault.removeVoter(addr2.address)
 
 						await expect(
-							await iglooFiV1Vault.hasRole(
-								await iglooFiV1Vault.VOTER(),
-								addr2.address
-							)
+							await iglooFiV1Vault.hasRole(await iglooFiV1Vault.VOTER(), addr2.address)
 						).to.be.false;
 					}
 				);
@@ -245,9 +225,7 @@ describe("IglooFi V1 Vault", async () => {
 					async () => {
 						const [, addr1] = await ethers.getSigners();
 						
-						await expect(
-							iglooFiV1Vault.connect(addr1).updateRequiredVoteCount(1)
-						).to.be.rejected;
+						await expect(iglooFiV1Vault.connect(addr1).updateRequiredVoteCount(1)).to.be.rejected;
 					}
 				);
 
@@ -256,9 +234,7 @@ describe("IglooFi V1 Vault", async () => {
 					async () => {
 						await iglooFiV1Vault.updateRequiredVoteCount(1)
 
-						await expect(
-							await iglooFiV1Vault.requiredVoteCount()
-						).to.be.equal(1);
+						await expect(await iglooFiV1Vault.requiredVoteCount()).to.be.equal(1);
 					}
 				);
 			});
@@ -271,9 +247,7 @@ describe("IglooFi V1 Vault", async () => {
 						const [, addr1] = await ethers.getSigners();
 
 						await expect(
-							iglooFiV1Vault.connect(addr1).updateWithdrawalDelaySeconds(
-								sevenDaysInSeconds
-							)
+							iglooFiV1Vault.connect(addr1).updateWithdrawalDelaySeconds(sevenDaysInSeconds)
 						).to.be.rejected;
 					}
 				);
@@ -281,13 +255,9 @@ describe("IglooFi V1 Vault", async () => {
 				it(
 					"Should be able to update withdrawalDelaySeconds..",
 					async () => {
-						await iglooFiV1Vault.updateWithdrawalDelaySeconds(
-							sevenDaysInSeconds
-						)
+						await iglooFiV1Vault.updateWithdrawalDelaySeconds(sevenDaysInSeconds)
 
-						await expect(
-							await iglooFiV1Vault.withdrawalDelaySeconds()
-						).to.be.equal(sevenDaysInSeconds);
+						await expect(await iglooFiV1Vault.withdrawalDelaySeconds()).to.be.equal(sevenDaysInSeconds);
 					}
 				);
 			});
@@ -366,12 +336,8 @@ describe("IglooFi V1 Vault", async () => {
 							expect(createdWithdrawalRequest[2]).to.be.false;
 							expect(createdWithdrawalRequest[3]).to.be.equal(addr1.address);
 							expect(createdWithdrawalRequest[4]).to.be.equal(addr2.address);
-							expect(createdWithdrawalRequest[5]).to.be.equal(
-								ethers.constants.AddressZero
-							);
-							expect(createdWithdrawalRequest[6]).to.be.equal(
-								ethers.utils.parseEther(".5")
-							);
+							expect(createdWithdrawalRequest[5]).to.be.equal(ethers.constants.AddressZero);
+							expect(createdWithdrawalRequest[6]).to.be.equal(ethers.utils.parseEther(".5"));
 							expect(createdWithdrawalRequest[7]).to.be.equal(0);
 							expect(createdWithdrawalRequest[8]).to.be.equal(0);
 							expect(createdWithdrawalRequest[10].length).to.be.equal(0);
@@ -381,9 +347,7 @@ describe("IglooFi V1 Vault", async () => {
 					it(
 						"Should have 0 in _openWithdrawalRequestIds[0]..",
 						async () => {
-							expect(
-								(await iglooFiV1Vault.openWithdrawalRequestIds())[0]
-							).to.be.equal(0);
+							expect((await iglooFiV1Vault.openWithdrawalRequestIds())[0]).to.be.equal(0);
 						}
 					);
 				});
@@ -398,12 +362,7 @@ describe("IglooFi V1 Vault", async () => {
 						async () => {
 							const [,, addr2] = await ethers.getSigners();
 							
-							await expect(
-								iglooFiV1Vault.connect(addr2).voteOnWithdrawalRequest(
-									0,
-									true
-								)
-							).to.be.rejected;
+							await expect(iglooFiV1Vault.connect(addr2).voteOnWithdrawalRequest(0, true)).to.be.rejected;
 						}
 					);
 
@@ -412,10 +371,7 @@ describe("IglooFi V1 Vault", async () => {
 						async () => {
 							const [, addr1] = await ethers.getSigners();
 							
-							await iglooFiV1Vault.connect(addr1).voteOnWithdrawalRequest(
-								0,
-								true
-							)
+							await iglooFiV1Vault.connect(addr1).voteOnWithdrawalRequest(0, true);
 
 							const createdWithdrawalRequest: any = await iglooFiV1Vault.withdrawalRequest(0);
 
@@ -430,10 +386,7 @@ describe("IglooFi V1 Vault", async () => {
 							const [, addr1] = await ethers.getSigners();
 							
 							await expect(
-								iglooFiV1Vault.connect(addr1).voteOnWithdrawalRequest(
-									0,
-									true
-								)
+								iglooFiV1Vault.connect(addr1).voteOnWithdrawalRequest(0, true)
 							).to.be.rejectedWith("Already voted");
 						}
 					);
@@ -449,16 +402,14 @@ describe("IglooFi V1 Vault", async () => {
 						async () => {
 							const [,, addr2] = await ethers.getSigners();
 							
-							await expect(
-								iglooFiV1Vault.connect(addr2).processWithdrawalRequest(0)
-							).to.be.rejected;
+							await expect(iglooFiV1Vault.connect(addr2).processWithdrawalRequest(0)).to.be.rejected;
 						}
 					);
 	
 					it(
 						"Should fail to process WithdrawalRequest because not votes..",
 						async () => {
-							const [,addr1, addr2] = await ethers.getSigners();
+							const [,addr1] = await ethers.getSigners();
 	
 							await iglooFiV1Vault.updateRequiredVoteCount(2);
 							
@@ -489,9 +440,7 @@ describe("IglooFi V1 Vault", async () => {
 						async () => {
 							const [, addr1, addr2] = await ethers.getSigners();
 	
-							const recieverBalanceBefore = await ethers.provider.getBalance(
-								addr2.address
-							);
+							const recieverBalanceBefore = await ethers.provider.getBalance(addr2.address);
 							
 							// Fast-forward 7 days
 							await ethers.provider.send('evm_increaseTime', [sevenDaysInSeconds]);
@@ -499,9 +448,7 @@ describe("IglooFi V1 Vault", async () => {
 							await iglooFiV1Vault.connect(addr1).processWithdrawalRequest(0);
 
 
-							const recieverBalanceAfter = await ethers.provider.getBalance(
-								addr2.address
-							);
+							const recieverBalanceAfter = await ethers.provider.getBalance(addr2.address);
 	
 							await expect(
 								ethers.utils.formatUnits(recieverBalanceAfter) - 
@@ -554,9 +501,7 @@ describe("IglooFi V1 Vault", async () => {
 					it(
 						"Should have 1 in _openWithdrawalRequestIds[0]..",
 						async () => {
-							expect(
-								(await iglooFiV1Vault.openWithdrawalRequestIds())[0]
-							).to.be.equal(1);
+							expect((await iglooFiV1Vault.openWithdrawalRequestIds())[0]).to.be.equal(1);
 						}
 					);
 				});
@@ -571,10 +516,7 @@ describe("IglooFi V1 Vault", async () => {
 						async () => {
 							const [, addr1] = await ethers.getSigners();
 							
-							await iglooFiV1Vault.connect(addr1).voteOnWithdrawalRequest(
-								1,
-								true
-							)
+							await iglooFiV1Vault.connect(addr1).voteOnWithdrawalRequest(1, true);
 
 							const createdWithdrawalRequest: any = await iglooFiV1Vault.withdrawalRequest(1);
 
@@ -603,9 +545,7 @@ describe("IglooFi V1 Vault", async () => {
 
 							const recieverBalanceAfter = await mockERC20.balanceOf(addr2.address);
 
-							await expect(
-								recieverBalanceAfter - recieverBalanceBefore
-							).to.be.equal(50);
+							await expect(recieverBalanceAfter - recieverBalanceBefore).to.be.equal(50);
 						}
 					)
 				});
@@ -638,13 +578,8 @@ describe("IglooFi V1 Vault", async () => {
 							0
 						);
 
-						expect(
-							(await iglooFiV1Vault.openWithdrawalRequestIds())[0]
-						).to.be.equal(2);
-
-						expect(
-							(await iglooFiV1Vault.openWithdrawalRequestIds())[1]
-						).to.be.equal(3);
+						expect((await iglooFiV1Vault.openWithdrawalRequestIds())[0]).to.be.equal(2);
+						expect((await iglooFiV1Vault.openWithdrawalRequestIds())[1]).to.be.equal(3);
 					}
 				);
 			});
@@ -662,19 +597,11 @@ describe("IglooFi V1 Vault", async () => {
 				it(
 					"Should update the latestRelevantApproveVoteTime to ADD seconds..",
 					async () => {
-						const beforeBlockTimestamp: number = parseInt(
-							(await iglooFiV1Vault.withdrawalRequest(3))[9]
-						);
+						const beforeBlockTimestamp: number = parseInt((await iglooFiV1Vault.withdrawalRequest(3))[9]);
 						
-						await iglooFiV1Vault.updateWithdrawalRequestLatestRelevantApproveVoteTime(
-							3,
-							true,
-							10
-						)
+						await iglooFiV1Vault.updateWithdrawalRequestLatestRelevantApproveVoteTime(3, true, 10)
 						
-						const afterBlockTimestamp: number = parseInt(
-							(await iglooFiV1Vault.withdrawalRequest(3))[9]
-						);
+						const afterBlockTimestamp: number = parseInt((await iglooFiV1Vault.withdrawalRequest(3))[9]);
 
 						expect(beforeBlockTimestamp + 10).to.be.equal(afterBlockTimestamp);
 					}
@@ -683,19 +610,11 @@ describe("IglooFi V1 Vault", async () => {
 				it(
 					"Should update the latestRelevantApproveVoteTime to SUBTRACT seconds..",
 					async () => {
-						const beforeBlockTimestamp: number = parseInt(
-							(await iglooFiV1Vault.withdrawalRequest(3))[9]
-						);
+						const beforeBlockTimestamp: number = parseInt((await iglooFiV1Vault.withdrawalRequest(3))[9]);
 
-						await iglooFiV1Vault.updateWithdrawalRequestLatestRelevantApproveVoteTime(
-							3,
-							false,
-							10
-						)
+						await iglooFiV1Vault.updateWithdrawalRequestLatestRelevantApproveVoteTime(3, false, 10)
 						
-						const afterBlockTimestamp: number = parseInt(
-							(await iglooFiV1Vault.withdrawalRequest(3))[9]
-						);
+						const afterBlockTimestamp: number = parseInt((await iglooFiV1Vault.withdrawalRequest(3))[9]);
 
 						expect(beforeBlockTimestamp - 10).to.be.equal(afterBlockTimestamp);
 					}
@@ -712,9 +631,7 @@ describe("IglooFi V1 Vault", async () => {
 					async () => {
 						const [, addr1] = await ethers.getSigners();
 						
-						await expect(
-							iglooFiV1Vault.connect(addr1).deleteWithdrawalRequest(2)
-						).to.be.rejected;
+						await expect(iglooFiV1Vault.connect(addr1).deleteWithdrawalRequest(2)).to.be.rejected;
 					}
 				);
 
@@ -723,13 +640,9 @@ describe("IglooFi V1 Vault", async () => {
 					async () => {
 						await iglooFiV1Vault.deleteWithdrawalRequest(2);
 
-						expect(
-							(await iglooFiV1Vault.openWithdrawalRequestIds())[0]
-						).to.be.equal(3);
+						expect((await iglooFiV1Vault.openWithdrawalRequestIds())[0]).to.be.equal(3);
 
-						expect(
-							(await iglooFiV1Vault.openWithdrawalRequestIds()).length
-						).to.be.equal(1);
+						expect((await iglooFiV1Vault.openWithdrawalRequestIds()).length).to.be.equal(1);
 					}
 				);
 			});

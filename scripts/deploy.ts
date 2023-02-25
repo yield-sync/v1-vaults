@@ -1,18 +1,25 @@
+import { Bytes, Contract, ContractFactory, Signature, TypedDataDomain, TypedDataField } from "ethers";
 import { ethers } from "hardhat";
+
+
+let mockIglooFiGovernance: Contract;
+let iglooFiV1VaultFactory: Contract;
+let iglooFiV1Vault: Contract;
+let signatureManager: Contract;
+let mockDapp: Contract;
 
 
 async function main() {
 	const [deployer] = await ethers.getSigners();
 
-	console.log(`Deploying contracts with the account: ${deployer.address}`);
-	console.log(`Account Balance: ${await deployer.getBalance()}`);
+	console.log("Deploying contracts with the account:", deployer.address);
+	console.log("Account Balance:", await deployer.getBalance());
 
-	const IglooFiGovernance = await ethers.getContractFactory('IglooFiV1VaultFactory');
-	const iglooFiGovernance = await IglooFiGovernance.deploy(
-		ethers.utils.getAddress("0x20550e54e4cb1b6e92d72a47adba7d1d59646d86")
-	);
+	const MockIglooFiGovernance: ContractFactory = await ethers.getContractFactory("MockIglooFiGovernance");
 
-	console.log(`Contract address: ${iglooFiGovernance.address}`);
+	mockIglooFiGovernance = await (await MockIglooFiGovernance.deploy()).deployed();
+
+	console.log("Contract address:", mockIglooFiGovernance.address);
 }
 
 

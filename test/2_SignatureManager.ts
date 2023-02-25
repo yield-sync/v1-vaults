@@ -21,8 +21,7 @@ describe("Mock Signature Manager", async () => {
 	before("[before] Deploy SignatureManager.sol contract..", async () => {
 		const SignatureManager: ContractFactory = await ethers.getContractFactory("SignatureManager");
 
-		signatureManager = await SignatureManager.deploy();
-		signatureManager = await signatureManager.deployed();
+		signatureManager = await (await SignatureManager.deploy()).deployed();
 	});
 
 	/**
@@ -32,8 +31,7 @@ describe("Mock Signature Manager", async () => {
 	before("[before] Deploy IglooFiGovernance.sol contract..", async () => {
 		const MockIglooFiGovernance: ContractFactory = await ethers.getContractFactory("MockIglooFiGovernance");
 
-		mockIglooFiGovernance = await MockIglooFiGovernance.deploy();
-		mockIglooFiGovernance = await mockIglooFiGovernance.deployed();
+		mockIglooFiGovernance = await (await MockIglooFiGovernance.deploy()).deployed();
 	});
 
 	/**
@@ -43,11 +41,7 @@ describe("Mock Signature Manager", async () => {
 	before("[before] Deploy IglooFiV1VaultFactory.sol contracts..", async () => {
 		const IglooFiV1VaultFactory: ContractFactory = await ethers.getContractFactory("IglooFiV1VaultFactory");
 
-		iglooFiV1VaultFactory = await IglooFiV1VaultFactory.deploy(
-			mockIglooFiGovernance.address
-		);
-
-		iglooFiV1VaultFactory = await iglooFiV1VaultFactory.deployed();
+		iglooFiV1VaultFactory = await (await IglooFiV1VaultFactory.deploy()).deployed();
 
 		await iglooFiV1VaultFactory.setPause(false);
 	});
@@ -63,12 +57,7 @@ describe("Mock Signature Manager", async () => {
 		const IglooFiV1Vault: ContractFactory = await ethers.getContractFactory("IglooFiV1Vault");
 		
 		// Deploy a vault
-		await iglooFiV1VaultFactory.deployVault(
-			owner.address,
-			2,
-			5,
-			{ value: 1 }
-		);
+		await iglooFiV1VaultFactory.deployVault(owner.address, 2, 5, { value: 1 });
 
 		// Attach the deployed vault's address
 		iglooFiV1Vault = await IglooFiV1Vault.attach(iglooFiV1VaultFactory.vaultAddress(0));
@@ -87,8 +76,7 @@ describe("Mock Signature Manager", async () => {
 	before("[before] Deploy MockDapp.sol contract..", async () => {
 		const MockDapp: ContractFactory = await ethers.getContractFactory("MockDapp");
 
-		mockDapp = await MockDapp.deploy();
-		mockDapp = await mockDapp.deployed();
+		mockDapp = await (await MockDapp.deploy()).deployed();
 	});
 
 
