@@ -16,22 +16,22 @@ describe("Mock Signature Manager", async () => {
 
 	/**
 	 * @notice Deploy contract
-	 * @dev Deploy SignatureManager.sol
-	*/
-	before("[before] Deploy SignatureManager.sol contract..", async () => {
-		const SignatureManager: ContractFactory = await ethers.getContractFactory("SignatureManager");
-
-		signatureManager = await (await SignatureManager.deploy()).deployed();
-	});
-
-	/**
-	 * @notice Deploy contract
 	 * @dev Deploy MockIglooFiGovernance.sol
 	*/
 	before("[before] Deploy IglooFiGovernance.sol contract..", async () => {
 		const MockIglooFiGovernance: ContractFactory = await ethers.getContractFactory("MockIglooFiGovernance");
 
 		mockIglooFiGovernance = await (await MockIglooFiGovernance.deploy()).deployed();
+	});
+
+	/**
+	 * @notice Deploy contract
+	 * @dev Deploy SignatureManager.sol
+	*/
+	before("[before] Deploy SignatureManager.sol contract..", async () => {
+		const SignatureManager: ContractFactory = await ethers.getContractFactory("SignatureManager");
+
+		signatureManager = await (await SignatureManager.deploy(mockIglooFiGovernance.address)).deployed();
 	});
 
 	/**
@@ -81,6 +81,46 @@ describe("Mock Signature Manager", async () => {
 
 
 	describe("SignatureManager.sol Contract", async () => {
+		/**
+		 * @dev admin
+		*/
+		describe("Restriction: DEFAULT_ADMIN_ROLE", async () => {
+			/**
+			* @dev setPause
+			*/
+			describe("setPause", async () => {
+				it(
+					"Should revert when unauthorized msg.sender calls..",
+					async () => {
+						const [, addr1] = await ethers.getSigners();
+			
+						await expect(signatureManager.connect(addr1).setPause(false)).to.be.rejectedWith("!auth");
+					}
+				);
+	
+				it(
+					"Should be able to set true..",
+					async () => {
+						await signatureManager.setPause(false);
+						
+						expect(await signatureManager.paused()).to.be.false;
+					}
+				);
+	
+				it(
+					"Should be able to set false..",
+					async () => {
+						await signatureManager.setPause(true);
+						
+						expect(await signatureManager.paused()).to.be.true;
+					
+						// Unpause for the rest of the test
+						await signatureManager.setPause(false);
+					}
+				);
+			});
+		});
+
 		/**
 		 * @notice [hardhat][ERC-191] Signing a Digest Hash
 		*/

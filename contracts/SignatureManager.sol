@@ -2,9 +2,11 @@
 pragma solidity ^0.8.1;
 
 
+import { IIglooFiGovernance } from "@igloo-fi/v1-sdk/contracts/interface/IIglooFiGovernance.sol";
 import { IIglooFiV1Vault } from "@igloo-fi/v1-sdk/contracts/interface/IIglooFiV1Vault.sol";
-import { ECDSA } from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import { IERC1271 } from "@openzeppelin/contracts/interfaces/IERC1271.sol";
+import { Pausable } from "@openzeppelin/contracts/security/Pausable.sol";
+import { ECDSA } from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 
 import { ISignatureManager, MessageHashData } from "./interface/ISignatureManager.sol";
 
@@ -14,8 +16,14 @@ import { ISignatureManager, MessageHashData } from "./interface/ISignatureManage
 */
 contract SignatureManager is
 	IERC1271,
+	Pausable,
 	ISignatureManager
 {
+	// [address][public]
+	address public override iglooFiGovernance;
+
+
+	// [bytes]
 	bytes32 public constant VOTER = keccak256("VOTER");
 	bytes4 public constant ERC1271_MAGIC_VALUE = 0x1626ba7e;
 
@@ -23,6 +31,28 @@ contract SignatureManager is
 	// [mapping][internal]
 	mapping (address => bytes32[]) internal _vaultMessageHashes;
 	mapping (address => mapping (bytes32 => MessageHashData)) internal _vaultMessageHashData;
+
+
+	constructor (address _iglooFiGovernance)
+	{
+		_pause();
+
+		iglooFiGovernance = _iglooFiGovernance;
+	}
+
+
+
+	modifier onlyIglooFiGovernanceAdmin() {
+		require(
+			IIglooFiGovernance(iglooFiGovernance).hasRole(
+				IIglooFiGovernance(iglooFiGovernance).governanceRoles("DEFAULT_ADMIN_ROLE"),
+				msg.sender
+			),
+			"!auth"
+		);
+
+		_;
+	}
 
 
 	/// @inheritdoc IERC1271
@@ -64,11 +94,31 @@ contract SignatureManager is
 		return _vaultMessageHashData[_iglooFiV1Vault][_messageHash];
 	}
 
+
+	/// @inheritdoc ISignatureManager
+	function setPause(bool pause)
+		public
+		override
+		onlyIglooFiGovernanceAdmin()
+	{
+		if (pause)
+		{
+			// [call-internal]
+			_pause();
+		}
+		else
+		{
+			// [call-internal]
+			_unpause();
+		}
+	}
+
 	
 	/// @inheritdoc ISignatureManager
 	function signMessageHash(address _iglooFiV1Vault, bytes32 _messageHash, bytes memory _signature)
 		public
 		override
+		whenNotPaused()
 	{
 		require(IIglooFiV1Vault(payable(_iglooFiV1Vault)).hasRole(VOTER, msg.sender), "!auth");
 

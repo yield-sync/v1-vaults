@@ -16,6 +16,18 @@ struct MessageHashData {
 interface ISignatureManager
 {
 	/**
+	* @notice CONSTANT Address of Igloo Fi Governance contract
+	* @dev [!restriction]
+	* @dev [view-address]
+	* @return {address}
+	*/
+	function iglooFiGovernance()
+		external
+		view
+		returns (address)
+	;
+
+	/**
 	 * @notice Getter for `_vaultMessageHashes`
 	 * @dev [!restriction]
 	 * @dev [view][mapping]
@@ -38,6 +50,16 @@ interface ISignatureManager
 		external
 		view
 		returns (MessageHashData memory)
+	;
+
+	/**
+	* @notice Set pause
+	* @dev [restriction] IIglooFiGovernance AccessControlEnumerable → DEFAULT_ADMIN_ROLE
+	* @dev [call-internal]
+	* @param pause {bool}
+	*/
+	function setPause(bool pause)
+		external
 	;
 
 	/**
