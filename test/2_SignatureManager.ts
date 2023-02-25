@@ -130,7 +130,7 @@ describe("Mock Signature Manager", async () => {
 
 				expect(retrievedBytes32[0]).to.be.equal(messageHash);
 
-				const messageHashData: Bytes = await signatureManager.vaultMessageHashData(
+				const messageHashData: any = await signatureManager.vaultMessageHashData(
 					iglooFiV1Vault.address,
 					retrievedBytes32[0]
 				);
@@ -259,7 +259,7 @@ describe("Mock Signature Manager", async () => {
 
 				expect(retrievedBytes32[1]).to.be.equal(messageHash);
 
-				const messageHashData: Bytes = await signatureManager.vaultMessageHashData(
+				const messageHashData: any = await signatureManager.vaultMessageHashData(
 					iglooFiV1Vault.address,
 					retrievedBytes32[1]
 				);
