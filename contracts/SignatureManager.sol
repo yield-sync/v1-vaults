@@ -34,12 +34,11 @@ contract SignatureManager is
 	{
 		address recovered = ECDSA.recover(ECDSA.toEthSignedMessageHash(_messageHash), _signature);
 
-
 		MessageHashData memory messageHashData = _vaultMessageHashData[msg.sender][_messageHash];
 
 		return (
 			recovered == messageHashData.signer &&
-			messageHashData.signatureCount >= IIglooFiV1Vault(msg.sender).requiredVoteCount()
+			messageHashData.signatureCount >= IIglooFiV1Vault(payable(msg.sender)).requiredVoteCount()
 		) ? ERC1271_MAGIC_VALUE : bytes4(0);
 	}
 
@@ -70,7 +69,7 @@ contract SignatureManager is
 		public
 		override
 	{
-		require(IIglooFiV1Vault(_iglooFiV1Vault).hasRole(VOTER, msg.sender), "!auth");
+		require(IIglooFiV1Vault(payable(_iglooFiV1Vault)).hasRole(VOTER, msg.sender), "!auth");
 
 		MessageHashData memory m = _vaultMessageHashData[_iglooFiV1Vault][_messageHash];
 
@@ -83,7 +82,7 @@ contract SignatureManager is
 
 			address recovered = ECDSA.recover(ECDSA.toEthSignedMessageHash(_messageHash), _signature);
 
-			require(IIglooFiV1Vault(_iglooFiV1Vault).hasRole(VOTER, recovered), "!auth");
+			require(IIglooFiV1Vault(payable(_iglooFiV1Vault)).hasRole(VOTER, recovered), "!auth");
 
 			_vaultMessageHashData[_iglooFiV1Vault][_messageHash] = MessageHashData({
 				signature: _signature,
