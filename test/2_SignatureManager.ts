@@ -41,7 +41,7 @@ describe("Mock Signature Manager", async () => {
 	before("[before] Deploy IglooFiV1VaultFactory.sol contracts..", async () => {
 		const IglooFiV1VaultFactory: ContractFactory = await ethers.getContractFactory("IglooFiV1VaultFactory");
 
-		iglooFiV1VaultFactory = await (await IglooFiV1VaultFactory.deploy()).deployed();
+		iglooFiV1VaultFactory = await (await IglooFiV1VaultFactory.deploy(mockIglooFiGovernance.address)).deployed();
 
 		await iglooFiV1VaultFactory.setPause(false);
 	});

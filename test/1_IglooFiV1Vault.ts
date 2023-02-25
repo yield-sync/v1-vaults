@@ -35,7 +35,7 @@ describe("IglooFi V1 Vault", async () => {
 	before("[before] Deploy IglooFiV1VaultFactory.sol contracts..", async () => {
 		const IglooFiV1VaultFactory = await ethers.getContractFactory("IglooFiV1VaultFactory");
 
-		iglooFiV1VaultFactory = await (await IglooFiV1VaultFactory.deploy()).deployed();
+		iglooFiV1VaultFactory = await (await IglooFiV1VaultFactory.deploy(mockIglooFiGovernance.address)).deployed();
 
 		await iglooFiV1VaultFactory.setPause(false);
 	});
