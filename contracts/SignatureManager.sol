@@ -96,25 +96,6 @@ contract SignatureManager is
 		return _vaultMessageHashData[iglooFiV1Vault][messageHash];
 	}
 
-
-	/// @inheritdoc ISignatureManager
-	function setPause(bool pause)
-		public
-		override
-		onlyIglooFiGovernanceAdmin()
-	{
-		if (pause)
-		{
-			// [call-internal]
-			_pause();
-		}
-		else
-		{
-			// [call-internal]
-			_unpause();
-		}
-	}
-
 	
 	/// @inheritdoc ISignatureManager
 	function signMessageHash(address iglooFiV1Vault, bytes32 messageHash, bytes memory signature)
@@ -149,5 +130,24 @@ contract SignatureManager is
 
 		_vaultMessageHashData[iglooFiV1Vault][messageHash].signedVoters.push(msg.sender);
 		_vaultMessageHashData[iglooFiV1Vault][messageHash].signatureCount++;
+	}
+
+
+	/// @inheritdoc ISignatureManager
+	function setPause(bool pause)
+		public
+		override
+		onlyIglooFiGovernanceAdmin()
+	{
+		if (pause)
+		{
+			// [call-internal]
+			_pause();
+		}
+		else
+		{
+			// [call-internal]
+			_unpause();
+		}
 	}
 }

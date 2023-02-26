@@ -54,15 +54,6 @@ interface ISignatureManager
 		returns (MessageHashData memory)
 	;
 
-	/**
-	* @notice Set pause
-	* @dev [restriction] IIglooFiGovernance AccessControlEnumerable → DEFAULT_ADMIN_ROLE
-	* @dev [call-internal]
-	* @param pause {bool}
-	*/
-	function setPause(bool pause)
-		external
-	;
 
 	/**
 	* @notice Sign a Message Hash
@@ -73,6 +64,17 @@ interface ISignatureManager
 	* @param signature {bytes}
 	*/
 	function signMessageHash(address iglooFiV1Vault, bytes32 messageHash, bytes memory signature)
+		external
+	;
+
+
+	/**
+	* @notice Set pause
+	* @dev [restriction] IIglooFiGovernance AccessControlEnumerable → DEFAULT_ADMIN_ROLE
+	* @dev [call-internal]
+	* @param pause {bool}
+	*/
+	function setPause(bool pause)
 		external
 	;
 }
