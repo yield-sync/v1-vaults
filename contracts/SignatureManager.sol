@@ -64,12 +64,12 @@ contract SignatureManager is
 	{
 		address recovered = ECDSA.recover(ECDSA.toEthSignedMessageHash(_messageHash), _signature);
 
-		MessageHashData memory messageHashData = _vaultMessageHashData[msg.sender][_messageHash];
+		MessageHashData memory vMHD = _vaultMessageHashData[msg.sender][_messageHash];
 
 		return (
-			recovered == messageHashData.signer &&
 			_vaultMessageHashes[msg.sender][_vaultMessageHashes[msg.sender].length -1] == _messageHash &&
-			messageHashData.signatureCount >= IIglooFiV1Vault(payable(msg.sender)).requiredVoteCount()
+			vMHD.signer == recovered &&
+			vMHD.signatureCount >= IIglooFiV1Vault(payable(msg.sender)).requiredVoteCount()
 		) ? ERC1271_MAGIC_VALUE : bytes4(0);
 	}
 
@@ -122,13 +122,13 @@ contract SignatureManager is
 	{
 		require(IIglooFiV1Vault(payable(_iglooFiV1Vault)).hasRole(VOTER, msg.sender), "!auth");
 
-		MessageHashData memory m = _vaultMessageHashData[_iglooFiV1Vault][_messageHash];
+		MessageHashData memory vMHD = _vaultMessageHashData[_iglooFiV1Vault][_messageHash];
 
-		for (uint i = 0; i < m.signedVoters.length; i++) {
-			require(m.signedVoters[i] != msg.sender, "Already signed");
+		for (uint i = 0; i < vMHD.signedVoters.length; i++) {
+			require(vMHD.signedVoters[i] != msg.sender, "Already signed");
 		}
 
-		if (m.signer == address(0)) {
+		if (vMHD.signer == address(0)) {
 			address[] memory initialsignedVoters;
 
 			address recovered = ECDSA.recover(ECDSA.toEthSignedMessageHash(_messageHash), _signature);
