@@ -60,7 +60,7 @@ contract IglooFiV1VaultFactory is
 		require(
 			IIglooFiGovernance(iglooFiGovernance).hasRole(
 				IIglooFiGovernance(iglooFiGovernance).governanceRoles("DEFAULT_ADMIN_ROLE"),
-				msg.sender
+				_msgSender()
 			),
 			"!auth"
 		);

@@ -166,7 +166,7 @@ contract IglooFiV1Vault is
 				forEther: forEther,
 				forERC20: forERC20,
 				forERC721: forERC721,
-				creator: msg.sender,
+				creator: _msgSender(),
 				to: to,
 				token: tokenAddress,
 				amount: amount,
@@ -199,7 +199,7 @@ contract IglooFiV1Vault is
 		// [for] each voter within WithdrawalRequest
 		for (uint256 i = 0; i < _withdrawalRequest[withdrawalRequestId].votedVoters.length; i++)
 		{
-			require(_withdrawalRequest[withdrawalRequestId].votedVoters[i] != msg.sender, "Already voted");
+			require(_withdrawalRequest[withdrawalRequestId].votedVoters[i] != _msgSender(), "Already voted");
 		}
 		
 		if (vote)
@@ -216,10 +216,10 @@ contract IglooFiV1Vault is
 		}
 
 		// [emit]
-		emit VoterVoted(withdrawalRequestId, msg.sender, vote);
+		emit VoterVoted(withdrawalRequestId, _msgSender(), vote);
 
-		// [update] `_withdrawalRequest[withdrawalRequestId].votedVoters` → Add msg.sender
-		_withdrawalRequest[withdrawalRequestId].votedVoters.push(msg.sender);
+		// [update] `_withdrawalRequest[withdrawalRequestId].votedVoters` → Add _msgSender()
+		_withdrawalRequest[withdrawalRequestId].votedVoters.push(_msgSender());
 
 		// If the required signatures has not yet been reached..
 		if (_withdrawalRequest[withdrawalRequestId].voteCount < requiredVoteCount)
@@ -277,7 +277,7 @@ contract IglooFiV1Vault is
 		_deleteWithdrawalRequest(withdrawalRequestId);
 
 		// [emit]
-		emit TokensWithdrawn(msg.sender, wR.to, wR.amount);
+		emit TokensWithdrawn(_msgSender(), wR.to, wR.amount);
 	}
 
 
@@ -361,7 +361,7 @@ contract IglooFiV1Vault is
 		}
 
 		// [emit]
-		emit VoterVoted(withdrawalRequestId, msg.sender, vote);
+		emit VoterVoted(withdrawalRequestId, _msgSender(), vote);
 
 		// If the required signatures has not yet been reached..
 		if (_withdrawalRequest[withdrawalRequestId].voteCount < requiredVoteCount)
