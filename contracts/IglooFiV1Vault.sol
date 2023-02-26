@@ -343,6 +343,37 @@ contract IglooFiV1Vault is
 	}
 
 	/// @inheritdoc IIglooFiV1Vault
+	function adminVoteOnWithdrawalRequest(uint256 withdrawalRequestId, bool vote)
+		public
+		override
+		onlyRole(DEFAULT_ADMIN_ROLE)
+		validWithdrawalRequest(withdrawalRequestId)
+	{
+		if (vote)
+		{
+			// [update] `_withdrawalRequest` → [increment] Approve vote count
+			_withdrawalRequest[withdrawalRequestId].voteCount++;
+
+			// If required signatures met..
+			if (_withdrawalRequest[withdrawalRequestId].voteCount >= requiredVoteCount)
+			{
+				// [emit]
+				emit WithdrawalRequestReadyToBeProccessed(withdrawalRequestId);
+			}
+		}
+
+		// [emit]
+		emit VoterVoted(withdrawalRequestId, msg.sender, vote);
+
+		// If the required signatures has not yet been reached..
+		if (_withdrawalRequest[withdrawalRequestId].voteCount < requiredVoteCount)
+		{
+			// [update] latestRelevantApproveVoteTime timestamp
+			_withdrawalRequest[withdrawalRequestId].latestRelevantApproveVoteTime = block.timestamp;
+		}
+	}
+
+	/// @inheritdoc IIglooFiV1Vault
 	function updateWithdrawalRequestLatestRelevantApproveVoteTime(
 		uint256 withdrawalRequestId,
 		bool arithmaticSign,
@@ -380,36 +411,5 @@ contract IglooFiV1Vault is
 	{
 		// [call][internal]
 		_deleteWithdrawalRequest(withdrawalRequestId);
-	}
-
-	/// @inheritdoc IIglooFiV1Vault
-	function adminVoteOnWithdrawalRequest(uint256 withdrawalRequestId, bool vote)
-		public
-		override
-		onlyRole(DEFAULT_ADMIN_ROLE)
-		validWithdrawalRequest(withdrawalRequestId)
-	{
-		if (vote)
-		{
-			// [update] `_withdrawalRequest` → [increment] Approve vote count
-			_withdrawalRequest[withdrawalRequestId].voteCount++;
-
-			// If required signatures met..
-			if (_withdrawalRequest[withdrawalRequestId].voteCount >= requiredVoteCount)
-			{
-				// [emit]
-				emit WithdrawalRequestReadyToBeProccessed(withdrawalRequestId);
-			}
-		}
-
-		// [emit]
-		emit VoterVoted(withdrawalRequestId, msg.sender, vote);
-
-		// If the required signatures has not yet been reached..
-		if (_withdrawalRequest[withdrawalRequestId].voteCount < requiredVoteCount)
-		{
-			// [update] latestRelevantApproveVoteTime timestamp
-			_withdrawalRequest[withdrawalRequestId].latestRelevantApproveVoteTime = block.timestamp;
-		}
 	}
 }

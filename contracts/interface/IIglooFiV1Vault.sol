@@ -261,6 +261,19 @@ interface IIglooFiV1Vault
 	;
 
 	/**
+	* @notice Admin Vote on WithdrawalRequest
+	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
+	* @dev [update] `_withdrawalRequest`
+	* @param withdrawalRequestId {uint256}
+	* @param vote {bool} true (approve) or false (deny)
+	* Emits: `WithdrawalRequestReadyToBeProccessed`
+	* Emits: `VoterVoted`
+	*/
+	function adminVoteOnWithdrawalRequest(uint256 withdrawalRequestId, bool vote)
+		external
+	;
+
+	/**
 	* @notice 
 	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
 	* @dev [update] WithdrawalRequest within `_withdrawalRequest`
@@ -285,19 +298,6 @@ interface IIglooFiV1Vault
 	* Emits: `DeletedWithdrawalRequest`
 	*/
 	function deleteWithdrawalRequest(uint256 withdrawalRequestId)
-		external
-	;
-
-	/**
-	* @notice Admin Vote on WithdrawalRequest
-	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
-	* @dev [update] `_withdrawalRequest`
-	* @param withdrawalRequestId {uint256}
-	* @param vote {bool} true (approve) or false (deny)
-	* Emits: `WithdrawalRequestReadyToBeProccessed`
-	* Emits: `VoterVoted`
-	*/
-	function adminVoteOnWithdrawalRequest(uint256 withdrawalRequestId, bool vote)
 		external
 	;
 }
