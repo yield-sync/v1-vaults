@@ -200,10 +200,7 @@ contract IglooFiV1Vault is
 		// [for] each voter within WithdrawalRequest
 		for (uint256 i = 0; i < _withdrawalRequest[withdrawalRequestId].votedVoters.length; i++)
 		{
-			if (_withdrawalRequest[withdrawalRequestId].votedVoters[i] == msg.sender)
-			{
-				revert("Already voted");
-			}
+			require(_withdrawalRequest[withdrawalRequestId].votedVoters[i] != msg.sender, "Already voted");
 		}
 		
 		if (vote)
@@ -244,10 +241,7 @@ contract IglooFiV1Vault is
 		WithdrawalRequest memory w = _withdrawalRequest[withdrawalRequestId];
 		
 		// [require] Required signatures to be met
-		require(
-			w.voteCount >= requiredVoteCount,
-			"Not enough votes"
-		);
+		require(w.voteCount >= requiredVoteCount, "Not enough votes");
 
 		// [require] WithdrawalRequest time delay passed
 		require(
