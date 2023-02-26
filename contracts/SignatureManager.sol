@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.1;
+pragma solidity ^0.8.18;
 
 
 import { IIglooFiGovernance } from "@igloo-fi/v1-sdk/contracts/interface/IIglooFiGovernance.sol";
@@ -29,8 +29,10 @@ contract SignatureManager is
 	bytes4 public constant ERC1271_MAGIC_VALUE = 0x1626ba7e;
 
 	// [mapping][internal]
-	mapping (address => bytes32[]) internal _vaultMessageHashes;
-	mapping (address => mapping (bytes32 => MessageHashData)) internal _vaultMessageHashData;
+	mapping (address iglooFiV1VaultAddress => bytes32[] messageHash) internal _vaultMessageHashes;
+	mapping (
+		address iglooFiV1VaultAddress => mapping (bytes32 messageHash => MessageHashData messageHashData)
+	) internal _vaultMessageHashData;
 
 
 	constructor (address _iglooFiGovernance)

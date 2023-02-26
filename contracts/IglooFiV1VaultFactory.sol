@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.1;
+pragma solidity ^0.8.18;
 
 
 import { IIglooFiGovernance } from "@igloo-fi/v1-sdk/contracts/interface/IIglooFiGovernance.sol";
@@ -27,8 +27,7 @@ contract IglooFiV1VaultFactory is
 	uint256 internal _vaultIdTracker;
 
 	// [mapping][internal]
-	// Vault Id => Contract address
-	mapping (uint256 => address) internal _vaultAddress;
+	mapping (uint256 iglooFiV1VaultId => address iglooFiV1VaultAddress) internal _vaultAddress;
 
 
 	constructor (address _iglooFiGovernance)

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.1;
+pragma solidity ^0.8.18;
 
 
 import { AccessControlEnumerable } from "@openzeppelin/contracts/access/AccessControlEnumerable.sol";
@@ -33,8 +33,7 @@ contract IglooFiV1Vault is
 	uint256 public override withdrawalDelaySeconds;
 
 	// [mapping][internal]
-	// withdrawalRequestId => withdrawalRequest
-	mapping (uint256 => WithdrawalRequest) internal _withdrawalRequest;
+	mapping (uint256 withdrawalRequestId => WithdrawalRequest withdralRequest) internal _withdrawalRequest;
 
 
 	constructor (
