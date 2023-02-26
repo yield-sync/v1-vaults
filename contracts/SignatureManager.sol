@@ -22,11 +22,11 @@ contract SignatureManager is
 	// [address][public]
 	address public override iglooFiGovernance;
 
-
-	// [bytes]
+	// [bytes32][public]
 	bytes32 public constant VOTER = keccak256("VOTER");
+	
+	// [bytes4][public]
 	bytes4 public constant ERC1271_MAGIC_VALUE = 0x1626ba7e;
-
 
 	// [mapping][internal]
 	mapping (address => bytes32[]) internal _vaultMessageHashes;

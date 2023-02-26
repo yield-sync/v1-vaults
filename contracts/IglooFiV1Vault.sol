@@ -6,7 +6,6 @@ import { AccessControlEnumerable } from "@openzeppelin/contracts/access/AccessCo
 import { IERC1271 } from "@openzeppelin/contracts/interfaces/IERC1271.sol";
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { IERC721 } from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
-import { ECDSA } from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 
 import { IIglooFiV1Vault, WithdrawalRequest } from "./interface/IIglooFiV1Vault.sol";
 
@@ -19,9 +18,6 @@ contract IglooFiV1Vault is
 	IERC1271,
 	IIglooFiV1Vault
 {
-	using ECDSA for bytes32;
-
-
 	// [bytes4][public]
 	address public override signatureManager;
 
