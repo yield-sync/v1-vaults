@@ -20,10 +20,10 @@ contract IglooFiV1VaultFactory is
 	address public override iglooFiGovernance;
 	address public override signatureManager;
 
-	/* [uint256][public] */
+	// [uint256][public]
 	uint256 public override fee;
 
-	/* [uint256][internal] */
+	// [uint256][internal]
 	uint256 internal _vaultIdTracker;
 
 	// [mapping][internal]

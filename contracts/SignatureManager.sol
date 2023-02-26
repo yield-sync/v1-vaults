@@ -77,23 +77,23 @@ contract SignatureManager is
 
 
 	/// @inheritdoc ISignatureManager
-	function vaultMessageHashes(address _iglooFiV1Vault)
+	function vaultMessageHashes(address iglooFiV1Vault)
 		public
 		view
 		override
 		returns (bytes32[] memory)
 	{
-		return _vaultMessageHashes[_iglooFiV1Vault];
+		return _vaultMessageHashes[iglooFiV1Vault];
 	}
 	
 	/// @inheritdoc ISignatureManager
-	function vaultMessageHashData(address _iglooFiV1Vault, bytes32 _messageHash)
+	function vaultMessageHashData(address iglooFiV1Vault, bytes32 messageHash)
 		public
 		view
 		override
 		returns (MessageHashData memory)
 	{
-		return _vaultMessageHashData[_iglooFiV1Vault][_messageHash];
+		return _vaultMessageHashData[iglooFiV1Vault][messageHash];
 	}
 
 
@@ -117,14 +117,14 @@ contract SignatureManager is
 
 	
 	/// @inheritdoc ISignatureManager
-	function signMessageHash(address _iglooFiV1Vault, bytes32 _messageHash, bytes memory _signature)
+	function signMessageHash(address iglooFiV1Vault, bytes32 messageHash, bytes memory signature)
 		public
 		override
 		whenNotPaused()
 	{
-		require(IIglooFiV1Vault(payable(_iglooFiV1Vault)).hasRole(VOTER, msg.sender), "!auth");
+		require(IIglooFiV1Vault(payable(iglooFiV1Vault)).hasRole(VOTER, msg.sender), "!auth");
 
-		MessageHashData memory vMHD = _vaultMessageHashData[_iglooFiV1Vault][_messageHash];
+		MessageHashData memory vMHD = _vaultMessageHashData[iglooFiV1Vault][messageHash];
 
 		for (uint i = 0; i < vMHD.signedVoters.length; i++) {
 			require(vMHD.signedVoters[i] != msg.sender, "Already signed");
@@ -133,21 +133,21 @@ contract SignatureManager is
 		if (vMHD.signer == address(0)) {
 			address[] memory initialsignedVoters;
 
-			address recovered = ECDSA.recover(ECDSA.toEthSignedMessageHash(_messageHash), _signature);
+			address recovered = ECDSA.recover(ECDSA.toEthSignedMessageHash(messageHash), signature);
 
-			require(IIglooFiV1Vault(payable(_iglooFiV1Vault)).hasRole(VOTER, recovered), "!auth");
+			require(IIglooFiV1Vault(payable(iglooFiV1Vault)).hasRole(VOTER, recovered), "!auth");
 
-			_vaultMessageHashData[_iglooFiV1Vault][_messageHash] = MessageHashData({
-				signature: _signature,
+			_vaultMessageHashData[iglooFiV1Vault][messageHash] = MessageHashData({
+				signature: signature,
 				signer: recovered,
 				signedVoters: initialsignedVoters,
 				signatureCount: 0
 			});
 
-			_vaultMessageHashes[_iglooFiV1Vault].push(_messageHash);
+			_vaultMessageHashes[iglooFiV1Vault].push(messageHash);
 		}
 
-		_vaultMessageHashData[_iglooFiV1Vault][_messageHash].signedVoters.push(msg.sender);
-		_vaultMessageHashData[_iglooFiV1Vault][_messageHash].signatureCount++;
+		_vaultMessageHashData[iglooFiV1Vault][messageHash].signedVoters.push(msg.sender);
+		_vaultMessageHashData[iglooFiV1Vault][messageHash].signatureCount++;
 	}
 }

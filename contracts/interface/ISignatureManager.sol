@@ -31,10 +31,10 @@ interface ISignatureManager
 	* @notice Getter for `_vaultMessageHashes`
 	* @dev [!restriction]
 	* @dev [view][mapping]
-	* @param _iglooFiV1Vault {address}
+	* @param iglooFiV1Vault {address}
 	* @return {bytes32[]}
 	*/
-	function vaultMessageHashes(address _iglooFiV1Vault)
+	function vaultMessageHashes(address iglooFiV1Vault)
 		external
 		view
 		returns (bytes32[] memory)
@@ -44,11 +44,11 @@ interface ISignatureManager
 	* @notice Getter for `_vaultMessageHashData`
 	* @dev [!restriction][public]
 	* @dev [view][mapping]
-	* @param _iglooFiV1Vault {address}
-	* @param _messageHash {bytes32}
+	* @param iglooFiV1Vault {address}
+	* @param messageHash {bytes32}
 	* @return {MessageHashData}
 	*/
-	function vaultMessageHashData(address _iglooFiV1Vault, bytes32 _messageHash)
+	function vaultMessageHashData(address iglooFiV1Vault, bytes32 messageHash)
 		external
 		view
 		returns (MessageHashData memory)
@@ -68,11 +68,11 @@ interface ISignatureManager
 	* @notice Sign a Message Hash
 	* @dev [!restriction][public]
 	* @dev [create] `_vaultMessageHashData` value
-	* @param _iglooFiV1Vault {address}
-	* @param _messageHash {bytes32}
-	* @param _signature {bytes}
+	* @param iglooFiV1Vault {address}
+	* @param messageHash {bytes32}
+	* @param signature {bytes}
 	*/
-	function signMessageHash(address _iglooFiV1Vault, bytes32 _messageHash, bytes memory _signature)
+	function signMessageHash(address iglooFiV1Vault, bytes32 messageHash, bytes memory signature)
 		external
 	;
 }
