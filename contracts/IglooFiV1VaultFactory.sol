@@ -71,13 +71,13 @@ contract IglooFiV1VaultFactory is
 
 
 	/// @inheritdoc IIglooFiV1VaultFactory
-	function vaultAddress(uint256 vaultId)
+	function vaultAddress(uint256 iglooFiV1VaultAddress)
 		public
 		view
 		override
 		returns (address)
 	{
-		return _vaultAddress[vaultId];
+		return _vaultAddress[iglooFiV1VaultAddress];
 	}
 
 
@@ -133,12 +133,12 @@ contract IglooFiV1VaultFactory is
 	}
 
 	/// @inheritdoc IIglooFiV1VaultFactory
-	function updateFee(uint256 newFee)
+	function updateFee(uint256 _fee)
 		public
 		override
 		onlyIglooFiGovernanceAdmin()
 	{
-		fee = newFee;
+		fee = _fee;
 
 		emit UpdatedFee(fee);
 	}

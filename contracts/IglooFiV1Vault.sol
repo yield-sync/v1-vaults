@@ -238,38 +238,38 @@ contract IglooFiV1Vault is
 		validWithdrawalRequest(withdrawalRequestId)
 	{
 		// Temporary variable
-		WithdrawalRequest memory w = _withdrawalRequest[withdrawalRequestId];
+		WithdrawalRequest memory wR = _withdrawalRequest[withdrawalRequestId];
 		
 		// [require] Required signatures to be met
-		require(w.voteCount >= requiredVoteCount, "Not enough votes");
+		require(wR.voteCount >= requiredVoteCount, "Not enough votes");
 
 		// [require] WithdrawalRequest time delay passed
 		require(
-			block.timestamp - w.latestRelevantApproveVoteTime >= withdrawalDelaySeconds * 1 seconds,
+			block.timestamp - wR.latestRelevantApproveVoteTime >= withdrawalDelaySeconds * 1 seconds,
 			"Not enough time has passed"
 		);
 
 		// Transfer accordingly
-		if (w.forERC20 && !w.forERC721)
+		if (wR.forERC20 && !wR.forERC721)
 		{
-			if (IERC20(w.token).balanceOf(address(this)) >= w.amount)
+			if (IERC20(wR.token).balanceOf(address(this)) >= wR.amount)
 			{
 				// [ERC20-transfer]
-				IERC20(w.token).transfer(w.to, w.amount);
+				IERC20(wR.token).transfer(wR.to, wR.amount);
 			}
 		}
-		else if (w.forERC721 && !w.forERC20)
+		else if (wR.forERC721 && !wR.forERC20)
 		{
-			if (IERC721(w.token).ownerOf(w.tokenId) == address(this))
+			if (IERC721(wR.token).ownerOf(wR.tokenId) == address(this))
 			{
 				// [ERC721-transfer]
-				IERC721(w.token).transferFrom(address(this), w.to, w.tokenId);
+				IERC721(wR.token).transferFrom(address(this), wR.to, wR.tokenId);
 			}
 		}
-		else if (w.forEther)
+		else if (wR.forEther)
 		{
 			// [transfer]
-			(bool success, ) = w.to.call{value: w.amount}("");
+			(bool success, ) = wR.to.call{value: wR.amount}("");
 			
 			require(success, "Unable to send value");
 		}
@@ -278,7 +278,7 @@ contract IglooFiV1Vault is
 		_deleteWithdrawalRequest(withdrawalRequestId);
 
 		// [emit]
-		emit TokensWithdrawn(msg.sender, w.to, w.amount);
+		emit TokensWithdrawn(msg.sender, wR.to, wR.amount);
 	}
 
 
@@ -292,13 +292,13 @@ contract IglooFiV1Vault is
 	}
 
 	/// @inheritdoc IIglooFiV1Vault
-	function addVoter(address targetAddress)
+	function addVoter(address a)
 		public
 		override
 		onlyRole(DEFAULT_ADMIN_ROLE)
 	{
 		// [add] address to VOTER on `AccessControlEnumerable`
-		_setupRole(VOTER, targetAddress);
+		_setupRole(VOTER, a);
 	}
 
 	/// @inheritdoc IIglooFiV1Vault
@@ -312,31 +312,30 @@ contract IglooFiV1Vault is
 	}
 
 	/// @inheritdoc IIglooFiV1Vault
-	function updateRequiredVoteCount(uint256 newRequiredVoteCount)
+	function updateRequiredVoteCount(uint256 _requiredVoteCount)
 		public
 		override
 		onlyRole(DEFAULT_ADMIN_ROLE)
 	{
-		require(newRequiredVoteCount > 0, "!newRequiredVoteCount");
+		require(_requiredVoteCount > 0, "!_requiredVoteCount");
 
 		// [update]
-		requiredVoteCount = newRequiredVoteCount;
+		requiredVoteCount = _requiredVoteCount;
 
 		// [emit]
 		emit UpdatedRequiredVoteCount(requiredVoteCount);
 	}
 
 	/// @inheritdoc IIglooFiV1Vault
-	function updateWithdrawalDelaySeconds(uint256 newWithdrawalDelaySeconds)
+	function updateWithdrawalDelaySeconds(uint256 _withdrawalDelaySeconds)
 		public
 		override
 		onlyRole(DEFAULT_ADMIN_ROLE)
 	{
-		// [require] newWithdrawalDelaySeconds is greater than OR equal to 0
-		require(newWithdrawalDelaySeconds >= 0, "!newWithdrawalDelaySeconds");
+		require(_withdrawalDelaySeconds >= 0, "!_withdrawalDelaySeconds");
 
 		// [update] `withdrawalDelaySeconds`
-		withdrawalDelaySeconds = newWithdrawalDelaySeconds;
+		withdrawalDelaySeconds = _withdrawalDelaySeconds;
 
 		// [emit]
 		emit UpdatedWithdrawalDelaySeconds(withdrawalDelaySeconds);

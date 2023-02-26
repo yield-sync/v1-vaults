@@ -222,9 +222,9 @@ interface IIglooFiV1Vault
 	* @notice Assign VOTER to an address on AccessControlEnumerable
 	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
 	* @dev [add] address to VOTER on `AccessControlEnumerable`
-	* @param targetAddress {address}
+	* @param a {address}
 	*/
-	function addVoter(address targetAddress)
+	function addVoter(address a)
 		external
 	;
 
@@ -242,10 +242,10 @@ interface IIglooFiV1Vault
 	* @notice Update the required approved votes
 	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
 	* @dev [update] `requiredVoteCount`
-	* @param newRequiredVoteCount {uint256}
+	* @param _requiredVoteCount {uint256}
 	* Emits: `UpdatedRequiredVoteCount`
 	*/
-	function updateRequiredVoteCount(uint256 newRequiredVoteCount)
+	function updateRequiredVoteCount(uint256 _requiredVoteCount)
 		external
 	;
 
@@ -253,10 +253,10 @@ interface IIglooFiV1Vault
 	* @notice Update `withdrawalDelaySeconds`
 	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
 	* @dev [update] `withdrawalDelaySeconds` to new value
-	* @param newWithdrawalDelaySeconds {uint256}
+	* @param _withdrawalDelaySeconds {uint256}
 	* Emits: `UpdatedWithdrawalDelaySeconds`
 	*/
-	function updateWithdrawalDelaySeconds(uint256 newWithdrawalDelaySeconds)
+	function updateWithdrawalDelaySeconds(uint256 _withdrawalDelaySeconds)
 		external
 	;
 

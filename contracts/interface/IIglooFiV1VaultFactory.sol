@@ -112,10 +112,10 @@ interface IIglooFiV1VaultFactory {
 	/**
 	* @notice Update fee
 	* @dev [restriction] IIglooFiGovernance AccessControlEnumerable → DEFAULT_ADMIN_ROLE
-	* @dev [update] `_fee`
-	* @param newFee {uint256}
+	* @dev [update] `fee`
+	* @param _fee {uint256}
 	*/
-	function updateFee(uint256 newFee)
+	function updateFee(uint256 _fee)
 		external
 	;
 
