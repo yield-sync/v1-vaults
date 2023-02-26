@@ -12,7 +12,7 @@ import { ISignatureManager, MessageHashData } from "./interface/ISignatureManage
 
 
 /**
- * @title SignatureManager
+* @title SignatureManager
 */
 contract SignatureManager is
 	IERC1271,

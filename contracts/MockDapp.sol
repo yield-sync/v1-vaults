@@ -15,7 +15,7 @@ interface IMockDapp {
 
 
 /**
- * @title MockDapp
+* @title MockDapp
 */
 contract MockDapp is
 	EIP712,
