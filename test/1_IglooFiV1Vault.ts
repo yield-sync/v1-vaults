@@ -579,6 +579,31 @@ describe("IglooFi V1 Vault", async () => {
 		* @dev Restriction: DEFAULT_ADMIN_ROLE
 		*/
 		describe("Restriction: DEFAULT_ADMIN_ROLE", async () => {
+			describe("adminVoteOnWithdrawalRequest", async () => {
+				it(
+					"Should be able vote on WithdrawalRequest..",
+					async () => {
+						const [, addr1, addr2] = await ethers.getSigners();
+						
+						await iglooFiV1Vault.connect(addr1).createWithdrawalRequest(
+							false,
+							true,
+							false,
+							addr2.address,
+							mockERC20.address,
+							999,
+							0
+						);
+
+						await iglooFiV1Vault.adminVoteOnWithdrawalRequest(4, true);
+
+						const createdWithdrawalRequest: any = await iglooFiV1Vault.withdrawalRequest(4);
+						
+						expect(createdWithdrawalRequest[8]).to.be.equal(1);
+					}
+				);
+			});
+			
 			/**
 			 * @dev deleteWithdrawalRequest
 			*/
@@ -628,10 +653,10 @@ describe("IglooFi V1 Vault", async () => {
 					"Should be able to delete WithdrawalRequest..",
 					async () => {
 						await iglooFiV1Vault.deleteWithdrawalRequest(2);
-
-						expect((await iglooFiV1Vault.openWithdrawalRequestIds())[0]).to.be.equal(3);
-
-						expect((await iglooFiV1Vault.openWithdrawalRequestIds()).length).to.be.equal(1);
+						await iglooFiV1Vault.deleteWithdrawalRequest(3);
+						await iglooFiV1Vault.deleteWithdrawalRequest(4);
+						
+						expect((await iglooFiV1Vault.openWithdrawalRequestIds()).length).to.be.equal(0);
 					}
 				);
 			});
