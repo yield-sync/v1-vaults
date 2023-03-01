@@ -729,9 +729,16 @@ describe("IglooFi V1 Vault", async () => {
 							0
 						);
 
-						await iglooFiV1Vault.adminVoteOnWithdrawalRequest(5, true);
+						const openWithdrawalRequestIds = await iglooFiV1Vault.openWithdrawalRequestIds()
 
-						const createdWithdrawalRequest: any = await iglooFiV1Vault.withdrawalRequest(5);
+						await iglooFiV1Vault.adminVoteOnWithdrawalRequest(
+							openWithdrawalRequestIds[openWithdrawalRequestIds.length - 1],
+							true
+						);
+
+						const createdWithdrawalRequest: any = await iglooFiV1Vault.withdrawalRequest(
+							openWithdrawalRequestIds[openWithdrawalRequestIds.length - 1]
+						);
 						
 						expect(createdWithdrawalRequest[8]).to.be.equal(1);
 					}
