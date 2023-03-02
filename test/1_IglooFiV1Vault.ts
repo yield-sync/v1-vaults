@@ -72,6 +72,18 @@ describe("IglooFi V1 Vault", async () => {
 
 			expect(await mockERC721.balanceOf(iglooFiV1Vault.address)).to.equal(1);
 		});
+
+		
+		/**
+		* @dev AccessControlEnumerable
+		*/
+		describe("AccessControlEnumerable", async () => {
+			it("Should allow admin to add another admin..", async () => {
+				const [, , , , addr4] = await ethers.getSigners();
+	
+				await iglooFiV1Vault.grantRole(await iglooFiV1Vault.VOTER(), addr4.address)
+			});
+		});
 		
 		
 		/**
