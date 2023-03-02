@@ -161,7 +161,7 @@ interface IIglooFiV1Vault
 	* @param forERC20 {bool} If to be withdrawn asset is ERC20
 	* @param forERC721 {bool} If to be withdrawn asset is ERC721
 	* @param to {address} Address the withdrawn tokens will be sent
-	* @param tokenAddress {address}
+	* @param tokenAddress {address} Token address contract
 	* @param amount {uint256} Amount to be withdrawn
 	* @param tokenId {uint256} erc721 token id
 	* @return {uint256} `_withdrawalRequestId`
@@ -261,15 +261,13 @@ interface IIglooFiV1Vault
 	;
 
 	/**
-	* @notice Admin Vote on WithdrawalRequest
+	* @notice Update WithdrawalRequest
 	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
 	* @dev [update] `_withdrawalRequest`
 	* @param withdrawalRequestId {uint256}
-	* @param vote {bool} true (approve) or false (deny)
-	* Emits: `WithdrawalRequestReadyToBeProccessed`
-	* Emits: `VoterVoted`
+	* @param newWithdrawalRequest {WithdrawalRequest}
 	*/
-	function adminVoteOnWithdrawalRequest(uint256 withdrawalRequestId, bool vote)
+	function updateWithdrawalRequest(uint256 withdrawalRequestId, WithdrawalRequest memory newWithdrawalRequest)
 		external
 	;
 

@@ -17,77 +17,34 @@ describe("IglooFi V1 Vault", async () => {
 	let signatureManager: Contract;
 	
 	
-	/**
-	 * @notice Deploy contract
-	 * @dev Deploy MockIglooFiGovernance.sol
-	*/
-	before("[before] Deploy IglooFiGovernance.sol contract..", async () => {
+	before("[before] Set up contracts..", async () => {
+		const [owner] = await ethers.getSigners();		
+
 		const MockIglooFiGovernance: ContractFactory = await ethers.getContractFactory("MockIglooFiGovernance");
-
-		mockIglooFiGovernance = await (await MockIglooFiGovernance.deploy()).deployed();
-	});
-
-	/**
-	 * @notice Deploy contract
-	 * @dev Deploy SignatureManager.sol
-	*/
-	before("[before] Deploy SignatureManager.sol contract..", async () => {
 		const SignatureManager: ContractFactory = await ethers.getContractFactory("SignatureManager");
-
-		signatureManager = await (await SignatureManager.deploy(mockIglooFiGovernance.address)).deployed();
-	});
-
-	/**
-	 * @notice Deploy contract
-	 * @dev Deploy IglooFiV1VaultFactory.sol
-	*/
-	before("[before] Deploy IglooFiV1VaultFactory.sol contracts..", async () => {
 		const IglooFiV1VaultFactory: ContractFactory = await ethers.getContractFactory("IglooFiV1VaultFactory");
-
-		iglooFiV1VaultFactory = await (await IglooFiV1VaultFactory.deploy(mockIglooFiGovernance.address)).deployed();
-
-		await iglooFiV1VaultFactory.setPause(false);
-	});
-
-	/**
-	 * @notice Deploy the contracts
-	 * @dev Deploy MockERC20.sol
-	*/
-	before("[before] Deploy MockERC20.sol..", async () => {
 		const MockERC20: ContractFactory = await ethers.getContractFactory("MockERC20");
-
-		mockERC20 = await (await MockERC20.deploy()).deployed();
-	});
-
-	/**
-	 * @notice Deploy the contracts
-	 * @dev Deploy MockERC20.sol
-	*/
-	before("[before] Deploy MockERC721.sol..", async () => {
 		const MockERC721: ContractFactory = await ethers.getContractFactory("MockERC721");
-
-		mockERC721 = await (await MockERC721.deploy()).deployed();
-	});
-
-	/**
-	 * @notice Deploy contract
-	 * @dev Factory Deploy IglooFiV1Vault.sol (IglooFiV1VaultFactory.sol)
-	*/
-	before("[before] Factory deploy IglooFiV1Vault.sol..", async () => {
-		const [owner] = await ethers.getSigners();
-
 		const IglooFiV1Vault: ContractFactory = await ethers.getContractFactory("IglooFiV1Vault");
 		
+		mockIglooFiGovernance = await (await MockIglooFiGovernance.deploy()).deployed();
+		signatureManager = await (await SignatureManager.deploy(mockIglooFiGovernance.address)).deployed();
+		iglooFiV1VaultFactory = await (await IglooFiV1VaultFactory.deploy(mockIglooFiGovernance.address)).deployed();
+		mockERC20 = await (await MockERC20.deploy()).deployed();
+		mockERC721 = await (await MockERC721.deploy()).deployed();
+
+		await iglooFiV1VaultFactory.setPause(false);
+
 		// Deploy a vault
 		await iglooFiV1VaultFactory.deployVault(owner.address, 2, 5, { value: 1 });
 
 		// Attach the deployed vault's address
 		iglooFiV1Vault = await IglooFiV1Vault.attach(iglooFiV1VaultFactory.vaultAddress(0));
+
+		console.log("Staged successfully");
 	});
 
-	/**
-	* @dev IglooFiV1Vault.sol
-	*/
+
 	describe("IglooFiV1Vault.sol Contract", async () => {
 		it("Should be able to recieve ether..", async () => {
 			const [, addr1] = await ethers.getSigners();
@@ -95,7 +52,7 @@ describe("IglooFi V1 Vault", async () => {
 			// Send ether to IglooFiV1VaultFactory contract
 			await addr1.sendTransaction({
 				to: iglooFiV1Vault.address,
-				value: ethers.utils.parseEther("1"),
+				value: ethers.utils.parseEther("1")
 			});
 
 			await expect(

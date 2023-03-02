@@ -9,22 +9,11 @@ describe("IglooFi V1 Vault Factory", async () => {
 	let iglooFiV1VaultFactory: Contract;
 	
 
-	/**
-	 * @dev Deploy MockIglooFiGovernance.sol
-	*/
-	before("[before] Deploy MockIglooFiGovernance.sol contract..", async () => {
+	before("[before] Set up contracts..", async () => {
 		const MockIglooFiGovernance: ContractFactory = await ethers.getContractFactory("MockIglooFiGovernance");
-
-		mockIglooFiGovernance = await (await MockIglooFiGovernance.deploy()).deployed();
-	});
-
-
-	/**
-	 * @dev Deploy IglooFiV1VaultFactory.sol
-	*/
-	before("[before] Deploy IglooFiV1VaultFactory.sol contracts..", async () => {
 		const IglooFiV1VaultFactory: ContractFactory = await ethers.getContractFactory("IglooFiV1VaultFactory");
-
+		
+		mockIglooFiGovernance = await (await MockIglooFiGovernance.deploy()).deployed();
 		iglooFiV1VaultFactory = await (await IglooFiV1VaultFactory.deploy(mockIglooFiGovernance.address)).deployed();
 	});
 

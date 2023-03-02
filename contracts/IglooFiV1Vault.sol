@@ -222,7 +222,6 @@ contract IglooFiV1Vault is
 		// [update] `_withdrawalRequest[withdrawalRequestId].votedVoters` → Add _msgSender()
 		_withdrawalRequest[withdrawalRequestId].votedVoters.push(_msgSender());
 
-		// If the required signatures has not yet been reached..
 		if (_withdrawalRequest[withdrawalRequestId].voteCount < requiredVoteCount)
 		{
 			// [update] latestRelevantApproveVoteTime timestamp
@@ -342,29 +341,15 @@ contract IglooFiV1Vault is
 	}
 
 	/// @inheritdoc IIglooFiV1Vault
-	function adminVoteOnWithdrawalRequest(uint256 withdrawalRequestId, bool vote)
+	function updateWithdrawalRequest(uint256 withdrawalRequestId, WithdrawalRequest memory newWithdrawalRequest)
 		public
 		override
 		onlyRole(DEFAULT_ADMIN_ROLE)
 		validWithdrawalRequest(withdrawalRequestId)
 	{
-		if (vote)
-		{
-			// [update] `_withdrawalRequest` → [increment] Approve vote count
-			_withdrawalRequest[withdrawalRequestId].voteCount++;
+		// [add] `_withdrawalRequest` value
+		_withdrawalRequest[withdrawalRequestId] = newWithdrawalRequest;
 
-			// If required signatures met..
-			if (_withdrawalRequest[withdrawalRequestId].voteCount >= requiredVoteCount)
-			{
-				// [emit]
-				emit WithdrawalRequestReadyToBeProccessed(withdrawalRequestId);
-			}
-		}
-
-		// [emit]
-		emit VoterVoted(withdrawalRequestId, _msgSender(), vote);
-
-		// If the required signatures has not yet been reached..
 		if (_withdrawalRequest[withdrawalRequestId].voteCount < requiredVoteCount)
 		{
 			// [update] latestRelevantApproveVoteTime timestamp
