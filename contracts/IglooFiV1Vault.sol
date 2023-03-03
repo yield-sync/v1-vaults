@@ -341,20 +341,22 @@ contract IglooFiV1Vault is
 	}
 
 	/// @inheritdoc IIglooFiV1Vault
-	function updateWithdrawalRequest(uint256 withdrawalRequestId, WithdrawalRequest memory newWithdrawalRequest)
+	function updateWithdrawalRequest(uint256 withdrawalRequestId, WithdrawalRequest memory __withdrawalRequest)
 		public
 		override
 		onlyRole(DEFAULT_ADMIN_ROLE)
 		validWithdrawalRequest(withdrawalRequestId)
 	{
-		// [add] `_withdrawalRequest` value
-		_withdrawalRequest[withdrawalRequestId] = newWithdrawalRequest;
+		// [update] `_withdrawalRequest`
+		_withdrawalRequest[withdrawalRequestId] = __withdrawalRequest;
 
 		if (_withdrawalRequest[withdrawalRequestId].voteCount < requiredVoteCount)
 		{
-			// [update] latestRelevantApproveVoteTime timestamp
+			// [update] `withdrawalRequest.latestRelevantApproveVoteTime`
 			_withdrawalRequest[withdrawalRequestId].latestRelevantApproveVoteTime = block.timestamp;
 		}
+
+		emit UpdatedWithdrawalRequest(__withdrawalRequest);
 	}
 
 	/// @inheritdoc IIglooFiV1Vault
@@ -366,5 +368,7 @@ contract IglooFiV1Vault is
 	{
 		// [call][internal]
 		_deleteWithdrawalRequest(withdrawalRequestId);
+
+		emit DeletedWithdrawalRequest(withdrawalRequestId);
 	}
 }

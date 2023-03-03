@@ -59,12 +59,14 @@ interface IIglooFiV1Vault
 	event UpdatedWithdrawalDelaySeconds(uint256 withdrawalDelaySeconds);
 
 	/**
-	* @dev Emits when `_withdrawalRequest[withdrawalRequestId].latestRelevantApproveVoteTime` is updated
+	* @dev Emits when a `WithdrawalRequest` is updated
 	*/
-	event UpdatedWithdrawalRequestLastSignificantApproveVote(
-		uint256 withdrawalRequestId,
-		uint256 latestRelevantApproveVoteTime
-	);
+	event UpdatedWithdrawalRequest(WithdrawalRequest withdrawalRequest);
+
+	/**
+	* @dev Emits when a `WithdrawalRequest` is updated
+	*/
+	event DeleteWithdrawalRequest(uint256 withdrawalRequestId);
 
 
 	receive ()
@@ -127,7 +129,7 @@ interface IIglooFiV1Vault
 
 
 	/**
-	* @notice Getter for active WithdrawlRequests
+	* @notice Getter for active withdrawlRequests
 	* @dev [!restriction]
 	* @dev [view-uint256[]]
 	* @return {uint256[]}
@@ -152,7 +154,7 @@ interface IIglooFiV1Vault
 
 
 	/**
-	* @notice Create a WithdrawalRequest
+	* @notice Create a withdrawalRequest
 	* @dev [restriction] AccessControlEnumerable → VOTER
 	* @dev [increment] `_withdrawalRequestId`
 	*      [add] `_withdrawalRequest` value
@@ -181,7 +183,7 @@ interface IIglooFiV1Vault
 	;
 
 	/**
-	* @notice Vote on WithdrawalRequest
+	* @notice Vote on withdrawalRequest
 	* @dev [restriction] AccessControlEnumerable → VOTER
 	* @dev [update] `_withdrawalRequest`
 	*      [update] `_withdrawalRequestVotedVoters`
@@ -195,7 +197,7 @@ interface IIglooFiV1Vault
 	;
 
 	/**
-	* @notice Process WithdrawalRequest with given `withdrawalRequestId`
+	* @notice Process withdrawalRequest with given `withdrawalRequestId`
 	* @dev [restriction] AccessControlEnumerable → VOTER
 	* @dev [erc20-transfer]
 	*      [decrement] `_tokenBalance`
@@ -261,18 +263,19 @@ interface IIglooFiV1Vault
 	;
 
 	/**
-	* @notice Update WithdrawalRequest
+	* @notice Update withdrawalRequest
 	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
 	* @dev [update] `_withdrawalRequest`
 	* @param withdrawalRequestId {uint256}
-	* @param newWithdrawalRequest {WithdrawalRequest}
+	* @param __withdrawalRequest {WithdrawalRequest}
+	* Emits: `UpdatedWithdrawalRequest`
 	*/
-	function updateWithdrawalRequest(uint256 withdrawalRequestId, WithdrawalRequest memory newWithdrawalRequest)
+	function updateWithdrawalRequest(uint256 withdrawalRequestId, WithdrawalRequest memory __withdrawalRequest)
 		external
 	;
 
 	/**
-	* @notice Delete WithdrawalRequest & all associated values
+	* @notice Delete withdrawalRequest & all associated values
 	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
 	* @dev [call][internal] {_deleteWithdrawalRequest}
 	* @param withdrawalRequestId {uint256}
