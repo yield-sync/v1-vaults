@@ -8,6 +8,44 @@ const sevenDaysInSeconds = 7 * 24 * 60 * 60;
 const sixDaysInSeconds = 6 * 24 * 60 * 60;
 
 
+const stageContracts = async () => {
+	const [owner] = await ethers.getSigners();
+
+	const MockIglooFiGovernance: ContractFactory = await ethers.getContractFactory("MockIglooFiGovernance");
+	const SignatureManager: ContractFactory = await ethers.getContractFactory("SignatureManager");
+	const IglooFiV1VaultFactory: ContractFactory = await ethers.getContractFactory("IglooFiV1VaultFactory");
+	const MockERC20: ContractFactory = await ethers.getContractFactory("MockERC20");
+	const MockERC721: ContractFactory = await ethers.getContractFactory("MockERC721");
+	const IglooFiV1Vault: ContractFactory = await ethers.getContractFactory("IglooFiV1Vault");
+	
+	const mockIglooFiGovernance: Contract = await (await MockIglooFiGovernance.deploy()).deployed();
+	
+	const iglooFiV1VaultFactory: Contract = await (await IglooFiV1VaultFactory.deploy(mockIglooFiGovernance.address)).deployed();
+	await iglooFiV1VaultFactory.setPause(false);
+	
+	// Deploy a vault
+	await iglooFiV1VaultFactory.deployVault(owner.address, 2, 5, { value: 1 });
+
+	// Attach the deployed vault's address
+	const iglooFiV1Vault: Contract = await IglooFiV1Vault.attach(iglooFiV1VaultFactory.vaultAddress(0));
+	
+	const signatureManager: Contract = await (await SignatureManager.deploy(mockIglooFiGovernance.address)).deployed();
+	
+	const mockERC20: Contract = await (await MockERC20.deploy()).deployed();
+	
+	const mockERC721: Contract = await (await MockERC721.deploy()).deployed();
+
+	return {
+		mockIglooFiGovernance,
+		iglooFiV1VaultFactory,
+		iglooFiV1Vault,
+		mockERC20,
+		mockERC721,
+		signatureManager
+	};
+};
+
+
 describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 	let mockIglooFiGovernance: Contract;
 	let iglooFiV1VaultFactory: Contract;
@@ -18,28 +56,14 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 
 
 	before("[before] Set up contracts..", async () => {
-		const [owner] = await ethers.getSigners();
+		const stagedContracts = await stageContracts();
 
-		const MockIglooFiGovernance: ContractFactory = await ethers.getContractFactory("MockIglooFiGovernance");
-		const SignatureManager: ContractFactory = await ethers.getContractFactory("SignatureManager");
-		const IglooFiV1VaultFactory: ContractFactory = await ethers.getContractFactory("IglooFiV1VaultFactory");
-		const MockERC20: ContractFactory = await ethers.getContractFactory("MockERC20");
-		const MockERC721: ContractFactory = await ethers.getContractFactory("MockERC721");
-		const IglooFiV1Vault: ContractFactory = await ethers.getContractFactory("IglooFiV1Vault");
-		
-		mockIglooFiGovernance = await (await MockIglooFiGovernance.deploy()).deployed();
-		signatureManager = await (await SignatureManager.deploy(mockIglooFiGovernance.address)).deployed();
-		iglooFiV1VaultFactory = await (await IglooFiV1VaultFactory.deploy(mockIglooFiGovernance.address)).deployed();
-		mockERC20 = await (await MockERC20.deploy()).deployed();
-		mockERC721 = await (await MockERC721.deploy()).deployed();
-
-		await iglooFiV1VaultFactory.setPause(false);
-
-		// Deploy a vault
-		await iglooFiV1VaultFactory.deployVault(owner.address, 2, 5, { value: 1 });
-
-		// Attach the deployed vault's address
-		iglooFiV1Vault = await IglooFiV1Vault.attach(iglooFiV1VaultFactory.vaultAddress(0));
+		mockIglooFiGovernance = stagedContracts.mockIglooFiGovernance;
+		iglooFiV1VaultFactory = stagedContracts.iglooFiV1VaultFactory
+		iglooFiV1Vault = stagedContracts.iglooFiV1Vault
+		mockERC20 = stagedContracts.mockERC20
+		mockERC721 = stagedContracts.mockERC721
+		signatureManager = stagedContracts.signatureManager
 	});
 
 
@@ -680,7 +704,7 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 	* @dev Restriction: DEFAULT_ADMIN_ROLE
 	*/
 	describe("Restriction: DEFAULT_ADMIN_ROLE", async () => {
-		describe("adminVoteOnWithdrawalRequest", async () => {
+		describe("Update WitdrawalRequest", async () => {
 			it(
 				"Should be able update WithdrawalRequest.voteCount..",
 				async () => {
@@ -726,12 +750,7 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 					expect(updatedWithdrawalRequest[8]).to.be.equal(1);
 				}
 			);
-		});
 		
-		/**
-		 * @dev deleteWithdrawalRequest
-		*/
-		describe("updateWithdrawalRequestLatestRelevantApproveVoteTime", async () => {
 			it(
 				"Should update the latestRelevantApproveVoteTime to ADD seconds..",
 				async () => {
@@ -759,11 +778,7 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 			);
 		});
 
-
-		/**
-		 * @dev deleteWithdrawalRequest
-		*/
-		describe("deleteWithdrawalRequest", async () => {
+		describe("Delete WithdrawalRequest", async () => {
 			it(
 				"Should revert when unauthorized msg.sender calls..",
 				async () => {
