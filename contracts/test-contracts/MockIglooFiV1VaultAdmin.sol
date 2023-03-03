@@ -2,13 +2,25 @@
 pragma solidity ^0.8.18;
 
 
+import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
+import { IAccessControlEnumerable } from "@openzeppelin/contracts/access/IAccessControlEnumerable.sol";
+
 import { IIglooFiV1Vault, WithdrawalRequest } from "../interface/IIglooFiV1Vault.sol";
 
 
-contract MockIglooFiV1VaultAdmin {
-	mapping (address => bool) public adminOverIglooFiV1Vault;
+contract MockIglooFiV1VaultAdmin is Ownable {
+	modifier isAdminOverIglooFiV1Vault(address iglooFiV1Vault) {
+		require(
+			IAccessControlEnumerable(payable(iglooFiV1Vault)).hasRole(
+				IIglooFiV1Vault(payable(iglooFiV1Vault)).VOTER(),
+				address(this)
+			), 
+			"Not admin over"
+		);
 
-
+		_;
+	}
+	
 	modifier validWithdrawalRequest(address iglooFiV1Vault, uint256 withdrawalRequestId) {
 		// [require] WithdrawalRequest exists
 		require(
@@ -16,8 +28,6 @@ contract MockIglooFiV1VaultAdmin {
 			"No WithdrawalRequest found"
 		);
 		
-		_;
-
 		_;
 	}
 
@@ -29,6 +39,7 @@ contract MockIglooFiV1VaultAdmin {
 		uint256 timeInSeconds
 	)
 		public
+		isAdminOverIglooFiV1Vault(iglooFiV1Vault)
 		validWithdrawalRequest(iglooFiV1Vault, withdrawalRequestId)
 	{
 		WithdrawalRequest memory wR = IIglooFiV1Vault(payable(iglooFiV1Vault)).withdrawalRequest(withdrawalRequestId);
@@ -43,7 +54,6 @@ contract MockIglooFiV1VaultAdmin {
 			// [update] WithdrawalRequest within `_withdrawalRequest`
 			wR.latestRelevantApproveVoteTime -= (timeInSeconds * 1 seconds);
 		}
-
 
 		IIglooFiV1Vault(payable(iglooFiV1Vault)).updateWithdrawalRequest(withdrawalRequestId, wR);
 	}
