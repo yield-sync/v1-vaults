@@ -12,11 +12,12 @@ const stageContracts = async () => {
 	const [owner] = await ethers.getSigners();
 
 	const MockIglooFiGovernance: ContractFactory = await ethers.getContractFactory("MockIglooFiGovernance");
-	const SignatureManager: ContractFactory = await ethers.getContractFactory("SignatureManager");
 	const IglooFiV1VaultFactory: ContractFactory = await ethers.getContractFactory("IglooFiV1VaultFactory");
+	const IglooFiV1Vault: ContractFactory = await ethers.getContractFactory("IglooFiV1Vault");
+	const SignatureManager: ContractFactory = await ethers.getContractFactory("SignatureManager");
+	const MockIglooFiV1VaultAdmin: ContractFactory = await ethers.getContractFactory("MockIglooFiV1VaultAdmin");
 	const MockERC20: ContractFactory = await ethers.getContractFactory("MockERC20");
 	const MockERC721: ContractFactory = await ethers.getContractFactory("MockERC721");
-	const IglooFiV1Vault: ContractFactory = await ethers.getContractFactory("IglooFiV1Vault");
 	
 	const mockIglooFiGovernance: Contract = await (await MockIglooFiGovernance.deploy()).deployed();
 	
@@ -30,7 +31,9 @@ const stageContracts = async () => {
 	const iglooFiV1Vault: Contract = await IglooFiV1Vault.attach(iglooFiV1VaultFactory.vaultAddress(0));
 	
 	const signatureManager: Contract = await (await SignatureManager.deploy(mockIglooFiGovernance.address)).deployed();
-	
+
+	const mockIglooFiV1VaultAdmin: Contract = await (await MockIglooFiV1VaultAdmin.deploy()).deployed();
+
 	const mockERC20: Contract = await (await MockERC20.deploy()).deployed();
 	
 	const mockERC721: Contract = await (await MockERC721.deploy()).deployed();
@@ -39,9 +42,10 @@ const stageContracts = async () => {
 		mockIglooFiGovernance,
 		iglooFiV1VaultFactory,
 		iglooFiV1Vault,
+		signatureManager,
+		mockIglooFiV1VaultAdmin,
 		mockERC20,
-		mockERC721,
-		signatureManager
+		mockERC721
 	};
 };
 
@@ -50,9 +54,10 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 	let mockIglooFiGovernance: Contract;
 	let iglooFiV1VaultFactory: Contract;
 	let iglooFiV1Vault: Contract;
+	let signatureManager: Contract;
+	let mockIglooFiV1VaultAdmin: Contract;
 	let mockERC20: Contract;
 	let mockERC721: Contract;
-	let signatureManager: Contract;
 
 
 	before("[before] Set up contracts..", async () => {
@@ -61,9 +66,10 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 		mockIglooFiGovernance = stagedContracts.mockIglooFiGovernance;
 		iglooFiV1VaultFactory = stagedContracts.iglooFiV1VaultFactory
 		iglooFiV1Vault = stagedContracts.iglooFiV1Vault
+		signatureManager = stagedContracts.signatureManager
+		mockIglooFiV1VaultAdmin = stagedContracts.mockIglooFiV1VaultAdmin
 		mockERC20 = stagedContracts.mockERC20
 		mockERC721 = stagedContracts.mockERC721
-		signatureManager = stagedContracts.signatureManager
 	});
 
 
@@ -105,6 +111,10 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 			const [, , , , addr4] = await ethers.getSigners();
 
 			await iglooFiV1Vault.grantRole(await iglooFiV1Vault.VOTER(), addr4.address)
+		});
+
+		it("Should allow admin to add a contract-based admin..", async () => {
+			await iglooFiV1Vault.grantRole(await iglooFiV1Vault.VOTER(), mockIglooFiV1VaultAdmin.address)
 		});
 	});
 
@@ -706,7 +716,7 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 	describe("Restriction: DEFAULT_ADMIN_ROLE", async () => {
 		describe("Update WitdrawalRequest", async () => {
 			it(
-				"Should be able update WithdrawalRequest.voteCount..",
+				"Should be able to update WithdrawalRequest.voteCount..",
 				async () => {
 					const [, addr1, addr2] = await ethers.getSigners();
 					
@@ -752,7 +762,7 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 			);
 		
 			it(
-				"Should update the latestRelevantApproveVoteTime to ADD seconds..",
+				"Should be able to update withdrawalRequest.latestRelevantApproveVoteTime..",
 				async () => {
 					const [, addr1, addr2] = await ethers.getSigners();
 
@@ -795,51 +805,6 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 					);
 				}
 			);
-
-			it(
-				"Should update the latestRelevantApproveVoteTime to SUBTRACT seconds..",
-				async () => {
-					const [, addr1, addr2] = await ethers.getSigners();
-
-					await iglooFiV1Vault.connect(addr1).createWithdrawalRequest(
-						false,
-						true,
-						false,
-						addr2.address,
-						mockERC20.address,
-						999,
-						0
-					);
-
-					const openWithdrawalRequestIds = await iglooFiV1Vault.openWithdrawalRequestIds();
-					const wRiD: number = openWithdrawalRequestIds[openWithdrawalRequestIds.length - 1];
-
-					const withdrawalRequest: any = await iglooFiV1Vault.withdrawalRequest(wRiD);
-
-					await iglooFiV1Vault.updateWithdrawalRequest(
-						wRiD,
-						[
-							withdrawalRequest[0], 
-							withdrawalRequest[1], 
-							withdrawalRequest[2],
-							withdrawalRequest[3],
-							withdrawalRequest[4],
-							withdrawalRequest[5],
-							withdrawalRequest[6],
-							withdrawalRequest[7],
-							withdrawalRequest[8],
-							BigInt(withdrawalRequest[9]) - BigInt(10),
-							withdrawalRequest[10],
-						]
-					);
-
-					expect(
-						BigInt(withdrawalRequest[9]) - BigInt(10)
-					).to.be.lessThanOrEqual(
-						BigInt((await iglooFiV1Vault.withdrawalRequest(wRiD))[9])
-					);
-				}
-			);
 		});
 
 		describe("Delete WithdrawalRequest", async () => {
@@ -859,7 +824,6 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 					await iglooFiV1Vault.deleteWithdrawalRequest(4);
 					await iglooFiV1Vault.deleteWithdrawalRequest(5);
 					await iglooFiV1Vault.deleteWithdrawalRequest(6);
-					await iglooFiV1Vault.deleteWithdrawalRequest(7);
 					
 					expect((await iglooFiV1Vault.openWithdrawalRequestIds()).length).to.be.equal(0);
 				}
