@@ -276,22 +276,13 @@ contract IglooFiV1Vault is
 
 
 	/// @inheritdoc IIglooFiV1Vault
-	function updateSignatureManager(address _signatureManager)
-		public
-		override
-		onlyRole(DEFAULT_ADMIN_ROLE)
-	{
-		signatureManager = _signatureManager;
-	}
-
-	/// @inheritdoc IIglooFiV1Vault
-	function addVoter(address a)
+	function addVoter(address targetAddress)
 		public
 		override
 		onlyRole(DEFAULT_ADMIN_ROLE)
 	{
 		// [add] address to VOTER on `AccessControlEnumerable`
-		_setupRole(VOTER, a);
+		_setupRole(VOTER, targetAddress);
 	}
 
 	/// @inheritdoc IIglooFiV1Vault
@@ -302,6 +293,15 @@ contract IglooFiV1Vault is
 	{
 		// [remove] address with VOTER on `AccessControlEnumerable`
 		_revokeRole(VOTER, voter);
+	}
+
+		/// @inheritdoc IIglooFiV1Vault
+	function updateSignatureManager(address _signatureManager)
+		public
+		override
+		onlyRole(DEFAULT_ADMIN_ROLE)
+	{
+		signatureManager = _signatureManager;
 	}
 
 	/// @inheritdoc IIglooFiV1Vault

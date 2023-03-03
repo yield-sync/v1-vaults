@@ -204,22 +204,12 @@ interface IIglooFiV1Vault
 
 
 	/**
-	* @notice Update Signature Manager Contract
-	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
-	* @dev [update] `signatureManager`
-	* @param _signatureManager {address}
-	*/
-	function updateSignatureManager(address _signatureManager)
-		external
-	;
-
-	/**
 	* @notice Assign VOTER to an address on AccessControlEnumerable
 	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
 	* @dev [add] address to VOTER on `AccessControlEnumerable`
-	* @param a {address}
+	* @param targetAddress {address}
 	*/
-	function addVoter(address a)
+	function addVoter(address targetAddress)
 		external
 	;
 
@@ -230,6 +220,16 @@ interface IIglooFiV1Vault
 	* @param voter {address} Address of the voter to remove
 	*/	
 	function removeVoter(address voter)
+		external
+	;
+
+	/**
+	* @notice Update Signature Manager Contract
+	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
+	* @dev [update] `signatureManager`
+	* @param _signatureManager {address}
+	*/
+	function updateSignatureManager(address _signatureManager)
 		external
 	;
 
