@@ -104,9 +104,6 @@ contract IglooFiV1Vault is
 				break;
 			}
 		}
-
-		// [emit]
-		emit DeletedWithdrawalRequest(withdrawalRequestId);
 	}
 
 
@@ -155,7 +152,6 @@ contract IglooFiV1Vault is
 		public
 		override
 		onlyRole(VOTER)
-		returns (uint256)
 	{
 		require(amount > 0, "!amount");
 
@@ -181,13 +177,11 @@ contract IglooFiV1Vault is
 		// [push-into] `_openWithdrawalRequestIds`
 		_openWithdrawalRequestIds.push(_withdrawalRequestIdTracker);
 
-		// [emit]
-		emit CreatedWithdrawalRequest(_withdrawalRequestIdTracker);
-
 		// [increment] `_withdrawalRequestIdTracker`
 		_withdrawalRequestIdTracker++;
-		
-		return _withdrawalRequestIdTracker - 1;
+
+		// [emit]
+		emit CreatedWithdrawalRequest(_withdrawalRequestIdTracker - 1);
 	}
 
 	/// @inheritdoc IIglooFiV1Vault

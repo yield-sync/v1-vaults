@@ -24,11 +24,6 @@ struct WithdrawalRequest {
 interface IIglooFiV1Vault
 {
 	/**
-	* @dev Emits when a `WithdrawalRequest` is deleted
-	*/
-	event DeletedWithdrawalRequest(uint256 withdrawalRequest);
-
-	/**
 	* @dev Emits when a `WithdrawalRequest` is created
 	*/
 	event CreatedWithdrawalRequest(uint256 withdrawalRequest);
@@ -66,7 +61,7 @@ interface IIglooFiV1Vault
 	/**
 	* @dev Emits when a `WithdrawalRequest` is updated
 	*/
-	event DeleteWithdrawalRequest(uint256 withdrawalRequestId);
+	event DeletedWithdrawalRequest(uint256 withdrawalRequestId);
 
 
 	receive ()
@@ -166,7 +161,6 @@ interface IIglooFiV1Vault
 	* @param tokenAddress {address} Token address contract
 	* @param amount {uint256} Amount to be withdrawn
 	* @param tokenId {uint256} erc721 token id
-	* @return {uint256} `_withdrawalRequestId`
 	* Emits: `CreatedWithdrawalRequest`
 	*/
 	function createWithdrawalRequest(
@@ -179,7 +173,6 @@ interface IIglooFiV1Vault
 		uint256 tokenId
 	)
 		external
-		returns (uint256)
 	;
 
 	/**
