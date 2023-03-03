@@ -29,10 +29,10 @@ contract SignatureManager is
 	bytes4 public constant ERC1271_MAGIC_VALUE = 0x1626ba7e;
 
 	// [mapping][internal]
-	mapping (address iglooFiV1VaultAddress => bytes32[] messageHash) internal _vaultMessageHashes;
-	mapping (
-		address iglooFiV1VaultAddress => mapping (bytes32 messageHash => MessageHashData messageHashData)
-	) internal _vaultMessageHashData;
+	// iglooFiV1VaultAddress => messageHash
+	mapping (address => bytes32[]) internal _vaultMessageHashes;
+	// iglooFiV1VaultAddress => (messageHash => messageHashData)
+	mapping (address => mapping (bytes32 => MessageHashData)) internal _vaultMessageHashData;
 
 
 	constructor (address _iglooFiGovernance)
