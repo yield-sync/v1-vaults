@@ -137,6 +137,19 @@ contract IglooFiV1VaultFactory is
 		}
 	}
 
+
+	/// @inheritdoc IIglooFiV1VaultFactory
+	function updateDefaultSignatureManager(address _defaultSignatureManager)
+		public
+		override
+		whenNotPaused()
+		onlyIglooFiGovernanceAdmin()
+	{
+		defaultSignatureManager = _defaultSignatureManager;
+
+		emit UpdatedDefaultSignatureManager(defaultSignatureManager);
+	}
+
 	/// @inheritdoc IIglooFiV1VaultFactory
 	function updateFee(uint256 _fee)
 		public
@@ -159,16 +172,5 @@ contract IglooFiV1VaultFactory is
 		(bool success, ) = transferTo.call{value: address(this).balance}("");
 
 		require(success, "Failed");
-	}
-
-
-	/// @inheritdoc IIglooFiV1VaultFactory
-	function updateDefaultSignatureManager(address _defaultSignatureManager)
-		public
-		override
-		whenNotPaused()
-		onlyIglooFiGovernanceAdmin()
-	{
-		defaultSignatureManager = _defaultSignatureManager;
 	}
 }

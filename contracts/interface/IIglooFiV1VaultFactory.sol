@@ -13,6 +13,11 @@ interface IIglooFiV1VaultFactory {
 	event VaultDeployed(address indexed vaultAddress);
 
 	/**
+	* @dev Emits when a `defaultSignatureManager` is updated
+	*/
+	event UpdatedDefaultSignatureManager(address defaultSignatureManager);
+
+	/**
 	* @dev Emits when a `fee` is updated
 	*/
 	event UpdatedFee(uint256 fee);
@@ -113,6 +118,16 @@ interface IIglooFiV1VaultFactory {
 	;
 
 	/**
+	* @notice Updates default signature manager
+	* @dev [restriction] IIglooFiGovernance AccessControlEnumerable → DEFAULT_ADMIN_ROLE
+	* @dev [update] `defaultSignatureManager`
+	* @param _defaultSignatureManager {address}
+	*/
+	function updateDefaultSignatureManager(address _defaultSignatureManager)
+		external
+	;
+
+	/**
 	* @notice Update fee
 	* @dev [restriction] IIglooFiGovernance AccessControlEnumerable → DEFAULT_ADMIN_ROLE
 	* @dev [update] `fee`
@@ -129,16 +144,6 @@ interface IIglooFiV1VaultFactory {
 	* @param transferTo {uint256}
 	*/
 	function transferFunds(address transferTo)
-		external
-	;
-
-	/**
-	* @notice Updates default signature manager
-	* @dev [restriction] IIglooFiGovernance AccessControlEnumerable → DEFAULT_ADMIN_ROLE
-	* @dev [update] `defaultSignatureManager`
-	* @param _defaultSignatureManager {address}
-	*/
-	function updateDefaultSignatureManager(address _defaultSignatureManager)
 		external
 	;
 }
