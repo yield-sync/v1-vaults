@@ -9,10 +9,10 @@ import { IIglooFiV1Vault, WithdrawalRequest } from "../interface/IIglooFiV1Vault
 
 
 contract MockIglooFiV1VaultAdmin is Ownable {
-	modifier isAdminOverIglooFiV1Vault(address iglooFiV1Vault) {
+	modifier isAdminOverIglooFiV1Vault(address iglooFiV1VaultAddress) {
 		require(
-			IAccessControlEnumerable(payable(iglooFiV1Vault)).hasRole(
-				IIglooFiV1Vault(payable(iglooFiV1Vault)).VOTER(),
+			IAccessControlEnumerable(payable(iglooFiV1VaultAddress)).hasRole(
+				IIglooFiV1Vault(payable(iglooFiV1VaultAddress)).VOTER(),
 				address(this)
 			), 
 			"Not admin over"
@@ -21,10 +21,12 @@ contract MockIglooFiV1VaultAdmin is Ownable {
 		_;
 	}
 	
-	modifier validWithdrawalRequest(address iglooFiV1Vault, uint256 withdrawalRequestId) {
+	modifier validWithdrawalRequest(address iglooFiV1VaultAddress, uint256 withdrawalRequestId) {
 		// [require] WithdrawalRequest exists
 		require(
-			IIglooFiV1Vault(payable(iglooFiV1Vault)).withdrawalRequest(withdrawalRequestId).creator != address(0),
+			IIglooFiV1Vault(payable(iglooFiV1VaultAddress)).withdrawalRequest(
+				withdrawalRequestId
+			).creator != address(0),
 			"No WithdrawalRequest found"
 		);
 		
@@ -33,16 +35,18 @@ contract MockIglooFiV1VaultAdmin is Ownable {
 
 
 	function updateWithdrawalRequestLatestRelevantApproveVoteTime(
-		address iglooFiV1Vault,
+		address iglooFiV1VaultAddress,
 		uint256 withdrawalRequestId,
 		bool arithmaticSign,
 		uint256 timeInSeconds
 	)
 		public
-		isAdminOverIglooFiV1Vault(iglooFiV1Vault)
-		validWithdrawalRequest(iglooFiV1Vault, withdrawalRequestId)
+		isAdminOverIglooFiV1Vault(iglooFiV1VaultAddress)
+		validWithdrawalRequest(iglooFiV1VaultAddress, withdrawalRequestId)
 	{
-		WithdrawalRequest memory wR = IIglooFiV1Vault(payable(iglooFiV1Vault)).withdrawalRequest(withdrawalRequestId);
+		WithdrawalRequest memory wR = IIglooFiV1Vault(payable(iglooFiV1VaultAddress)).withdrawalRequest(
+			withdrawalRequestId
+		);
 
 		if (arithmaticSign)
 		{
@@ -55,6 +59,6 @@ contract MockIglooFiV1VaultAdmin is Ownable {
 			wR.latestRelevantApproveVoteTime -= (timeInSeconds * 1 seconds);
 		}
 
-		IIglooFiV1Vault(payable(iglooFiV1Vault)).updateWithdrawalRequest(withdrawalRequestId, wR);
+		IIglooFiV1Vault(payable(iglooFiV1VaultAddress)).updateWithdrawalRequest(withdrawalRequestId, wR);
 	}
 }

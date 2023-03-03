@@ -28,7 +28,7 @@ contract IglooFiV1VaultFactory is
 
 	// [mapping][internal]
 	// iglooFiV1VaultId => iglooFiV1VaultAddress
-	mapping (uint256 => address) internal _vaultAddress;
+	mapping (uint256 => address) internal _iglooFiV1VaultAddress;
 
 
 	constructor (address _iglooFiGovernance)
@@ -71,13 +71,13 @@ contract IglooFiV1VaultFactory is
 
 
 	/// @inheritdoc IIglooFiV1VaultFactory
-	function vaultAddress(uint256 iglooFiV1VaultAddress)
+	function iglooFiV1VaultAddress(uint256 iglooFiV1VaultId)
 		public
 		view
 		override
 		returns (address)
 	{
-		return _vaultAddress[iglooFiV1VaultAddress];
+		return _iglooFiV1VaultAddress[iglooFiV1VaultId];
 	}
 
 
@@ -106,7 +106,7 @@ contract IglooFiV1VaultFactory is
 		);
 
 		// Register vault
-		_vaultAddress[_vaultIdTracker] = address(deployedContract);
+		_iglooFiV1VaultAddress[_vaultIdTracker] = address(deployedContract);
 
 		// [increment] vaultId
 		_vaultIdTracker++;

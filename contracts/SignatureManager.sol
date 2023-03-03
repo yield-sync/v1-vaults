@@ -77,35 +77,35 @@ contract SignatureManager is
 
 
 	/// @inheritdoc ISignatureManager
-	function vaultMessageHashes(address iglooFiV1Vault)
+	function vaultMessageHashes(address iglooFiV1VaultAddress)
 		public
 		view
 		override
 		returns (bytes32[] memory)
 	{
-		return _vaultMessageHashes[iglooFiV1Vault];
+		return _vaultMessageHashes[iglooFiV1VaultAddress];
 	}
 	
 	/// @inheritdoc ISignatureManager
-	function vaultMessageHashData(address iglooFiV1Vault, bytes32 messageHash)
+	function vaultMessageHashData(address iglooFiV1VaultAddress, bytes32 messageHash)
 		public
 		view
 		override
 		returns (MessageHashData memory)
 	{
-		return _vaultMessageHashData[iglooFiV1Vault][messageHash];
+		return _vaultMessageHashData[iglooFiV1VaultAddress][messageHash];
 	}
 
 	
 	/// @inheritdoc ISignatureManager
-	function signMessageHash(address iglooFiV1Vault, bytes32 messageHash, bytes memory signature)
+	function signMessageHash(address iglooFiV1VaultAddress, bytes32 messageHash, bytes memory signature)
 		public
 		override
 		whenNotPaused()
 	{
-		require(IIglooFiV1Vault(payable(iglooFiV1Vault)).hasRole(VOTER, _msgSender()), "!auth");
+		require(IIglooFiV1Vault(payable(iglooFiV1VaultAddress)).hasRole(VOTER, _msgSender()), "!auth");
 
-		MessageHashData memory vMHD = _vaultMessageHashData[iglooFiV1Vault][messageHash];
+		MessageHashData memory vMHD = _vaultMessageHashData[iglooFiV1VaultAddress][messageHash];
 
 		for (uint i = 0; i < vMHD.signedVoters.length; i++) {
 			require(vMHD.signedVoters[i] != _msgSender(), "Already signed");
@@ -116,20 +116,20 @@ contract SignatureManager is
 
 			address recovered = ECDSA.recover(ECDSA.toEthSignedMessageHash(messageHash), signature);
 
-			require(IIglooFiV1Vault(payable(iglooFiV1Vault)).hasRole(VOTER, recovered), "!auth");
+			require(IIglooFiV1Vault(payable(iglooFiV1VaultAddress)).hasRole(VOTER, recovered), "!auth");
 
-			_vaultMessageHashData[iglooFiV1Vault][messageHash] = MessageHashData({
+			_vaultMessageHashData[iglooFiV1VaultAddress][messageHash] = MessageHashData({
 				signature: signature,
 				signer: recovered,
 				signedVoters: initialsignedVoters,
 				signatureCount: 0
 			});
 
-			_vaultMessageHashes[iglooFiV1Vault].push(messageHash);
+			_vaultMessageHashes[iglooFiV1VaultAddress].push(messageHash);
 		}
 
-		_vaultMessageHashData[iglooFiV1Vault][messageHash].signedVoters.push(_msgSender());
-		_vaultMessageHashData[iglooFiV1Vault][messageHash].signatureCount++;
+		_vaultMessageHashData[iglooFiV1VaultAddress][messageHash].signedVoters.push(_msgSender());
+		_vaultMessageHashData[iglooFiV1VaultAddress][messageHash].signatureCount++;
 	}
 
 
