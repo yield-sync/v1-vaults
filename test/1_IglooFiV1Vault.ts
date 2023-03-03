@@ -783,13 +783,15 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 							withdrawalRequest[6],
 							withdrawalRequest[7],
 							withdrawalRequest[8],
-							parseInt(withdrawalRequest[9]) + 10,
+							BigInt(withdrawalRequest[9]) + BigInt(10),
 							withdrawalRequest[10],
 						]
 					);
 
-					expect(parseInt(withdrawalRequest[9]) + 10).to.be.greaterThanOrEqual(
-						parseInt((await iglooFiV1Vault.withdrawalRequest(wRiD))[9])
+					expect(
+						BigInt(withdrawalRequest[9]) + BigInt(10)
+					).to.be.greaterThanOrEqual(
+						BigInt((await iglooFiV1Vault.withdrawalRequest(wRiD))[9])
 					);
 				}
 			);
@@ -826,13 +828,15 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 							withdrawalRequest[6],
 							withdrawalRequest[7],
 							withdrawalRequest[8],
-							parseInt(withdrawalRequest[9]) - 10,
+							BigInt(withdrawalRequest[9]) - BigInt(10),
 							withdrawalRequest[10],
 						]
 					);
 
-					expect(parseInt(withdrawalRequest[9]) - 10).to.be.lessThanOrEqual(
-						parseInt((await iglooFiV1Vault.withdrawalRequest(wRiD))[9])
+					expect(
+						BigInt(withdrawalRequest[9]) - BigInt(10)
+					).to.be.lessThanOrEqual(
+						BigInt((await iglooFiV1Vault.withdrawalRequest(wRiD))[9])
 					);
 				}
 			);
