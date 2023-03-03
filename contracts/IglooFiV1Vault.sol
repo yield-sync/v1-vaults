@@ -358,35 +358,6 @@ contract IglooFiV1Vault is
 	}
 
 	/// @inheritdoc IIglooFiV1Vault
-	function updateWithdrawalRequestLatestRelevantApproveVoteTime(
-		uint256 withdrawalRequestId,
-		bool arithmaticSign,
-		uint256 timeInSeconds
-	)
-		public
-		override
-		onlyRole(DEFAULT_ADMIN_ROLE)
-		validWithdrawalRequest(withdrawalRequestId)
-	{
-		if (arithmaticSign)
-		{
-			// [update] WithdrawalRequest within `_withdrawalRequest`
-			_withdrawalRequest[withdrawalRequestId].latestRelevantApproveVoteTime += (timeInSeconds * 1 seconds);
-		}
-		else
-		{
-			// [update] WithdrawalRequest within `_withdrawalRequest`
-			_withdrawalRequest[withdrawalRequestId].latestRelevantApproveVoteTime -= (timeInSeconds * 1 seconds);
-		}
-
-		// [emit]
-		emit UpdatedWithdrawalRequestLastSignificantApproveVote(
-			withdrawalRequestId,
-			_withdrawalRequest[withdrawalRequestId].latestRelevantApproveVoteTime
-		);
-	}
-
-	/// @inheritdoc IIglooFiV1Vault
 	function deleteWithdrawalRequest(uint256 withdrawalRequestId)
 		public
 		override

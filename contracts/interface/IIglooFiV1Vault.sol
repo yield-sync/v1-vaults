@@ -272,23 +272,6 @@ interface IIglooFiV1Vault
 	;
 
 	/**
-	* @notice 
-	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
-	* @dev [update] WithdrawalRequest within `_withdrawalRequest`
-	* @param withdrawalRequestId {uint256}
-	* @param arithmaticSign {bool} true → Add | false → Subtract 
-	* @param timeInSeconds {uint256}
-	* Emits: `UpdatedWithdrawalRequestLastSignificantApproveVote`
-	*/
-	function updateWithdrawalRequestLatestRelevantApproveVoteTime(
-		uint256 withdrawalRequestId,
-		bool arithmaticSign,
-		uint256 timeInSeconds
-	)
-		external
-	;
-
-	/**
 	* @notice Delete WithdrawalRequest & all associated values
 	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
 	* @dev [call][internal] {_deleteWithdrawalRequest}

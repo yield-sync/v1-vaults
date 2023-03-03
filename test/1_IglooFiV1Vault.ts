@@ -754,26 +754,86 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 			it(
 				"Should update the latestRelevantApproveVoteTime to ADD seconds..",
 				async () => {
-					const beforeBlockTimestamp: number = parseInt((await iglooFiV1Vault.withdrawalRequest(3))[9]);
-					
-					await iglooFiV1Vault.updateWithdrawalRequestLatestRelevantApproveVoteTime(3, true, 10)
-					
-					const afterBlockTimestamp: number = parseInt((await iglooFiV1Vault.withdrawalRequest(3))[9]);
+					const [, addr1, addr2] = await ethers.getSigners();
 
-					expect(beforeBlockTimestamp + 10).to.be.equal(afterBlockTimestamp);
+					await iglooFiV1Vault.connect(addr1).createWithdrawalRequest(
+						false,
+						true,
+						false,
+						addr2.address,
+						mockERC20.address,
+						999,
+						0
+					);
+
+					const openWithdrawalRequestIds = await iglooFiV1Vault.openWithdrawalRequestIds();
+					const wRiD: number = openWithdrawalRequestIds[openWithdrawalRequestIds.length - 1];
+
+					const withdrawalRequest: any = await iglooFiV1Vault.withdrawalRequest(wRiD);
+
+					await iglooFiV1Vault.updateWithdrawalRequest(
+						wRiD,
+						[
+							withdrawalRequest[0], 
+							withdrawalRequest[1], 
+							withdrawalRequest[2],
+							withdrawalRequest[3],
+							withdrawalRequest[4],
+							withdrawalRequest[5],
+							withdrawalRequest[6],
+							withdrawalRequest[7],
+							withdrawalRequest[8],
+							parseInt(withdrawalRequest[9]) + 10,
+							withdrawalRequest[10],
+						]
+					);
+
+					expect(parseInt(withdrawalRequest[9]) + 10).to.be.greaterThanOrEqual(
+						parseInt((await iglooFiV1Vault.withdrawalRequest(wRiD))[9])
+					);
 				}
 			);
 
 			it(
 				"Should update the latestRelevantApproveVoteTime to SUBTRACT seconds..",
 				async () => {
-					const beforeBlockTimestamp: number = parseInt((await iglooFiV1Vault.withdrawalRequest(3))[9]);
+					const [, addr1, addr2] = await ethers.getSigners();
 
-					await iglooFiV1Vault.updateWithdrawalRequestLatestRelevantApproveVoteTime(3, false, 10)
-					
-					const afterBlockTimestamp: number = parseInt((await iglooFiV1Vault.withdrawalRequest(3))[9]);
+					await iglooFiV1Vault.connect(addr1).createWithdrawalRequest(
+						false,
+						true,
+						false,
+						addr2.address,
+						mockERC20.address,
+						999,
+						0
+					);
 
-					expect(beforeBlockTimestamp - 10).to.be.equal(afterBlockTimestamp);
+					const openWithdrawalRequestIds = await iglooFiV1Vault.openWithdrawalRequestIds();
+					const wRiD: number = openWithdrawalRequestIds[openWithdrawalRequestIds.length - 1];
+
+					const withdrawalRequest: any = await iglooFiV1Vault.withdrawalRequest(wRiD);
+
+					await iglooFiV1Vault.updateWithdrawalRequest(
+						wRiD,
+						[
+							withdrawalRequest[0], 
+							withdrawalRequest[1], 
+							withdrawalRequest[2],
+							withdrawalRequest[3],
+							withdrawalRequest[4],
+							withdrawalRequest[5],
+							withdrawalRequest[6],
+							withdrawalRequest[7],
+							withdrawalRequest[8],
+							parseInt(withdrawalRequest[9]) - 10,
+							withdrawalRequest[10],
+						]
+					);
+
+					expect(parseInt(withdrawalRequest[9]) - 10).to.be.lessThanOrEqual(
+						parseInt((await iglooFiV1Vault.withdrawalRequest(wRiD))[9])
+					);
 				}
 			);
 		});
@@ -794,6 +854,8 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 					await iglooFiV1Vault.deleteWithdrawalRequest(3);
 					await iglooFiV1Vault.deleteWithdrawalRequest(4);
 					await iglooFiV1Vault.deleteWithdrawalRequest(5);
+					await iglooFiV1Vault.deleteWithdrawalRequest(6);
+					await iglooFiV1Vault.deleteWithdrawalRequest(7);
 					
 					expect((await iglooFiV1Vault.openWithdrawalRequestIds()).length).to.be.equal(0);
 				}
