@@ -48,7 +48,7 @@ interface IIglooFiV1VaultFactory {
 	* @dev [view-address]
 	* @return {address}
 	*/
-	function signatureManager()
+	function defaultSignatureManager()
 		external
 		view
 		returns (address)
@@ -84,15 +84,18 @@ interface IIglooFiV1VaultFactory {
 	* @notice Creates a Vault
 	* @dev [!restriction]
 	* @dev [create]
-	* @param _admin {address}
-	* @param _requiredVoteCount {uint256}
-	* @param _withdrawalDelaySeconds {uint256}
+	* @param admin {address}
+	* @param signatureManager {address}
+	* @param requiredVoteCount {uint256}
+	* @param withdrawalDelaySeconds {uint256}
 	* @return {address} Deployed vault
 	*/
 	function deployVault(
-		address _admin,
-		uint256 _requiredVoteCount,
-		uint256 _withdrawalDelaySeconds
+		address admin,
+		address signatureManager,
+		bool useDefaultSignatureManager,
+		uint256 requiredVoteCount,
+		uint256 withdrawalDelaySeconds
 	)
 		external
 		payable
@@ -132,10 +135,10 @@ interface IIglooFiV1VaultFactory {
 	/**
 	* @notice Updates default signature manager
 	* @dev [restriction] IIglooFiGovernance AccessControlEnumerable → DEFAULT_ADMIN_ROLE
-	* @dev [update] `signatureMaanger`
-	* @param _signatureManager {address}
+	* @dev [update] `defaultSignatureManager`
+	* @param _defaultSignatureManager {address}
 	*/
-	function updateSignatureManager(address _signatureManager)
+	function updateDefaultSignatureManager(address _defaultSignatureManager)
 		external
 	;
 }

@@ -25,7 +25,14 @@ const stageContracts = async () => {
 	await iglooFiV1VaultFactory.setPause(false);
 	
 	// Deploy a vault
-	await iglooFiV1VaultFactory.deployVault(owner.address, 2, 5, { value: 1 });
+	await iglooFiV1VaultFactory.deployVault(
+		owner.address,
+		ethers.constants.AddressZero,
+		true,
+		2,
+		5,
+		{ value: 1 }
+	);
 
 	// Attach the deployed vault's address
 	const iglooFiV1Vault: Contract = await IglooFiV1Vault.attach(iglooFiV1VaultFactory.vaultAddress(0));

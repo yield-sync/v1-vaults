@@ -18,7 +18,7 @@ contract IglooFiV1VaultFactory is
 {
 	// [address][public]
 	address public override iglooFiGovernance;
-	address public override signatureManager;
+	address public override defaultSignatureManager;
 
 	// [uint256][public]
 	uint256 public override fee;
@@ -83,9 +83,11 @@ contract IglooFiV1VaultFactory is
 
 	/// @inheritdoc IIglooFiV1VaultFactory
 	function deployVault(
-		address _admin,
-		uint256 _requiredVoteCount,
-		uint256 _withdrawalDelaySeconds
+		address admin,
+		address signatureManager,
+		bool useDefaultSignatureManager,
+		uint256 requiredVoteCount,
+		uint256 withdrawalDelaySeconds
 	)
 		public
 		payable
@@ -95,10 +97,13 @@ contract IglooFiV1VaultFactory is
 	{
 		require(msg.value >= fee, "!msg.value");
 
-		IglooFiV1Vault deployedContract;
-
 		// [deploy] A vault contract
-		deployedContract = new IglooFiV1Vault(_admin, signatureManager, _requiredVoteCount, _withdrawalDelaySeconds);
+		IglooFiV1Vault deployedContract = new IglooFiV1Vault(
+			admin,
+			useDefaultSignatureManager ? defaultSignatureManager : signatureManager,
+			requiredVoteCount,
+			withdrawalDelaySeconds
+		);
 
 		// Register vault
 		_vaultAddress[_vaultIdTracker] = address(deployedContract);
@@ -158,12 +163,12 @@ contract IglooFiV1VaultFactory is
 
 
 	/// @inheritdoc IIglooFiV1VaultFactory
-	function updateSignatureManager(address _signatureManager)
+	function updateDefaultSignatureManager(address _defaultSignatureManager)
 		public
 		override
 		whenNotPaused()
 		onlyIglooFiGovernanceAdmin()
 	{
-		signatureManager = _signatureManager;
+		defaultSignatureManager = _defaultSignatureManager;
 	}
 }

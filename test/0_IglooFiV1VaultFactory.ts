@@ -203,6 +203,8 @@ describe("IglooFiV1VaultFactory.sol - IglooFi V1 Vault Factory Contract", async 
 
 					const deployedAddress = await iglooFiV1VaultFactory.deployVault(
 						addr1.address,
+						ethers.constants.AddressZero,
+						true,
 						2,
 						10,
 						{ value: 1 }
