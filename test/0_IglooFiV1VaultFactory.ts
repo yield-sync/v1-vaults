@@ -6,14 +6,17 @@ const { ethers } = require("hardhat");
 
 describe("IglooFiV1VaultFactory.sol - IglooFi V1 Vault Factory Contract", async () => {
 	let mockIglooFiGovernance: Contract;
+	let mockSignatureManager: Contract;
 	let iglooFiV1VaultFactory: Contract;
 	
 
 	before("[before] Set up contracts..", async () => {
 		const MockIglooFiGovernance: ContractFactory = await ethers.getContractFactory("MockIglooFiGovernance");
+		const MockSignatureManager: ContractFactory = await ethers.getContractFactory("MockSignatureManager");
 		const IglooFiV1VaultFactory: ContractFactory = await ethers.getContractFactory("IglooFiV1VaultFactory");
 		
 		mockIglooFiGovernance = await (await MockIglooFiGovernance.deploy()).deployed();
+		mockSignatureManager = await (await MockSignatureManager.deploy(mockIglooFiGovernance.address)).deployed();
 		iglooFiV1VaultFactory = await (await IglooFiV1VaultFactory.deploy(mockIglooFiGovernance.address)).deployed();
 	});
 
@@ -228,7 +231,7 @@ describe("IglooFiV1VaultFactory.sol - IglooFi V1 Vault Factory Contract", async 
 				async () => {
 					const [, addr1] = await ethers.getSigners();
 
-					const deployedAddress = await iglooFiV1VaultFactory.deployVault(
+					const deployedObj = await iglooFiV1VaultFactory.deployVault(
 						addr1.address,
 						ethers.constants.AddressZero,
 						true,
@@ -238,11 +241,35 @@ describe("IglooFiV1VaultFactory.sol - IglooFi V1 Vault Factory Contract", async 
 					);
 
 					expect(await iglooFiV1VaultFactory.iglooFiV1VaultAddress(0)).to.equal(
-						(await deployedAddress.wait()).events[1].args[0]
+						(await deployedObj.wait()).events[1].args[0]
 					);
 				}
 			);
 
+			it(
+				"Should be able to deploy IglooFiV1Vault.sol with custom signature manager..",
+				async () => {
+					const [, addr1] = await ethers.getSigners();
+					
+					const IglooFiV1Vault = await ethers.getContractFactory("IglooFiV1Vault");
+
+					await iglooFiV1VaultFactory.deployVault(
+						addr1.address,
+						mockSignatureManager.address,
+						false,
+						2,
+						10,
+						{ value: 1 }
+					);
+
+					// Attach the deployed vault's address
+					const iglooFiV1Vault = await IglooFiV1Vault.attach(
+						await iglooFiV1VaultFactory.iglooFiV1VaultAddress(1)
+					);
+
+					expect(await iglooFiV1Vault.signatureManager()).to.be.equal(mockSignatureManager.address);
+				}
+			);
 
 			/**
 			* @dev IglooFiV1VaultFactory.sol Deployed: IglooFiV1.sol
