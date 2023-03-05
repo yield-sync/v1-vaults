@@ -223,15 +223,15 @@ describe("IglooFiV1VaultFactory.sol - IglooFi V1 Vault Factory Contract", async 
 
 	describe("!Restriction", async () => {
 		/**
-		* @dev deployVault
+		* @dev deployIglooFiV1Vault
 		*/
-		describe("deployVault", async () => {
+		describe("deployIglooFiV1Vault", async () => {
 			it(
 				"Should be able to record deployed IglooFiV1Vault.sol..",
 				async () => {
 					const [, addr1] = await ethers.getSigners();
 
-					const deployedObj = await iglooFiV1VaultFactory.deployVault(
+					const deployedObj = await iglooFiV1VaultFactory.deployIglooFiV1Vault(
 						addr1.address,
 						ethers.constants.AddressZero,
 						true,
@@ -253,7 +253,7 @@ describe("IglooFiV1VaultFactory.sol - IglooFi V1 Vault Factory Contract", async 
 					
 					const IglooFiV1Vault = await ethers.getContractFactory("IglooFiV1Vault");
 
-					await iglooFiV1VaultFactory.deployVault(
+					await iglooFiV1VaultFactory.deployIglooFiV1Vault(
 						addr1.address,
 						mockSignatureManager.address,
 						false,

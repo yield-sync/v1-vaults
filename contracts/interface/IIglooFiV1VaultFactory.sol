@@ -95,7 +95,7 @@ interface IIglooFiV1VaultFactory {
 	* @param withdrawalDelaySeconds {uint256}
 	* @return {address} Deployed vault
 	*/
-	function deployVault(
+	function deployIglooFiV1Vault(
 		address admin,
 		address signatureManager,
 		bool useDefaultSignatureManager,

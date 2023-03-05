@@ -82,7 +82,7 @@ contract IglooFiV1VaultFactory is
 
 
 	/// @inheritdoc IIglooFiV1VaultFactory
-	function deployVault(
+	function deployIglooFiV1Vault(
 		address admin,
 		address signatureManager,
 		bool useDefaultSignatureManager,

@@ -36,7 +36,7 @@ describe("SignatureManager.sol - Mock Signature Manager Contract", async () => {
 		await iglooFiV1VaultFactory.updatePause(false);
 
 		// Deploy a vault
-		await iglooFiV1VaultFactory.deployVault(
+		await iglooFiV1VaultFactory.deployIglooFiV1Vault(
 			owner.address,
 			ethers.constants.AddressZero,
 			true,
