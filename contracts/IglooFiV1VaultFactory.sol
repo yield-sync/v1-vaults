@@ -27,8 +27,7 @@ contract IglooFiV1VaultFactory is
 	uint256 internal _vaultIdTracker;
 
 	// [mapping][internal]
-	// iglooFiV1VaultId => iglooFiV1VaultAddress
-	mapping (uint256 => address) internal _iglooFiV1VaultAddress;
+	mapping (uint256 iglooFiV1VaultId => address iglooFiV1VaultAddress) internal _iglooFiV1VaultAddress;
 
 
 	constructor (address _iglooFiGovernance)

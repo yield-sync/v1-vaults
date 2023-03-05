@@ -33,8 +33,7 @@ contract IglooFiV1Vault is
 	uint256 public override withdrawalDelaySeconds;
 
 	// [mapping][internal]
-	// withdrawalRequestId => withdralRequest
-	mapping (uint256 => WithdrawalRequest) internal _withdrawalRequest;
+	mapping (uint256 withdrawalRequestId => WithdrawalRequest withdralRequest) internal _withdrawalRequest;
 
 
 	constructor (

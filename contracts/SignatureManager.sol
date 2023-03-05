@@ -31,8 +31,9 @@ contract SignatureManager is
 	// [mapping][internal]
 	// iglooFiV1VaultAddress => messageHash
 	mapping (address => bytes32[]) internal _vaultMessageHashes;
-	// iglooFiV1VaultAddress => (messageHash => messageHashData)
-	mapping (address => mapping (bytes32 => MessageHashData)) internal _vaultMessageHashData;
+	mapping (
+		address iglooFiV1VaultAddress => mapping (bytes32 messageHash => MessageHashData messageHashData)
+	) internal _vaultMessageHashData;
 
 
 	constructor (address _iglooFiGovernance)
