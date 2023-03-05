@@ -46,7 +46,7 @@ describe("SignatureManager.sol - Mock Signature Manager Contract", async () => {
 		);
 
 		// Attach the deployed vault's address
-		iglooFiV1Vault = await IglooFiV1Vault.attach(iglooFiV1VaultFactory.vaultAddress(0));
+		iglooFiV1Vault = await IglooFiV1Vault.attach(iglooFiV1VaultFactory.iglooFiV1VaultAddress(0));
 
 		await iglooFiV1Vault.addVoter(addr1.address);
 		await iglooFiV1Vault.addVoter(addr2.address);

@@ -113,6 +113,33 @@ describe("IglooFiV1VaultFactory.sol - IglooFi V1 Vault Factory Contract", async 
 
 
 		/**
+		* @dev updateDefaultSignatureManager
+		*/
+		describe("updateDefaultSignatureManager", async () => {
+			it(
+				"Should revert when unauthorized msg.sender calls..",
+				async () => {
+					const [, addr1] = await ethers.getSigners();
+
+					await expect(
+						iglooFiV1VaultFactory.connect(addr1).updateDefaultSignatureManager(ethers.constants.AddressZero)
+					).to.be.rejectedWith("!auth");
+				}
+			);
+
+			it(
+				"Should be able to change defaultSignatureManager..",
+				async () => {
+					await iglooFiV1VaultFactory.updateDefaultSignatureManager(ethers.constants.AddressZero);
+
+					await expect(
+						await iglooFiV1VaultFactory.defaultSignatureManager()
+					).to.be.equal(ethers.constants.AddressZero);
+				}
+			);
+		});
+
+		/**
 		* @dev updateFee
 		*/
 		describe("updateFee", async () => {
@@ -210,7 +237,7 @@ describe("IglooFiV1VaultFactory.sol - IglooFi V1 Vault Factory Contract", async 
 						{ value: 1 }
 					);
 
-					expect(await iglooFiV1VaultFactory.vaultAddress(0)).to.equal(
+					expect(await iglooFiV1VaultFactory.iglooFiV1VaultAddress(0)).to.equal(
 						(await deployedAddress.wait()).events[1].args[0]
 					);
 				}
@@ -229,7 +256,7 @@ describe("IglooFiV1VaultFactory.sol - IglooFi V1 Vault Factory Contract", async 
 						const IglooFiV1Vault = await ethers.getContractFactory("IglooFiV1Vault");
 						
 						// Retreive the deployed vault's address
-						const deployedAddress = await iglooFiV1VaultFactory.vaultAddress(0);
+						const deployedAddress = await iglooFiV1VaultFactory.iglooFiV1VaultAddress(0);
 
 						// Attach the deployed vault's address
 						const iglooFiV1Vault = await IglooFiV1Vault.attach(deployedAddress);
