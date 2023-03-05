@@ -18,21 +18,17 @@ contract IglooFiV1Vault is
 	IERC1271,
 	IIglooFiV1Vault
 {
-	// [bytes4][public]
+	// [bytes4]
+	bytes32 public constant override VOTER = keccak256("VOTER");
 	address public override signatureManager;
 
-	// [byte32][public]
-	bytes32 public constant override VOTER = keccak256("VOTER");
-
-	// [uint256][internal]
+	// [uint256]
+	uint256 public override requiredVoteCount;
+	uint256 public override withdrawalDelaySeconds;
 	uint256 internal _withdrawalRequestIdTracker;
 	uint256[] internal _openWithdrawalRequestIds;
 
-	// [uint256][public]
-	uint256 public override requiredVoteCount;
-	uint256 public override withdrawalDelaySeconds;
-
-	// [mapping][internal]
+	// [mapping]
 	mapping (uint256 withdrawalRequestId => WithdrawalRequest withdralRequest) internal _withdrawalRequest;
 
 
@@ -71,7 +67,6 @@ contract IglooFiV1Vault is
 
 	modifier validWithdrawalRequest(uint256 withdrawalRequestId)
 	{
-		// [require] WithdrawalRequest exists
 		require(_withdrawalRequest[withdrawalRequestId].creator != address(0), "No WithdrawalRequest found");
 		
 		_;
@@ -189,7 +184,6 @@ contract IglooFiV1Vault is
 		onlyRole(VOTER)
 		validWithdrawalRequest(withdrawalRequestId)
 	{
-		// [for] each voter within WithdrawalRequest
 		for (uint256 i = 0; i < _withdrawalRequest[withdrawalRequestId].votedVoters.length; i++)
 		{
 			require(_withdrawalRequest[withdrawalRequestId].votedVoters[i] != _msgSender(), "Already voted");
@@ -226,11 +220,9 @@ contract IglooFiV1Vault is
 		validWithdrawalRequest(withdrawalRequestId)
 	{
 		WithdrawalRequest memory wR = _withdrawalRequest[withdrawalRequestId];
-		
-		// [require] Required signatures to be met
+
 		require(wR.voteCount >= requiredVoteCount, "Not enough votes");
 
-		// [require] WithdrawalRequest time delay passed
 		require(
 			block.timestamp - wR.latestRelevantApproveVoteTime >= withdrawalDelaySeconds * 1 seconds,
 			"Not enough time has passed"
@@ -287,7 +279,7 @@ contract IglooFiV1Vault is
 		_revokeRole(VOTER, voter);
 	}
 
-		/// @inheritdoc IIglooFiV1Vault
+	/// @inheritdoc IIglooFiV1Vault
 	function updateSignatureManager(address _signatureManager)
 		public
 		override

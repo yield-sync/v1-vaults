@@ -19,16 +19,16 @@ contract SignatureManager is
 	Pausable,
 	ISignatureManager
 {
-	// [address][public]
+	// [address]
 	address public override iglooFiGovernance;
 
-	// [bytes32][public]
+	// [bytes32]
 	bytes32 public constant VOTER = keccak256("VOTER");
 	
-	// [bytes4][public]
+	// [bytes4]
 	bytes4 public constant ERC1271_MAGIC_VALUE = 0x1626ba7e;
 
-	// [mapping][internal]
+	// [mapping]
 	mapping (address iglooFiV1VaultAddress => bytes32[] messageHash) internal _vaultMessageHashes;
 	mapping (
 		address iglooFiV1VaultAddress => mapping (bytes32 messageHash => MessageHashData messageHashData)
@@ -41,7 +41,6 @@ contract SignatureManager is
 
 		iglooFiGovernance = _iglooFiGovernance;
 	}
-
 
 
 	modifier onlyIglooFiGovernanceAdmin() {

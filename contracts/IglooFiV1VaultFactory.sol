@@ -16,17 +16,15 @@ contract IglooFiV1VaultFactory is
 	Pausable,
 	IIglooFiV1VaultFactory
 {
-	// [address][public]
+	// [address]
 	address public override iglooFiGovernance;
 	address public override defaultSignatureManager;
 
-	// [uint256][public]
+	// [uint256]
 	uint256 public override fee;
-
-	// [uint256][internal]
 	uint256 internal _vaultIdTracker;
 
-	// [mapping][internal]
+	// [mapping]
 	mapping (uint256 iglooFiV1VaultId => address iglooFiV1VaultAddress) internal _iglooFiV1VaultAddress;
 
 
@@ -125,12 +123,10 @@ contract IglooFiV1VaultFactory is
 	{
 		if (pause)
 		{
-			// [call-internal]
 			_pause();
 		}
 		else
 		{
-			// [call-internal]
 			_unpause();
 		}
 	}

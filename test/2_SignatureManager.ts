@@ -66,7 +66,7 @@ describe("SignatureManager.sol - Mock Signature Manager Contract", async () => {
 				"Should revert when unauthorized msg.sender calls..",
 				async () => {
 					const [, addr1] = await ethers.getSigners();
-		
+
 					await expect(signatureManager.connect(addr1).updatePause(false)).to.be.rejectedWith("!auth");
 				}
 			);

@@ -22,7 +22,6 @@ contract MockIglooFiV1VaultAdmin is Ownable {
 	}
 	
 	modifier validWithdrawalRequest(address iglooFiV1VaultAddress, uint256 withdrawalRequestId) {
-		// [require] WithdrawalRequest exists
 		require(
 			IIglooFiV1Vault(payable(iglooFiV1VaultAddress)).withdrawalRequest(
 				withdrawalRequestId
