@@ -33,7 +33,7 @@ describe("SignatureManager.sol - Mock Signature Manager Contract", async () => {
 		mockDapp = await (await MockDapp.deploy()).deployed();
 
 		// Unpause contract
-		await iglooFiV1VaultFactory.setPause(false);
+		await iglooFiV1VaultFactory.updatePause(false);
 
 		// Deploy a vault
 		await iglooFiV1VaultFactory.deployVault(
@@ -59,22 +59,22 @@ describe("SignatureManager.sol - Mock Signature Manager Contract", async () => {
 	*/
 	describe("Restriction: DEFAULT_ADMIN_ROLE", async () => {
 		/**
-		* @dev setPause
+		* @dev updatePause
 		*/
-		describe("setPause", async () => {
+		describe("updatePause", async () => {
 			it(
 				"Should revert when unauthorized msg.sender calls..",
 				async () => {
 					const [, addr1] = await ethers.getSigners();
 		
-					await expect(signatureManager.connect(addr1).setPause(false)).to.be.rejectedWith("!auth");
+					await expect(signatureManager.connect(addr1).updatePause(false)).to.be.rejectedWith("!auth");
 				}
 			);
 
 			it(
 				"Should be able to set true..",
 				async () => {
-					await signatureManager.setPause(false);
+					await signatureManager.updatePause(false);
 					
 					expect(await signatureManager.paused()).to.be.false;
 				}
@@ -83,12 +83,12 @@ describe("SignatureManager.sol - Mock Signature Manager Contract", async () => {
 			it(
 				"Should be able to set false..",
 				async () => {
-					await signatureManager.setPause(true);
+					await signatureManager.updatePause(true);
 					
 					expect(await signatureManager.paused()).to.be.true;
 				
 					// Unpause for the rest of the test
-					await signatureManager.setPause(false);
+					await signatureManager.updatePause(false);
 				}
 			);
 		});

@@ -134,7 +134,7 @@ contract SignatureManager is
 
 
 	/// @inheritdoc ISignatureManager
-	function setPause(bool pause)
+	function updatePause(bool pause)
 		public
 		override
 		onlyIglooFiGovernanceAdmin()

@@ -74,7 +74,7 @@ interface ISignatureManager
 	* @dev [call-internal]
 	* @param pause {bool}
 	*/
-	function setPause(bool pause)
+	function updatePause(bool pause)
 		external
 	;
 }

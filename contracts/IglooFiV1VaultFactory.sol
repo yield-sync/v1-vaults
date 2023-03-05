@@ -120,7 +120,7 @@ contract IglooFiV1VaultFactory is
 
 
 	/// @inheritdoc IIglooFiV1VaultFactory
-	function setPause(bool pause)
+	function updatePause(bool pause)
 		public
 		override
 		onlyIglooFiGovernanceAdmin()

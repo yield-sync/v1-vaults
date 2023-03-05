@@ -80,22 +80,22 @@ describe("IglooFiV1VaultFactory.sol - IglooFi V1 Vault Factory Contract", async 
 	*/
 	describe("Restriction: DEFAULT_ADMIN_ROLE", async () => {
 		/**
-		* @dev setPause
+		* @dev updatePause
 		*/
-		describe("setPause", async () => {
+		describe("updatePause", async () => {
 			it(
 				"Should revert when unauthorized msg.sender calls..",
 				async () => {
 					const [, addr1] = await ethers.getSigners();
 
-					await expect(iglooFiV1VaultFactory.connect(addr1).setPause(false)).to.be.rejectedWith("!auth");
+					await expect(iglooFiV1VaultFactory.connect(addr1).updatePause(false)).to.be.rejectedWith("!auth");
 				}
 			);
 
 			it(
 				"Should be able to set true..",
 				async () => {
-					await iglooFiV1VaultFactory.setPause(false);
+					await iglooFiV1VaultFactory.updatePause(false);
 					
 					expect(await iglooFiV1VaultFactory.paused()).to.be.false;
 				}
@@ -104,12 +104,12 @@ describe("IglooFiV1VaultFactory.sol - IglooFi V1 Vault Factory Contract", async 
 			it(
 				"Should be able to set false..",
 				async () => {
-					await iglooFiV1VaultFactory.setPause(true);
+					await iglooFiV1VaultFactory.updatePause(true);
 					
 					expect(await iglooFiV1VaultFactory.paused()).to.be.true;
 
 					// Unpause for the rest of the test
-					await iglooFiV1VaultFactory.setPause(false);
+					await iglooFiV1VaultFactory.updatePause(false);
 				}
 			);
 		});
