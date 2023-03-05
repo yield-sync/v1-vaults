@@ -179,7 +179,6 @@ contract IglooFiV1Vault is
 		// [increment] `_withdrawalRequestIdTracker`
 		_withdrawalRequestIdTracker++;
 
-		// [emit]
 		emit CreatedWithdrawalRequest(_withdrawalRequestIdTracker - 1);
 	}
 
@@ -201,15 +200,12 @@ contract IglooFiV1Vault is
 			// [update] `_withdrawalRequest` → [increment] Approve vote count
 			_withdrawalRequest[withdrawalRequestId].voteCount++;
 
-			// If required signatures met..
 			if (_withdrawalRequest[withdrawalRequestId].voteCount >= requiredVoteCount)
 			{
-				// [emit]
 				emit WithdrawalRequestReadyToBeProccessed(withdrawalRequestId);
 			}
 		}
 
-		// [emit]
 		emit VoterVoted(withdrawalRequestId, _msgSender(), vote);
 
 		// [update] `_withdrawalRequest[withdrawalRequestId].votedVoters` → Add _msgSender()
@@ -229,7 +225,6 @@ contract IglooFiV1Vault is
 		onlyRole(VOTER)
 		validWithdrawalRequest(withdrawalRequestId)
 	{
-		// Temporary variable
 		WithdrawalRequest memory wR = _withdrawalRequest[withdrawalRequestId];
 		
 		// [require] Required signatures to be met
@@ -266,10 +261,8 @@ contract IglooFiV1Vault is
 			require(success, "Unable to send value");
 		}
 
-		// [call][internal]
 		_deleteWithdrawalRequest(withdrawalRequestId);
 
-		// [emit]
 		emit TokensWithdrawn(_msgSender(), wR.to, wR.amount);
 	}
 
@@ -314,7 +307,6 @@ contract IglooFiV1Vault is
 		// [update]
 		requiredVoteCount = _requiredVoteCount;
 
-		// [emit]
 		emit UpdatedRequiredVoteCount(requiredVoteCount);
 	}
 
@@ -329,7 +321,6 @@ contract IglooFiV1Vault is
 		// [update] `withdrawalDelaySeconds`
 		withdrawalDelaySeconds = _withdrawalDelaySeconds;
 
-		// [emit]
 		emit UpdatedWithdrawalDelaySeconds(withdrawalDelaySeconds);
 	}
 
@@ -359,7 +350,6 @@ contract IglooFiV1Vault is
 		onlyRole(DEFAULT_ADMIN_ROLE)
 		validWithdrawalRequest(withdrawalRequestId)
 	{
-		// [call][internal]
 		_deleteWithdrawalRequest(withdrawalRequestId);
 
 		emit DeletedWithdrawalRequest(withdrawalRequestId);

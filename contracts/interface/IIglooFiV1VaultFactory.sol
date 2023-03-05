@@ -10,7 +10,7 @@ interface IIglooFiV1VaultFactory {
 	/**
 	* @dev Emits when a vault is deployed
 	*/
-	event VaultDeployed(address indexed vaultAddress);
+	event DeployedIglooFiV1Vault(address indexed vaultAddress);
 
 	/**
 	* @dev Emits when a `defaultSignatureManager` is updated

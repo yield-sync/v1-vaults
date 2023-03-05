@@ -141,12 +141,10 @@ contract SignatureManager is
 	{
 		if (pause)
 		{
-			// [call-internal]
 			_pause();
 		}
 		else
 		{
-			// [call-internal]
 			_unpause();
 		}
 	}

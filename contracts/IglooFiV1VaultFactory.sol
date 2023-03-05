@@ -110,8 +110,7 @@ contract IglooFiV1VaultFactory is
 		// [increment] vaultId
 		_vaultIdTracker++;
 
-		// [emit]
-		emit VaultDeployed(address(deployedContract));
+		emit DeployedIglooFiV1Vault(address(deployedContract));
 
 		// [return]
 		return address(deployedContract);
