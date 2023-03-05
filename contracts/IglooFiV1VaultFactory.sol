@@ -36,9 +36,9 @@ contract IglooFiV1VaultFactory is
 
 		iglooFiGovernance = _iglooFiGovernance;
 
-		_vaultIdTracker = 0;
-		
 		fee = 0;
+		
+		_vaultIdTracker = 0;
 	}
 
 
