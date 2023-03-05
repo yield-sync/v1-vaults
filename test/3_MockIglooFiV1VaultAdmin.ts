@@ -4,6 +4,10 @@ import { Contract, ContractFactory } from "ethers";
 const { ethers } = require("hardhat");
 
 
+const sevenDaysInSeconds = 7 * 24 * 60 * 60;
+const sixDaysInSeconds = 6 * 24 * 60 * 60;
+
+
 const stageContracts = async () => {
 	const [owner] = await ethers.getSigners();
 
@@ -70,6 +74,22 @@ describe("MockAdmin.sol - Mock Admin Contract", async () => {
 		await iglooFiV1Vault.addVoter(addr2.address);
 
 		await iglooFiV1Vault.updateSignatureManager(signatureManager.address);
+
+		// Send ether to IglooFiV1Vault contract
+		await addr1.sendTransaction({
+			to: iglooFiV1Vault.address,
+			value: ethers.utils.parseEther("1")
+		});
+
+		await iglooFiV1Vault.connect(addr1).createWithdrawalRequest(
+			true,
+			false,
+			false,
+			addr2.address,
+			ethers.constants.AddressZero,
+			ethers.utils.parseEther(".5"),
+			0
+		);
 	});
 
 	/**
@@ -77,7 +97,7 @@ describe("MockAdmin.sol - Mock Admin Contract", async () => {
 	*/
 	describe("AccessControlEnumerable", async () => {
 		it("Should allow admin to add a contract-based admin..", async () => {
-			await iglooFiV1Vault.grantRole(await iglooFiV1Vault.VOTER(), mockAdmin.address)
+			await iglooFiV1Vault.grantRole(await iglooFiV1Vault.DEFAULT_ADMIN_ROLE(), mockAdmin.address);
 		});
 	});
 
@@ -85,5 +105,27 @@ describe("MockAdmin.sol - Mock Admin Contract", async () => {
 	 * @dev Restriction: DEFAULT_ADMIN_ROLE
 	*/
 	describe("Restriction: DEFAULT_ADMIN_ROLE", async () => {
+		/**
+		 * @dev deleteWithdrawalRequest
+		*/
+		describe("updateWithdrawalRequestLatestRelevantApproveVoteTime()", async () => {
+			it(
+				"Should update the latestRelevantApproveVoteTime to ADD seconds..",
+				async () => {
+					const beforeBlockTimestamp = BigInt((await iglooFiV1Vault.withdrawalRequest(0))[9]);
+					
+					await mockAdmin.updateWithdrawalRequestLatestRelevantApproveVoteTime(
+						iglooFiV1Vault.address,
+						0,
+						true,
+						4000
+					);
+					
+					const afterBlockTimestamp = BigInt((await iglooFiV1Vault.withdrawalRequest(0))[9]);
+
+					expect(BigInt(beforeBlockTimestamp + BigInt(4000))).to.be.equal(afterBlockTimestamp);
+				}
+			);
+		});
 	});
 });

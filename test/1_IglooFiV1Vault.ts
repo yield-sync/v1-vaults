@@ -86,7 +86,7 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 		it("Should be able to recieve ether..", async () => {
 			const [, addr1] = await ethers.getSigners();
 
-			// Send ether to IglooFiV1VaultFactory contract
+			// Send ether to IglooFiV1Vault contract
 			await addr1.sendTransaction({
 				to: iglooFiV1Vault.address,
 				value: ethers.utils.parseEther("1")
@@ -119,12 +119,20 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 		it("Should allow admin to add another admin..", async () => {
 			const [, , , , addr4] = await ethers.getSigners();
 
-			await iglooFiV1Vault.grantRole(await iglooFiV1Vault.VOTER(), addr4.address)
+			await iglooFiV1Vault.grantRole(await iglooFiV1Vault.DEFAULT_ADMIN_ROLE(), addr4.address)
 		});
 
 		it("Should allow admin to add a contract-based admin..", async () => {
-			await iglooFiV1Vault.grantRole(await iglooFiV1Vault.VOTER(), mockAdmin.address)
+			await iglooFiV1Vault.grantRole(await iglooFiV1Vault.DEFAULT_ADMIN_ROLE(), mockAdmin.address)
 		});
+
+		expect(
+			await iglooFiV1Vault.hasRole(await iglooFiV1Vault.DEFAULT_ADMIN_ROLE(), addr4.address)
+		).to.be.true;
+
+		expect(
+			await iglooFiV1Vault.hasRole(await iglooFiV1Vault.DEFAULT_ADMIN_ROLE(), mockAdmin.address)
+		).to.be.true;
 	});
 
 

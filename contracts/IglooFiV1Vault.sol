@@ -6,6 +6,7 @@ import { AccessControlEnumerable } from "@openzeppelin/contracts/access/AccessCo
 import { IERC1271 } from "@openzeppelin/contracts/interfaces/IERC1271.sol";
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { IERC721 } from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
+import { console } from "hardhat/console.sol";
 
 import { IIglooFiV1Vault, WithdrawalRequest } from "./interface/IIglooFiV1Vault.sol";
 
@@ -317,25 +318,6 @@ contract IglooFiV1Vault is
 	}
 
 	/// @inheritdoc IIglooFiV1Vault
-	function updateWithdrawalRequest(uint256 withdrawalRequestId, WithdrawalRequest memory __withdrawalRequest)
-		public
-		override
-		onlyRole(DEFAULT_ADMIN_ROLE)
-		validWithdrawalRequest(withdrawalRequestId)
-	{
-		// [update] `_withdrawalRequest`
-		_withdrawalRequest[withdrawalRequestId] = __withdrawalRequest;
-
-		if (_withdrawalRequest[withdrawalRequestId].voteCount < requiredVoteCount)
-		{
-			// [update] `withdrawalRequest.latestRelevantApproveVoteTime`
-			_withdrawalRequest[withdrawalRequestId].latestRelevantApproveVoteTime = block.timestamp;
-		}
-
-		emit UpdatedWithdrawalRequest(__withdrawalRequest);
-	}
-
-	/// @inheritdoc IIglooFiV1Vault
 	function deleteWithdrawalRequest(uint256 withdrawalRequestId)
 		public
 		override
@@ -345,5 +327,18 @@ contract IglooFiV1Vault is
 		_deleteWithdrawalRequest(withdrawalRequestId);
 
 		emit DeletedWithdrawalRequest(withdrawalRequestId);
+	}
+
+	/// @inheritdoc IIglooFiV1Vault
+	function updateWithdrawalRequest(uint256 withdrawalRequestId, WithdrawalRequest memory __withdrawalRequest)
+		public
+		override
+		onlyRole(DEFAULT_ADMIN_ROLE)
+		validWithdrawalRequest(withdrawalRequestId)
+	{
+		// [update] `_withdrawalRequest`
+		_withdrawalRequest[withdrawalRequestId] = __withdrawalRequest;
+
+		emit UpdatedWithdrawalRequest(__withdrawalRequest);
 	}
 }

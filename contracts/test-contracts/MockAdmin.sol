@@ -4,23 +4,12 @@ pragma solidity ^0.8.18;
 
 import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
 import { IAccessControlEnumerable } from "@openzeppelin/contracts/access/IAccessControlEnumerable.sol";
+import { console } from "hardhat/console.sol";
 
 import { IIglooFiV1Vault, WithdrawalRequest } from "../interface/IIglooFiV1Vault.sol";
 
 
 contract MockAdmin is Ownable {
-	modifier isAdminOverIglooFiV1Vault(address iglooFiV1VaultAddress) {
-		require(
-			IAccessControlEnumerable(payable(iglooFiV1VaultAddress)).hasRole(
-				IIglooFiV1Vault(payable(iglooFiV1VaultAddress)).VOTER(),
-				address(this)
-			), 
-			"Not admin over"
-		);
-
-		_;
-	}
-	
 	modifier validWithdrawalRequest(address iglooFiV1VaultAddress, uint256 withdrawalRequestId) {
 		require(
 			IIglooFiV1Vault(payable(iglooFiV1VaultAddress)).withdrawalRequest(
@@ -40,7 +29,6 @@ contract MockAdmin is Ownable {
 		uint256 timeInSeconds
 	)
 		public
-		isAdminOverIglooFiV1Vault(iglooFiV1VaultAddress)
 		validWithdrawalRequest(iglooFiV1VaultAddress, withdrawalRequestId)
 	{
 		WithdrawalRequest memory wR = IIglooFiV1Vault(payable(iglooFiV1VaultAddress)).withdrawalRequest(

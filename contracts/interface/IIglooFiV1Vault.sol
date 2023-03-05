@@ -256,6 +256,17 @@ interface IIglooFiV1Vault
 	;
 
 	/**
+	* @notice Delete withdrawalRequest & all associated values
+	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
+	* @dev [call][internal] {_deleteWithdrawalRequest}
+	* @param withdrawalRequestId {uint256}
+	* Emits: `DeletedWithdrawalRequest`
+	*/
+	function deleteWithdrawalRequest(uint256 withdrawalRequestId)
+		external
+	;
+
+	/**
 	* @notice Update withdrawalRequest
 	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
 	* @dev [update] `_withdrawalRequest`
@@ -264,17 +275,6 @@ interface IIglooFiV1Vault
 	* Emits: `UpdatedWithdrawalRequest`
 	*/
 	function updateWithdrawalRequest(uint256 withdrawalRequestId, WithdrawalRequest memory __withdrawalRequest)
-		external
-	;
-
-	/**
-	* @notice Delete withdrawalRequest & all associated values
-	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
-	* @dev [call][internal] {_deleteWithdrawalRequest}
-	* @param withdrawalRequestId {uint256}
-	* Emits: `DeletedWithdrawalRequest`
-	*/
-	function deleteWithdrawalRequest(uint256 withdrawalRequestId)
 		external
 	;
 }
