@@ -8,7 +8,7 @@ import { IAccessControlEnumerable } from "@openzeppelin/contracts/access/IAccess
 import { IIglooFiV1Vault, WithdrawalRequest } from "../interface/IIglooFiV1Vault.sol";
 
 
-contract MockIglooFiV1VaultAdmin is Ownable {
+contract MockAdmin is Ownable {
 	modifier isAdminOverIglooFiV1Vault(address iglooFiV1VaultAddress) {
 		require(
 			IAccessControlEnumerable(payable(iglooFiV1VaultAddress)).hasRole(

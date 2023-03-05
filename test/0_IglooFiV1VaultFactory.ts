@@ -15,8 +15,9 @@ describe("IglooFiV1VaultFactory.sol - IglooFi V1 Vault Factory Contract", async 
 		const MockIglooFiGovernance: ContractFactory = await ethers.getContractFactory("MockIglooFiGovernance");
 		const MockSignatureManager: ContractFactory = await ethers.getContractFactory("MockSignatureManager");
 		
-		iglooFiV1VaultFactory = await (await IglooFiV1VaultFactory.deploy(mockIglooFiGovernance.address)).deployed();
+		// Deploy
 		mockIglooFiGovernance = await (await MockIglooFiGovernance.deploy()).deployed();
+		iglooFiV1VaultFactory = await (await IglooFiV1VaultFactory.deploy(mockIglooFiGovernance.address)).deployed();
 		mockSignatureManager = await (await MockSignatureManager.deploy(mockIglooFiGovernance.address)).deployed();
 	});
 

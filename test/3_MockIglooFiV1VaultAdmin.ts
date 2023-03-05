@@ -10,9 +10,10 @@ const stageContracts = async () => {
 	const IglooFiV1Vault: ContractFactory = await ethers.getContractFactory("IglooFiV1Vault");
 	const IglooFiV1VaultFactory: ContractFactory = await ethers.getContractFactory("IglooFiV1VaultFactory");
 	const MockIglooFiGovernance: ContractFactory = await ethers.getContractFactory("MockIglooFiGovernance");
-	const MockIglooFiV1VaultAdmin: ContractFactory = await ethers.getContractFactory("MockIglooFiV1VaultAdmin");
+	const MockAdmin: ContractFactory = await ethers.getContractFactory("MockAdmin");
 	const SignatureManager: ContractFactory = await ethers.getContractFactory("SignatureManager");
 	
+	// Deploy
 	const mockIglooFiGovernance: Contract = await (await MockIglooFiGovernance.deploy()).deployed();
 	const iglooFiV1VaultFactory: Contract = await (
 		await IglooFiV1VaultFactory.deploy(mockIglooFiGovernance.address)
@@ -33,35 +34,42 @@ const stageContracts = async () => {
 	// Attach the deployed vault's address
 	const iglooFiV1Vault: Contract = await IglooFiV1Vault.attach(iglooFiV1VaultFactory.iglooFiV1VaultAddress(0));
 
-	const mockIglooFiV1VaultAdmin: Contract = await (await MockIglooFiV1VaultAdmin.deploy()).deployed();
+	const mockAdmin: Contract = await (await MockAdmin.deploy()).deployed();
 	const signatureManager: Contract = await (await SignatureManager.deploy(mockIglooFiGovernance.address)).deployed();
 
 	return {
 		iglooFiV1VaultFactory,
 		iglooFiV1Vault,
 		mockIglooFiGovernance,
-		mockIglooFiV1VaultAdmin,
+		mockAdmin,
 		signatureManager
 	};
 };
 
 
-describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
+describe("MockAdmin.sol - Mock Admin Contract", async () => {
 	let iglooFiV1VaultFactory: Contract;
 	let iglooFiV1Vault: Contract;
 	let mockIglooFiGovernance: Contract;
-	let mockIglooFiV1VaultAdmin: Contract;
+	let mockAdmin: Contract;
 	let signatureManager: Contract;
 
 
 	before("[before] Set up contracts..", async () => {
+		const [, addr1, addr2] = await ethers.getSigners();
+
 		const stagedContracts = await stageContracts();
 
 		iglooFiV1Vault = stagedContracts.iglooFiV1Vault;
 		iglooFiV1VaultFactory = stagedContracts.iglooFiV1VaultFactory;
 		mockIglooFiGovernance = stagedContracts.mockIglooFiGovernance;
-		mockIglooFiV1VaultAdmin = stagedContracts.mockIglooFiV1VaultAdmin;
+		mockAdmin = stagedContracts.mockAdmin;
 		signatureManager = stagedContracts.signatureManager;
+
+		await iglooFiV1Vault.addVoter(addr1.address);
+		await iglooFiV1Vault.addVoter(addr2.address);
+
+		await iglooFiV1Vault.updateSignatureManager(signatureManager.address);
 	});
 
 	/**
@@ -69,7 +77,7 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 	*/
 	describe("AccessControlEnumerable", async () => {
 		it("Should allow admin to add a contract-based admin..", async () => {
-			await iglooFiV1Vault.grantRole(await iglooFiV1Vault.VOTER(), mockIglooFiV1VaultAdmin.address)
+			await iglooFiV1Vault.grantRole(await iglooFiV1Vault.VOTER(), mockAdmin.address)
 		});
 	});
 
@@ -77,27 +85,5 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 	 * @dev Restriction: DEFAULT_ADMIN_ROLE
 	*/
 	describe("Restriction: DEFAULT_ADMIN_ROLE", async () => {
-		describe("updateSignatureManager", async () => {
-			it(
-				"Should revert when unauthorized msg.sender calls..",
-				async () => {
-					const [, addr1] = await ethers.getSigners();
-
-					await expect(
-						iglooFiV1Vault.connect(addr1).updateSignatureManager(addr1.address)
-					).to.be.rejected;
-				}
-			);
-
-			it(
-				"Should be able to set a signature manager contract..",
-				async () => {
-
-					await iglooFiV1Vault.updateSignatureManager(signatureManager.address);
-					
-					expect(await iglooFiV1Vault.signatureManager()).to.be.equal(signatureManager.address);
-				}
-			);
-		});
 	});
 });

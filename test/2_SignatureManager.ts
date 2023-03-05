@@ -7,46 +7,72 @@ const { ethers } = require("hardhat");
 const chainId: number = 31337;
 
 
-describe("SignatureManager.sol - Mock Signature Manager Contract", async () => {
-	let mockIglooFiGovernance: Contract;
+const stageContracts = async () => {
+	const [owner] = await ethers.getSigners();
+
+	const IglooFiV1Vault: ContractFactory = await ethers.getContractFactory("IglooFiV1Vault");
+	const IglooFiV1VaultFactory: ContractFactory = await ethers.getContractFactory("IglooFiV1VaultFactory");
+	const MockAdmin: ContractFactory = await ethers.getContractFactory("MockAdmin");
+	const MockDapp: ContractFactory = await ethers.getContractFactory("MockDapp");
+	const MockIglooFiGovernance: ContractFactory = await ethers.getContractFactory("MockIglooFiGovernance");
+	const SignatureManager: ContractFactory = await ethers.getContractFactory("SignatureManager");
+	
+	// Deploy
+	const mockIglooFiGovernance: Contract = await (await MockIglooFiGovernance.deploy()).deployed();
+	const mockDapp: Contract = await (await MockDapp.deploy()).deployed();
+	const iglooFiV1VaultFactory: Contract = await (
+		await IglooFiV1VaultFactory.deploy(mockIglooFiGovernance.address)
+	).deployed();
+	
+	await iglooFiV1VaultFactory.updatePause(false);
+	
+	// Deploy a vault
+	await iglooFiV1VaultFactory.deployIglooFiV1Vault(
+		owner.address,
+		ethers.constants.AddressZero,
+		true,
+		2,
+		5,
+		{ value: 1 }
+	);
+
+	// Attach the deployed vault's address
+	const iglooFiV1Vault: Contract = await IglooFiV1Vault.attach(iglooFiV1VaultFactory.iglooFiV1VaultAddress(0));
+
+	const mockAdmin: Contract = await (await MockAdmin.deploy()).deployed();
+	const signatureManager: Contract = await (await SignatureManager.deploy(mockIglooFiGovernance.address)).deployed();
+
+	return {
+		iglooFiV1VaultFactory,
+		iglooFiV1Vault,
+		mockAdmin,
+		mockDapp,
+		mockIglooFiGovernance,
+		signatureManager
+	};
+};
+
+
+describe("SignatureManager.sol - Signature Manager Contract", async () => {
 	let iglooFiV1VaultFactory: Contract;
 	let iglooFiV1Vault: Contract;
-	let signatureManager: Contract;
+	let mockAdmin: Contract;
 	let mockDapp: Contract;
+	let mockIglooFiGovernance: Contract;
+	let signatureManager: Contract;
 
-	/**
-	 * @notice Deploy contract
-	 * @dev Deploy MockIglooFiGovernance.sol
-	*/
-	before("[before] Deploy IglooFiGovernance.sol contract..", async () => {
-		const [owner, addr1, addr2] = await ethers.getSigners();
 
-		const IglooFiV1Vault: ContractFactory = await ethers.getContractFactory("IglooFiV1Vault");
-		const IglooFiV1VaultFactory: ContractFactory = await ethers.getContractFactory("IglooFiV1VaultFactory");
-		const MockDapp: ContractFactory = await ethers.getContractFactory("MockDapp");
-		const MockIglooFiGovernance: ContractFactory = await ethers.getContractFactory("MockIglooFiGovernance");
-		const SignatureManager: ContractFactory = await ethers.getContractFactory("SignatureManager");
+	before("[before] Set up contracts..", async () => {
+		const [, addr1, addr2] = await ethers.getSigners();
 
-		mockIglooFiGovernance = await (await MockIglooFiGovernance.deploy()).deployed();
-		signatureManager = await (await SignatureManager.deploy(mockIglooFiGovernance.address)).deployed();
-		iglooFiV1VaultFactory = await (await IglooFiV1VaultFactory.deploy(mockIglooFiGovernance.address)).deployed();
-		mockDapp = await (await MockDapp.deploy()).deployed();
+		const stagedContracts = await stageContracts();
 
-		// Unpause contract
-		await iglooFiV1VaultFactory.updatePause(false);
-
-		// Deploy a vault
-		await iglooFiV1VaultFactory.deployIglooFiV1Vault(
-			owner.address,
-			ethers.constants.AddressZero,
-			true,
-			2,
-			5,
-			{ value: 1 }
-		);
-
-		// Attach the deployed vault's address
-		iglooFiV1Vault = await IglooFiV1Vault.attach(iglooFiV1VaultFactory.iglooFiV1VaultAddress(0));
+		iglooFiV1Vault = stagedContracts.iglooFiV1Vault;
+		iglooFiV1VaultFactory = stagedContracts.iglooFiV1VaultFactory;
+		mockAdmin = stagedContracts.mockAdmin;
+		mockDapp = stagedContracts.mockDapp;
+		mockIglooFiGovernance = stagedContracts.mockIglooFiGovernance;
+		signatureManager = stagedContracts.signatureManager;
 
 		await iglooFiV1Vault.addVoter(addr1.address);
 		await iglooFiV1Vault.addVoter(addr2.address);
