@@ -11,19 +11,19 @@ const sixDaysInSeconds = 6 * 24 * 60 * 60;
 const stageContracts = async () => {
 	const [owner] = await ethers.getSigners();
 
-	const MockIglooFiGovernance: ContractFactory = await ethers.getContractFactory("MockIglooFiGovernance");
-	const IglooFiV1VaultFactory: ContractFactory = await ethers.getContractFactory("IglooFiV1VaultFactory");
 	const IglooFiV1Vault: ContractFactory = await ethers.getContractFactory("IglooFiV1Vault");
-	const SignatureManager: ContractFactory = await ethers.getContractFactory("SignatureManager");
-	const MockIglooFiV1VaultAdmin: ContractFactory = await ethers.getContractFactory("MockIglooFiV1VaultAdmin");
+	const IglooFiV1VaultFactory: ContractFactory = await ethers.getContractFactory("IglooFiV1VaultFactory");
 	const MockERC20: ContractFactory = await ethers.getContractFactory("MockERC20");
 	const MockERC721: ContractFactory = await ethers.getContractFactory("MockERC721");
+	const MockIglooFiGovernance: ContractFactory = await ethers.getContractFactory("MockIglooFiGovernance");
+	const MockIglooFiV1VaultAdmin: ContractFactory = await ethers.getContractFactory("MockIglooFiV1VaultAdmin");
+	const SignatureManager: ContractFactory = await ethers.getContractFactory("SignatureManager");
 	
 	const mockIglooFiGovernance: Contract = await (await MockIglooFiGovernance.deploy()).deployed();
-	
 	const iglooFiV1VaultFactory: Contract = await (
 		await IglooFiV1VaultFactory.deploy(mockIglooFiGovernance.address)
 	).deployed();
+
 	await iglooFiV1VaultFactory.updatePause(false);
 	
 	// Deploy a vault
@@ -38,13 +38,10 @@ const stageContracts = async () => {
 
 	// Attach the deployed vault's address
 	const iglooFiV1Vault: Contract = await IglooFiV1Vault.attach(iglooFiV1VaultFactory.iglooFiV1VaultAddress(0));
-	
+
 	const signatureManager: Contract = await (await SignatureManager.deploy(mockIglooFiGovernance.address)).deployed();
-
 	const mockIglooFiV1VaultAdmin: Contract = await (await MockIglooFiV1VaultAdmin.deploy()).deployed();
-
 	const mockERC20: Contract = await (await MockERC20.deploy()).deployed();
-	
 	const mockERC721: Contract = await (await MockERC721.deploy()).deployed();
 
 	return {
@@ -82,6 +79,9 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 	});
 
 
+	/**
+	* @dev Recieving tokens & ethers
+	*/
 	describe("Recieving tokens & ethers", async () => {
 		it("Should be able to recieve ether..", async () => {
 			const [, addr1] = await ethers.getSigners();
@@ -287,7 +287,7 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 	*/
 	describe("Restriction: VOTER", async () => {
 		/**
-		 * @notice Process for withdrawking Ether
+		 * @notice Process for withdrawling Ether
 		*/
 		describe("Requesting Ether", async () => {
 			/**
@@ -684,7 +684,10 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 		});
 
 
-		describe("_openWithdrawalRequestIds", async () => {
+		/**
+		 * @dev openWithdrawalRequestIds
+		 */
+		describe("openWithdrawalRequestIds", async () => {
 			it(
 				"Should be able to keep record of multiple open WithdrawalRequest Ids..",
 				async () => {

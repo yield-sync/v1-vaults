@@ -21,11 +21,11 @@ describe("SignatureManager.sol - Mock Signature Manager Contract", async () => {
 	before("[before] Deploy IglooFiGovernance.sol contract..", async () => {
 		const [owner, addr1, addr2] = await ethers.getSigners();
 
+		const IglooFiV1Vault: ContractFactory = await ethers.getContractFactory("IglooFiV1Vault");
+		const IglooFiV1VaultFactory: ContractFactory = await ethers.getContractFactory("IglooFiV1VaultFactory");
+		const MockDapp: ContractFactory = await ethers.getContractFactory("MockDapp");
 		const MockIglooFiGovernance: ContractFactory = await ethers.getContractFactory("MockIglooFiGovernance");
 		const SignatureManager: ContractFactory = await ethers.getContractFactory("SignatureManager");
-		const IglooFiV1VaultFactory: ContractFactory = await ethers.getContractFactory("IglooFiV1VaultFactory");
-		const IglooFiV1Vault: ContractFactory = await ethers.getContractFactory("IglooFiV1Vault");
-		const MockDapp: ContractFactory = await ethers.getContractFactory("MockDapp");
 
 		mockIglooFiGovernance = await (await MockIglooFiGovernance.deploy()).deployed();
 		signatureManager = await (await SignatureManager.deploy(mockIglooFiGovernance.address)).deployed();

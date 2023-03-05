@@ -5,19 +5,19 @@ const { ethers } = require("hardhat");
 
 
 describe("IglooFiV1VaultFactory.sol - IglooFi V1 Vault Factory Contract", async () => {
+	let iglooFiV1VaultFactory: Contract;
 	let mockIglooFiGovernance: Contract;
 	let mockSignatureManager: Contract;
-	let iglooFiV1VaultFactory: Contract;
 	
 
 	before("[before] Set up contracts..", async () => {
+		const IglooFiV1VaultFactory: ContractFactory = await ethers.getContractFactory("IglooFiV1VaultFactory");
 		const MockIglooFiGovernance: ContractFactory = await ethers.getContractFactory("MockIglooFiGovernance");
 		const MockSignatureManager: ContractFactory = await ethers.getContractFactory("MockSignatureManager");
-		const IglooFiV1VaultFactory: ContractFactory = await ethers.getContractFactory("IglooFiV1VaultFactory");
 		
+		iglooFiV1VaultFactory = await (await IglooFiV1VaultFactory.deploy(mockIglooFiGovernance.address)).deployed();
 		mockIglooFiGovernance = await (await MockIglooFiGovernance.deploy()).deployed();
 		mockSignatureManager = await (await MockSignatureManager.deploy(mockIglooFiGovernance.address)).deployed();
-		iglooFiV1VaultFactory = await (await IglooFiV1VaultFactory.deploy(mockIglooFiGovernance.address)).deployed();
 	});
 
 
@@ -82,7 +82,7 @@ describe("IglooFiV1VaultFactory.sol - IglooFi V1 Vault Factory Contract", async 
 		/**
 		* @dev updatePause
 		*/
-		describe("updatePause", async () => {
+		describe("updatePause()", async () => {
 			it(
 				"Should revert when unauthorized msg.sender calls..",
 				async () => {
@@ -118,7 +118,7 @@ describe("IglooFiV1VaultFactory.sol - IglooFi V1 Vault Factory Contract", async 
 		/**
 		* @dev updateDefaultSignatureManager
 		*/
-		describe("updateDefaultSignatureManager", async () => {
+		describe("updateDefaultSignatureManager()", async () => {
 			it(
 				"Should revert when unauthorized msg.sender calls..",
 				async () => {
@@ -145,7 +145,7 @@ describe("IglooFiV1VaultFactory.sol - IglooFi V1 Vault Factory Contract", async 
 		/**
 		* @dev updateFee
 		*/
-		describe("updateFee", async () => {
+		describe("updateFee()", async () => {
 			it(
 				"Should revert when unauthorized msg.sender calls..",
 				async () => {
@@ -169,7 +169,7 @@ describe("IglooFiV1VaultFactory.sol - IglooFi V1 Vault Factory Contract", async 
 		/**
 		* @dev transferFunds
 		*/
-		describe("transferFunds", async () => {
+		describe("transferFunds()", async () => {
 			it(
 				"Should revert when unauthorized msg.sender calls..",
 				async () => {
@@ -225,7 +225,7 @@ describe("IglooFiV1VaultFactory.sol - IglooFi V1 Vault Factory Contract", async 
 		/**
 		* @dev deployIglooFiV1Vault
 		*/
-		describe("deployIglooFiV1Vault", async () => {
+		describe("deployIglooFiV1Vault()", async () => {
 			it(
 				"Should be able to record deployed IglooFiV1Vault.sol..",
 				async () => {
