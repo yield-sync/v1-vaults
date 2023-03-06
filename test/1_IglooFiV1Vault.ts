@@ -121,19 +121,19 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 			const [, , , , addr4] = await ethers.getSigners();
 
 			await iglooFiV1Vault.grantRole(await iglooFiV1Vault.DEFAULT_ADMIN_ROLE(), addr4.address)
+			
+			expect(
+				await iglooFiV1Vault.hasRole(await iglooFiV1Vault.DEFAULT_ADMIN_ROLE(), addr4.address)
+			).to.be.true;
 		});
 
 		it("Should allow admin to add a contract-based admin..", async () => {
 			await iglooFiV1Vault.grantRole(await iglooFiV1Vault.DEFAULT_ADMIN_ROLE(), mockAdmin.address)
+			
+			expect(
+				await iglooFiV1Vault.hasRole(await iglooFiV1Vault.DEFAULT_ADMIN_ROLE(), mockAdmin.address)
+			).to.be.true;
 		});
-
-		expect(
-			await iglooFiV1Vault.hasRole(await iglooFiV1Vault.DEFAULT_ADMIN_ROLE(), addr4.address)
-		).to.be.true;
-
-		expect(
-			await iglooFiV1Vault.hasRole(await iglooFiV1Vault.DEFAULT_ADMIN_ROLE(), mockAdmin.address)
-		).to.be.true;
 	});
 
 
