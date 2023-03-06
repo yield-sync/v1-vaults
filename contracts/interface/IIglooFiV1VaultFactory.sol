@@ -6,20 +6,8 @@ pragma solidity ^0.8.18;
 * @title IIglooFiV1VaultFactory
 */
 interface IIglooFiV1VaultFactory {
-	/* [event] */
-	/**
-	* @dev Emits when a vault is deployed
-	*/
 	event DeployedIglooFiV1Vault(address indexed vaultAddress);
-
-	/**
-	* @dev Emits when a `defaultSignatureManager` is updated
-	*/
 	event UpdatedDefaultSignatureManager(address defaultSignatureManager);
-
-	/**
-	* @dev Emits when a `fee` is updated
-	*/
 	event UpdatedFee(uint256 fee);
 
 

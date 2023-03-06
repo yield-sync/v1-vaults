@@ -23,49 +23,14 @@ struct WithdrawalRequest {
 */
 interface IIglooFiV1Vault
 {
-	/**
-	* @dev Emits when a `WithdrawalRequest` is updated
-	*/
 	event DeletedWithdrawalRequest(uint256 withdrawalRequestId);
-
-	/**
-	* @dev Emits when a `WithdrawalRequest` is updated
-	*/
 	event UpdatedWithdrawalRequest(WithdrawalRequest withdrawalRequest);
-
-	/**
-	* @dev Emits when `requiredVoteCount` are updated
-	*/
 	event UpdatedRequiredVoteCount(uint256 requiredVoteCount);
-
-	/**
-	* @dev Emits when `signatureManager` are updated
-	*/
 	event UpdatedSignatureManger(address signatureManager);
-
-	/**
-	* @dev Emits when `withdrawalDelaySeconds` is updated
-	*/
 	event UpdatedWithdrawalDelaySeconds(uint256 withdrawalDelaySeconds);
-
-	/**
-	* @dev Emits when a `WithdrawalRequest` is created
-	*/
 	event CreatedWithdrawalRequest(uint256 withdrawalRequest);
-
-	/**
-	* @dev Emits when a voter has voted
-	*/
 	event VoterVoted(uint256 withdrawalRequestId, address indexed voter, bool vote);
-
-	/**
-	* @dev Emit when a WithdrawalRequest is ready to be processed
-	*/
 	event WithdrawalRequestReadyToBeProccessed(uint256 withdrawalRequestId);
-
-	/**
-	* @dev Emits when tokens are withdrawn
-	*/
 	event TokensWithdrawn(address indexed withdrawer, address indexed token, uint256 amount);
 
 

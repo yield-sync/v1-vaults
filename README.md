@@ -41,6 +41,6 @@ OPTIMISTIC_ETHERSCAN_API_KEY=
 
 1. Visibility (`public` | `private` | `internal` | `external`)
 2. State Interaction (`pure` | `view`)
-3. Restriction (`Access Control`, etc.)
+3. Restriction (`Access Control` etc. DEFAULT_ADMIN_ROLE first)
 4. Complexity (Calls to inherited functions, external functions, change state)
 5. Alphabetical
