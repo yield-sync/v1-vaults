@@ -128,9 +128,9 @@ interface IIglooFiV1VaultFactory {
 	;
 
 	/**
-	* @notice Transfer Ether to the treasury
+	* @notice Transfer Ether to 
 	* @dev [restriction] IIglooFiGovernance AccessControlEnumerable → DEFAULT_ADMIN_ROLE
-	* @dev [transfer] to `treasury`
+	* @dev [transfer]
 	* @param to {uint256}
 	*/
 	function transferEther(address to)
