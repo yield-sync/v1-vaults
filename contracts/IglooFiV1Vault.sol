@@ -279,11 +279,9 @@ contract IglooFiV1Vault is
 		
 		if (vote)
 		{
-			// [update] `_withdrawalRequest` → [increment] for vote count
 			_withdrawalRequest[withdrawalRequestId].forVoteCount++;
 		}
 		else {
-			// [update] `_withdrawalRequest` → [increment] against vote count
 			_withdrawalRequest[withdrawalRequestId].againstVoteCount++;
 		}
 
@@ -295,7 +293,6 @@ contract IglooFiV1Vault is
 			emit WithdrawalRequestReadyToBeProccessed(withdrawalRequestId);
 		}
 
-		// [update] `_withdrawalRequest[withdrawalRequestId].votedVoters` → Add voter
 		_withdrawalRequest[withdrawalRequestId].votedVoters.push(_msgSender());
 
 		if (_withdrawalRequest[withdrawalRequestId].forVoteCount < forVoteCountRequired)

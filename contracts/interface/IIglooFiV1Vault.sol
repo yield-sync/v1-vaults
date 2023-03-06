@@ -238,7 +238,6 @@ interface IIglooFiV1Vault
 	* @notice Vote on withdrawalRequest
 	* @dev [restriction] AccessControlEnumerable → VOTER
 	* @dev [update] `_withdrawalRequest`
-	*      [update] `_withdrawalRequestVotedVoters`
 	* @param withdrawalRequestId {uint256}
 	* @param vote {bool} true (approve) or false (deny)
 	* Emits: `WithdrawalRequestReadyToBeProccessed`
