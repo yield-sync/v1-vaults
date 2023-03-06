@@ -315,40 +315,46 @@ contract IglooFiV1Vault is
 	{
 		WithdrawalRequest memory wR = _withdrawalRequest[withdrawalRequestId];
 
-		require(wR.forVoteCount >= forVoteCountRequired, "Not enough votes");
-
 		require(
-			block.timestamp - wR.latestRelevantApproveVoteTime >= withdrawalDelaySeconds * 1 seconds,
-			"Not enough time has passed"
+			wR.forVoteCount >= forVoteCountRequired || wR.againstVoteCount >= againstVoteCountRequired,
+			"Not enough for vote or against votes"
 		);
 
-		// Transfer accordingly
-		if (wR.forERC20 && !wR.forERC721)
+		if (wR.forVoteCount >= forVoteCountRequired)
 		{
-			if (IERC20(wR.token).balanceOf(address(this)) >= wR.amount)
+			require(
+				block.timestamp - wR.latestRelevantApproveVoteTime >= withdrawalDelaySeconds * 1 seconds,
+				"Not enough time has passed"
+			);
+
+			// Transfer accordingly
+			if (wR.forERC20 && !wR.forERC721)
 			{
-				// [ERC20-transfer]
-				IERC20(wR.token).transfer(wR.to, wR.amount);
+				if (IERC20(wR.token).balanceOf(address(this)) >= wR.amount)
+				{
+					// [ERC20-transfer]
+					IERC20(wR.token).transfer(wR.to, wR.amount);
+				}
 			}
-		}
-		else if (wR.forERC721 && !wR.forERC20)
-		{
-			if (IERC721(wR.token).ownerOf(wR.tokenId) == address(this))
+			else if (wR.forERC721 && !wR.forERC20)
 			{
-				// [ERC721-transfer]
-				IERC721(wR.token).transferFrom(address(this), wR.to, wR.tokenId);
+				if (IERC721(wR.token).ownerOf(wR.tokenId) == address(this))
+				{
+					// [ERC721-transfer]
+					IERC721(wR.token).transferFrom(address(this), wR.to, wR.tokenId);
+				}
 			}
-		}
-		else if (wR.forEther)
-		{
-			// [transfer]
-			(bool success, ) = wR.to.call{value: wR.amount}("");
-			
-			require(success, "Unable to send value");
+			else if (wR.forEther)
+			{
+				// [transfer]
+				(bool success, ) = wR.to.call{value: wR.amount}("");
+				
+				require(success, "Unable to send value");
+			}
+
+			emit TokensWithdrawn(_msgSender(), wR.to, wR.amount);
 		}
 
 		_deleteWithdrawalRequest(withdrawalRequestId);
-
-		emit TokensWithdrawn(_msgSender(), wR.to, wR.amount);
 	}
 }
