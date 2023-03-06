@@ -225,13 +225,13 @@ interface IIglooFiV1Vault
 	* @dev [increment] `_withdrawalRequestId`
 	*      [add] `_withdrawalRequest` value
 	*      [push-into] `_withdrawalRequestIds`
-	* @param forEther {bool} If to be withdrawn asset is Ether
-	* @param forERC20 {bool} If to be withdrawn asset is ERC20
-	* @param forERC721 {bool} If to be withdrawn asset is ERC721
-	* @param to {address} Address the withdrawn tokens will be sent
-	* @param tokenAddress {address} Token address contract
-	* @param amount {uint256} Amount to be withdrawn
-	* @param tokenId {uint256} erc721 token id
+	* @param forEther {bool}
+	* @param forERC20 {bool}
+	* @param forERC721 {bool}
+	* @param to {address}
+	* @param tokenAddress {address} Token contract
+	* @param amount {uint256}
+	* @param tokenId {uint256} ERC721 token id
 	* Emits: `CreatedWithdrawalRequest`
 	*/
 	function createWithdrawalRequest(
