@@ -25,7 +25,7 @@ contract IglooFiV1VaultFactory is
 	uint256 internal _vaultIdTracker;
 
 	// [mapping]
-	mapping (uint256 iglooFiV1VaultId => address iglooFiV1VaultAddress) internal _iglooFiV1VaultAddress;
+	mapping (uint256 iglooFiV1VaultId => address iglooFiV1VaultAddress) internal _iglooFiV1VaultIdToAddress;
 
 
 	constructor (address _iglooFiGovernance)
@@ -68,13 +68,13 @@ contract IglooFiV1VaultFactory is
 
 
 	/// @inheritdoc IIglooFiV1VaultFactory
-	function iglooFiV1VaultAddress(uint256 iglooFiV1VaultId)
+	function iglooFiV1VaultIdToAddress(uint256 iglooFiV1VaultId)
 		public
 		view
 		override
 		returns (address)
 	{
-		return _iglooFiV1VaultAddress[iglooFiV1VaultId];
+		return _iglooFiV1VaultIdToAddress[iglooFiV1VaultId];
 	}
 
 
@@ -103,7 +103,7 @@ contract IglooFiV1VaultFactory is
 			withdrawalDelaySeconds
 		);
 
-		_iglooFiV1VaultAddress[_vaultIdTracker] = address(deployedContract);
+		_iglooFiV1VaultIdToAddress[_vaultIdTracker] = address(deployedContract);
 
 		_vaultIdTracker++;
 

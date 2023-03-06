@@ -99,6 +99,7 @@ contract IglooFiV1Vault is
 			if (_openWithdrawalRequestIds[i] == withdrawalRequestId)
 			{
 				_openWithdrawalRequestIds[i] = _openWithdrawalRequestIds[_openWithdrawalRequestIds.length - 1];
+
 				_openWithdrawalRequestIds.pop();
 
 				break;

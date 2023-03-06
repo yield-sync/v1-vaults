@@ -67,7 +67,7 @@ interface IIglooFiV1VaultFactory {
 	* @param iglooFiV1VaultId {uint256}
 	* @return {address}
 	*/
-	function iglooFiV1VaultAddress(uint256 iglooFiV1VaultId)
+	function iglooFiV1VaultIdToAddress(uint256 iglooFiV1VaultId)
 		external
 		view
 		returns (address)
