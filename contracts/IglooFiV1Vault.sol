@@ -88,14 +88,12 @@ contract IglooFiV1Vault is
 	function _deleteWithdrawalRequest(uint256 withdrawalRequestId)
 		internal
 	{
-		// [delete] `_withdrawalRequest` value
 		delete _withdrawalRequest[withdrawalRequestId];
 
 		for (uint256 i = 0; i < _openWithdrawalRequestIds.length; i++)
 		{
 			if (_openWithdrawalRequestIds[i] == withdrawalRequestId)
 			{
-				// [delete] `_openWithdrawalRequestIds` value
 				_openWithdrawalRequestIds[i] = _openWithdrawalRequestIds[_openWithdrawalRequestIds.length - 1];
 				_openWithdrawalRequestIds.pop();
 
