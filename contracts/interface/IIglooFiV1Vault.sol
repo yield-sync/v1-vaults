@@ -33,7 +33,7 @@ interface IIglooFiV1Vault
 	event UpdatedWithdrawalDelaySeconds(uint256 withdrawalDelaySeconds);
 	event UpdatedWithdrawalRequest(WithdrawalRequest withdrawalRequest);
 	event VoterVoted(uint256 withdrawalRequestId, address indexed voter, bool vote);
-	event WithdrawalRequestReadyToBeProccessed(uint256 withdrawalRequestId);
+	event WithdrawalRequestReadyToBeProcessed(uint256 withdrawalRequestId);
 
 
 	receive ()
@@ -252,7 +252,7 @@ interface IIglooFiV1Vault
 	* @dev [update] `_withdrawalRequest`
 	* @param withdrawalRequestId {uint256}
 	* @param vote {bool} true (approve) or false (deny)
-	* Emits: `WithdrawalRequestReadyToBeProccessed`
+	* Emits: `WithdrawalRequestReadyToBeProcessed`
 	* Emits: `VoterVoted`
 	*/
 	function voteOnWithdrawalRequest(uint256 withdrawalRequestId, bool vote)

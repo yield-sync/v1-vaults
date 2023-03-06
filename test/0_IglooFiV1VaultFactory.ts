@@ -177,7 +177,7 @@ describe("IglooFiV1VaultFactory.sol - IglooFi V1 Vault Factory Contract", async 
 					const [, addr1] = await ethers.getSigners();
 
 					await expect(
-						iglooFiV1VaultFactory.connect(addr1).transferFunds(addr1.address)
+						iglooFiV1VaultFactory.connect(addr1).transferEther(addr1.address)
 					).to.be.rejectedWith("!auth");
 				}
 			);
@@ -199,7 +199,7 @@ describe("IglooFiV1VaultFactory.sol - IglooFi V1 Vault Factory Contract", async 
 						)
 					};
 
-					await iglooFiV1VaultFactory.transferFunds(addr1.address);
+					await iglooFiV1VaultFactory.transferEther(addr1.address);
 
 					const balanceAfter = {
 						addr1: parseFloat(

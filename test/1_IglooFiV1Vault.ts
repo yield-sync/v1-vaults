@@ -777,6 +777,7 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 					);
 
 					await expect((await iglooFiV1Vault.openWithdrawalRequestIds()).length).to.be.equal(0);
+
 					await expect(
 						iglooFiV1Vault.withdrawalRequest(
 							openWithdrawalRequestIds[openWithdrawalRequestIds.length - 1]

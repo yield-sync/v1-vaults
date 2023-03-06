@@ -70,7 +70,12 @@ contract IglooFiV1Vault is
 
 	modifier validWithdrawalRequest(uint256 withdrawalRequestId)
 	{
-		require(_withdrawalRequest[withdrawalRequestId].creator != address(0), "No WithdrawalRequest found");
+		require(
+			_withdrawalRequest[withdrawalRequestId].forEther ||
+			_withdrawalRequest[withdrawalRequestId].forERC20 ||
+			_withdrawalRequest[withdrawalRequestId].forERC721,
+			"No WithdrawalRequest found"
+		);
 		
 		_;
 	}
@@ -141,7 +146,6 @@ contract IglooFiV1Vault is
 		override
 		onlyRole(DEFAULT_ADMIN_ROLE)
 	{
-		// [add] address to VOTER on `AccessControlEnumerable`
 		_setupRole(VOTER, targetAddress);
 	}
 
@@ -151,7 +155,6 @@ contract IglooFiV1Vault is
 		override
 		onlyRole(DEFAULT_ADMIN_ROLE)
 	{
-		// [remove] address with VOTER on `AccessControlEnumerable`
 		_revokeRole(VOTER, voter);
 	}
 
@@ -174,7 +177,6 @@ contract IglooFiV1Vault is
 		onlyRole(DEFAULT_ADMIN_ROLE)
 		validWithdrawalRequest(withdrawalRequestId)
 	{
-		// [update] `_withdrawalRequest`
 		_withdrawalRequest[withdrawalRequestId] = __withdrawalRequest;
 
 		emit UpdatedWithdrawalRequest(__withdrawalRequest);
@@ -188,7 +190,6 @@ contract IglooFiV1Vault is
 	{
 		require(_againstVoteCountRequired > 0, "!_againstVoteCountRequired");
 
-		// [update]
 		againstVoteCountRequired = _againstVoteCountRequired;
 
 		emit UpdatedAgainstVoteCountRequired(againstVoteCountRequired);
@@ -202,7 +203,6 @@ contract IglooFiV1Vault is
 	{
 		require(_forVoteCountRequired > 0, "!_forVoteCountRequired");
 
-		// [update]
 		forVoteCountRequired = _forVoteCountRequired;
 
 		emit UpdatedForVoteCountRequired(forVoteCountRequired);
@@ -227,7 +227,6 @@ contract IglooFiV1Vault is
 	{
 		require(_withdrawalDelaySeconds >= 0, "!_withdrawalDelaySeconds");
 
-		// [update] `withdrawalDelaySeconds`
 		withdrawalDelaySeconds = _withdrawalDelaySeconds;
 
 		emit UpdatedWithdrawalDelaySeconds(withdrawalDelaySeconds);
@@ -301,7 +300,7 @@ contract IglooFiV1Vault is
 			_withdrawalRequest[withdrawalRequestId].againstVoteCount >= againstVoteCountRequired
 		)
 		{
-			emit WithdrawalRequestReadyToBeProccessed(withdrawalRequestId);
+			emit WithdrawalRequestReadyToBeProcessed(withdrawalRequestId);
 		}
 
 		_withdrawalRequest[withdrawalRequestId].votedVoters.push(_msgSender());

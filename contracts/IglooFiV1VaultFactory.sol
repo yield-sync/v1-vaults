@@ -95,7 +95,6 @@ contract IglooFiV1VaultFactory is
 	{
 		require(msg.value >= fee, "!msg.value");
 
-		// [deploy] A vault contract
 		IglooFiV1Vault deployedContract = new IglooFiV1Vault(
 			admin,
 			useDefaultSignatureManager ? defaultSignatureManager : signatureManager,
@@ -104,15 +103,12 @@ contract IglooFiV1VaultFactory is
 			withdrawalDelaySeconds
 		);
 
-		// Register vault
 		_iglooFiV1VaultAddress[_vaultIdTracker] = address(deployedContract);
 
-		// [increment] vaultId
 		_vaultIdTracker++;
 
 		emit DeployedIglooFiV1Vault(address(deployedContract));
 
-		// [return]
 		return address(deployedContract);
 	}
 
