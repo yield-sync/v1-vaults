@@ -13,11 +13,11 @@ interface IIglooFiV1VaultRecord
 	* @dev [view-mapping]
 	* @param iglooFiV1VaultId {address}
 	* @return {uint256}
+	*/
 	function iglooFiV1VaultAddressToId(address iglooFiV1VaultId)
 		external
 		returns (uint256)
 	;
-	*/
 
 	/**
 	* @notice IglooFiV1Vault Id to Address
@@ -25,11 +25,11 @@ interface IIglooFiV1VaultRecord
 	* @dev [view-mapping]
 	* @param iglooFiV1VaultAddress {address}
 	* @return {address}
+	*/
 	function iglooFiV1VaultIdToAddress(uint256 iglooFiV1VaultAddress)
 		external
 		returns (address)
 	;
-	*/
 
 
 	/**

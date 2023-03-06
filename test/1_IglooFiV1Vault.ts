@@ -13,6 +13,7 @@ const stageContracts = async () => {
 
 	const IglooFiV1Vault: ContractFactory = await ethers.getContractFactory("IglooFiV1Vault");
 	const IglooFiV1VaultFactory: ContractFactory = await ethers.getContractFactory("IglooFiV1VaultFactory");
+	const IglooFiV1VaultRecord: ContractFactory = await ethers.getContractFactory("IglooFiV1VaultRecord");
 	const MockAdmin: ContractFactory = await ethers.getContractFactory("MockAdmin");
 	const MockERC20: ContractFactory = await ethers.getContractFactory("MockERC20");
 	const MockERC721: ContractFactory = await ethers.getContractFactory("MockERC721");
@@ -20,11 +21,12 @@ const stageContracts = async () => {
 	const SignatureManager: ContractFactory = await ethers.getContractFactory("SignatureManager");
 	
 	const mockIglooFiGovernance: Contract = await (await MockIglooFiGovernance.deploy()).deployed();
-	const iglooFiV1VaultFactory: Contract = await (
-		await IglooFiV1VaultFactory.deploy(mockIglooFiGovernance.address)
+	const iglooFiV1VaultRecord: Contract = await (
+		await IglooFiV1VaultRecord.deploy(mockIglooFiGovernance.address)
 	).deployed();
-
-	await iglooFiV1VaultFactory.updatePause(false);
+	const iglooFiV1VaultFactory: Contract = await (
+		await IglooFiV1VaultFactory.deploy(iglooFiV1VaultRecord.address, mockIglooFiGovernance.address)
+	).deployed();
 	
 	// Deploy a vault
 	await iglooFiV1VaultFactory.deployIglooFiV1Vault(
@@ -46,20 +48,22 @@ const stageContracts = async () => {
 	const mockERC721: Contract = await (await MockERC721.deploy()).deployed();
 
 	return {
-		mockIglooFiGovernance,
-		iglooFiV1VaultFactory,
 		iglooFiV1Vault,
+		iglooFiV1VaultFactory,
+		iglooFiV1VaultRecord,
 		signatureManager,
 		mockAdmin,
 		mockERC20,
-		mockERC721
+		mockERC721,
+		mockIglooFiGovernance
 	};
 };
 
 
 describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
-	let iglooFiV1VaultFactory: Contract;
 	let iglooFiV1Vault: Contract;
+	let iglooFiV1VaultFactory: Contract;
+	let iglooFiV1VaultRecord: Contract;
 	let signatureManager: Contract;
 	let mockAdmin: Contract;
 	let mockERC20: Contract;
@@ -69,9 +73,10 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 
 	before("[before] Set up contracts..", async () => {
 		const stagedContracts = await stageContracts();
-
-		iglooFiV1VaultFactory = stagedContracts.iglooFiV1VaultFactory
+		
 		iglooFiV1Vault = stagedContracts.iglooFiV1Vault
+		iglooFiV1VaultFactory = stagedContracts.iglooFiV1VaultFactory
+		iglooFiV1VaultRecord = stagedContracts.iglooFiV1VaultRecord
 		signatureManager = stagedContracts.signatureManager
 		mockAdmin = stagedContracts.mockAdmin
 		mockERC20 = stagedContracts.mockERC20

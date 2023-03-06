@@ -21,7 +21,7 @@ contract IglooFiV1Vault is
 {
 	// [address]
 	address public override signatureManager;
-	address internal IglooFiV1VaultRecord;
+	address internal _iglooFiV1VaultRecord;
 
 	// [bytes4]
 	bytes32 public constant override VOTER = keccak256("VOTER");
@@ -38,7 +38,7 @@ contract IglooFiV1Vault is
 
 
 	constructor (
-		address _iglooFiV1VaultRecord,
+		address __iglooFiV1VaultRecord,
 		address admin,
 		address _signatureManager,
 		uint256 _againstVoteCountRequired,
@@ -48,7 +48,7 @@ contract IglooFiV1Vault is
 	{
 		require(_forVoteCountRequired > 0, "!_forVoteCountRequired");
 		
-		IglooFiV1VaultRecord = _iglooFiV1VaultRecord;
+		_iglooFiV1VaultRecord = __iglooFiV1VaultRecord;
 
 		_setupRole(DEFAULT_ADMIN_ROLE, admin);
 
@@ -156,7 +156,7 @@ contract IglooFiV1Vault is
 	{
 		_setupRole(VOTER, targetAddress);
 
-		IIglooFiV1VaultRecord(IglooFiV1VaultRecord).addVoter(address(this), targetAddress);
+		IIglooFiV1VaultRecord(_iglooFiV1VaultRecord).addVoter(address(this), targetAddress);
 	}
 
 	/// @inheritdoc IIglooFiV1Vault
@@ -166,6 +166,8 @@ contract IglooFiV1Vault is
 		onlyRole(DEFAULT_ADMIN_ROLE)
 	{
 		_revokeRole(VOTER, voter);
+
+		IIglooFiV1VaultRecord(_iglooFiV1VaultRecord).removeVoter(address(this), voter);
 	}
 
 	/// @inheritdoc IIglooFiV1Vault

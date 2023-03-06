@@ -98,16 +98,6 @@ interface IIglooFiV1VaultFactory {
 	;
 
 	/**
-	* @notice Set pause
-	* @dev [restriction] IIglooFiGovernance AccessControlEnumerable → DEFAULT_ADMIN_ROLE
-	* @dev [call-internal]
-	* @param pause {bool}
-	*/
-	function updatePause(bool pause)
-		external
-	;
-
-	/**
 	* @notice Updates default signature manager
 	* @dev [restriction] IIglooFiGovernance AccessControlEnumerable → DEFAULT_ADMIN_ROLE
 	* @dev [update] `defaultSignatureManager`

@@ -12,6 +12,7 @@ const stageContracts = async () => {
 
 	const IglooFiV1Vault: ContractFactory = await ethers.getContractFactory("IglooFiV1Vault");
 	const IglooFiV1VaultFactory: ContractFactory = await ethers.getContractFactory("IglooFiV1VaultFactory");
+	const IglooFiV1VaultRecord: ContractFactory = await ethers.getContractFactory("IglooFiV1VaultRecord");
 	const MockAdmin: ContractFactory = await ethers.getContractFactory("MockAdmin");
 	const MockDapp: ContractFactory = await ethers.getContractFactory("MockDapp");
 	const MockIglooFiGovernance: ContractFactory = await ethers.getContractFactory("MockIglooFiGovernance");
@@ -19,12 +20,13 @@ const stageContracts = async () => {
 	
 	// Deploy
 	const mockIglooFiGovernance: Contract = await (await MockIglooFiGovernance.deploy()).deployed();
-	const mockDapp: Contract = await (await MockDapp.deploy()).deployed();
-	const iglooFiV1VaultFactory: Contract = await (
-		await IglooFiV1VaultFactory.deploy(mockIglooFiGovernance.address)
+	const iglooFiV1VaultRecord: Contract = await (
+		await IglooFiV1VaultRecord.deploy(mockIglooFiGovernance.address)
 	).deployed();
-	
-	await iglooFiV1VaultFactory.updatePause(false);
+	const iglooFiV1VaultFactory: Contract = await (
+		await IglooFiV1VaultFactory.deploy(iglooFiV1VaultRecord.address, mockIglooFiGovernance.address)
+	).deployed();
+	const mockDapp: Contract = await (await MockDapp.deploy()).deployed();
 	
 	// Deploy a vault
 	await iglooFiV1VaultFactory.deployIglooFiV1Vault(
@@ -44,8 +46,9 @@ const stageContracts = async () => {
 	const signatureManager: Contract = await (await SignatureManager.deploy(mockIglooFiGovernance.address)).deployed();
 
 	return {
-		iglooFiV1VaultFactory,
 		iglooFiV1Vault,
+		iglooFiV1VaultFactory,
+		iglooFiV1VaultRecord,
 		mockAdmin,
 		mockDapp,
 		mockIglooFiGovernance,
@@ -55,8 +58,9 @@ const stageContracts = async () => {
 
 
 describe("SignatureManager.sol - Signature Manager Contract", async () => {
-	let iglooFiV1VaultFactory: Contract;
 	let iglooFiV1Vault: Contract;
+	let iglooFiV1VaultFactory: Contract;
+	let iglooFiV1VaultRecord: Contract;
 	let mockAdmin: Contract;
 	let mockDapp: Contract;
 	let mockIglooFiGovernance: Contract;
@@ -70,6 +74,7 @@ describe("SignatureManager.sol - Signature Manager Contract", async () => {
 
 		iglooFiV1Vault = stagedContracts.iglooFiV1Vault;
 		iglooFiV1VaultFactory = stagedContracts.iglooFiV1VaultFactory;
+		iglooFiV1VaultRecord = stagedContracts.iglooFiV1VaultRecord;
 		mockAdmin = stagedContracts.mockAdmin;
 		mockDapp = stagedContracts.mockDapp;
 		mockIglooFiGovernance = stagedContracts.mockIglooFiGovernance;

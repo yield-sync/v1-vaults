@@ -3,7 +3,6 @@ pragma solidity ^0.8.18;
 
 
 import { IIglooFiGovernance } from "@igloo-fi/v1-sdk/contracts/interface/IIglooFiGovernance.sol";
-import { Pausable } from "@openzeppelin/contracts/security/Pausable.sol";
 
 import { IglooFiV1Vault } from "./IglooFiV1Vault.sol";
 import { IIglooFiV1VaultFactory } from "./interface/IIglooFiV1VaultFactory.sol";
@@ -13,7 +12,6 @@ import { IIglooFiV1VaultFactory } from "./interface/IIglooFiV1VaultFactory.sol";
 * @title IglooFiV1VaultFactory
 */
 contract IglooFiV1VaultFactory is
-	Pausable,
 	IIglooFiV1VaultFactory
 {
 	// [address]
@@ -31,8 +29,6 @@ contract IglooFiV1VaultFactory is
 
 	constructor (address _iglooFiV1VaultRecord, address _iglooFiGovernance)
 	{
-		_pause();
-
 		iglooFiV1VaultRecord = _iglooFiV1VaultRecord;
 
 		iglooFiGovernance = _iglooFiGovernance;
@@ -61,7 +57,7 @@ contract IglooFiV1VaultFactory is
 		require(
 			IIglooFiGovernance(iglooFiGovernance).hasRole(
 				IIglooFiGovernance(iglooFiGovernance).governanceRoles("DEFAULT_ADMIN_ROLE"),
-				_msgSender()
+				msg.sender
 			),
 			"!auth"
 		);
@@ -93,7 +89,6 @@ contract IglooFiV1VaultFactory is
 		public
 		payable
 		override
-		whenNotPaused()
 		returns (address)
 	{
 		require(msg.value >= fee, "!msg.value");
@@ -118,27 +113,9 @@ contract IglooFiV1VaultFactory is
 
 
 	/// @inheritdoc IIglooFiV1VaultFactory
-	function updatePause(bool pause)
-		public
-		override
-		onlyIglooFiGovernanceAdmin()
-	{
-		if (pause)
-		{
-			_pause();
-		}
-		else
-		{
-			_unpause();
-		}
-	}
-
-
-	/// @inheritdoc IIglooFiV1VaultFactory
 	function updateDefaultSignatureManager(address _defaultSignatureManager)
 		public
 		override
-		whenNotPaused()
 		onlyIglooFiGovernanceAdmin()
 	{
 		defaultSignatureManager = _defaultSignatureManager;
@@ -161,7 +138,6 @@ contract IglooFiV1VaultFactory is
 	function transferEther(address to)
 		public
 		override
-		whenNotPaused()
 		onlyIglooFiGovernanceAdmin()
 	{
 		// [transfer]

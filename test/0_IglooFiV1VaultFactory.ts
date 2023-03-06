@@ -53,16 +53,6 @@ describe("IglooFiV1VaultFactory.sol - IglooFi V1 Vault Factory Contract", async 
 	* @dev Initial values set by constructor
 	*/
 	describe("Constructor Initialized values", async () => {
-		/**
-		 * @notice Check if initial values are correct
-		*/
-		it(
-			"Should intialize pause as true..",
-			async () => {
-				expect(await iglooFiV1VaultFactory.paused()).to.equal(true);
-			}
-		);
-
 		it(
 			"Should initialize `iglooFiGovernance` to `MockIglooFiGovernance` address..",
 			async () => {
@@ -85,42 +75,6 @@ describe("IglooFiV1VaultFactory.sol - IglooFi V1 Vault Factory Contract", async 
 	 * @dev admin
 	*/
 	describe("Restriction: DEFAULT_ADMIN_ROLE", async () => {
-		/**
-		* @dev updatePause
-		*/
-		describe("updatePause()", async () => {
-			it(
-				"Should revert when unauthorized msg.sender calls..",
-				async () => {
-					const [, addr1] = await ethers.getSigners();
-
-					await expect(iglooFiV1VaultFactory.connect(addr1).updatePause(false)).to.be.rejectedWith("!auth");
-				}
-			);
-
-			it(
-				"Should be able to set true..",
-				async () => {
-					await iglooFiV1VaultFactory.updatePause(false);
-					
-					expect(await iglooFiV1VaultFactory.paused()).to.be.false;
-				}
-			);
-
-			it(
-				"Should be able to set false..",
-				async () => {
-					await iglooFiV1VaultFactory.updatePause(true);
-					
-					expect(await iglooFiV1VaultFactory.paused()).to.be.true;
-
-					// Unpause for the rest of the test
-					await iglooFiV1VaultFactory.updatePause(false);
-				}
-			);
-		});
-
-
 		/**
 		* @dev updateDefaultSignatureManager
 		*/

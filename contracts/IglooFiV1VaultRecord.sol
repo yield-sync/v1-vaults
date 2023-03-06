@@ -20,9 +20,9 @@ contract IglooFiV1VaultRecord is
 
 	// [mapping]
 	// iglooFiV1VaultId => iglooFiV1VaultAddress
-	mapping (address => uint256) public iglooFiV1VaultAddressToId;
+	mapping (address => uint256) public override iglooFiV1VaultAddressToId;
 	// iglooFiV1VaultAddress => iglooFiV1VaultId
-	mapping (uint256 => address) public iglooFiV1VaultIdToAddress;
+	mapping (uint256 => address) public override iglooFiV1VaultIdToAddress;
 	// iglooFiV1VaultAddress => voters[]
 	mapping (address => address[]) internal _iglooFiV1VaultVoters;
 	// Voter => iglooFiV1VaultAddress[]
@@ -34,17 +34,6 @@ contract IglooFiV1VaultRecord is
 		_pause();
 
 		iglooFiGovernance = _iglooFiGovernance;
-	}
-
-
-	modifier onlyIglooFiV1Vault(address _iglooFiV1VaultAddress)
-	{
-		require(
-			iglooFiV1VaultIdToAddress[iglooFiV1VaultAddressToId[_iglooFiV1VaultAddress]] == msg.sender,
-			"!_iglooFiV1VaultAddress"
-		);
-
-		_;
 	}
 
 
@@ -68,8 +57,9 @@ contract IglooFiV1VaultRecord is
 	function addVoter(address _iglooFiV1VaultAddress, address voter)
 		public
 		override
-		onlyIglooFiV1Vault(_iglooFiV1VaultAddress)
 	{
+		require(_iglooFiV1VaultAddress == msg.sender, "!_iglooFiV1VaultAddress");
+
 		// [update] `iglooFiV1VaultVoters`
 		_iglooFiV1VaultVoters[_iglooFiV1VaultAddress].push(voter);
 
@@ -80,8 +70,9 @@ contract IglooFiV1VaultRecord is
 	function removeVoter(address _iglooFiV1VaultAddress, address voter)
 		public
 		override
-		onlyIglooFiV1Vault(_iglooFiV1VaultAddress)
 	{
+		require(_iglooFiV1VaultAddress == msg.sender, "!_iglooFiV1VaultAddress");
+
 		// [update] iglooFiV1VaultVoters
 		for (uint256 i = 0; i < _iglooFiV1VaultVoters[_iglooFiV1VaultAddress].length; i++)
 		{
