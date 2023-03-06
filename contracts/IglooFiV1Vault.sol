@@ -131,6 +131,7 @@ contract IglooFiV1Vault is
 		public
 		view
 		override
+		validWithdrawalRequest(withdrawalRequestId)
 		returns (WithdrawalRequest memory)
 	{
 		return _withdrawalRequest[withdrawalRequestId];
@@ -180,6 +181,20 @@ contract IglooFiV1Vault is
 		_withdrawalRequest[withdrawalRequestId] = __withdrawalRequest;
 
 		emit UpdatedWithdrawalRequest(__withdrawalRequest);
+	}
+
+	/// @inheritdoc IIglooFiV1Vault
+	function updateAgainstVoteCountRequired(uint256 _againstVoteCountRequired)
+		public
+		override
+		onlyRole(DEFAULT_ADMIN_ROLE)
+	{
+		require(_againstVoteCountRequired > 0, "!_againstVoteCountRequired");
+
+		// [update]
+		againstVoteCountRequired = _againstVoteCountRequired;
+
+		emit UpdatedAgainstVoteCountRequired(againstVoteCountRequired);
 	}
 
 	/// @inheritdoc IIglooFiV1Vault

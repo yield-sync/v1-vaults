@@ -27,6 +27,7 @@ interface IIglooFiV1Vault
 	event CreatedWithdrawalRequest(uint256 withdrawalRequest);
 	event DeletedWithdrawalRequest(uint256 withdrawalRequestId);
 	event TokensWithdrawn(address indexed withdrawer, address indexed token, uint256 amount);
+	event UpdatedAgainstVoteCountRequired(uint256 againstVoteCountRequired);
 	event UpdatedForVoteCountRequired(uint256 forVoteCountRequired);
 	event UpdatedSignatureManger(address signatureManager);
 	event UpdatedWithdrawalDelaySeconds(uint256 withdrawalDelaySeconds);
@@ -175,7 +176,18 @@ interface IIglooFiV1Vault
 	;
 
 	/**
-	* @notice Update the For Vote Count Required
+	* @notice Update Against Vote Count Required
+	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
+	* @dev [update] `againstVoteCountRequired`
+	* @param _againstVoteCountRequired {uint256}
+	* Emits: `UpdatedAgainstVoteCountRequired`
+	*/
+	function updateAgainstVoteCountRequired(uint256 _againstVoteCountRequired)
+		external
+	;
+
+	/**
+	* @notice Update For Vote Count Required
 	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
 	* @dev [update] `forVoteCountRequired`
 	* @param _forVoteCountRequired {uint256}
