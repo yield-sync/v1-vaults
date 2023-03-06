@@ -158,14 +158,14 @@ contract IglooFiV1VaultFactory is
 	}
 
 	/// @inheritdoc IIglooFiV1VaultFactory
-	function transferFunds(address transferTo)
+	function transferEther(address to)
 		public
 		override
 		whenNotPaused()
 		onlyIglooFiGovernanceAdmin()
 	{
 		// [transfer]
-		(bool success, ) = transferTo.call{value: address(this).balance}("");
+		(bool success, ) = to.call{value: address(this).balance}("");
 
 		require(success, "Failed");
 	}
