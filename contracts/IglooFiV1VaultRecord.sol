@@ -3,7 +3,6 @@ pragma solidity ^0.8.18;
 
 
 import { IIglooFiV1Vault } from "@igloo-fi/v1-sdk/contracts/interface/IIglooFiV1Vault.sol";
-import { Pausable } from "@openzeppelin/contracts/security/Pausable.sol";
 
 import { IIglooFiV1VaultRecord } from "./interface/IIglooFiV1VaultRecord.sol";
 
@@ -12,7 +11,6 @@ import { IIglooFiV1VaultRecord } from "./interface/IIglooFiV1VaultRecord.sol";
 * @title IglooFiV1VaultRecord
 */
 contract IglooFiV1VaultRecord is
-	Pausable,
 	IIglooFiV1VaultRecord
 {
 	// [address]
@@ -31,12 +29,11 @@ contract IglooFiV1VaultRecord is
 	
 	constructor (address _iglooFiGovernance)
 	{
-		_pause();
-
 		iglooFiGovernance = _iglooFiGovernance;
 	}
 
 
+	/// @inheritdoc IIglooFiV1VaultRecord
 	function iglooFiV1VaultVoters(address iglooFiV1VaultAddress)
 		public
 		view
@@ -45,6 +42,7 @@ contract IglooFiV1VaultRecord is
 		return _iglooFiV1VaultVoters[iglooFiV1VaultAddress];
 	}
 
+	/// @inheritdoc IIglooFiV1VaultRecord
 	function voterIglooFiV1Vaults(address voter)
 		public
 		view
@@ -54,6 +52,7 @@ contract IglooFiV1VaultRecord is
 	}
 
 
+	/// @inheritdoc IIglooFiV1VaultRecord
 	function addVoter(address _iglooFiV1VaultAddress, address voter)
 		public
 		override
@@ -67,6 +66,7 @@ contract IglooFiV1VaultRecord is
 		_voterIglooFiV1Vaults[voter].push(_iglooFiV1VaultAddress);
 	}
 
+	/// @inheritdoc IIglooFiV1VaultRecord
 	function removeVoter(address _iglooFiV1VaultAddress, address voter)
 		public
 		override
