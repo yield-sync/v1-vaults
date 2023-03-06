@@ -24,7 +24,7 @@ struct WithdrawalRequest {
 */
 interface IIglooFiV1Vault
 {
-	event CreatedWithdrawalRequest(uint256 withdrawalRequest);
+	event CreatedWithdrawalRequest(uint256 withdrawalRequestId);
 	event DeletedWithdrawalRequest(uint256 withdrawalRequestId);
 	event TokensWithdrawn(address indexed withdrawer, address indexed token, uint256 amount);
 	event UpdatedAgainstVoteCountRequired(uint256 againstVoteCountRequired);
