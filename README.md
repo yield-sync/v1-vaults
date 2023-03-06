@@ -21,7 +21,7 @@ ETHERSCAN_API_KEY=
 OPTIMISTIC_ETHERSCAN_API_KEY=
 ```
 
-## Variables, Mappings, and Functions Ordering
+## Variables, Mappings, & Functions Ordering
 
 ### Variables
 
