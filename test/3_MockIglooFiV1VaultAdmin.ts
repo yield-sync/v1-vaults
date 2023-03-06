@@ -31,6 +31,7 @@ const stageContracts = async () => {
 		ethers.constants.AddressZero,
 		true,
 		2,
+		2,
 		5,
 		{ value: 1 }
 	);
@@ -112,7 +113,7 @@ describe("MockAdmin.sol - Mock Admin Contract", async () => {
 			it(
 				"Should update the latestRelevantApproveVoteTime to ADD seconds..",
 				async () => {
-					const beforeBlockTimestamp = BigInt((await iglooFiV1Vault.withdrawalRequest(0))[9]);
+					const beforeBlockTimestamp = BigInt((await iglooFiV1Vault.withdrawalRequest(0))[10]);
 					
 					await mockAdmin.updateWithdrawalRequestLatestRelevantApproveVoteTime(
 						iglooFiV1Vault.address,
@@ -121,7 +122,7 @@ describe("MockAdmin.sol - Mock Admin Contract", async () => {
 						4000
 					);
 					
-					const afterBlockTimestamp = BigInt((await iglooFiV1Vault.withdrawalRequest(0))[9]);
+					const afterBlockTimestamp = BigInt((await iglooFiV1Vault.withdrawalRequest(0))[10]);
 
 					expect(BigInt(beforeBlockTimestamp + BigInt(4000))).to.be.equal(afterBlockTimestamp);
 				}

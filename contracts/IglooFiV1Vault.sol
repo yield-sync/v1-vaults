@@ -24,8 +24,8 @@ contract IglooFiV1Vault is
 	address public override signatureManager;
 
 	// [uint256]
-	uint256 public override forVoteCountRequired;
 	uint256 public override againstVoteCountRequired;
+	uint256 public override forVoteCountRequired;
 	uint256 public override withdrawalDelaySeconds;
 	uint256 internal _withdrawalRequestIdTracker;
 	uint256[] internal _openWithdrawalRequestIds;
@@ -37,6 +37,7 @@ contract IglooFiV1Vault is
 	constructor (
 		address admin,
 		address _signatureManager,
+		uint256 _againstVoteCountRequired,
 		uint256 _forVoteCountRequired,
 		uint256 _withdrawalDelaySeconds
 	)
@@ -46,6 +47,7 @@ contract IglooFiV1Vault is
 		_setupRole(DEFAULT_ADMIN_ROLE, admin);
 
 		signatureManager = _signatureManager;
+		againstVoteCountRequired = _againstVoteCountRequired;
 		forVoteCountRequired = _forVoteCountRequired;
 		withdrawalDelaySeconds = _withdrawalDelaySeconds;
 		
@@ -314,7 +316,7 @@ contract IglooFiV1Vault is
 
 		require(
 			wR.forVoteCount >= forVoteCountRequired || wR.againstVoteCount >= againstVoteCountRequired,
-			"Not enough for vote or against votes"
+			"Not enough for votes or against votes"
 		);
 
 		if (wR.forVoteCount >= forVoteCountRequired)

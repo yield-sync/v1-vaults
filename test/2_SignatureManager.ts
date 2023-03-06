@@ -32,6 +32,7 @@ const stageContracts = async () => {
 		ethers.constants.AddressZero,
 		true,
 		2,
+		2,
 		5,
 		{ value: 1 }
 	);

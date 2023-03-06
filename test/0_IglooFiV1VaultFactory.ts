@@ -237,6 +237,7 @@ describe("IglooFiV1VaultFactory.sol - IglooFi V1 Vault Factory Contract", async 
 						ethers.constants.AddressZero,
 						true,
 						2,
+						2,
 						10,
 						{ value: 1 }
 					);
@@ -258,6 +259,7 @@ describe("IglooFiV1VaultFactory.sol - IglooFi V1 Vault Factory Contract", async 
 						addr1.address,
 						mockSignatureManager.address,
 						false,
+						2,
 						2,
 						10,
 						{ value: 1 }
