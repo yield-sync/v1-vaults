@@ -31,7 +31,7 @@ OPTIMISTIC_ETHERSCAN_API_KEY=
 2. Visibility (`public` | `private` | `internal` | `external`)
 3. Array
 
-### Mapping
+#### Mapping
 
 1. Visibility (`public` | `private` | `internal` | `external`)
 2. Type (`address`, `bytes`, etc.)
