@@ -6,18 +6,23 @@ const { ethers } = require("hardhat");
 
 describe("IglooFiV1VaultFactory.sol - IglooFi V1 Vault Factory Contract", async () => {
 	let iglooFiV1VaultFactory: Contract;
+	let iglooFiV1VaultRecord: Contract;
 	let mockIglooFiGovernance: Contract;
 	let mockSignatureManager: Contract;
 	
 
 	before("[before] Set up contracts..", async () => {
 		const IglooFiV1VaultFactory: ContractFactory = await ethers.getContractFactory("IglooFiV1VaultFactory");
+		const IglooFiV1VaultRecord: ContractFactory = await ethers.getContractFactory("IglooFiV1VaultRecord");
 		const MockIglooFiGovernance: ContractFactory = await ethers.getContractFactory("MockIglooFiGovernance");
 		const MockSignatureManager: ContractFactory = await ethers.getContractFactory("MockSignatureManager");
 		
 		// Deploy
 		mockIglooFiGovernance = await (await MockIglooFiGovernance.deploy()).deployed();
-		iglooFiV1VaultFactory = await (await IglooFiV1VaultFactory.deploy(mockIglooFiGovernance.address)).deployed();
+		iglooFiV1VaultRecord = await (await IglooFiV1VaultRecord.deploy(mockIglooFiGovernance.address)).deployed();
+		iglooFiV1VaultFactory = await (
+			await IglooFiV1VaultFactory.deploy(iglooFiV1VaultRecord.address, mockIglooFiGovernance.address)
+		).deployed();
 		mockSignatureManager = await (await MockSignatureManager.deploy(mockIglooFiGovernance.address)).deployed();
 	});
 
@@ -242,7 +247,7 @@ describe("IglooFiV1VaultFactory.sol - IglooFi V1 Vault Factory Contract", async 
 						{ value: 1 }
 					);
 
-					expect(await iglooFiV1VaultFactory.iglooFiV1VaultAddress(0)).to.equal(
+					expect(await iglooFiV1VaultFactory.iglooFiV1VaultIdToAddress(0)).to.equal(
 						(await deployedObj.wait()).events[1].args[0]
 					);
 				}
@@ -267,7 +272,7 @@ describe("IglooFiV1VaultFactory.sol - IglooFi V1 Vault Factory Contract", async 
 
 					// Attach the deployed vault's address
 					const iglooFiV1Vault = await IglooFiV1Vault.attach(
-						await iglooFiV1VaultFactory.iglooFiV1VaultAddress(1)
+						await iglooFiV1VaultFactory.iglooFiV1VaultIdToAddress(1)
 					);
 
 					expect(await iglooFiV1Vault.signatureManager()).to.be.equal(mockSignatureManager.address);
@@ -286,7 +291,7 @@ describe("IglooFiV1VaultFactory.sol - IglooFi V1 Vault Factory Contract", async 
 						const IglooFiV1Vault = await ethers.getContractFactory("IglooFiV1Vault");
 						
 						// Retreive the deployed vault's address
-						const deployedAddress = await iglooFiV1VaultFactory.iglooFiV1VaultAddress(0);
+						const deployedAddress = await iglooFiV1VaultFactory.iglooFiV1VaultIdToAddress(0);
 
 						// Attach the deployed vault's address
 						const iglooFiV1Vault = await IglooFiV1Vault.attach(deployedAddress);

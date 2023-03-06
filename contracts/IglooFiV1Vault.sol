@@ -7,6 +7,7 @@ import { IERC1271 } from "@openzeppelin/contracts/interfaces/IERC1271.sol";
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { IERC721 } from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 
+import { IIglooFiV1VaultRecord } from "./interface/IIglooFiV1VaultRecord.sol";
 import { IIglooFiV1Vault, WithdrawalRequest } from "./interface/IIglooFiV1Vault.sol";
 
 
@@ -18,9 +19,12 @@ contract IglooFiV1Vault is
 	IERC1271,
 	IIglooFiV1Vault
 {
+	// [address]
+	address public override signatureManager;
+	address internal IglooFiV1VaultRecord;
+
 	// [bytes4]
 	bytes32 public constant override VOTER = keccak256("VOTER");
-	address public override signatureManager;
 
 	// [uint256]
 	uint256 public override againstVoteCountRequired;
@@ -34,6 +38,7 @@ contract IglooFiV1Vault is
 
 
 	constructor (
+		address _iglooFiV1VaultRecord,
 		address admin,
 		address _signatureManager,
 		uint256 _againstVoteCountRequired,
@@ -43,6 +48,8 @@ contract IglooFiV1Vault is
 	{
 		require(_forVoteCountRequired > 0, "!_forVoteCountRequired");
 		
+		IglooFiV1VaultRecord = _iglooFiV1VaultRecord;
+
 		_setupRole(DEFAULT_ADMIN_ROLE, admin);
 
 		signatureManager = _signatureManager;
@@ -148,6 +155,8 @@ contract IglooFiV1Vault is
 		onlyRole(DEFAULT_ADMIN_ROLE)
 	{
 		_setupRole(VOTER, targetAddress);
+
+		IIglooFiV1VaultRecord(IglooFiV1VaultRecord).addVoter(address(this), targetAddress);
 	}
 
 	/// @inheritdoc IIglooFiV1Vault

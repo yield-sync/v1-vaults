@@ -38,7 +38,7 @@ const stageContracts = async () => {
 	);
 
 	// Attach the deployed vault's address
-	const iglooFiV1Vault: Contract = await IglooFiV1Vault.attach(iglooFiV1VaultFactory.iglooFiV1VaultAddress(0));
+	const iglooFiV1Vault: Contract = await IglooFiV1Vault.attach(iglooFiV1VaultFactory.iglooFiV1VaultIdToAddress(0));
 
 	const signatureManager: Contract = await (await SignatureManager.deploy(mockIglooFiGovernance.address)).deployed();
 	const mockAdmin: Contract = await (await MockAdmin.deploy()).deployed();
@@ -112,7 +112,7 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 		});
 	});
 
-	
+
 	/**
 	* @dev AccessControlEnumerable
 	*/
@@ -323,7 +323,18 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 	 * @dev Restriction: VOTER
 	*/
 	describe("Restriction: VOTER", async () => {
-		describe("For withdrawalRequest", async () => {
+		describe("AccessControlEnumerable", async () => {
+			it("Should NOT allow voter to add another voter..", async () => {
+				const [, addr1, , , addr4] = await ethers.getSigners();
+				
+				await expect(
+					iglooFiV1Vault.connect(addr1).grantRole(await iglooFiV1Vault.VOTER(), addr4.address)
+				).to.be.rejected;
+			});
+		});
+
+
+		describe("withdrawalRequest For", async () => {
 			/**
 			 * @notice Process for withdrawling Ether
 			*/
@@ -726,7 +737,7 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 		});
 
 
-		describe("Against withdrawalRequest", async () => {
+		describe("withdrawalRequest Against", async () => {
 			/**
 			 * @dev voteOnWithdrawalRequest
 			*/
@@ -788,10 +799,7 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 		});
 
 
-		/**
-		 * @dev openWithdrawalRequestIds
-		 */
-		describe("openWithdrawalRequestIds", async () => {
+		describe("openWithdrawalRequestIds()", async () => {
 			it(
 				"Should be able to keep record of multiple open WithdrawalRequest Ids..",
 				async () => {
@@ -829,7 +837,7 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 	* @dev Restriction: DEFAULT_ADMIN_ROLE
 	*/
 	describe("Restriction: DEFAULT_ADMIN_ROLE", async () => {
-		describe("Update WitdrawalRequest", async () => {
+		describe("updateWithdrawalRequest()", async () => {
 			it(
 				"Should be able to update WithdrawalRequest.forVoteCount..",
 				async () => {
@@ -924,7 +932,8 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 			);
 		});
 
-		describe("Delete WithdrawalRequest", async () => {
+
+		describe("deleteWithdrawalRequest()", async () => {
 			it(
 				"Should revert when unauthorized msg.sender calls..",
 				async () => {

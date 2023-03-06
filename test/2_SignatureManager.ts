@@ -38,7 +38,7 @@ const stageContracts = async () => {
 	);
 
 	// Attach the deployed vault's address
-	const iglooFiV1Vault: Contract = await IglooFiV1Vault.attach(iglooFiV1VaultFactory.iglooFiV1VaultAddress(0));
+	const iglooFiV1Vault: Contract = await IglooFiV1Vault.attach(iglooFiV1VaultFactory.iglooFiV1VaultIdToAddress(0));
 
 	const mockAdmin: Contract = await (await MockAdmin.deploy()).deployed();
 	const signatureManager: Contract = await (await SignatureManager.deploy(mockIglooFiGovernance.address)).deployed();
