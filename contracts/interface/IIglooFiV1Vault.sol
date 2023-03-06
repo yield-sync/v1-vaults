@@ -24,6 +24,31 @@ struct WithdrawalRequest {
 interface IIglooFiV1Vault
 {
 	/**
+	* @dev Emits when a `WithdrawalRequest` is updated
+	*/
+	event DeletedWithdrawalRequest(uint256 withdrawalRequestId);
+
+	/**
+	* @dev Emits when a `WithdrawalRequest` is updated
+	*/
+	event UpdatedWithdrawalRequest(WithdrawalRequest withdrawalRequest);
+
+	/**
+	* @dev Emits when `requiredVoteCount` are updated
+	*/
+	event UpdatedRequiredVoteCount(uint256 requiredVoteCount);
+
+	/**
+	* @dev Emits when `signatureManager` are updated
+	*/
+	event UpdatedSignatureManger(address signatureManager);
+
+	/**
+	* @dev Emits when `withdrawalDelaySeconds` is updated
+	*/
+	event UpdatedWithdrawalDelaySeconds(uint256 withdrawalDelaySeconds);
+
+	/**
 	* @dev Emits when a `WithdrawalRequest` is created
 	*/
 	event CreatedWithdrawalRequest(uint256 withdrawalRequest);
@@ -42,26 +67,6 @@ interface IIglooFiV1Vault
 	* @dev Emits when tokens are withdrawn
 	*/
 	event TokensWithdrawn(address indexed withdrawer, address indexed token, uint256 amount);
-
-	/**
-	* @dev Emits when `requiredVoteCount` are updated
-	*/
-	event UpdatedRequiredVoteCount(uint256 requiredVoteCount);
-
-	/**
-	* @dev Emits when `withdrawalDelaySeconds` is updated
-	*/
-	event UpdatedWithdrawalDelaySeconds(uint256 withdrawalDelaySeconds);
-
-	/**
-	* @dev Emits when a `WithdrawalRequest` is updated
-	*/
-	event UpdatedWithdrawalRequest(WithdrawalRequest withdrawalRequest);
-
-	/**
-	* @dev Emits when a `WithdrawalRequest` is updated
-	*/
-	event DeletedWithdrawalRequest(uint256 withdrawalRequestId);
 
 
 	receive ()
@@ -149,6 +154,82 @@ interface IIglooFiV1Vault
 
 
 	/**
+	* @notice Assign VOTER to an address on AccessControlEnumerable
+	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
+	* @dev [add] address to VOTER on `AccessControlEnumerable`
+	* @param targetAddress {address}
+	*/
+	function addVoter(address targetAddress)
+		external
+	;
+
+	/**
+	* @notice Remove a voter
+	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
+	* @dev [remove] address with VOTER on `AccessControlEnumerable`
+	* @param voter {address} Address of the voter to remove
+	*/	
+	function removeVoter(address voter)
+		external
+	;
+
+	/**
+	* @notice Delete withdrawalRequest & all associated values
+	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
+	* @dev [call][internal] {_deleteWithdrawalRequest}
+	* @param withdrawalRequestId {uint256}
+	* Emits: `DeletedWithdrawalRequest`
+	*/
+	function deleteWithdrawalRequest(uint256 withdrawalRequestId)
+		external
+	;
+
+	/**
+	* @notice Update withdrawalRequest
+	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
+	* @dev [update] `_withdrawalRequest`
+	* @param withdrawalRequestId {uint256}
+	* @param __withdrawalRequest {WithdrawalRequest}
+	* Emits: `UpdatedWithdrawalRequest`
+	*/
+	function updateWithdrawalRequest(uint256 withdrawalRequestId, WithdrawalRequest memory __withdrawalRequest)
+		external
+	;
+
+	/**
+	* @notice Update the required approved votes
+	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
+	* @dev [update] `requiredVoteCount`
+	* @param _requiredVoteCount {uint256}
+	* Emits: `UpdatedRequiredVoteCount`
+	*/
+	function updateRequiredVoteCount(uint256 _requiredVoteCount)
+		external
+	;
+
+	/**
+	* @notice Update Signature Manager Contract
+	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
+	* @dev [update] `signatureManager`
+	* @param _signatureManager {address}
+	*/
+	function updateSignatureManager(address _signatureManager)
+		external
+	;
+
+	/**
+	* @notice Update `withdrawalDelaySeconds`
+	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
+	* @dev [update] `withdrawalDelaySeconds` to new value
+	* @param _withdrawalDelaySeconds {uint256}
+	* Emits: `UpdatedWithdrawalDelaySeconds`
+	*/
+	function updateWithdrawalDelaySeconds(uint256 _withdrawalDelaySeconds)
+		external
+	;
+
+
+	/**
 	* @notice Create a withdrawalRequest
 	* @dev [restriction] AccessControlEnumerable → VOTER
 	* @dev [increment] `_withdrawalRequestId`
@@ -199,82 +280,6 @@ interface IIglooFiV1Vault
 	* Emits: `TokensWithdrawn`
 	*/
 	function processWithdrawalRequest(uint256 withdrawalRequestId)
-		external
-	;
-
-
-	/**
-	* @notice Assign VOTER to an address on AccessControlEnumerable
-	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
-	* @dev [add] address to VOTER on `AccessControlEnumerable`
-	* @param targetAddress {address}
-	*/
-	function addVoter(address targetAddress)
-		external
-	;
-
-	/**
-	* @notice Remove a voter
-	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
-	* @dev [remove] address with VOTER on `AccessControlEnumerable`
-	* @param voter {address} Address of the voter to remove
-	*/	
-	function removeVoter(address voter)
-		external
-	;
-
-	/**
-	* @notice Update Signature Manager Contract
-	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
-	* @dev [update] `signatureManager`
-	* @param _signatureManager {address}
-	*/
-	function updateSignatureManager(address _signatureManager)
-		external
-	;
-
-	/**
-	* @notice Update the required approved votes
-	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
-	* @dev [update] `requiredVoteCount`
-	* @param _requiredVoteCount {uint256}
-	* Emits: `UpdatedRequiredVoteCount`
-	*/
-	function updateRequiredVoteCount(uint256 _requiredVoteCount)
-		external
-	;
-
-	/**
-	* @notice Update `withdrawalDelaySeconds`
-	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
-	* @dev [update] `withdrawalDelaySeconds` to new value
-	* @param _withdrawalDelaySeconds {uint256}
-	* Emits: `UpdatedWithdrawalDelaySeconds`
-	*/
-	function updateWithdrawalDelaySeconds(uint256 _withdrawalDelaySeconds)
-		external
-	;
-
-	/**
-	* @notice Delete withdrawalRequest & all associated values
-	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
-	* @dev [call][internal] {_deleteWithdrawalRequest}
-	* @param withdrawalRequestId {uint256}
-	* Emits: `DeletedWithdrawalRequest`
-	*/
-	function deleteWithdrawalRequest(uint256 withdrawalRequestId)
-		external
-	;
-
-	/**
-	* @notice Update withdrawalRequest
-	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
-	* @dev [update] `_withdrawalRequest`
-	* @param withdrawalRequestId {uint256}
-	* @param __withdrawalRequest {WithdrawalRequest}
-	* Emits: `UpdatedWithdrawalRequest`
-	*/
-	function updateWithdrawalRequest(uint256 withdrawalRequestId, WithdrawalRequest memory __withdrawalRequest)
 		external
 	;
 }

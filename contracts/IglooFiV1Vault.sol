@@ -135,6 +135,91 @@ contract IglooFiV1Vault is
 
 
 	/// @inheritdoc IIglooFiV1Vault
+	function addVoter(address targetAddress)
+		public
+		override
+		onlyRole(DEFAULT_ADMIN_ROLE)
+	{
+		// [add] address to VOTER on `AccessControlEnumerable`
+		_setupRole(VOTER, targetAddress);
+	}
+
+	/// @inheritdoc IIglooFiV1Vault
+	function removeVoter(address voter)
+		public
+		override
+		onlyRole(DEFAULT_ADMIN_ROLE)
+	{
+		// [remove] address with VOTER on `AccessControlEnumerable`
+		_revokeRole(VOTER, voter);
+	}
+
+	/// @inheritdoc IIglooFiV1Vault
+	function deleteWithdrawalRequest(uint256 withdrawalRequestId)
+		public
+		override
+		onlyRole(DEFAULT_ADMIN_ROLE)
+		validWithdrawalRequest(withdrawalRequestId)
+	{
+		_deleteWithdrawalRequest(withdrawalRequestId);
+
+		emit DeletedWithdrawalRequest(withdrawalRequestId);
+	}
+
+	/// @inheritdoc IIglooFiV1Vault
+	function updateWithdrawalRequest(uint256 withdrawalRequestId, WithdrawalRequest memory __withdrawalRequest)
+		public
+		override
+		onlyRole(DEFAULT_ADMIN_ROLE)
+		validWithdrawalRequest(withdrawalRequestId)
+	{
+		// [update] `_withdrawalRequest`
+		_withdrawalRequest[withdrawalRequestId] = __withdrawalRequest;
+
+		emit UpdatedWithdrawalRequest(__withdrawalRequest);
+	}
+
+	/// @inheritdoc IIglooFiV1Vault
+	function updateRequiredVoteCount(uint256 _requiredVoteCount)
+		public
+		override
+		onlyRole(DEFAULT_ADMIN_ROLE)
+	{
+		require(_requiredVoteCount > 0, "!_requiredVoteCount");
+
+		// [update]
+		requiredVoteCount = _requiredVoteCount;
+
+		emit UpdatedRequiredVoteCount(requiredVoteCount);
+	}
+
+	/// @inheritdoc IIglooFiV1Vault
+	function updateSignatureManager(address _signatureManager)
+		public
+		override
+		onlyRole(DEFAULT_ADMIN_ROLE)
+	{
+		signatureManager = _signatureManager;
+
+		emit UpdatedSignatureManger(signatureManager);
+	}
+
+	/// @inheritdoc IIglooFiV1Vault
+	function updateWithdrawalDelaySeconds(uint256 _withdrawalDelaySeconds)
+		public
+		override
+		onlyRole(DEFAULT_ADMIN_ROLE)
+	{
+		require(_withdrawalDelaySeconds >= 0, "!_withdrawalDelaySeconds");
+
+		// [update] `withdrawalDelaySeconds`
+		withdrawalDelaySeconds = _withdrawalDelaySeconds;
+
+		emit UpdatedWithdrawalDelaySeconds(withdrawalDelaySeconds);
+	}
+
+
+	/// @inheritdoc IIglooFiV1Vault
 	function createWithdrawalRequest(
 		bool forEther,
 		bool forERC20,
@@ -257,88 +342,5 @@ contract IglooFiV1Vault is
 		_deleteWithdrawalRequest(withdrawalRequestId);
 
 		emit TokensWithdrawn(_msgSender(), wR.to, wR.amount);
-	}
-
-
-	/// @inheritdoc IIglooFiV1Vault
-	function addVoter(address targetAddress)
-		public
-		override
-		onlyRole(DEFAULT_ADMIN_ROLE)
-	{
-		// [add] address to VOTER on `AccessControlEnumerable`
-		_setupRole(VOTER, targetAddress);
-	}
-
-	/// @inheritdoc IIglooFiV1Vault
-	function removeVoter(address voter)
-		public
-		override
-		onlyRole(DEFAULT_ADMIN_ROLE)
-	{
-		// [remove] address with VOTER on `AccessControlEnumerable`
-		_revokeRole(VOTER, voter);
-	}
-
-	/// @inheritdoc IIglooFiV1Vault
-	function updateSignatureManager(address _signatureManager)
-		public
-		override
-		onlyRole(DEFAULT_ADMIN_ROLE)
-	{
-		signatureManager = _signatureManager;
-	}
-
-	/// @inheritdoc IIglooFiV1Vault
-	function updateRequiredVoteCount(uint256 _requiredVoteCount)
-		public
-		override
-		onlyRole(DEFAULT_ADMIN_ROLE)
-	{
-		require(_requiredVoteCount > 0, "!_requiredVoteCount");
-
-		// [update]
-		requiredVoteCount = _requiredVoteCount;
-
-		emit UpdatedRequiredVoteCount(requiredVoteCount);
-	}
-
-	/// @inheritdoc IIglooFiV1Vault
-	function updateWithdrawalDelaySeconds(uint256 _withdrawalDelaySeconds)
-		public
-		override
-		onlyRole(DEFAULT_ADMIN_ROLE)
-	{
-		require(_withdrawalDelaySeconds >= 0, "!_withdrawalDelaySeconds");
-
-		// [update] `withdrawalDelaySeconds`
-		withdrawalDelaySeconds = _withdrawalDelaySeconds;
-
-		emit UpdatedWithdrawalDelaySeconds(withdrawalDelaySeconds);
-	}
-
-	/// @inheritdoc IIglooFiV1Vault
-	function deleteWithdrawalRequest(uint256 withdrawalRequestId)
-		public
-		override
-		onlyRole(DEFAULT_ADMIN_ROLE)
-		validWithdrawalRequest(withdrawalRequestId)
-	{
-		_deleteWithdrawalRequest(withdrawalRequestId);
-
-		emit DeletedWithdrawalRequest(withdrawalRequestId);
-	}
-
-	/// @inheritdoc IIglooFiV1Vault
-	function updateWithdrawalRequest(uint256 withdrawalRequestId, WithdrawalRequest memory __withdrawalRequest)
-		public
-		override
-		onlyRole(DEFAULT_ADMIN_ROLE)
-		validWithdrawalRequest(withdrawalRequestId)
-	{
-		// [update] `_withdrawalRequest`
-		_withdrawalRequest[withdrawalRequestId] = __withdrawalRequest;
-
-		emit UpdatedWithdrawalRequest(__withdrawalRequest);
 	}
 }
