@@ -83,7 +83,7 @@ contract IglooFiV1VaultFactory is
 		address admin,
 		address signatureManager,
 		bool useDefaultSignatureManager,
-		uint256 requiredVoteCount,
+		uint256 forVoteCountRequired,
 		uint256 withdrawalDelaySeconds
 	)
 		public
@@ -98,7 +98,7 @@ contract IglooFiV1VaultFactory is
 		IglooFiV1Vault deployedContract = new IglooFiV1Vault(
 			admin,
 			useDefaultSignatureManager ? defaultSignatureManager : signatureManager,
-			requiredVoteCount,
+			forVoteCountRequired,
 			withdrawalDelaySeconds
 		);
 

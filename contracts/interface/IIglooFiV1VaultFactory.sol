@@ -79,7 +79,7 @@ interface IIglooFiV1VaultFactory {
 	* @dev [create]
 	* @param admin {address}
 	* @param signatureManager {address}
-	* @param requiredVoteCount {uint256}
+	* @param forVoteCountRequired {uint256}
 	* @param withdrawalDelaySeconds {uint256}
 	* @return {address} Deployed vault
 	*/
@@ -87,7 +87,7 @@ interface IIglooFiV1VaultFactory {
 		address admin,
 		address signatureManager,
 		bool useDefaultSignatureManager,
-		uint256 requiredVoteCount,
+		uint256 forVoteCountRequired,
 		uint256 withdrawalDelaySeconds
 	)
 		external

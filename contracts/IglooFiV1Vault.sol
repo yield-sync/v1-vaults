@@ -24,7 +24,8 @@ contract IglooFiV1Vault is
 	address public override signatureManager;
 
 	// [uint256]
-	uint256 public override requiredVoteCount;
+	uint256 public override forVoteCountRequired;
+	uint256 public override againstVoteCountRequired;
 	uint256 public override withdrawalDelaySeconds;
 	uint256 internal _withdrawalRequestIdTracker;
 	uint256[] internal _openWithdrawalRequestIds;
@@ -36,16 +37,16 @@ contract IglooFiV1Vault is
 	constructor (
 		address admin,
 		address _signatureManager,
-		uint256 _requiredVoteCount,
+		uint256 _forVoteCountRequired,
 		uint256 _withdrawalDelaySeconds
 	)
 	{
-		require(_requiredVoteCount > 0, "!_requiredVoteCount");
+		require(_forVoteCountRequired > 0, "!_forVoteCountRequired");
 		
 		_setupRole(DEFAULT_ADMIN_ROLE, admin);
 
 		signatureManager = _signatureManager;
-		requiredVoteCount = _requiredVoteCount;
+		forVoteCountRequired = _forVoteCountRequired;
 		withdrawalDelaySeconds = _withdrawalDelaySeconds;
 		
 		_withdrawalRequestIdTracker = 0;
@@ -180,17 +181,17 @@ contract IglooFiV1Vault is
 	}
 
 	/// @inheritdoc IIglooFiV1Vault
-	function updateRequiredVoteCount(uint256 _requiredVoteCount)
+	function updateForVoteCountRequired(uint256 _forVoteCountRequired)
 		public
 		override
 		onlyRole(DEFAULT_ADMIN_ROLE)
 	{
-		require(_requiredVoteCount > 0, "!_requiredVoteCount");
+		require(_forVoteCountRequired > 0, "!_forVoteCountRequired");
 
 		// [update]
-		requiredVoteCount = _requiredVoteCount;
+		forVoteCountRequired = _forVoteCountRequired;
 
-		emit UpdatedRequiredVoteCount(requiredVoteCount);
+		emit UpdatedForVoteCountRequired(forVoteCountRequired);
 	}
 
 	/// @inheritdoc IIglooFiV1Vault
@@ -248,7 +249,8 @@ contract IglooFiV1Vault is
 				token: tokenAddress,
 				amount: amount,
 				tokenId: tokenId,
-				voteCount: 0,
+				forVoteCount: 0,
+				againstVoteCount: 0,
 				latestRelevantApproveVoteTime: block.timestamp,
 				votedVoters: initialVotedVoters
 			}
@@ -277,25 +279,31 @@ contract IglooFiV1Vault is
 		
 		if (vote)
 		{
-			// [update] `_withdrawalRequest` → [increment] Approve vote count
-			_withdrawalRequest[withdrawalRequestId].voteCount++;
+			// [update] `_withdrawalRequest` → [increment] for vote count
+			_withdrawalRequest[withdrawalRequestId].forVoteCount++;
+		}
+		else {
+			// [update] `_withdrawalRequest` → [increment] against vote count
+			_withdrawalRequest[withdrawalRequestId].againstVoteCount++;
+		}
 
-			if (_withdrawalRequest[withdrawalRequestId].voteCount >= requiredVoteCount)
-			{
-				emit WithdrawalRequestReadyToBeProccessed(withdrawalRequestId);
-			}
+		if (
+			_withdrawalRequest[withdrawalRequestId].forVoteCount >= forVoteCountRequired ||
+			_withdrawalRequest[withdrawalRequestId].againstVoteCount >= againstVoteCountRequired
+		)
+		{
+			emit WithdrawalRequestReadyToBeProccessed(withdrawalRequestId);
+		}
+
+		// [update] `_withdrawalRequest[withdrawalRequestId].votedVoters` → Add voter
+		_withdrawalRequest[withdrawalRequestId].votedVoters.push(_msgSender());
+
+		if (_withdrawalRequest[withdrawalRequestId].forVoteCount < forVoteCountRequired)
+		{
+			_withdrawalRequest[withdrawalRequestId].latestRelevantApproveVoteTime = block.timestamp;
 		}
 
 		emit VoterVoted(withdrawalRequestId, _msgSender(), vote);
-
-		// [update] `_withdrawalRequest[withdrawalRequestId].votedVoters` → Add _msgSender()
-		_withdrawalRequest[withdrawalRequestId].votedVoters.push(_msgSender());
-
-		if (_withdrawalRequest[withdrawalRequestId].voteCount < requiredVoteCount)
-		{
-			// [update] latestRelevantApproveVoteTime timestamp
-			_withdrawalRequest[withdrawalRequestId].latestRelevantApproveVoteTime = block.timestamp;
-		}
 	}
 
 	/// @inheritdoc IIglooFiV1Vault
@@ -307,7 +315,7 @@ contract IglooFiV1Vault is
 	{
 		WithdrawalRequest memory wR = _withdrawalRequest[withdrawalRequestId];
 
-		require(wR.voteCount >= requiredVoteCount, "Not enough votes");
+		require(wR.forVoteCount >= forVoteCountRequired, "Not enough votes");
 
 		require(
 			block.timestamp - wR.latestRelevantApproveVoteTime >= withdrawalDelaySeconds * 1 seconds,

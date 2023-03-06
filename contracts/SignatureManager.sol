@@ -70,7 +70,7 @@ contract SignatureManager is
 		return (
 			_vaultMessageHashes[_msgSender()][_vaultMessageHashes[_msgSender()].length -1] == _messageHash &&
 			vMHD.signer == recovered &&
-			vMHD.signatureCount >= IIglooFiV1Vault(payable(_msgSender())).requiredVoteCount()
+			vMHD.signatureCount >= IIglooFiV1Vault(payable(_msgSender())).forVoteCountRequired()
 		) ? ERC1271_MAGIC_VALUE : bytes4(0);
 	}
 

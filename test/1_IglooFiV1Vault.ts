@@ -150,9 +150,9 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 		);
 
 		it(
-			"Should intialize requiredVoteCount as 2..",
+			"Should intialize forVoteCountRequired as 2..",
 			async () => {
-				expect(await iglooFiV1Vault.requiredVoteCount()).to.equal(2);
+				expect(await iglooFiV1Vault.forVoteCountRequired()).to.equal(2);
 			}
 		);
 
@@ -256,11 +256,11 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 			);
 
 			it(
-				"Should be able to update requiredVoteCount..",
+				"Should be able to update forVoteCountRequired..",
 				async () => {
 					await iglooFiV1Vault.updateRequiredVoteCount(1)
 
-					await expect(await iglooFiV1Vault.requiredVoteCount()).to.be.equal(1);
+					await expect(await iglooFiV1Vault.forVoteCountRequired()).to.be.equal(1);
 				}
 			);
 		});
@@ -736,7 +736,7 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 	describe("Restriction: DEFAULT_ADMIN_ROLE", async () => {
 		describe("Update WitdrawalRequest", async () => {
 			it(
-				"Should be able to update WithdrawalRequest.voteCount..",
+				"Should be able to update WithdrawalRequest.forVoteCount..",
 				async () => {
 					const [, addr1, addr2] = await ethers.getSigners();
 					

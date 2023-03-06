@@ -12,7 +12,8 @@ struct WithdrawalRequest {
 	address token;
 	uint256 amount;
 	uint256 tokenId;
-	uint256 voteCount;
+	uint256 forVoteCount;
+	uint256 againstVoteCount;
 	uint256 latestRelevantApproveVoteTime;
 	address[] votedVoters;
 }
@@ -23,15 +24,15 @@ struct WithdrawalRequest {
 */
 interface IIglooFiV1Vault
 {
+	event CreatedWithdrawalRequest(uint256 withdrawalRequest);
 	event DeletedWithdrawalRequest(uint256 withdrawalRequestId);
-	event UpdatedWithdrawalRequest(WithdrawalRequest withdrawalRequest);
-	event UpdatedRequiredVoteCount(uint256 requiredVoteCount);
+	event TokensWithdrawn(address indexed withdrawer, address indexed token, uint256 amount);
+	event UpdatedForVoteCountRequired(uint256 forVoteCountRequired);
 	event UpdatedSignatureManger(address signatureManager);
 	event UpdatedWithdrawalDelaySeconds(uint256 withdrawalDelaySeconds);
-	event CreatedWithdrawalRequest(uint256 withdrawalRequest);
+	event UpdatedWithdrawalRequest(WithdrawalRequest withdrawalRequest);
 	event VoterVoted(uint256 withdrawalRequestId, address indexed voter, bool vote);
 	event WithdrawalRequestReadyToBeProccessed(uint256 withdrawalRequestId);
-	event TokensWithdrawn(address indexed withdrawer, address indexed token, uint256 amount);
 
 
 	receive ()
@@ -69,12 +70,24 @@ interface IIglooFiV1Vault
 	;
 
 	/**
-	* @notice Required signatures for approval
+	* @notice Required For Vote Count
 	* @dev [!restriction]
 	* @dev [view-uint256]
 	* @return {uint256}
 	*/
-	function requiredVoteCount()
+	function forVoteCountRequired()
+		external
+		view
+		returns (uint256)
+	;
+
+	/**
+	* @notice Against Vote Count Required
+	* @dev [!restriction]
+	* @dev [view-uint256]
+	* @return {uint256}
+	*/
+	function againstVoteCountRequired()
 		external
 		view
 		returns (uint256)
@@ -162,13 +175,13 @@ interface IIglooFiV1Vault
 	;
 
 	/**
-	* @notice Update the required approved votes
+	* @notice Update the For Vote Count Required
 	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
-	* @dev [update] `requiredVoteCount`
-	* @param _requiredVoteCount {uint256}
+	* @dev [update] `forVoteCountRequired`
+	* @param _forVoteCountRequired {uint256}
 	* Emits: `UpdatedRequiredVoteCount`
 	*/
-	function updateRequiredVoteCount(uint256 _requiredVoteCount)
+	function updateForVoteCountRequired(uint256 _forVoteCountRequired)
 		external
 	;
 
