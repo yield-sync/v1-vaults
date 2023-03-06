@@ -252,7 +252,6 @@ contract IglooFiV1Vault is
 
 		address[] memory initialVotedVoters;
 
-		// [add] `_withdrawalRequest` value
 		_withdrawalRequest[_withdrawalRequestIdTracker] = WithdrawalRequest(
 			{
 				forEther: forEther,
@@ -270,10 +269,8 @@ contract IglooFiV1Vault is
 			}
 		);
 
-		// [push-into] `_openWithdrawalRequestIds`
 		_openWithdrawalRequestIds.push(_withdrawalRequestIdTracker);
 
-		// [increment] `_withdrawalRequestIdTracker`
 		_withdrawalRequestIdTracker++;
 
 		emit CreatedWithdrawalRequest(_withdrawalRequestIdTracker - 1);
