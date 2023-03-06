@@ -11,6 +11,7 @@
 		"no-empty-blocks": "off",
 		"no-global-import": "warn",
 		"not-rely-on-time": "off",
-		"private-vars-leading-underscore": "warn"
+		"private-vars-leading-underscore": "warn",
+		"reason-string": ["warn", { "maxLength": 64 }]
 	}
 }

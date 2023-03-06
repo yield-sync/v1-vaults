@@ -331,7 +331,7 @@ contract IglooFiV1Vault is
 
 		require(
 			wR.forVoteCount >= forVoteCountRequired || wR.againstVoteCount >= againstVoteCountRequired,
-			"Not enough for votes or against votes"
+			"!forVoteCountRequired && !againstVoteCount"
 		);
 
 		if (wR.forVoteCount >= forVoteCountRequired)

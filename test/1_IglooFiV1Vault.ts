@@ -475,7 +475,7 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 							
 							await expect(
 								iglooFiV1Vault.connect(addr1).processWithdrawalRequest(0)
-							).to.be.rejectedWith("Not enough for votes or against votes");
+							).to.be.rejectedWith("!forVoteCountRequired && !againstVoteCount");
 
 							await iglooFiV1Vault.updateForVoteCountRequired(1);
 						}
