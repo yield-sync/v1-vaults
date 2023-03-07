@@ -54,16 +54,17 @@ contract IglooFiV1VaultRecord is
 		view
 		returns (address[] memory)
 	{
-		address[] memory vaults = new address[](1);
+		address[] memory vaults = new address[](
+			IIglooFiV1VaultFactory(payable(iglooFiV1VaultFactory)).vaultIdTracker()
+		);
 		
-		//IIglooFiV1VaultFactory(payable(iglooFiV1VaultFactory)).iglooFiV1VaultIdToAddress(0);
-		
-		//for (uint256 i = 0; i < IIglooFiV1VaultFactory(payable(iglooFiV1VaultFactory)).vaultIdTracker(); i++)
-		//{
-		//	vaults[i] = IIglooFiV1VaultFactory(payable(iglooFiV1VaultFactory)).iglooFiV1VaultIdToAddress(i);
-		//}
-		
-		vaults[0] = (address(this));
+		for (uint256 i = 0; i < IIglooFiV1VaultFactory(payable(iglooFiV1VaultFactory)).vaultIdTracker(); i++)
+		{
+			if (true)
+			{
+				vaults[i] = IIglooFiV1VaultFactory(payable(iglooFiV1VaultFactory)).iglooFiV1VaultIdToAddress(i);
+			}
+		}
 
 		return vaults;
 	}
