@@ -24,6 +24,7 @@ contract IglooFiV1VaultFactory is
 	uint256 internal _vaultIdTracker;
 
 	// [mapping]
+	mapping (address iglooFiV1VaultAddress => uint256 iglooFiV1VaultId) internal _iglooFiV1VaultAddressToId;
 	mapping (uint256 iglooFiV1VaultId => address iglooFiV1VaultAddress) internal _iglooFiV1VaultIdToAddress;
 
 
@@ -102,6 +103,7 @@ contract IglooFiV1VaultFactory is
 			withdrawalDelaySeconds
 		);
 
+		_iglooFiV1VaultAddressToId[address(deployedContract)] = _vaultIdTracker;
 		_iglooFiV1VaultIdToAddress[_vaultIdTracker] = address(deployedContract);
 
 		_vaultIdTracker++;

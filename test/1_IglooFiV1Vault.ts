@@ -21,9 +21,7 @@ const stageContracts = async () => {
 	const SignatureManager: ContractFactory = await ethers.getContractFactory("SignatureManager");
 	
 	const mockIglooFiGovernance: Contract = await (await MockIglooFiGovernance.deploy()).deployed();
-	const iglooFiV1VaultRecord: Contract = await (
-		await IglooFiV1VaultRecord.deploy(mockIglooFiGovernance.address)
-	).deployed();
+	const iglooFiV1VaultRecord: Contract = await (await IglooFiV1VaultRecord.deploy()).deployed();
 	const iglooFiV1VaultFactory: Contract = await (
 		await IglooFiV1VaultFactory.deploy(iglooFiV1VaultRecord.address, mockIglooFiGovernance.address)
 	).deployed();

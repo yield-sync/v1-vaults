@@ -13,24 +13,11 @@ import { IIglooFiV1VaultRecord } from "./interface/IIglooFiV1VaultRecord.sol";
 contract IglooFiV1VaultRecord is
 	IIglooFiV1VaultRecord
 {
-	// [address]
-	address public iglooFiGovernance;
-
 	// [mapping]
-	// iglooFiV1VaultId => iglooFiV1VaultAddress
-	mapping (address => uint256) public override iglooFiV1VaultAddressToId;
-	// iglooFiV1VaultAddress => iglooFiV1VaultId
-	mapping (uint256 => address) public override iglooFiV1VaultIdToAddress;
-	// iglooFiV1VaultAddress => voters[]
+	// iglooFiV1VaultAddress => voters
 	mapping (address => address[]) internal _iglooFiV1VaultVoters;
-	// Voter => iglooFiV1VaultAddress[]
+	// Voter => iglooFiV1VaultAddress
 	mapping (address => address[]) internal _voterIglooFiV1Vaults;
-	
-	
-	constructor (address _iglooFiGovernance)
-	{
-		iglooFiGovernance = _iglooFiGovernance;
-	}
 
 
 	/// @inheritdoc IIglooFiV1VaultRecord

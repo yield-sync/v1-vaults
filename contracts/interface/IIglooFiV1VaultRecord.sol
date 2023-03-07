@@ -8,31 +8,6 @@ pragma solidity ^0.8.18;
 interface IIglooFiV1VaultRecord
 {
 	/**
-	* @notice IglooFiV1Vault Address to Id
-	* @dev [!restriction]
-	* @dev [view-mapping]
-	* @param iglooFiV1VaultId {address}
-	* @return {uint256}
-	*/
-	function iglooFiV1VaultAddressToId(address iglooFiV1VaultId)
-		external
-		returns (uint256)
-	;
-
-	/**
-	* @notice IglooFiV1Vault Id to Address
-	* @dev [!restriction]
-	* @dev [view-mapping]
-	* @param iglooFiV1VaultAddress {address}
-	* @return {address}
-	*/
-	function iglooFiV1VaultIdToAddress(uint256 iglooFiV1VaultAddress)
-		external
-		returns (address)
-	;
-
-
-	/**
 	* @notice iglooFiV1Vault's Voters
 	* @dev [!restriction]
 	* @dev [view]
