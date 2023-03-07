@@ -16,7 +16,7 @@ struct MessageHashData {
 interface ISignatureManager
 {
 	/**
-	* @notice CONSTANT Address of Igloo Fi Governance contract
+	* @notice CONSTANT Address of IglooFi Governance contract
 	* @dev [!restriction]
 	* @dev [view-address]
 	* @return {address}

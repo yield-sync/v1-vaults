@@ -2,12 +2,11 @@
 pragma solidity ^0.8.18;
 
 
-import { AccessControlEnumerable } from "@openzeppelin/contracts/access/AccessControlEnumerable.sol";
+import { AccessControl } from "@openzeppelin/contracts/access/AccessControl.sol";
 import { IERC1271 } from "@openzeppelin/contracts/interfaces/IERC1271.sol";
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { IERC721 } from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 
-import { IIglooFiV1VaultRecord } from "./interface/IIglooFiV1VaultRecord.sol";
 import { IIglooFiV1Vault, WithdrawalRequest } from "./interface/IIglooFiV1Vault.sol";
 
 
@@ -15,13 +14,12 @@ import { IIglooFiV1Vault, WithdrawalRequest } from "./interface/IIglooFiV1Vault.
 * @title IglooFiV1Vault
 */
 contract IglooFiV1Vault is
-	AccessControlEnumerable,
+	AccessControl,
 	IERC1271,
 	IIglooFiV1Vault
 {
 	// [address]
 	address public override signatureManager;
-	address internal _iglooFiV1VaultRecord;
 
 	// [bytes4]
 	bytes32 public constant override VOTER = keccak256("VOTER");
@@ -38,7 +36,6 @@ contract IglooFiV1Vault is
 
 
 	constructor (
-		address __iglooFiV1VaultRecord,
 		address admin,
 		address _signatureManager,
 		uint256 _againstVoteCountRequired,
@@ -47,8 +44,6 @@ contract IglooFiV1Vault is
 	)
 	{
 		require(_forVoteCountRequired > 0, "!_forVoteCountRequired");
-		
-		_iglooFiV1VaultRecord = __iglooFiV1VaultRecord;
 
 		_setupRole(DEFAULT_ADMIN_ROLE, admin);
 
@@ -155,8 +150,6 @@ contract IglooFiV1Vault is
 		onlyRole(DEFAULT_ADMIN_ROLE)
 	{
 		_setupRole(VOTER, targetAddress);
-
-		IIglooFiV1VaultRecord(_iglooFiV1VaultRecord).addVoter(address(this), targetAddress);
 	}
 
 	/// @inheritdoc IIglooFiV1Vault
@@ -166,8 +159,6 @@ contract IglooFiV1Vault is
 		onlyRole(DEFAULT_ADMIN_ROLE)
 	{
 		_revokeRole(VOTER, voter);
-
-		IIglooFiV1VaultRecord(_iglooFiV1VaultRecord).removeVoter(address(this), voter);
 	}
 
 	/// @inheritdoc IIglooFiV1Vault

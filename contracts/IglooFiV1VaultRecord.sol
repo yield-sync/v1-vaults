@@ -4,6 +4,7 @@ pragma solidity ^0.8.18;
 
 import { IIglooFiV1Vault } from "@igloo-fi/v1-sdk/contracts/interface/IIglooFiV1Vault.sol";
 
+import { IIglooFiV1VaultFactory } from "./interface/IIglooFiV1VaultFactory.sol";
 import { IIglooFiV1VaultRecord } from "./interface/IIglooFiV1VaultRecord.sol";
 
 
@@ -13,11 +14,19 @@ import { IIglooFiV1VaultRecord } from "./interface/IIglooFiV1VaultRecord.sol";
 contract IglooFiV1VaultRecord is
 	IIglooFiV1VaultRecord
 {
+	address public iglooFiV1VaultFactory;
+
 	// [mapping]
 	// iglooFiV1VaultAddress => voters
 	mapping (address => address[]) internal _iglooFiV1VaultVoters;
 	// Voter => iglooFiV1VaultAddress
 	mapping (address => address[]) internal _voterIglooFiV1Vaults;
+
+
+	constructor (address _iglooFiV1VaultFactory)
+	{
+		iglooFiV1VaultFactory = _iglooFiV1VaultFactory;
+	}
 
 
 	/// @inheritdoc IIglooFiV1VaultRecord
@@ -36,6 +45,27 @@ contract IglooFiV1VaultRecord is
 		returns (address[] memory)
 	{
 		return _voterIglooFiV1Vaults[voter];
+	}
+
+
+	// @inheritdoc
+	function getsVaultsVoterAndAdminOf()
+		public
+		view
+		returns (address[] memory)
+	{
+		address[] memory vaults = new address[](1);
+		
+		//IIglooFiV1VaultFactory(payable(iglooFiV1VaultFactory)).iglooFiV1VaultIdToAddress(0);
+		
+		//for (uint256 i = 0; i < IIglooFiV1VaultFactory(payable(iglooFiV1VaultFactory)).vaultIdTracker(); i++)
+		//{
+		//	vaults[i] = IIglooFiV1VaultFactory(payable(iglooFiV1VaultFactory)).iglooFiV1VaultIdToAddress(i);
+		//}
+		
+		vaults[0] = (address(this));
+
+		return vaults;
 	}
 
 

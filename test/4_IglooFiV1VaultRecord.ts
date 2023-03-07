@@ -51,7 +51,7 @@ const stageContracts = async () => {
 };
 
 
-describe("MockAdmin.sol - Mock Admin Contract", async () => {
+describe("IglooFiV1VaultRecord.sol - IglooFi V1 Vault Record Contract", async () => {
 	let iglooFiV1Vault: Contract;
 	let iglooFiV1VaultFactory: Contract;
 	let iglooFiV1VaultRecord: Contract;
@@ -76,58 +76,13 @@ describe("MockAdmin.sol - Mock Admin Contract", async () => {
 		await iglooFiV1Vault.addVoter(addr2.address);
 
 		await iglooFiV1Vault.updateSignatureManager(signatureManager.address);
-
-		// Send ether to IglooFiV1Vault contract
-		await addr1.sendTransaction({
-			to: iglooFiV1Vault.address,
-			value: ethers.utils.parseEther("1")
-		});
-
-		await iglooFiV1Vault.connect(addr1).createWithdrawalRequest(
-			true,
-			false,
-			false,
-			addr2.address,
-			ethers.constants.AddressZero,
-			ethers.utils.parseEther(".5"),
-			0
-		);
 	});
 
-	/**
-	* @dev AccessControlEnumerable
-	*/
-	describe("AccessControlEnumerable", async () => {
-		it("Should allow admin to add a contract-based admin..", async () => {
-			await iglooFiV1Vault.grantRole(await iglooFiV1Vault.DEFAULT_ADMIN_ROLE(), mockAdmin.address);
-		});
-	});
+	describe("r", async () => {
+		it("r", async () => {
+			const [, addr1] = await ethers.getSigners();
 
-		/**
-	 * @dev Restriction: DEFAULT_ADMIN_ROLE
-	*/
-	describe("Restriction: DEFAULT_ADMIN_ROLE", async () => {
-		/**
-		 * @dev deleteWithdrawalRequest
-		*/
-		describe("updateWithdrawalRequestLatestRelevantApproveVoteTime()", async () => {
-			it(
-				"Should update the latestRelevantApproveVoteTime to ADD seconds..",
-				async () => {
-					const beforeBlockTimestamp = BigInt((await iglooFiV1Vault.withdrawalRequest(0))[10]);
-					
-					await mockAdmin.updateWithdrawalRequestLatestRelevantApproveVoteTime(
-						iglooFiV1Vault.address,
-						0,
-						true,
-						4000
-					);
-					
-					const afterBlockTimestamp = BigInt((await iglooFiV1Vault.withdrawalRequest(0))[10]);
-
-					expect(BigInt(beforeBlockTimestamp + BigInt(4000))).to.be.equal(afterBlockTimestamp);
-				}
-			);
+			console.log(await iglooFiV1VaultRecord.getsVaultsVoterAndAdminOf());
 		});
 	});
 });

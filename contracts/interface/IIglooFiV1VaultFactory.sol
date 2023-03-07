@@ -24,7 +24,7 @@ interface IIglooFiV1VaultFactory {
 
 
 	/**
-	* @notice CONSTANT Address of Igloo Fi Governance contract
+	* @notice CONSTANT Address of IglooFi Governance contract
 	* @dev [!restriction]
 	* @dev [view-address]
 	* @return {address}
@@ -49,7 +49,7 @@ interface IIglooFiV1VaultFactory {
 
 
 	/**
-	* @notice Get vault deployment fee
+	* @notice Fee
 	* @dev [!restriction]
 	* @dev [view-uint256]
 	* @return {uint256}
@@ -61,7 +61,19 @@ interface IIglooFiV1VaultFactory {
 	;
 
 	/**
-	* @notice Get vault address
+	* @notice Vault Id Tracker
+	* @dev [!restriction]
+	* @dev [view-uint256]
+	* @return {uint256}
+	*/
+	function vaultIdTracker()
+		external
+		view
+		returns (uint256)
+	;
+
+	/**
+	* @notice IglooFiV1Vault Id to Address
 	* @dev [!restriction]
 	* @dev [view]
 	* @param iglooFiV1VaultId {uint256}

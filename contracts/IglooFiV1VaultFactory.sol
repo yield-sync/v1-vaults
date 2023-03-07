@@ -17,26 +17,22 @@ contract IglooFiV1VaultFactory is
 	// [address]
 	address public override iglooFiGovernance;
 	address public override defaultSignatureManager;
-	address public iglooFiV1VaultRecord;
 
 	// [uint256]
 	uint256 public override fee;
-	uint256 internal _vaultIdTracker;
+	uint256 public override vaultIdTracker;
 
 	// [mapping]
 	mapping (address iglooFiV1VaultAddress => uint256 iglooFiV1VaultId) internal _iglooFiV1VaultAddressToId;
 	mapping (uint256 iglooFiV1VaultId => address iglooFiV1VaultAddress) internal _iglooFiV1VaultIdToAddress;
 
 
-	constructor (address _iglooFiV1VaultRecord, address _iglooFiGovernance)
+	constructor (address _iglooFiGovernance)
 	{
-		iglooFiV1VaultRecord = _iglooFiV1VaultRecord;
-
 		iglooFiGovernance = _iglooFiGovernance;
 
 		fee = 0;
-
-		_vaultIdTracker = 0;
+		vaultIdTracker = 0;
 	}
 
 
@@ -95,7 +91,6 @@ contract IglooFiV1VaultFactory is
 		require(msg.value >= fee, "!msg.value");
 
 		IglooFiV1Vault deployedContract = new IglooFiV1Vault(
-			iglooFiV1VaultRecord,
 			admin,
 			useDefaultSignatureManager ? defaultSignatureManager : signatureManager,
 			againstVoteCountRequired,
@@ -103,10 +98,10 @@ contract IglooFiV1VaultFactory is
 			withdrawalDelaySeconds
 		);
 
-		_iglooFiV1VaultAddressToId[address(deployedContract)] = _vaultIdTracker;
-		_iglooFiV1VaultIdToAddress[_vaultIdTracker] = address(deployedContract);
+		_iglooFiV1VaultAddressToId[address(deployedContract)] = vaultIdTracker;
+		_iglooFiV1VaultIdToAddress[vaultIdTracker] = address(deployedContract);
 
-		_vaultIdTracker++;
+		vaultIdTracker++;
 
 		emit DeployedIglooFiV1Vault(address(deployedContract));
 

@@ -20,9 +20,11 @@ const stageContracts = async () => {
 	
 	// Deploy
 	const mockIglooFiGovernance: Contract = await (await MockIglooFiGovernance.deploy()).deployed();
-	const iglooFiV1VaultRecord: Contract = await (await IglooFiV1VaultRecord.deploy()).deployed();
 	const iglooFiV1VaultFactory: Contract = await (
-		await IglooFiV1VaultFactory.deploy(iglooFiV1VaultRecord.address, mockIglooFiGovernance.address)
+		await IglooFiV1VaultFactory.deploy(mockIglooFiGovernance.address)
+	).deployed();
+	const iglooFiV1VaultRecord: Contract = await (
+		await IglooFiV1VaultRecord.deploy(iglooFiV1VaultFactory.address)
 	).deployed();
 	const mockDapp: Contract = await (await MockDapp.deploy()).deployed();
 	
