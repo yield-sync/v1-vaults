@@ -8,26 +8,52 @@ pragma solidity ^0.8.18;
 interface IIglooFiV1VaultRecord
 {
 	/**
-	* @notice iglooFiV1Vault's Voters
+	* @notice
 	* @dev [!restriction]
 	* @dev [view]
-	* @param iglooFiV1VaultId {address}
+	* @param admin {address}
 	* @return {address[]}
 	*/
-	function iglooFiV1VaultVoters(address iglooFiV1VaultId)
+	function admin_iglooFiV1Vaults(address admin)
 		external
 		view
 		returns (address[] memory)
 	;
 
 	/**
-	* @notice Voter's IglooFiV1Vaults
+	* @notice
 	* @dev [!restriction]
 	* @dev [view]
-	* @param iglooFiV1VaultId {address}
+	* @param iglooFiV1Vault {address}
 	* @return {address[]}
 	*/
-	function voterIglooFiV1Vaults(address iglooFiV1VaultId)
+	function iglooFiV1Vault_admins(address iglooFiV1Vault)
+		external
+		view
+		returns (address[] memory)
+	;
+
+	/**
+	* @notice
+	* @dev [!restriction]
+	* @dev [view]
+	* @param iglooFiV1Vault {address}
+	* @return {address[]}
+	*/
+	function iglooFiV1Vault_members(address iglooFiV1Vault)
+		external
+		view
+		returns (address[] memory)
+	;
+
+	/**
+	* @notice
+	* @dev [!restriction]
+	* @dev [view]
+	* @param member {address}
+	* @return {address[]}
+	*/
+	function member_iglooFiV1Vaults(address member)
 		external
 		view
 		returns (address[] memory)
@@ -35,26 +61,27 @@ interface IIglooFiV1VaultRecord
 
 
 	/**
-	* @notice Add Voter
+	* @notice Add Member
 	* @dev [!restriction]
-	* @dev [update] `iglooFiV1VaultVoters`
-	*      [update] `voterIglooFiV1Vaults`
-	* @param _iglooFiV1VaultAddress {address}
-	* @param voter {address}
+	* @dev [update] `_member_iglooFiV1Vaults`
+	*      [update] `_iglooFiV1Vault_members`
+	*      [update] `participant_iglooFiV1Vault_access`
+	* @param _iglooFiV1Vault {address}
+	* @param member {address}
 	*/
-	function addVoter(address _iglooFiV1VaultAddress, address voter)
+	function addMember(address _iglooFiV1Vault, address member)
 		external
 	;
 
 	/**
-	* @notice Remove Voter
+	* @notice Remove Member
 	* @dev [!restriction]
 	* @dev [update] `iglooFiV1VaultVoters`
 	*      [update] `voterIglooFiV1Vaults`
-	* @param _iglooFiV1VaultAddress {address}
-	* @param voter {address}
+	* @param _iglooFiV1Vault {address}
+	* @param member {address}
 	*/
-	function removeVoter(address _iglooFiV1VaultAddress, address voter)
+	function removeMember(address _iglooFiV1Vault, address member)
 		external
 	;
 }

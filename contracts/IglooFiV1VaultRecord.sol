@@ -23,16 +23,16 @@ contract IglooFiV1VaultRecord is
 	address public iglooFiV1VaultFactory;
 
 	// [mapping]
-	// iglooFiV1VaultAddress => voters
-	mapping (address => address[]) internal _iglooFiV1VaultVoters;
-	// Voter => iglooFiV1VaultAddress
-	mapping (address => address[]) internal _voterIglooFiV1Vaults;
-
-	mapping (address => mapping (address => Access)) internal participant_vault_access;
-	mapping (address => address[]) internal _member_vaults;
-	mapping (address => address[]) internal _admin_vaults;
-	mapping (address => address[]) internal _vault_members;
-	mapping (address => address[]) internal _vault_admins;
+	// admin => iglooFiV1Vaults
+	mapping (address => address[]) internal _admin_iglooFiV1Vaults;
+	// iglooFiV1Vault => admins
+	mapping (address => address[]) internal _iglooFiV1Vault_admins;
+	// iglooFiV1Vault => members
+	mapping (address => address[]) internal _iglooFiV1Vault_members;
+	// member => iglooFiV1Vaults
+	mapping (address => address[]) internal _member_iglooFiV1Vaults;
+	// participant => (iglooFiV1VaultAddress => access)
+	mapping (address => mapping (address => Access)) internal _participant_iglooFiV1Vault_access;
 
 
 	constructor (address _iglooFiV1VaultFactory)
@@ -42,93 +42,99 @@ contract IglooFiV1VaultRecord is
 
 
 	/// @inheritdoc IIglooFiV1VaultRecord
-	function iglooFiV1VaultVoters(address iglooFiV1VaultAddress)
+	function admin_iglooFiV1Vaults(address admin)
 		public
 		view
 		returns (address[] memory)
 	{
-		return _iglooFiV1VaultVoters[iglooFiV1VaultAddress];
+		return _admin_iglooFiV1Vaults[admin];
 	}
 
 	/// @inheritdoc IIglooFiV1VaultRecord
-	function voterIglooFiV1Vaults(address voter)
+	function iglooFiV1Vault_admins(address iglooFiV1Vault)
 		public
 		view
 		returns (address[] memory)
 	{
-		return _voterIglooFiV1Vaults[voter];
+		return _iglooFiV1Vault_admins[iglooFiV1Vault];
 	}
 
-
-	// @inheritdoc
-	function getsVaultsVoterAndAdminOf()
+	/// @inheritdoc IIglooFiV1VaultRecord
+	function iglooFiV1Vault_members(address iglooFiV1Vault)
 		public
 		view
 		returns (address[] memory)
 	{
-		address[] memory vaults = new address[](
-			IIglooFiV1VaultFactory(payable(iglooFiV1VaultFactory)).vaultIdTracker()
-		);
-		
-		for (uint256 i = 0; i < IIglooFiV1VaultFactory(payable(iglooFiV1VaultFactory)).vaultIdTracker(); i++)
-		{
-			if (true)
-			{
-				vaults[i] = IIglooFiV1VaultFactory(payable(iglooFiV1VaultFactory)).iglooFiV1VaultIdToAddress(i);
-			}
-		}
+		return _iglooFiV1Vault_members[iglooFiV1Vault];
+	}
 
-		return vaults;
+	/// @inheritdoc IIglooFiV1VaultRecord
+	function member_iglooFiV1Vaults(address member)
+		public
+		view
+		returns (address[] memory)
+	{
+		return _member_iglooFiV1Vaults[member];
 	}
 
 
 	/// @inheritdoc IIglooFiV1VaultRecord
-	function addVoter(address _iglooFiV1VaultAddress, address voter)
+	function addMember(address _iglooFiV1Vault, address member)
 		public
 		override
 	{
-		require(_iglooFiV1VaultAddress == msg.sender, "!_iglooFiV1VaultAddress");
+		require(_iglooFiV1Vault == msg.sender, "!_iglooFiV1Vault");
 
-		// [update] `iglooFiV1VaultVoters`
-		_iglooFiV1VaultVoters[_iglooFiV1VaultAddress].push(voter);
+		_member_iglooFiV1Vaults[member].push(_iglooFiV1Vault);
 
-		// [update] `voterIglooFiV1Vaults`
-		_voterIglooFiV1Vaults[voter].push(_iglooFiV1VaultAddress);
+		_iglooFiV1Vault_members[_iglooFiV1Vault].push(member);
+
+		_participant_iglooFiV1Vault_access[member][_iglooFiV1Vault] = Access({
+			admin: false,
+			member: true
+		});
 	}
 
 	/// @inheritdoc IIglooFiV1VaultRecord
-	function removeVoter(address _iglooFiV1VaultAddress, address voter)
+	function removeMember(address _iglooFiV1Vault, address member)
 		public
 		override
 	{
-		require(_iglooFiV1VaultAddress == msg.sender, "!_iglooFiV1VaultAddress");
+		require(_iglooFiV1Vault == msg.sender, "!_iglooFiV1VaultAddress");
 
-		// [update] iglooFiV1VaultVoters
-		for (uint256 i = 0; i < _iglooFiV1VaultVoters[_iglooFiV1VaultAddress].length; i++)
+		// [update] _member_iglooFiV1Vaults
+		for (uint256 i = 0; i < _member_iglooFiV1Vaults[member].length; i++)
 		{
-			if (_iglooFiV1VaultVoters[_iglooFiV1VaultAddress][i] == voter)
+			if (_member_iglooFiV1Vaults[member][i] == member)
 			{
-				_iglooFiV1VaultVoters[_iglooFiV1VaultAddress][i] = _iglooFiV1VaultVoters[_iglooFiV1VaultAddress][
-					_iglooFiV1VaultVoters[_iglooFiV1VaultAddress].length - 1
+				_member_iglooFiV1Vaults[member][i] = _member_iglooFiV1Vaults[member][
+					_member_iglooFiV1Vaults[member].length - 1
 				];
 
-				_iglooFiV1VaultVoters[_iglooFiV1VaultAddress].pop();
+				_member_iglooFiV1Vaults[member].pop();
 
 				break;
 			}
 		}
 
-		// [update] voterIglooFiV1Vaults
-		for (uint256 i = 0; i < _voterIglooFiV1Vaults[voter].length; i++)
+		// [update] _iglooFiV1Vault_members
+		for (uint256 i = 0; i < _iglooFiV1Vault_members[_iglooFiV1Vault].length; i++)
 		{
-			if (_voterIglooFiV1Vaults[voter][i] == voter)
+			if (_iglooFiV1Vault_members[_iglooFiV1Vault][i] == member)
 			{
-				_voterIglooFiV1Vaults[voter][i] = _voterIglooFiV1Vaults[voter][_voterIglooFiV1Vaults[voter].length - 1];
-				
-				_voterIglooFiV1Vaults[voter].pop();
+				_iglooFiV1Vault_members[_iglooFiV1Vault][i] = _iglooFiV1Vault_members[_iglooFiV1Vault][
+					_iglooFiV1Vault_members[_iglooFiV1Vault].length - 1
+				];
+
+				_iglooFiV1Vault_members[_iglooFiV1Vault].pop();
 
 				break;
 			}
 		}
+
+		_participant_iglooFiV1Vault_access[member][_iglooFiV1Vault] = Access({
+			admin: _participant_iglooFiV1Vault_access[member][_iglooFiV1Vault].admin,
+			member: false
+		});
 	}
 }
