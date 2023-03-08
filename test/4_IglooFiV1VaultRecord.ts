@@ -5,7 +5,7 @@ const { ethers } = require("hardhat");
 
 
 const stageContracts = async () => {
-	const [owner] = await ethers.getSigners();
+	const [owner, addr1] = await ethers.getSigners();
 
 	const IglooFiV1Vault: ContractFactory = await ethers.getContractFactory("IglooFiV1Vault");
 	const IglooFiV1VaultFactory: ContractFactory = await ethers.getContractFactory("IglooFiV1VaultFactory");
@@ -16,16 +16,15 @@ const stageContracts = async () => {
 	
 	// Deploy
 	const mockIglooFiGovernance: Contract = await (await MockIglooFiGovernance.deploy()).deployed();
+	const iglooFiV1VaultRecord: Contract = await (await IglooFiV1VaultRecord.deploy()).deployed();
 	const iglooFiV1VaultFactory: Contract = await (
-		await IglooFiV1VaultFactory.deploy(mockIglooFiGovernance.address)
-	).deployed();
-	const iglooFiV1VaultRecord: Contract = await (
-		await IglooFiV1VaultRecord.deploy(iglooFiV1VaultFactory.address)
+		await IglooFiV1VaultFactory.deploy(mockIglooFiGovernance.address, iglooFiV1VaultRecord.address)
 	).deployed();
 	
 	// Deploy a vault
 	await iglooFiV1VaultFactory.deployIglooFiV1Vault(
 		owner.address,
+		[addr1.address],
 		ethers.constants.AddressZero,
 		true,
 		2,

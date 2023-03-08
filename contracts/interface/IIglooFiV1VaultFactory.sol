@@ -90,6 +90,7 @@ interface IIglooFiV1VaultFactory {
 	* @dev [!restriction]
 	* @dev [create]
 	* @param admin {address}
+	* @param members {address[]}
 	* @param signatureManager {address}
 	* @param againstVoteCountRequired {uint256}
 	* @param forVoteCountRequired {uint256}
@@ -98,6 +99,7 @@ interface IIglooFiV1VaultFactory {
 	*/
 	function deployIglooFiV1Vault(
 		address admin,
+		address[] memory members,
 		address signatureManager,
 		bool useDefaultSignatureManager,
 		uint256 againstVoteCountRequired,

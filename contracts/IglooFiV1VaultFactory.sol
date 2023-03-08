@@ -15,8 +15,9 @@ contract IglooFiV1VaultFactory is
 	IIglooFiV1VaultFactory
 {
 	// [address]
-	address public override iglooFiGovernance;
 	address public override defaultSignatureManager;
+	address public override iglooFiGovernance;
+	address public iglooFiV1VaultRecord;
 
 	// [uint256]
 	uint256 public override fee;
@@ -27,9 +28,10 @@ contract IglooFiV1VaultFactory is
 	mapping (uint256 iglooFiV1VaultId => address iglooFiV1VaultAddress) internal _iglooFiV1VaultIdToAddress;
 
 
-	constructor (address _iglooFiGovernance)
+	constructor (address _iglooFiGovernance, address _iglooFiV1VaultRecord)
 	{
 		iglooFiGovernance = _iglooFiGovernance;
+		iglooFiV1VaultRecord = _iglooFiV1VaultRecord;
 
 		fee = 0;
 		vaultIdTracker = 0;
@@ -77,6 +79,7 @@ contract IglooFiV1VaultFactory is
 	/// @inheritdoc IIglooFiV1VaultFactory
 	function deployIglooFiV1Vault(
 		address admin,
+		address[] memory members,
 		address signatureManager,
 		bool useDefaultSignatureManager,
 		uint256 againstVoteCountRequired,
@@ -91,7 +94,9 @@ contract IglooFiV1VaultFactory is
 		require(msg.value >= fee, "!msg.value");
 
 		IglooFiV1Vault deployedContract = new IglooFiV1Vault(
+			iglooFiV1VaultRecord,
 			admin,
+			members,
 			useDefaultSignatureManager ? defaultSignatureManager : signatureManager,
 			againstVoteCountRequired,
 			forVoteCountRequired,

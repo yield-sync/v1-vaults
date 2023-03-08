@@ -9,7 +9,7 @@ const sixDaysInSeconds = 6 * 24 * 60 * 60;
 
 
 const stageContracts = async () => {
-	const [owner] = await ethers.getSigners();
+	const [owner, addr1] = await ethers.getSigners();
 
 	const IglooFiV1Vault: ContractFactory = await ethers.getContractFactory("IglooFiV1Vault");
 	const IglooFiV1VaultFactory: ContractFactory = await ethers.getContractFactory("IglooFiV1VaultFactory");
@@ -21,16 +21,15 @@ const stageContracts = async () => {
 	const SignatureManager: ContractFactory = await ethers.getContractFactory("SignatureManager");
 	
 	const mockIglooFiGovernance: Contract = await (await MockIglooFiGovernance.deploy()).deployed();
+	const iglooFiV1VaultRecord: Contract = await (await IglooFiV1VaultRecord.deploy()).deployed();
 	const iglooFiV1VaultFactory: Contract = await (
-		await IglooFiV1VaultFactory.deploy(mockIglooFiGovernance.address)
-	).deployed();
-	const iglooFiV1VaultRecord: Contract = await (
-		await IglooFiV1VaultRecord.deploy(iglooFiV1VaultFactory.address)
+		await IglooFiV1VaultFactory.deploy(mockIglooFiGovernance.address, iglooFiV1VaultRecord.address)
 	).deployed();
 	
 	// Deploy a vault
 	await iglooFiV1VaultFactory.deployIglooFiV1Vault(
 		owner.address,
+		[addr1.address],
 		ethers.constants.AddressZero,
 		true,
 		2,
@@ -151,15 +150,11 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 				async () => {
 				const [owner, addr1] = await ethers.getSigners();
 
-				await iglooFiV1VaultRecord.addMember(
-					owner.address,
-					addr1.address
-				);
-
 				console.log(
+					iglooFiV1Vault.address,
 					await iglooFiV1VaultRecord.member_iglooFiV1Vaults(addr1.address),
-					await iglooFiV1VaultRecord.iglooFiV1Vault_members(owner.address),
-					await iglooFiV1VaultRecord.participant_iglooFiV1Vault_access(addr1.address, owner.address)
+					await iglooFiV1VaultRecord.iglooFiV1Vault_members(iglooFiV1Vault.address),
+					await iglooFiV1VaultRecord.participant_iglooFiV1Vault_access(addr1.address, iglooFiV1Vault.address)
 				);
 			}
 		);

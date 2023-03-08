@@ -19,8 +19,10 @@ describe("IglooFiV1VaultFactory.sol - IglooFi V1 Vault Factory Contract", async 
 		
 		// Deploy
 		mockIglooFiGovernance = await (await MockIglooFiGovernance.deploy()).deployed();
-		iglooFiV1VaultFactory = await (await IglooFiV1VaultFactory.deploy(mockIglooFiGovernance.address)).deployed();
-		iglooFiV1VaultRecord = await (await IglooFiV1VaultRecord.deploy(iglooFiV1VaultFactory.address)).deployed();
+		iglooFiV1VaultRecord = await (await IglooFiV1VaultRecord.deploy()).deployed();
+		iglooFiV1VaultFactory = await (
+			await IglooFiV1VaultFactory.deploy(mockIglooFiGovernance.address, iglooFiV1VaultRecord.address)
+		).deployed();
 		mockSignatureManager = await (await MockSignatureManager.deploy(mockIglooFiGovernance.address)).deployed();
 	});
 
@@ -191,6 +193,7 @@ describe("IglooFiV1VaultFactory.sol - IglooFi V1 Vault Factory Contract", async 
 
 					const deployedObj = await iglooFiV1VaultFactory.deployIglooFiV1Vault(
 						addr1.address,
+						[addr1.address],
 						ethers.constants.AddressZero,
 						true,
 						2,
@@ -214,6 +217,7 @@ describe("IglooFiV1VaultFactory.sol - IglooFi V1 Vault Factory Contract", async 
 
 					await iglooFiV1VaultFactory.deployIglooFiV1Vault(
 						addr1.address,
+						[addr1.address],
 						mockSignatureManager.address,
 						false,
 						2,
@@ -225,6 +229,13 @@ describe("IglooFiV1VaultFactory.sol - IglooFi V1 Vault Factory Contract", async 
 					// Attach the deployed vault's address
 					const iglooFiV1Vault = await IglooFiV1Vault.attach(
 						await iglooFiV1VaultFactory.iglooFiV1VaultIdToAddress(1)
+					);
+
+					console.log(
+						iglooFiV1Vault.address,
+						await iglooFiV1VaultRecord.member_iglooFiV1Vaults(addr1.address),
+						await iglooFiV1VaultRecord.iglooFiV1Vault_members(iglooFiV1Vault.address),
+						await iglooFiV1VaultRecord.participant_iglooFiV1Vault_access(addr1.address, iglooFiV1Vault.address)
 					);
 
 					expect(await iglooFiV1Vault.signatureManager()).to.be.equal(mockSignatureManager.address);

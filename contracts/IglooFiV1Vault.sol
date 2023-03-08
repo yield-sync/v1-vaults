@@ -6,8 +6,10 @@ import { AccessControl } from "@openzeppelin/contracts/access/AccessControl.sol"
 import { IERC1271 } from "@openzeppelin/contracts/interfaces/IERC1271.sol";
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { IERC721 } from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
+import { console } from "hardhat/console.sol";
 
 import { IIglooFiV1Vault, WithdrawalRequest } from "./interface/IIglooFiV1Vault.sol";
+import { IIglooFiV1VaultRecord } from "./interface/IIglooFiV1VaultRecord.sol";
 
 
 /**
@@ -32,11 +34,14 @@ contract IglooFiV1Vault is
 	uint256[] internal _openWithdrawalRequestIds;
 
 	// [mapping]
-	mapping (uint256 withdrawalRequestId => WithdrawalRequest withdralRequest) internal _withdrawalRequest;
+	// withdrawalRequestId => withdralRequest
+	mapping (uint256 => WithdrawalRequest) internal _withdrawalRequest;
 
 
 	constructor (
+		address iglooFiV1VaultRecord,
 		address admin,
+		address[] memory members,
 		address _signatureManager,
 		uint256 _againstVoteCountRequired,
 		uint256 _forVoteCountRequired,
@@ -46,6 +51,12 @@ contract IglooFiV1Vault is
 		require(_forVoteCountRequired > 0, "!_forVoteCountRequired");
 
 		_setupRole(DEFAULT_ADMIN_ROLE, admin);
+
+		for (uint i = 0; i < members.length; i++)
+		{
+			IIglooFiV1VaultRecord(iglooFiV1VaultRecord).addMember(address(this), members[i]);
+			console.log("added");
+		}
 
 		signatureManager = _signatureManager;
 		againstVoteCountRequired = _againstVoteCountRequired;

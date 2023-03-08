@@ -3,8 +3,8 @@ pragma solidity ^0.8.18;
 
 
 import { IIglooFiV1Vault } from "@igloo-fi/v1-sdk/contracts/interface/IIglooFiV1Vault.sol";
+import { console } from "hardhat/console.sol";
 
-import { IIglooFiV1VaultFactory } from "./interface/IIglooFiV1VaultFactory.sol";
 import { IIglooFiV1VaultRecord } from "./interface/IIglooFiV1VaultRecord.sol";
 
 
@@ -20,8 +20,6 @@ struct Access {
 contract IglooFiV1VaultRecord is
 	IIglooFiV1VaultRecord
 {
-	address public iglooFiV1VaultFactory;
-
 	// [mapping]
 	// admin => iglooFiV1Vaults
 	mapping (address => address[]) internal _admin_iglooFiV1Vaults;
@@ -33,12 +31,6 @@ contract IglooFiV1VaultRecord is
 	mapping (address => address[]) internal _member_iglooFiV1Vaults;
 	// participant => (iglooFiV1Vault => access)
 	mapping (address => mapping (address => Access)) internal _participant_iglooFiV1Vault_access;
-
-
-	constructor (address _iglooFiV1VaultFactory)
-	{
-		iglooFiV1VaultFactory = _iglooFiV1VaultFactory;
-	}
 
 
 	/// @inheritdoc IIglooFiV1VaultRecord
@@ -99,6 +91,8 @@ contract IglooFiV1VaultRecord is
 		override
 	{
 		require(_iglooFiV1Vault == msg.sender, "!_iglooFiV1Vault");
+
+			console.log(member);
 
 		_member_iglooFiV1Vaults[member].push(_iglooFiV1Vault);
 
