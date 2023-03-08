@@ -147,6 +147,24 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 	*/
 	describe("Constructor Initialized Values", async () => {
 		it(
+			"Should have added members correctly..",
+				async () => {
+				const [owner, addr1] = await ethers.getSigners();
+
+				await iglooFiV1VaultRecord.addMember(
+					owner.address,
+					addr1.address
+				);
+
+				console.log(
+					await iglooFiV1VaultRecord.member_iglooFiV1Vaults(addr1.address),
+					await iglooFiV1VaultRecord.iglooFiV1Vault_members(owner.address),
+					await iglooFiV1VaultRecord.participant_iglooFiV1Vault_access(addr1.address, owner.address)
+				);
+			}
+		);
+
+		it(
 			"Should have admin set properly..",
 			async () => {
 				const [owner] = await ethers.getSigners();

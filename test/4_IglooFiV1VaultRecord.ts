@@ -77,12 +77,4 @@ describe("IglooFiV1VaultRecord.sol - IglooFi V1 Vault Record Contract", async ()
 
 		await iglooFiV1Vault.updateSignatureManager(signatureManager.address);
 	});
-
-	describe("r", async () => {
-		it("r", async () => {
-			const [, addr1] = await ethers.getSigners();
-
-			console.log(await iglooFiV1VaultRecord.getsVaultsVoterAndAdminOf());
-		});
-	});
 });

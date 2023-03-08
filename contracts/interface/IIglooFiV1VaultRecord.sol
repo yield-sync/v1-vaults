@@ -21,7 +21,7 @@ interface IIglooFiV1VaultRecord
 	;
 
 	/**
-	* @notice
+	* @notice Getter for `_iglooFiV1Vault_admins`
 	* @dev [!restriction]
 	* @dev [view]
 	* @param iglooFiV1Vault {address}
@@ -34,7 +34,7 @@ interface IIglooFiV1VaultRecord
 	;
 
 	/**
-	* @notice
+	* @notice Getter for `_iglooFiV1Vault_members`
 	* @dev [!restriction]
 	* @dev [view]
 	* @param iglooFiV1Vault {address}
@@ -47,7 +47,7 @@ interface IIglooFiV1VaultRecord
 	;
 
 	/**
-	* @notice
+	* @notice Getter for `_member_iglooFiV1Vaults`
 	* @dev [!restriction]
 	* @dev [view]
 	* @param member {address}
@@ -57,6 +57,21 @@ interface IIglooFiV1VaultRecord
 		external
 		view
 		returns (address[] memory)
+	;
+
+	/**
+	* @notice Getter for `_participant_iglooFiV1Vault_access`
+	* @dev [!restriction]
+	* @dev [view]
+	* @param participant {address}
+	* @param iglooFiV1Vault {address}
+	* @return admin {bool}
+	* @return member {bool}
+	*/
+	function participant_iglooFiV1Vault_access(address participant, address iglooFiV1Vault)
+		external
+		view
+		returns (bool admin, bool member)
 	;
 
 

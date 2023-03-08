@@ -31,7 +31,7 @@ contract IglooFiV1VaultRecord is
 	mapping (address => address[]) internal _iglooFiV1Vault_members;
 	// member => iglooFiV1Vaults
 	mapping (address => address[]) internal _member_iglooFiV1Vaults;
-	// participant => (iglooFiV1VaultAddress => access)
+	// participant => (iglooFiV1Vault => access)
 	mapping (address => mapping (address => Access)) internal _participant_iglooFiV1Vault_access;
 
 
@@ -45,6 +45,7 @@ contract IglooFiV1VaultRecord is
 	function admin_iglooFiV1Vaults(address admin)
 		public
 		view
+		override
 		returns (address[] memory)
 	{
 		return _admin_iglooFiV1Vaults[admin];
@@ -54,6 +55,7 @@ contract IglooFiV1VaultRecord is
 	function iglooFiV1Vault_admins(address iglooFiV1Vault)
 		public
 		view
+		override
 		returns (address[] memory)
 	{
 		return _iglooFiV1Vault_admins[iglooFiV1Vault];
@@ -63,6 +65,7 @@ contract IglooFiV1VaultRecord is
 	function iglooFiV1Vault_members(address iglooFiV1Vault)
 		public
 		view
+		override
 		returns (address[] memory)
 	{
 		return _iglooFiV1Vault_members[iglooFiV1Vault];
@@ -72,9 +75,21 @@ contract IglooFiV1VaultRecord is
 	function member_iglooFiV1Vaults(address member)
 		public
 		view
+		override
 		returns (address[] memory)
 	{
 		return _member_iglooFiV1Vaults[member];
+	}
+
+	/// @inheritdoc IIglooFiV1VaultRecord
+	function participant_iglooFiV1Vault_access(address participant, address iglooFiV1Vault)
+		public
+		view
+		override
+		returns (bool admin, bool member)
+	{
+		admin = _participant_iglooFiV1Vault_access[participant][iglooFiV1Vault].admin;
+		member = _participant_iglooFiV1Vault_access[participant][iglooFiV1Vault].member;
 	}
 
 
