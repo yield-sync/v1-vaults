@@ -25,7 +25,7 @@ interface IIglooFiV1VaultFactory {
 
 
 	/**
-	* @notice Address for Signature Manager
+	* @notice Signature Manager Contract Address
 	* @dev [!restriction]
 	* @dev [view-address]
 	* @return {address}
@@ -37,7 +37,7 @@ interface IIglooFiV1VaultFactory {
 	;
 
 	/**
-	* @notice CONSTANT Address of IglooFi Governance contract
+	* @notice IglooFi Governance Contract Address
 	* @dev [!restriction]
 	* @dev [view-address]
 	* @return {address}
@@ -49,7 +49,7 @@ interface IIglooFiV1VaultFactory {
 	;
 
 	/**
-	* @notice CONSTANT Address of IglooFi V1 Vault Record contract
+	* @notice IglooFi V1 Vault Record Contract Address
 	* @dev [!restriction]
 	* @dev [view-address]
 	* @return {address}
