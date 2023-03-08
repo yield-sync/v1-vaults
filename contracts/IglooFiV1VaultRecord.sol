@@ -8,6 +8,12 @@ import { IIglooFiV1VaultFactory } from "./interface/IIglooFiV1VaultFactory.sol";
 import { IIglooFiV1VaultRecord } from "./interface/IIglooFiV1VaultRecord.sol";
 
 
+struct Access {
+	bool admin;
+	bool member;
+}
+
+
 /**
 * @title IglooFiV1VaultRecord
 */
@@ -21,6 +27,12 @@ contract IglooFiV1VaultRecord is
 	mapping (address => address[]) internal _iglooFiV1VaultVoters;
 	// Voter => iglooFiV1VaultAddress
 	mapping (address => address[]) internal _voterIglooFiV1Vaults;
+
+	mapping (address => mapping (address => Access)) internal participant_vault_access;
+	mapping (address => address[]) internal _member_vaults;
+	mapping (address => address[]) internal _admin_vaults;
+	mapping (address => address[]) internal _vault_members;
+	mapping (address => address[]) internal _vault_admins;
 
 
 	constructor (address _iglooFiV1VaultFactory)
