@@ -23,6 +23,19 @@ interface IIglooFiV1VaultFactory {
 	;
 
 
+
+	/**
+	* @notice Address for Signature Manager
+	* @dev [!restriction]
+	* @dev [view-address]
+	* @return {address}
+	*/
+	function defaultSignatureManager()
+		external
+		view
+		returns (address)
+	;
+
 	/**
 	* @notice CONSTANT Address of IglooFi Governance contract
 	* @dev [!restriction]
@@ -36,12 +49,12 @@ interface IIglooFiV1VaultFactory {
 	;
 
 	/**
-	* @notice Address for Signature Manager
+	* @notice CONSTANT Address of IglooFi V1 Vault Record contract
 	* @dev [!restriction]
 	* @dev [view-address]
 	* @return {address}
 	*/
-	function defaultSignatureManager()
+	function iglooFiV1VaultRecord()
 		external
 		view
 		returns (address)

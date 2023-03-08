@@ -17,15 +17,17 @@ contract IglooFiV1VaultFactory is
 	// [address]
 	address public override defaultSignatureManager;
 	address public override iglooFiGovernance;
-	address public iglooFiV1VaultRecord;
+	address public override iglooFiV1VaultRecord;
 
 	// [uint256]
 	uint256 public override fee;
 	uint256 public override vaultIdTracker;
 
 	// [mapping]
-	mapping (address iglooFiV1VaultAddress => uint256 iglooFiV1VaultId) internal _iglooFiV1VaultAddressToId;
-	mapping (uint256 iglooFiV1VaultId => address iglooFiV1VaultAddress) internal _iglooFiV1VaultIdToAddress;
+	// iglooFiV1VaultAddress => iglooFiV1VaultId
+	mapping (address => uint256) internal _iglooFiV1VaultAddressToId;
+	// iglooFiV1VaultId => iglooFiV1VaultId
+	mapping (uint256 => address) internal _iglooFiV1VaultIdToAddress;
 
 
 	constructor (address _iglooFiGovernance, address _iglooFiV1VaultRecord)
