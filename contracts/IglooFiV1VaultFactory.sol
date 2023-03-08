@@ -54,7 +54,8 @@ contract IglooFiV1VaultFactory is
 	{}
 
 
-	modifier onlyIglooFiGovernanceAdmin() {
+	modifier onlyIglooFiGovernanceAdmin()
+	{
 		require(
 			IIglooFiGovernance(iglooFiGovernance).hasRole(
 				IIglooFiGovernance(iglooFiGovernance).governanceRoles("DEFAULT_ADMIN_ROLE"),

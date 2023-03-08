@@ -6,7 +6,6 @@ import { AccessControl } from "@openzeppelin/contracts/access/AccessControl.sol"
 import { IERC1271 } from "@openzeppelin/contracts/interfaces/IERC1271.sol";
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { IERC721 } from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
-import { console } from "hardhat/console.sol";
 
 import { IIglooFiV1Vault, WithdrawalRequest } from "./interface/IIglooFiV1Vault.sol";
 import { IIglooFiV1VaultRecord } from "./interface/IIglooFiV1VaultRecord.sol";
@@ -21,6 +20,7 @@ contract IglooFiV1Vault is
 	IIglooFiV1Vault
 {
 	// [address]
+	address public iglooFiV1VaultRecord;
 	address public override signatureManager;
 
 	// [bytes4]
@@ -39,7 +39,7 @@ contract IglooFiV1Vault is
 
 
 	constructor (
-		address iglooFiV1VaultRecord,
+		address _iglooFiV1VaultRecord,
 		address admin,
 		address[] memory members,
 		address _signatureManager,
@@ -54,10 +54,10 @@ contract IglooFiV1Vault is
 
 		for (uint i = 0; i < members.length; i++)
 		{
-			IIglooFiV1VaultRecord(iglooFiV1VaultRecord).addMember(address(this), members[i]);
-			console.log("added");
+			IIglooFiV1VaultRecord(_iglooFiV1VaultRecord).addMember(address(this), members[i]);
 		}
 
+		iglooFiV1VaultRecord = _iglooFiV1VaultRecord;
 		signatureManager = _signatureManager;
 		againstVoteCountRequired = _againstVoteCountRequired;
 		forVoteCountRequired = _forVoteCountRequired;
@@ -89,7 +89,33 @@ contract IglooFiV1Vault is
 			_withdrawalRequest[withdrawalRequestId].forERC721,
 			"No WithdrawalRequest found"
 		);
-		
+
+		_;
+	}
+
+
+	modifier onlyAdmin(address participant)
+	{
+		(bool admin,) = IIglooFiV1VaultRecord(iglooFiV1VaultRecord).participant_iglooFiV1Vault_access(
+			address(this),
+			participant
+		);
+
+		require(admin, "!admin");
+
+		_;
+	}
+
+
+	modifier onlyMember(address participant)
+	{
+		(, bool member) = IIglooFiV1VaultRecord(iglooFiV1VaultRecord).participant_iglooFiV1Vault_access(
+			address(this),
+			participant
+		);
+
+		require(member, "!member");
+
 		_;
 	}
 
@@ -161,6 +187,8 @@ contract IglooFiV1Vault is
 		onlyRole(DEFAULT_ADMIN_ROLE)
 	{
 		_setupRole(VOTER, targetAddress);
+		
+		IIglooFiV1VaultRecord(iglooFiV1VaultRecord).addMember(address(this),targetAddress);
 	}
 
 	/// @inheritdoc IIglooFiV1Vault
