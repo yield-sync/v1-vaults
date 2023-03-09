@@ -58,17 +58,6 @@ interface IIglooFiV1Vault
 		returns (address)
 	;
 
-	/**
-	* @notice AccessControlEnumerable role
-	* @dev [!restriction]
-	* @dev [view-bytes32]
-	* @return {uint256}
-	*/
-	function VOTER()
-		external
-		view
-		returns (bytes32)
-	;
 
 	/**
 	* @notice Required For Vote Count

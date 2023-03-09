@@ -2,7 +2,6 @@
 pragma solidity ^0.8.18;
 
 
-import { AccessControl } from "@openzeppelin/contracts/access/AccessControl.sol";
 import { IERC1271 } from "@openzeppelin/contracts/interfaces/IERC1271.sol";
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { IERC721 } from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
@@ -15,16 +14,12 @@ import { IIglooFiV1VaultRecord } from "./interface/IIglooFiV1VaultRecord.sol";
 * @title IglooFiV1Vault
 */
 contract IglooFiV1Vault is
-	AccessControl,
 	IERC1271,
 	IIglooFiV1Vault
 {
 	// [address]
 	address public iglooFiV1VaultRecord;
 	address public override signatureManager;
-
-	// [bytes4]
-	bytes32 public constant override VOTER = keccak256("VOTER");
 
 	// [uint256]
 	uint256 public override againstVoteCountRequired;
@@ -49,8 +44,6 @@ contract IglooFiV1Vault is
 	)
 	{
 		require(_forVoteCountRequired > 0, "!_forVoteCountRequired");
-
-		_setupRole(DEFAULT_ADMIN_ROLE, admin);
 
 		for (uint i = 0; i < members.length; i++)
 		{
@@ -94,11 +87,11 @@ contract IglooFiV1Vault is
 	}
 
 
-	modifier onlyAdmin(address participant)
+	modifier onlyAdmin()
 	{
 		(bool admin,) = IIglooFiV1VaultRecord(iglooFiV1VaultRecord).participant_iglooFiV1Vault_access(
-			address(this),
-			participant
+			msg.sender,
+			address(this)
 		);
 
 		require(admin, "!admin");
@@ -107,11 +100,11 @@ contract IglooFiV1Vault is
 	}
 
 
-	modifier onlyMember(address participant)
+	modifier onlyMember()
 	{
 		(, bool member) = IIglooFiV1VaultRecord(iglooFiV1VaultRecord).participant_iglooFiV1Vault_access(
-			address(this),
-			participant
+			msg.sender,
+			address(this)
 		);
 
 		require(member, "!member");
@@ -184,27 +177,25 @@ contract IglooFiV1Vault is
 	function addVoter(address targetAddress)
 		public
 		override
-		onlyRole(DEFAULT_ADMIN_ROLE)
+		onlyAdmin()
 	{
-		_setupRole(VOTER, targetAddress);
-		
-		IIglooFiV1VaultRecord(iglooFiV1VaultRecord).addMember(address(this),targetAddress);
+		IIglooFiV1VaultRecord(iglooFiV1VaultRecord).addMember(address(this), targetAddress);
 	}
 
 	/// @inheritdoc IIglooFiV1Vault
 	function removeVoter(address voter)
 		public
 		override
-		onlyRole(DEFAULT_ADMIN_ROLE)
+		onlyAdmin()
 	{
-		_revokeRole(VOTER, voter);
+		IIglooFiV1VaultRecord(iglooFiV1VaultRecord).removeMember(address(this), voter);
 	}
 
 	/// @inheritdoc IIglooFiV1Vault
 	function deleteWithdrawalRequest(uint256 withdrawalRequestId)
 		public
 		override
-		onlyRole(DEFAULT_ADMIN_ROLE)
+		onlyAdmin()
 		validWithdrawalRequest(withdrawalRequestId)
 	{
 		_deleteWithdrawalRequest(withdrawalRequestId);
@@ -216,7 +207,7 @@ contract IglooFiV1Vault is
 	function updateWithdrawalRequest(uint256 withdrawalRequestId, WithdrawalRequest memory __withdrawalRequest)
 		public
 		override
-		onlyRole(DEFAULT_ADMIN_ROLE)
+		onlyAdmin()
 		validWithdrawalRequest(withdrawalRequestId)
 	{
 		_withdrawalRequest[withdrawalRequestId] = __withdrawalRequest;
@@ -228,7 +219,7 @@ contract IglooFiV1Vault is
 	function updateAgainstVoteCountRequired(uint256 _againstVoteCountRequired)
 		public
 		override
-		onlyRole(DEFAULT_ADMIN_ROLE)
+		onlyAdmin()
 	{
 		require(_againstVoteCountRequired > 0, "!_againstVoteCountRequired");
 
@@ -241,7 +232,7 @@ contract IglooFiV1Vault is
 	function updateForVoteCountRequired(uint256 _forVoteCountRequired)
 		public
 		override
-		onlyRole(DEFAULT_ADMIN_ROLE)
+		onlyAdmin()
 	{
 		require(_forVoteCountRequired > 0, "!_forVoteCountRequired");
 
@@ -254,7 +245,7 @@ contract IglooFiV1Vault is
 	function updateSignatureManager(address _signatureManager)
 		public
 		override
-		onlyRole(DEFAULT_ADMIN_ROLE)
+		onlyAdmin()
 	{
 		signatureManager = _signatureManager;
 
@@ -265,7 +256,7 @@ contract IglooFiV1Vault is
 	function updateWithdrawalDelaySeconds(uint256 _withdrawalDelaySeconds)
 		public
 		override
-		onlyRole(DEFAULT_ADMIN_ROLE)
+		onlyAdmin()
 	{
 		require(_withdrawalDelaySeconds >= 0, "!_withdrawalDelaySeconds");
 
@@ -287,7 +278,7 @@ contract IglooFiV1Vault is
 	)
 		public
 		override
-		onlyRole(VOTER)
+		onlyMember()
 	{
 		require(amount > 0, "!amount");
 
@@ -298,7 +289,7 @@ contract IglooFiV1Vault is
 				forEther: forEther,
 				forERC20: forERC20,
 				forERC721: forERC721,
-				creator: _msgSender(),
+				creator: msg.sender,
 				to: to,
 				token: tokenAddress,
 				amount: amount,
@@ -321,12 +312,12 @@ contract IglooFiV1Vault is
 	function voteOnWithdrawalRequest(uint256 withdrawalRequestId, bool vote)
 		public
 		override
-		onlyRole(VOTER)
+		onlyMember()
 		validWithdrawalRequest(withdrawalRequestId)
 	{
 		for (uint256 i = 0; i < _withdrawalRequest[withdrawalRequestId].votedVoters.length; i++)
 		{
-			require(_withdrawalRequest[withdrawalRequestId].votedVoters[i] != _msgSender(), "Already voted");
+			require(_withdrawalRequest[withdrawalRequestId].votedVoters[i] != msg.sender, "Already voted");
 		}
 		
 		if (vote)
@@ -345,21 +336,21 @@ contract IglooFiV1Vault is
 			emit WithdrawalRequestReadyToBeProcessed(withdrawalRequestId);
 		}
 
-		_withdrawalRequest[withdrawalRequestId].votedVoters.push(_msgSender());
+		_withdrawalRequest[withdrawalRequestId].votedVoters.push(msg.sender);
 
 		if (_withdrawalRequest[withdrawalRequestId].forVoteCount < forVoteCountRequired)
 		{
 			_withdrawalRequest[withdrawalRequestId].latestRelevantApproveVoteTime = block.timestamp;
 		}
 
-		emit VoterVoted(withdrawalRequestId, _msgSender(), vote);
+		emit VoterVoted(withdrawalRequestId, msg.sender, vote);
 	}
 
 	/// @inheritdoc IIglooFiV1Vault
 	function processWithdrawalRequest(uint256 withdrawalRequestId)
 		public
 		override
-		onlyRole(VOTER)
+		onlyMember()
 		validWithdrawalRequest(withdrawalRequestId)
 	{
 		WithdrawalRequest memory wR = _withdrawalRequest[withdrawalRequestId];
@@ -401,7 +392,7 @@ contract IglooFiV1Vault is
 				require(success, "Unable to send value");
 			}
 
-			emit TokensWithdrawn(_msgSender(), wR.to, wR.amount);
+			emit TokensWithdrawn(msg.sender, wR.to, wR.amount);
 		}
 
 		_deleteWithdrawalRequest(withdrawalRequestId);

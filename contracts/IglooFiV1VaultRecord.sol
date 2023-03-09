@@ -3,7 +3,6 @@ pragma solidity ^0.8.18;
 
 
 import { IIglooFiV1Vault } from "@igloo-fi/v1-sdk/contracts/interface/IIglooFiV1Vault.sol";
-import { console } from "hardhat/console.sol";
 
 import { IIglooFiV1VaultRecord } from "./interface/IIglooFiV1VaultRecord.sol";
 
@@ -85,14 +84,73 @@ contract IglooFiV1VaultRecord is
 	}
 
 
+/// @inheritdoc IIglooFiV1VaultRecord
+	function addAdmin(address _iglooFiV1Vault, address admin)
+		public
+		override
+	{
+		require(_iglooFiV1Vault == msg.sender, "!_iglooFiV1Vault");
+
+		_admin_iglooFiV1Vaults[admin].push(_iglooFiV1Vault);
+
+		_iglooFiV1Vault_admins[_iglooFiV1Vault].push(admin);
+
+		_participant_iglooFiV1Vault_access[admin][_iglooFiV1Vault] = Access({
+			member: _participant_iglooFiV1Vault_access[admin][_iglooFiV1Vault].member,
+			admin: true
+		});
+	}
+
+	/// @inheritdoc IIglooFiV1VaultRecord
+	function removeAdmin(address _iglooFiV1Vault, address admin)
+		public
+		override
+	{
+		require(_iglooFiV1Vault == msg.sender, "!_iglooFiV1VaultAddress");
+
+		// [update] _admin_iglooFiV1Vaults
+		for (uint256 i = 0; i < _admin_iglooFiV1Vaults[admin].length; i++)
+		{
+			if (_admin_iglooFiV1Vaults[admin][i] == _iglooFiV1Vault)
+			{
+				_admin_iglooFiV1Vaults[admin][i] = _admin_iglooFiV1Vaults[admin][
+					_admin_iglooFiV1Vaults[admin].length - 1
+				];
+
+				_admin_iglooFiV1Vaults[admin].pop();
+
+				break;
+			}
+		}
+
+		// [update] _iglooFiV1Vault_admins
+		for (uint256 i = 0; i < _iglooFiV1Vault_admins[_iglooFiV1Vault].length; i++)
+		{
+			if (_iglooFiV1Vault_admins[_iglooFiV1Vault][i] == admin)
+			{
+				_iglooFiV1Vault_admins[_iglooFiV1Vault][i] = _iglooFiV1Vault_admins[_iglooFiV1Vault][
+					_iglooFiV1Vault_admins[_iglooFiV1Vault].length - 1
+				];
+
+				_iglooFiV1Vault_admins[_iglooFiV1Vault].pop();
+
+				break;
+			}
+		}
+
+		_participant_iglooFiV1Vault_access[admin][_iglooFiV1Vault] = Access({
+			admin: false,
+			member: _participant_iglooFiV1Vault_access[admin][_iglooFiV1Vault].member
+		});
+	}
+
+
 	/// @inheritdoc IIglooFiV1VaultRecord
 	function addMember(address _iglooFiV1Vault, address member)
 		public
 		override
 	{
 		require(_iglooFiV1Vault == msg.sender, "!_iglooFiV1Vault");
-
-			console.log(member);
 
 		_member_iglooFiV1Vaults[member].push(_iglooFiV1Vault);
 
@@ -114,7 +172,7 @@ contract IglooFiV1VaultRecord is
 		// [update] _member_iglooFiV1Vaults
 		for (uint256 i = 0; i < _member_iglooFiV1Vaults[member].length; i++)
 		{
-			if (_member_iglooFiV1Vaults[member][i] == member)
+			if (_member_iglooFiV1Vaults[member][i] == _iglooFiV1Vault)
 			{
 				_member_iglooFiV1Vaults[member][i] = _member_iglooFiV1Vaults[member][
 					_member_iglooFiV1Vaults[member].length - 1
