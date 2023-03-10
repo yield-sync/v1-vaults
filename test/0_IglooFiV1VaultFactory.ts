@@ -23,7 +23,9 @@ describe("IglooFiV1VaultFactory.sol - IglooFi V1 Vault Factory Contract", async 
 		iglooFiV1VaultFactory = await (
 			await IglooFiV1VaultFactory.deploy(mockIglooFiGovernance.address, iglooFiV1VaultRecord.address)
 		).deployed();
-		mockSignatureManager = await (await MockSignatureManager.deploy(mockIglooFiGovernance.address)).deployed();
+		mockSignatureManager = await (
+			await MockSignatureManager.deploy(mockIglooFiGovernance.address, iglooFiV1VaultRecord.address)
+		).deployed();
 	});
 
 

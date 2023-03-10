@@ -9,6 +9,7 @@ import { Pausable } from "@openzeppelin/contracts/security/Pausable.sol";
 import { ECDSA } from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 
 import { ISignatureManager, MessageHashData } from "./interface/ISignatureManager.sol";
+import { IIglooFiV1VaultRecord } from "./interface/IIglooFiV1VaultRecord.sol";
 
 
 /**
@@ -21,6 +22,7 @@ contract SignatureManager is
 {
 	// [address]
 	address public override iglooFiGovernance;
+	address public iglooFiV1VaultRecord;
 
 	// [bytes32]
 	bytes32 public constant VOTER = keccak256("VOTER");
@@ -35,11 +37,12 @@ contract SignatureManager is
 	) internal _vaultMessageHashData;
 
 
-	constructor (address _iglooFiGovernance)
+	constructor (address _iglooFiGovernance, address _iglooFiV1VaultRecord)
 	{
 		_pause();
 
 		iglooFiGovernance = _iglooFiGovernance;
+		iglooFiV1VaultRecord = _iglooFiV1VaultRecord;
 	}
 
 
@@ -47,7 +50,7 @@ contract SignatureManager is
 		require(
 			IIglooFiGovernance(iglooFiGovernance).hasRole(
 				IIglooFiGovernance(iglooFiGovernance).governanceRoles("DEFAULT_ADMIN_ROLE"),
-				_msgSender()
+				msg.sender
 			),
 			"!auth"
 		);
@@ -65,12 +68,12 @@ contract SignatureManager is
 	{
 		address recovered = ECDSA.recover(ECDSA.toEthSignedMessageHash(_messageHash), _signature);
 
-		MessageHashData memory vMHD = _vaultMessageHashData[_msgSender()][_messageHash];
+		MessageHashData memory vMHD = _vaultMessageHashData[msg.sender][_messageHash];
 
 		return (
-			_vaultMessageHashes[_msgSender()][_vaultMessageHashes[_msgSender()].length -1] == _messageHash &&
+			_vaultMessageHashes[msg.sender][_vaultMessageHashes[msg.sender].length -1] == _messageHash &&
 			vMHD.signer == recovered &&
-			vMHD.signatureCount >= IIglooFiV1Vault(payable(_msgSender())).forVoteCountRequired()
+			vMHD.signatureCount >= IIglooFiV1Vault(payable(msg.sender)).forVoteCountRequired()
 		) ? ERC1271_MAGIC_VALUE : bytes4(0);
 	}
 
@@ -102,12 +105,17 @@ contract SignatureManager is
 		override
 		whenNotPaused()
 	{
-		require(IIglooFiV1Vault(payable(iglooFiV1VaultAddress)).hasRole(VOTER, _msgSender()), "!auth");
+		(, bool member) = IIglooFiV1VaultRecord(iglooFiV1VaultRecord).participant_iglooFiV1Vault_access(
+			msg.sender,
+			iglooFiV1VaultAddress
+		);
+
+		require(member, "!member");
 
 		MessageHashData memory vMHD = _vaultMessageHashData[iglooFiV1VaultAddress][messageHash];
 
 		for (uint i = 0; i < vMHD.signedVoters.length; i++) {
-			require(vMHD.signedVoters[i] != _msgSender(), "Already signed");
+			require(vMHD.signedVoters[i] != msg.sender, "Already signed");
 		}
 
 		if (vMHD.signer == address(0)) {
@@ -115,7 +123,12 @@ contract SignatureManager is
 
 			address recovered = ECDSA.recover(ECDSA.toEthSignedMessageHash(messageHash), signature);
 
-			require(IIglooFiV1Vault(payable(iglooFiV1VaultAddress)).hasRole(VOTER, recovered), "!auth");
+			(, bool recoveredIsMember) = IIglooFiV1VaultRecord(iglooFiV1VaultRecord).participant_iglooFiV1Vault_access(
+				recovered,
+				iglooFiV1VaultAddress
+			);
+
+			require(recoveredIsMember, "!member");
 
 			_vaultMessageHashData[iglooFiV1VaultAddress][messageHash] = MessageHashData({
 				signature: signature,
@@ -127,7 +140,7 @@ contract SignatureManager is
 			_vaultMessageHashes[iglooFiV1VaultAddress].push(messageHash);
 		}
 
-		_vaultMessageHashData[iglooFiV1VaultAddress][messageHash].signedVoters.push(_msgSender());
+		_vaultMessageHashData[iglooFiV1VaultAddress][messageHash].signedVoters.push(msg.sender);
 		_vaultMessageHashData[iglooFiV1VaultAddress][messageHash].signatureCount++;
 	}
 

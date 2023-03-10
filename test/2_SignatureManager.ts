@@ -42,7 +42,9 @@ const stageContracts = async () => {
 	const iglooFiV1Vault: Contract = await IglooFiV1Vault.attach(iglooFiV1VaultFactory.iglooFiV1VaultIdToAddress(0));
 
 	const mockAdmin: Contract = await (await MockAdmin.deploy()).deployed();
-	const signatureManager: Contract = await (await SignatureManager.deploy(mockIglooFiGovernance.address)).deployed();
+	const signatureManager: Contract = await (
+		await SignatureManager.deploy(mockIglooFiGovernance.address, iglooFiV1VaultRecord.address)
+	).deployed();
 
 	return {
 		iglooFiV1Vault,
@@ -79,8 +81,8 @@ describe("SignatureManager.sol - Signature Manager Contract", async () => {
 		mockIglooFiGovernance = stagedContracts.mockIglooFiGovernance;
 		signatureManager = stagedContracts.signatureManager;
 
-		await iglooFiV1Vault.addVoter(addr1.address);
-		await iglooFiV1Vault.addVoter(addr2.address);
+		await iglooFiV1Vault.addMember(addr1.address);
+		await iglooFiV1Vault.addMember(addr2.address);
 
 		await iglooFiV1Vault.updateSignatureManager(signatureManager.address);
 	});
@@ -142,7 +144,7 @@ describe("SignatureManager.sol - Signature Manager Contract", async () => {
 					messageHash,
 					signature
 				)
-			).to.be.rejectedWith("!auth");
+			).to.be.rejectedWith("!member");
 		});
 
 		it("Should be able to recover the original address..", async () => {

@@ -37,7 +37,9 @@ const stageContracts = async () => {
 	const iglooFiV1Vault: Contract = await IglooFiV1Vault.attach(iglooFiV1VaultFactory.iglooFiV1VaultIdToAddress(0));
 
 	const mockAdmin: Contract = await (await MockAdmin.deploy()).deployed();
-	const signatureManager: Contract = await (await SignatureManager.deploy(mockIglooFiGovernance.address)).deployed();
+	const signatureManager: Contract = await (
+		await SignatureManager.deploy(mockIglooFiGovernance.address, iglooFiV1VaultRecord.address)
+	).deployed();
 
 	return {
 		iglooFiV1Vault,
@@ -71,8 +73,8 @@ describe("MockAdmin.sol - Mock Admin Contract", async () => {
 		mockAdmin = stagedContracts.mockAdmin;
 		signatureManager = stagedContracts.signatureManager;
 
-		await iglooFiV1Vault.addVoter(addr1.address);
-		await iglooFiV1Vault.addVoter(addr2.address);
+		await iglooFiV1Vault.addMember(addr1.address);
+		await iglooFiV1Vault.addMember(addr2.address);
 
 		await iglooFiV1Vault.updateSignatureManager(signatureManager.address);
 
@@ -98,7 +100,7 @@ describe("MockAdmin.sol - Mock Admin Contract", async () => {
 	*/
 	describe("AccessControlEnumerable", async () => {
 		it("Should allow admin to add a contract-based admin..", async () => {
-			await iglooFiV1Vault.grantRole(await iglooFiV1Vault.DEFAULT_ADMIN_ROLE(), mockAdmin.address);
+			await iglooFiV1Vault.addAdmin(mockAdmin.address);
 		});
 	});
 

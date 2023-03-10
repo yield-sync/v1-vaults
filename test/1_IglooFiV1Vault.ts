@@ -43,7 +43,9 @@ const stageContracts = async () => {
 		await iglooFiV1VaultFactory.iglooFiV1VaultIdToAddress(0)
 	);
 
-	const signatureManager: Contract = await (await SignatureManager.deploy(mockIglooFiGovernance.address)).deployed();
+	const signatureManager: Contract = await (
+		await SignatureManager.deploy(mockIglooFiGovernance.address, iglooFiV1VaultRecord.address)
+	).deployed();
 	const mockAdmin: Contract = await (await MockAdmin.deploy()).deployed();
 	const mockERC20: Contract = await (await MockERC20.deploy()).deployed();
 	const mockERC721: Contract = await (await MockERC721.deploy()).deployed();

@@ -6,7 +6,7 @@ import { SignatureManager } from "../SignatureManager.sol";
 
 
 contract MockSignatureManager is SignatureManager {
-	constructor (address _iglooFiGovernance)
-		SignatureManager(_iglooFiGovernance)
+	constructor (address _iglooFiGovernance, address _iglooFiV1VaultRecord)
+		SignatureManager(_iglooFiGovernance, _iglooFiV1VaultRecord)
 	{}
 }
