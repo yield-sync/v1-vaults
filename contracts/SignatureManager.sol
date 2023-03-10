@@ -23,9 +23,6 @@ contract SignatureManager is
 	// [address]
 	address public override iglooFiGovernance;
 	address public iglooFiV1VaultRecord;
-
-	// [bytes32]
-	bytes32 public constant VOTER = keccak256("VOTER");
 	
 	// [bytes4]
 	bytes4 public constant ERC1271_MAGIC_VALUE = 0x1626ba7e;
@@ -105,12 +102,12 @@ contract SignatureManager is
 		override
 		whenNotPaused()
 	{
-		(, bool member) = IIglooFiV1VaultRecord(iglooFiV1VaultRecord).participant_iglooFiV1Vault_access(
+		(, bool msgSenderIsMember) = IIglooFiV1VaultRecord(iglooFiV1VaultRecord).participant_iglooFiV1Vault_access(
 			msg.sender,
 			iglooFiV1VaultAddress
 		);
 
-		require(member, "!member");
+		require(msgSenderIsMember, "!member");
 
 		MessageHashData memory vMHD = _vaultMessageHashData[iglooFiV1VaultAddress][messageHash];
 
