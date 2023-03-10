@@ -203,7 +203,7 @@ describe("IglooFiV1VaultFactory.sol - IglooFi V1 Vault Factory Contract", async 
 					);
 
 					expect(await iglooFiV1VaultFactory.iglooFiV1VaultIdToAddress(0)).to.equal(
-						(await deployedObj.wait()).events[1].args[0]
+						(await deployedObj.wait()).events[0].args[0]
 					);
 				}
 			);
@@ -232,7 +232,6 @@ describe("IglooFiV1VaultFactory.sol - IglooFi V1 Vault Factory Contract", async 
 					);
 
 					console.log(
-						iglooFiV1Vault.address,
 						await iglooFiV1VaultRecord.member_iglooFiV1Vaults(addr1.address),
 						await iglooFiV1VaultRecord.iglooFiV1Vault_members(iglooFiV1Vault.address),
 						await iglooFiV1VaultRecord.participant_iglooFiV1Vault_access(addr1.address, iglooFiV1Vault.address)
@@ -260,8 +259,11 @@ describe("IglooFiV1VaultFactory.sol - IglooFi V1 Vault Factory Contract", async 
 						const iglooFiV1Vault = await IglooFiV1Vault.attach(deployedAddress);
 
 						expect(
-							await iglooFiV1Vault.hasRole(await iglooFiV1Vault.DEFAULT_ADMIN_ROLE(), addr1.address)
-						).to.equal(true);
+							(await iglooFiV1VaultRecord.participant_iglooFiV1Vault_access(
+								addr1.address,
+								iglooFiV1Vault.address
+							))[0]
+						).to.be.true;
 					}
 				);
 			});

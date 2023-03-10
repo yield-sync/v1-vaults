@@ -157,7 +157,7 @@ contract IglooFiV1VaultRecord is
 		_iglooFiV1Vault_members[_iglooFiV1Vault].push(member);
 
 		_participant_iglooFiV1Vault_access[member][_iglooFiV1Vault] = Access({
-			admin: false,
+			admin:  _participant_iglooFiV1Vault_access[member][_iglooFiV1Vault].admin,
 			member: true
 		});
 	}

@@ -21,7 +21,6 @@ async function main() {
 
 main()
 	.then(() => {
-		console.log();
 		
 		process.exit(0);
 	})
