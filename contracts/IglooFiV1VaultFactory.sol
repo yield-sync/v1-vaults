@@ -21,7 +21,7 @@ contract IglooFiV1VaultFactory is
 
 	// [uint256]
 	uint256 public override fee;
-	uint256 public override vaultIdTracker;
+	uint256 public override iglooFiV1VaultIdTracker;
 
 	// [mapping]
 	// iglooFiV1VaultAddress => iglooFiV1VaultId
@@ -36,7 +36,7 @@ contract IglooFiV1VaultFactory is
 		iglooFiV1VaultRecord = _iglooFiV1VaultRecord;
 
 		fee = 0;
-		vaultIdTracker = 0;
+		iglooFiV1VaultIdTracker = 0;
 	}
 
 
@@ -106,10 +106,10 @@ contract IglooFiV1VaultFactory is
 			withdrawalDelaySeconds
 		);
 
-		_iglooFiV1VaultAddressToId[address(deployedContract)] = vaultIdTracker;
-		_iglooFiV1VaultIdToAddress[vaultIdTracker] = address(deployedContract);
+		_iglooFiV1VaultAddressToId[address(deployedContract)] = iglooFiV1VaultIdTracker;
+		_iglooFiV1VaultIdToAddress[iglooFiV1VaultIdTracker] = address(deployedContract);
 
-		vaultIdTracker++;
+		iglooFiV1VaultIdTracker++;
 
 		emit DeployedIglooFiV1Vault(address(deployedContract));
 

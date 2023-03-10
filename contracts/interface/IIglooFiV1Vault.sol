@@ -46,6 +46,19 @@ interface IIglooFiV1Vault
 		payable
 	;
 
+
+	/**
+	* @notice Address of signature manager
+	* @dev [!restriction]
+	* @dev [view-address]
+	* @return {address}
+	*/
+	function iglooFiV1VaultRecord()
+		external
+		view
+		returns (address)
+	;
+
 	/**
 	* @notice Address of signature manager
 	* @dev [!restriction]
@@ -58,6 +71,17 @@ interface IIglooFiV1Vault
 		returns (address)
 	;
 
+	/**
+	* @notice Against Vote Count Required
+	* @dev [!restriction]
+	* @dev [view-uint256]
+	* @return {uint256}
+	*/
+	function againstVoteCountRequired()
+		external
+		view
+		returns (uint256)
+	;
 
 	/**
 	* @notice Required For Vote Count
@@ -66,18 +90,6 @@ interface IIglooFiV1Vault
 	* @return {uint256}
 	*/
 	function forVoteCountRequired()
-		external
-		view
-		returns (uint256)
-	;
-
-	/**
-	* @notice Against Vote Count Required
-	* @dev [!restriction]
-	* @dev [view-uint256]
-	* @return {uint256}
-	*/
-	function againstVoteCountRequired()
 		external
 		view
 		returns (uint256)
@@ -122,9 +134,9 @@ interface IIglooFiV1Vault
 
 
 	/**
-	* @notice Assign MEMBER to an address on IglooFiV1Record
-	* @dev [restriction] IglooFiV1Record → ADMIN
-	* @dev [add] address to MEMBER on `IglooFiV1Record`
+	* @notice Assign Admin to an address on IglooFiV1Record
+	* @dev [restriction] IglooFiV1Record → admin
+	* @dev [add] address to admin on `IglooFiV1Record`
 	* @param targetAddress {address}
 	*/
 	function addAdmin(address targetAddress)
@@ -133,8 +145,8 @@ interface IIglooFiV1Vault
 
 	/**
 	* @notice Remove a member
-	* @dev [restriction] IglooFiV1Record → ADMIN
-	* @dev [remove] address with MEMBER on `IglooFiV1Record`
+	* @dev [restriction] IglooFiV1Record → admin
+	* @dev [remove] address with admin on `IglooFiV1Record`
 	* @param member {address} Address of the member to remove
 	*/	
 	function removeAdmin(address member)
@@ -142,9 +154,9 @@ interface IIglooFiV1Vault
 	;
 
 	/**
-	* @notice Assign MEMBER to an address on IglooFiV1Record
-	* @dev [restriction] IglooFiV1Record → ADMIN
-	* @dev [add] address to MEMBER on `IglooFiV1Record`
+	* @notice Assign member to an address on IglooFiV1Record
+	* @dev [restriction] IglooFiV1Record → admin
+	* @dev [add] address to member on `IglooFiV1Record`
 	* @param targetAddress {address}
 	*/
 	function addMember(address targetAddress)
@@ -153,8 +165,8 @@ interface IIglooFiV1Vault
 
 	/**
 	* @notice Remove a member
-	* @dev [restriction] IglooFiV1Record → ADMIN
-	* @dev [remove] address with MEMBER on `IglooFiV1Record`
+	* @dev [restriction] IglooFiV1Record → admin
+	* @dev [remove] address with member on `IglooFiV1Record`
 	* @param member {address} Address of the member to remove
 	*/	
 	function removeMember(address member)
@@ -163,7 +175,7 @@ interface IIglooFiV1Vault
 
 	/**
 	* @notice Delete withdrawalRequest & all associated values
-	* @dev [restriction] IglooFiV1Record → ADMIN
+	* @dev [restriction] IglooFiV1Record → admin
 	* @dev [call][internal] {_deleteWithdrawalRequest}
 	* @param withdrawalRequestId {uint256}
 	* Emits: `DeletedWithdrawalRequest`
@@ -174,7 +186,7 @@ interface IIglooFiV1Vault
 
 	/**
 	* @notice Update withdrawalRequest
-	* @dev [restriction] IglooFiV1Record → ADMIN
+	* @dev [restriction] IglooFiV1Record → admin
 	* @dev [update] `_withdrawalRequest`
 	* @param withdrawalRequestId {uint256}
 	* @param __withdrawalRequest {WithdrawalRequest}
@@ -186,7 +198,7 @@ interface IIglooFiV1Vault
 
 	/**
 	* @notice Update Against Vote Count Required
-	* @dev [restriction] IglooFiV1Record → ADMIN
+	* @dev [restriction] IglooFiV1Record → admin
 	* @dev [update] `againstVoteCountRequired`
 	* @param _againstVoteCountRequired {uint256}
 	* Emits: `UpdatedAgainstVoteCountRequired`
@@ -197,7 +209,7 @@ interface IIglooFiV1Vault
 
 	/**
 	* @notice Update For Vote Count Required
-	* @dev [restriction] IglooFiV1Record → ADMIN
+	* @dev [restriction] IglooFiV1Record → admin
 	* @dev [update] `forVoteCountRequired`
 	* @param _forVoteCountRequired {uint256}
 	* Emits: `UpdatedRequiredVoteCount`
@@ -208,7 +220,7 @@ interface IIglooFiV1Vault
 
 	/**
 	* @notice Update Signature Manager Contract
-	* @dev [restriction] IglooFiV1Record → ADMIN
+	* @dev [restriction] IglooFiV1Record → admin
 	* @dev [update] `signatureManager`
 	* @param _signatureManager {address}
 	*/
@@ -218,7 +230,7 @@ interface IIglooFiV1Vault
 
 	/**
 	* @notice Update `withdrawalDelaySeconds`
-	* @dev [restriction] IglooFiV1Record → ADMIN
+	* @dev [restriction] IglooFiV1Record → admin
 	* @dev [update] `withdrawalDelaySeconds` to new value
 	* @param _withdrawalDelaySeconds {uint256}
 	* Emits: `UpdatedWithdrawalDelaySeconds`
@@ -230,7 +242,7 @@ interface IIglooFiV1Vault
 
 	/**
 	* @notice Create a withdrawalRequest
-	* @dev [restriction] IglooFiV1Record → MEMBER
+	* @dev [restriction] IglooFiV1Record → member
 	* @dev [increment] `_withdrawalRequestId`
 	*      [add] `_withdrawalRequest` value
 	*      [push-into] `_withdrawalRequestIds`
@@ -257,7 +269,7 @@ interface IIglooFiV1Vault
 
 	/**
 	* @notice Vote on withdrawalRequest
-	* @dev [restriction] IglooFiV1Record → MEMBER
+	* @dev [restriction] IglooFiV1Record → member
 	* @dev [update] `_withdrawalRequest`
 	* @param withdrawalRequestId {uint256}
 	* @param vote {bool} true (approve) or false (deny)
@@ -270,7 +282,7 @@ interface IIglooFiV1Vault
 
 	/**
 	* @notice Process withdrawalRequest with given `withdrawalRequestId`
-	* @dev [restriction] IglooFiV1Record → MEMBER
+	* @dev [restriction] IglooFiV1Record → member
 	* @dev [erc20-transfer]
 	*      [decrement] `_tokenBalance`
 	*      [call][internal] `_deleteWithdrawalRequest`

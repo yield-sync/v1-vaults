@@ -23,7 +23,6 @@ interface IIglooFiV1VaultFactory {
 	;
 
 
-
 	/**
 	* @notice Signature Manager Contract Address
 	* @dev [!restriction]
@@ -49,7 +48,7 @@ interface IIglooFiV1VaultFactory {
 	;
 
 	/**
-	* @notice IglooFi V1 Vault Record Contract Address
+	* @notice IglooFiV1Vault Record Contract Address
 	* @dev [!restriction]
 	* @dev [view-address]
 	* @return {address}
@@ -79,7 +78,7 @@ interface IIglooFiV1VaultFactory {
 	* @dev [view-uint256]
 	* @return {uint256}
 	*/
-	function vaultIdTracker()
+	function iglooFiV1VaultIdTracker()
 		external
 		view
 		returns (uint256)

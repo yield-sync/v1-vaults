@@ -18,7 +18,7 @@ contract IglooFiV1Vault is
 	IIglooFiV1Vault
 {
 	// [address]
-	address public iglooFiV1VaultRecord;
+	address public override iglooFiV1VaultRecord;
 	address public override signatureManager;
 
 	// [uint256]
