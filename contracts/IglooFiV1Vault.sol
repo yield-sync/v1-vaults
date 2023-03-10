@@ -45,6 +45,8 @@ contract IglooFiV1Vault is
 	{
 		require(_forVoteCountRequired > 0, "!_forVoteCountRequired");
 
+		IIglooFiV1VaultRecord(_iglooFiV1VaultRecord).addAdmin(address(this), admin);
+
 		for (uint i = 0; i < members.length; i++)
 		{
 			IIglooFiV1VaultRecord(_iglooFiV1VaultRecord).addMember(address(this), members[i]);
@@ -174,7 +176,25 @@ contract IglooFiV1Vault is
 
 
 	/// @inheritdoc IIglooFiV1Vault
-	function addVoter(address targetAddress)
+	function addAdmin(address targetAddress)
+		public
+		override
+		onlyAdmin()
+	{
+		IIglooFiV1VaultRecord(iglooFiV1VaultRecord).addAdmin(address(this), targetAddress);
+	}
+
+	/// @inheritdoc IIglooFiV1Vault
+	function removeAdmin(address admin)
+		public
+		override
+		onlyAdmin()
+	{
+		IIglooFiV1VaultRecord(iglooFiV1VaultRecord).removeAdmin(address(this), admin);
+	}
+
+	/// @inheritdoc IIglooFiV1Vault
+	function addMember(address targetAddress)
 		public
 		override
 		onlyAdmin()
@@ -183,13 +203,14 @@ contract IglooFiV1Vault is
 	}
 
 	/// @inheritdoc IIglooFiV1Vault
-	function removeVoter(address voter)
+	function removeMember(address member)
 		public
 		override
 		onlyAdmin()
 	{
-		IIglooFiV1VaultRecord(iglooFiV1VaultRecord).removeMember(address(this), voter);
+		IIglooFiV1VaultRecord(iglooFiV1VaultRecord).removeMember(address(this), member);
 	}
+
 
 	/// @inheritdoc IIglooFiV1Vault
 	function deleteWithdrawalRequest(uint256 withdrawalRequestId)
@@ -282,7 +303,7 @@ contract IglooFiV1Vault is
 	{
 		require(amount > 0, "!amount");
 
-		address[] memory initialVotedVoters;
+		address[] memory initialVotedMembers;
 
 		_withdrawalRequest[_withdrawalRequestIdTracker] = WithdrawalRequest(
 			{
@@ -297,7 +318,7 @@ contract IglooFiV1Vault is
 				forVoteCount: 0,
 				againstVoteCount: 0,
 				latestRelevantApproveVoteTime: block.timestamp,
-				votedVoters: initialVotedVoters
+				votedMembers: initialVotedMembers
 			}
 		);
 
@@ -315,9 +336,9 @@ contract IglooFiV1Vault is
 		onlyMember()
 		validWithdrawalRequest(withdrawalRequestId)
 	{
-		for (uint256 i = 0; i < _withdrawalRequest[withdrawalRequestId].votedVoters.length; i++)
+		for (uint256 i = 0; i < _withdrawalRequest[withdrawalRequestId].votedMembers.length; i++)
 		{
-			require(_withdrawalRequest[withdrawalRequestId].votedVoters[i] != msg.sender, "Already voted");
+			require(_withdrawalRequest[withdrawalRequestId].votedMembers[i] != msg.sender, "Already voted");
 		}
 		
 		if (vote)
@@ -336,14 +357,14 @@ contract IglooFiV1Vault is
 			emit WithdrawalRequestReadyToBeProcessed(withdrawalRequestId);
 		}
 
-		_withdrawalRequest[withdrawalRequestId].votedVoters.push(msg.sender);
+		_withdrawalRequest[withdrawalRequestId].votedMembers.push(msg.sender);
 
 		if (_withdrawalRequest[withdrawalRequestId].forVoteCount < forVoteCountRequired)
 		{
 			_withdrawalRequest[withdrawalRequestId].latestRelevantApproveVoteTime = block.timestamp;
 		}
 
-		emit VoterVoted(withdrawalRequestId, msg.sender, vote);
+		emit MemberVoted(withdrawalRequestId, msg.sender, vote);
 	}
 
 	/// @inheritdoc IIglooFiV1Vault

@@ -15,7 +15,7 @@ struct WithdrawalRequest {
 	uint256 forVoteCount;
 	uint256 againstVoteCount;
 	uint256 latestRelevantApproveVoteTime;
-	address[] votedVoters;
+	address[] votedMembers;
 }
 
 
@@ -32,7 +32,7 @@ interface IIglooFiV1Vault
 	event UpdatedSignatureManger(address signatureManager);
 	event UpdatedWithdrawalDelaySeconds(uint256 withdrawalDelaySeconds);
 	event UpdatedWithdrawalRequest(WithdrawalRequest withdrawalRequest);
-	event VoterVoted(uint256 withdrawalRequestId, address indexed voter, bool vote);
+	event MemberVoted(uint256 withdrawalRequestId, address indexed member, bool vote);
 	event WithdrawalRequestReadyToBeProcessed(uint256 withdrawalRequestId);
 
 
@@ -127,17 +127,37 @@ interface IIglooFiV1Vault
 	* @dev [add] address to VOTER on `AccessControlEnumerable`
 	* @param targetAddress {address}
 	*/
-	function addVoter(address targetAddress)
+	function addAdmin(address targetAddress)
 		external
 	;
 
 	/**
-	* @notice Remove a voter
+	* @notice Remove a member
 	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
 	* @dev [remove] address with VOTER on `AccessControlEnumerable`
-	* @param voter {address} Address of the voter to remove
+	* @param member {address} Address of the member to remove
 	*/	
-	function removeVoter(address voter)
+	function removeAdmin(address member)
+		external
+	;
+
+	/**
+	* @notice Assign VOTER to an address on AccessControlEnumerable
+	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
+	* @dev [add] address to VOTER on `AccessControlEnumerable`
+	* @param targetAddress {address}
+	*/
+	function addMember(address targetAddress)
+		external
+	;
+
+	/**
+	* @notice Remove a member
+	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
+	* @dev [remove] address with VOTER on `AccessControlEnumerable`
+	* @param member {address} Address of the member to remove
+	*/	
+	function removeMember(address member)
 		external
 	;
 
@@ -242,7 +262,7 @@ interface IIglooFiV1Vault
 	* @param withdrawalRequestId {uint256}
 	* @param vote {bool} true (approve) or false (deny)
 	* Emits: `WithdrawalRequestReadyToBeProcessed`
-	* Emits: `VoterVoted`
+	* Emits: `MemberVoted`
 	*/
 	function voteOnWithdrawalRequest(uint256 withdrawalRequestId, bool vote)
 		external

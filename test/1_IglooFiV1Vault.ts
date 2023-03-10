@@ -124,18 +124,24 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 		it("Should allow admin to add another admin..", async () => {
 			const [, , , , addr4] = await ethers.getSigners();
 
-			await iglooFiV1Vault.grantRole(await iglooFiV1Vault.DEFAULT_ADMIN_ROLE(), addr4.address)
+			await iglooFiV1Vault.addAdmin(addr4.address);
 			
 			expect(
-				await iglooFiV1Vault.hasRole(await iglooFiV1Vault.DEFAULT_ADMIN_ROLE(), addr4.address)
+				(await iglooFiV1VaultRecord.participant_iglooFiV1Vault_access(
+					addr4.address,
+					iglooFiV1Vault.address
+				))[0]
 			).to.be.true;
 		});
 
 		it("Should allow admin to add a contract-based admin..", async () => {
-			await iglooFiV1Vault.grantRole(await iglooFiV1Vault.DEFAULT_ADMIN_ROLE(), mockAdmin.address)
+			await iglooFiV1Vault.addAdmin(mockAdmin.address);
 			
 			expect(
-				await iglooFiV1Vault.hasRole(await iglooFiV1Vault.DEFAULT_ADMIN_ROLE(), mockAdmin.address)
+				(await iglooFiV1VaultRecord.participant_iglooFiV1Vault_access(
+					mockAdmin.address,
+					iglooFiV1Vault.address
+				))[0]
 			).to.be.true;
 		});
 	});
@@ -164,7 +170,12 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 			async () => {
 				const [owner] = await ethers.getSigners();
 
-				await iglooFiV1Vault.hasRole(await iglooFiV1Vault.DEFAULT_ADMIN_ROLE(), owner.address);
+				expect(
+					(await iglooFiV1VaultRecord.participant_iglooFiV1Vault_access(
+						owner.address,
+						iglooFiV1Vault.address
+					))[0]
+				).to.be.true;
 			}
 		);
 
@@ -219,13 +230,13 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 		});
 
 
-		describe("addVoter()", async () => {
+		describe("addMember()", async () => {
 			it(
 				"Should revert when unauthorized msg.sender calls..",
 				async () => {
 					const [, addr1, addr2] = await ethers.getSigners();
 
-					await expect(iglooFiV1Vault.connect(addr1).addVoter(addr2.address)).to.be.rejected;
+					await expect(iglooFiV1Vault.connect(addr1).addMember(addr2.address)).to.be.rejected;
 				}
 			);
 
@@ -234,23 +245,26 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 				async () => {
 					const [, addr1] = await ethers.getSigners();
 
-					await iglooFiV1Vault.addVoter(addr1.address);
+					await iglooFiV1Vault.addMember(addr1.address);
 
-					await expect(
-						await iglooFiV1Vault.hasRole(await iglooFiV1Vault.VOTER(), addr1.address)
+					expect(
+						(await iglooFiV1VaultRecord.participant_iglooFiV1Vault_access(
+							addr1.address,
+							iglooFiV1Vault.address
+						))[1]
 					).to.be.true;
 				}
 			);
 		});
 
 
-		describe("removeVoter()", async () => {
+		describe("removeMember()", async () => {
 			it(
 				"Should revert when unauthorized msg.sender calls..",
 				async () => {
 					const [, addr1] = await ethers.getSigners();
 
-					await expect(iglooFiV1Vault.connect(addr1).removeVoter(addr1.address)).to.be.rejected;
+					await expect(iglooFiV1Vault.connect(addr1).removeMember(addr1.address)).to.be.rejected;
 				}
 			);
 
@@ -259,12 +273,15 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 				async () => {
 					const [,, addr2] = await ethers.getSigners();
 
-					await iglooFiV1Vault.addVoter(addr2.address)
+					await iglooFiV1Vault.addMember(addr2.address)
 
-					await iglooFiV1Vault.removeVoter(addr2.address)
+					await iglooFiV1Vault.removeMember(addr2.address)
 
-					await expect(
-						await iglooFiV1Vault.hasRole(await iglooFiV1Vault.VOTER(), addr2.address)
+					expect(
+						(await iglooFiV1VaultRecord.participant_iglooFiV1Vault_access(
+							addr2.address,
+							iglooFiV1Vault.address
+						))[1]
 					).to.be.false;
 				}
 			);
@@ -346,7 +363,7 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 				const [, addr1, , , addr4] = await ethers.getSigners();
 				
 				await expect(
-					iglooFiV1Vault.connect(addr1).grantRole(await iglooFiV1Vault.VOTER(), addr4.address)
+					iglooFiV1Vault.connect(addr1).addMember(addr4.address)
 				).to.be.rejected;
 			});
 		});
