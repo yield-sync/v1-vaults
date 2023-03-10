@@ -39,7 +39,9 @@ const stageContracts = async () => {
 	);
 
 	// Attach the deployed vault's address
-	const iglooFiV1Vault: Contract = await IglooFiV1Vault.attach(iglooFiV1VaultFactory.iglooFiV1VaultIdToAddress(0));
+	const iglooFiV1Vault: Contract = await IglooFiV1Vault.attach(
+		await iglooFiV1VaultFactory.iglooFiV1VaultIdToAddress(0)
+	);
 
 	const signatureManager: Contract = await (await SignatureManager.deploy(mockIglooFiGovernance.address)).deployed();
 	const mockAdmin: Contract = await (await MockAdmin.deploy()).deployed();
@@ -125,13 +127,22 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 			const [, , , , addr4] = await ethers.getSigners();
 
 			await iglooFiV1Vault.addAdmin(addr4.address);
-			
+
 			expect(
 				(await iglooFiV1VaultRecord.participant_iglooFiV1Vault_access(
 					addr4.address,
 					iglooFiV1Vault.address
 				))[0]
 			).to.be.true;
+
+			expect(
+				(await iglooFiV1VaultRecord.admin_iglooFiV1Vaults(addr4.address))[0]
+			).to.be.equal(iglooFiV1Vault.address);
+
+			
+			expect(
+				(await iglooFiV1VaultRecord.iglooFiV1Vault_admins(iglooFiV1Vault.address))[1]
+			).to.be.equal(addr4.address);
 		});
 
 		it("Should allow admin to add a contract-based admin..", async () => {
@@ -143,6 +154,15 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 					iglooFiV1Vault.address
 				))[0]
 			).to.be.true;
+
+			expect(
+				(await iglooFiV1VaultRecord.admin_iglooFiV1Vaults(mockAdmin.address))[0]
+			).to.be.equal(iglooFiV1Vault.address);
+
+			
+			expect(
+				(await iglooFiV1VaultRecord.iglooFiV1Vault_admins(iglooFiV1Vault.address))[2]
+			).to.be.equal(mockAdmin.address);
 		});
 	});
 
@@ -155,13 +175,6 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 			"Should have added members correctly..",
 				async () => {
 				const [owner, addr1] = await ethers.getSigners();
-
-				console.log(
-					iglooFiV1Vault.address,
-					await iglooFiV1VaultRecord.member_iglooFiV1Vaults(addr1.address),
-					await iglooFiV1VaultRecord.iglooFiV1Vault_members(iglooFiV1Vault.address),
-					await iglooFiV1VaultRecord.participant_iglooFiV1Vault_access(addr1.address, iglooFiV1Vault.address)
-				);
 			}
 		);
 

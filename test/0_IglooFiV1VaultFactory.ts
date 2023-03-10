@@ -231,12 +231,6 @@ describe("IglooFiV1VaultFactory.sol - IglooFi V1 Vault Factory Contract", async 
 						await iglooFiV1VaultFactory.iglooFiV1VaultIdToAddress(1)
 					);
 
-					console.log(
-						await iglooFiV1VaultRecord.member_iglooFiV1Vaults(addr1.address),
-						await iglooFiV1VaultRecord.iglooFiV1Vault_members(iglooFiV1Vault.address),
-						await iglooFiV1VaultRecord.participant_iglooFiV1Vault_access(addr1.address, iglooFiV1Vault.address)
-					);
-
 					expect(await iglooFiV1Vault.signatureManager()).to.be.equal(mockSignatureManager.address);
 				}
 			);
