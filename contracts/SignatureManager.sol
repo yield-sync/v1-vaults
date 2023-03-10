@@ -111,12 +111,12 @@ contract SignatureManager is
 
 		MessageHashData memory vMHD = _vaultMessageHashData[iglooFiV1VaultAddress][messageHash];
 
-		for (uint i = 0; i < vMHD.signedVoters.length; i++) {
-			require(vMHD.signedVoters[i] != msg.sender, "Already signed");
+		for (uint i = 0; i < vMHD.signedMembers.length; i++) {
+			require(vMHD.signedMembers[i] != msg.sender, "Already signed");
 		}
 
 		if (vMHD.signer == address(0)) {
-			address[] memory initialsignedVoters;
+			address[] memory initialsignedMembers;
 
 			address recovered = ECDSA.recover(ECDSA.toEthSignedMessageHash(messageHash), signature);
 
@@ -130,14 +130,14 @@ contract SignatureManager is
 			_vaultMessageHashData[iglooFiV1VaultAddress][messageHash] = MessageHashData({
 				signature: signature,
 				signer: recovered,
-				signedVoters: initialsignedVoters,
+				signedMembers: initialsignedMembers,
 				signatureCount: 0
 			});
 
 			_vaultMessageHashes[iglooFiV1VaultAddress].push(messageHash);
 		}
 
-		_vaultMessageHashData[iglooFiV1VaultAddress][messageHash].signedVoters.push(msg.sender);
+		_vaultMessageHashData[iglooFiV1VaultAddress][messageHash].signedMembers.push(msg.sender);
 		_vaultMessageHashData[iglooFiV1VaultAddress][messageHash].signatureCount++;
 	}
 

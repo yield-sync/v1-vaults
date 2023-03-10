@@ -5,7 +5,7 @@ pragma solidity ^0.8.18;
 struct MessageHashData {
 	bytes signature;
 	address signer;
-	address[] signedVoters;
+	address[] signedMembers;
 	uint256 signatureCount;
 }
 
@@ -70,7 +70,7 @@ interface ISignatureManager
 
 	/**
 	* @notice Set pause
-	* @dev [restriction] IIglooFiGovernance AccessControlEnumerable → DEFAULT_ADMIN_ROLE
+	* @dev [restriction] IIglooFiGovernance IglooFiV1Record → DEFAULT_ADMIN_ROLE
 	* @dev [call-internal]
 	* @param pause {bool}
 	*/

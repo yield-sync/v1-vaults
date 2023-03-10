@@ -256,7 +256,7 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 			);
 
 			it(
-				"Should be able to set up VOTER role for an address..",
+				"Should be able to set up MEMBER role for an address..",
 				async () => {
 					const [, addr1] = await ethers.getSigners();
 
@@ -284,7 +284,7 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 			);
 
 			it(
-				"Should be able to remove address from VOTER role..",
+				"Should be able to remove address from MEMBER role..",
 				async () => {
 					const [,, addr2] = await ethers.getSigners();
 
@@ -370,11 +370,11 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 
 
 	/**
-	 * @dev Restriction: VOTER
+	 * @dev Restriction: MEMBER
 	*/
-	describe("Restriction: VOTER", async () => {
+	describe("Restriction: MEMBER", async () => {
 		describe("AccessControlEnumerable", async () => {
-			it("Should NOT allow voter to add another voter..", async () => {
+			it("Should NOT allow member to add another member..", async () => {
 				const [, addr1, , , addr4] = await ethers.getSigners();
 				
 				await expect(
@@ -488,7 +488,7 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 					);
 
 					it(
-						"Should be able vote on WithdrawalRequest and add voter to _withdrawalRequest[].votedVoters..",
+						"Should be able vote on WithdrawalRequest and add member to _withdrawalRequest[].votedMembers..",
 						async () => {
 							const [, addr1] = await ethers.getSigners();
 							
@@ -636,7 +636,7 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 				*/
 				describe("voteOnWithdrawalRequest", async () => {
 					it(
-						"Should be able vote on WithdrawalRequest and add voter to _withdrawalRequest[].votedVoters..",
+						"Should be able vote on WithdrawalRequest and add member to _withdrawalRequest[].votedMembers..",
 						async () => {
 							const [, addr1] = await ethers.getSigners();
 							
@@ -739,7 +739,7 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 				*/
 				describe("voteOnWithdrawalRequest", async () => {
 					it(
-						"Should be able vote on WithdrawalRequest and add voter to _withdrawalRequest[].votedVoters..",
+						"Should be able vote on WithdrawalRequest and add member to _withdrawalRequest[].votedMembers..",
 						async () => {
 							const [, addr1] = await ethers.getSigners();
 							
@@ -793,7 +793,7 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 			*/
 			describe("voteOnWithdrawalRequest()", async () => {
 				it(
-					"Should be able vote on WithdrawalRequest and add voter to _withdrawalRequest[].votedVoters..",
+					"Should be able vote on WithdrawalRequest and add member to _withdrawalRequest[].votedMembers..",
 					async () => {
 						const [, addr1, addr2] = await ethers.getSigners();
 						

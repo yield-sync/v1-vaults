@@ -84,7 +84,7 @@ contract IglooFiV1VaultRecord is
 	}
 
 
-/// @inheritdoc IIglooFiV1VaultRecord
+	/// @inheritdoc IIglooFiV1VaultRecord
 	function addAdmin(address _iglooFiV1Vault, address admin)
 		public
 		override

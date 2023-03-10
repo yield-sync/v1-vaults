@@ -71,8 +71,8 @@ describe("IglooFiV1VaultRecord.sol - IglooFi V1 Vault Record Contract", async ()
 		mockAdmin = stagedContracts.mockAdmin;
 		signatureManager = stagedContracts.signatureManager;
 
-		await iglooFiV1Vault.addVoter(addr1.address);
-		await iglooFiV1Vault.addVoter(addr2.address);
+		await iglooFiV1Vault.addMember(addr1.address);
+		await iglooFiV1Vault.addMember(addr2.address);
 
 		await iglooFiV1Vault.updateSignatureManager(signatureManager.address);
 	});

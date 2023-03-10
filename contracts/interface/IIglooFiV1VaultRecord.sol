@@ -79,7 +79,7 @@ interface IIglooFiV1VaultRecord
 	* @notice Add Admin
 	* @dev [!restriction]
 	* @dev [update] `_admin_iglooFiV1Vaults`
-	*      [update] `_iglooFiV1Vault_members`
+	*      [update] `_iglooFiV1Vault_admins`
 	*      [update] `participant_iglooFiV1Vault_access`
 	* @param _iglooFiV1Vault {address}
 	* @param admin {address}
@@ -91,8 +91,8 @@ interface IIglooFiV1VaultRecord
 	/**
 	* @notice Remove Admin
 	* @dev [!restriction]
-	* @dev [update] `iglooFiV1VaultVoters`
-	*      [update] `voterIglooFiV1Vaults`
+	* @dev [update] `_admin_iglooFiV1Vaults`
+	*      [update] `_iglooFiV1Vault_admins`
 	*      [update] `participant_iglooFiV1Vault_access`
 	* @param _iglooFiV1Vault {address}
 	* @param admin {address}
@@ -118,8 +118,8 @@ interface IIglooFiV1VaultRecord
 	/**
 	* @notice Remove Member
 	* @dev [!restriction]
-	* @dev [update] `iglooFiV1VaultVoters`
-	*      [update] `voterIglooFiV1Vaults`
+	* @dev [update] `_member_iglooFiV1Vaults`
+	*      [update] `_iglooFiV1Vault_members`
 	*      [update] `participant_iglooFiV1Vault_access`
 	* @param _iglooFiV1Vault {address}
 	* @param member {address}

@@ -131,7 +131,7 @@ describe("SignatureManager.sol - Signature Manager Contract", async () => {
 	 * @notice [hardhat][ERC-191] Signing a Digest Hash
 	*/
 	describe("[hardhat][ERC-191] Signing a Digest Hash", async () => {
-		it("Should not allow signing by anyone but wallet with VOTER role..", async () => {
+		it("Should not allow signing by anyone but wallet with MEMBER role..", async () => {
 			const [, , , addr3] = await ethers.getSigners();
 
 			const messageHash: Bytes = ethers.utils.id("Hello, world!");
@@ -161,7 +161,7 @@ describe("SignatureManager.sol - Signature Manager Contract", async () => {
 			expect(await mockDapp.recoverSigner(messageHash, v, r, s)).to.equal(addr3.address);
 		});
 
-		it("Should allow a VOTER to sign a bytes32 messageHash and create a vaultMessageHashData value..", async () => {
+		it("Should allow a MEMBER to sign a bytes32 messageHash and create a vaultMessageHashData value..", async () => {
 			const [, addr1] = await ethers.getSigners();
 
 			const messageHash: Bytes = ethers.utils.id("Hello, world!");

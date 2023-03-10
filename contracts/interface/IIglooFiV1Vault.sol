@@ -122,9 +122,9 @@ interface IIglooFiV1Vault
 
 
 	/**
-	* @notice Assign VOTER to an address on AccessControlEnumerable
-	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
-	* @dev [add] address to VOTER on `AccessControlEnumerable`
+	* @notice Assign MEMBER to an address on IglooFiV1Record
+	* @dev [restriction] IglooFiV1Record → ADMIN
+	* @dev [add] address to MEMBER on `IglooFiV1Record`
 	* @param targetAddress {address}
 	*/
 	function addAdmin(address targetAddress)
@@ -133,8 +133,8 @@ interface IIglooFiV1Vault
 
 	/**
 	* @notice Remove a member
-	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
-	* @dev [remove] address with VOTER on `AccessControlEnumerable`
+	* @dev [restriction] IglooFiV1Record → ADMIN
+	* @dev [remove] address with MEMBER on `IglooFiV1Record`
 	* @param member {address} Address of the member to remove
 	*/	
 	function removeAdmin(address member)
@@ -142,9 +142,9 @@ interface IIglooFiV1Vault
 	;
 
 	/**
-	* @notice Assign VOTER to an address on AccessControlEnumerable
-	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
-	* @dev [add] address to VOTER on `AccessControlEnumerable`
+	* @notice Assign MEMBER to an address on IglooFiV1Record
+	* @dev [restriction] IglooFiV1Record → ADMIN
+	* @dev [add] address to MEMBER on `IglooFiV1Record`
 	* @param targetAddress {address}
 	*/
 	function addMember(address targetAddress)
@@ -153,8 +153,8 @@ interface IIglooFiV1Vault
 
 	/**
 	* @notice Remove a member
-	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
-	* @dev [remove] address with VOTER on `AccessControlEnumerable`
+	* @dev [restriction] IglooFiV1Record → ADMIN
+	* @dev [remove] address with MEMBER on `IglooFiV1Record`
 	* @param member {address} Address of the member to remove
 	*/	
 	function removeMember(address member)
@@ -163,7 +163,7 @@ interface IIglooFiV1Vault
 
 	/**
 	* @notice Delete withdrawalRequest & all associated values
-	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
+	* @dev [restriction] IglooFiV1Record → ADMIN
 	* @dev [call][internal] {_deleteWithdrawalRequest}
 	* @param withdrawalRequestId {uint256}
 	* Emits: `DeletedWithdrawalRequest`
@@ -174,7 +174,7 @@ interface IIglooFiV1Vault
 
 	/**
 	* @notice Update withdrawalRequest
-	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
+	* @dev [restriction] IglooFiV1Record → ADMIN
 	* @dev [update] `_withdrawalRequest`
 	* @param withdrawalRequestId {uint256}
 	* @param __withdrawalRequest {WithdrawalRequest}
@@ -186,7 +186,7 @@ interface IIglooFiV1Vault
 
 	/**
 	* @notice Update Against Vote Count Required
-	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
+	* @dev [restriction] IglooFiV1Record → ADMIN
 	* @dev [update] `againstVoteCountRequired`
 	* @param _againstVoteCountRequired {uint256}
 	* Emits: `UpdatedAgainstVoteCountRequired`
@@ -197,7 +197,7 @@ interface IIglooFiV1Vault
 
 	/**
 	* @notice Update For Vote Count Required
-	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
+	* @dev [restriction] IglooFiV1Record → ADMIN
 	* @dev [update] `forVoteCountRequired`
 	* @param _forVoteCountRequired {uint256}
 	* Emits: `UpdatedRequiredVoteCount`
@@ -208,7 +208,7 @@ interface IIglooFiV1Vault
 
 	/**
 	* @notice Update Signature Manager Contract
-	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
+	* @dev [restriction] IglooFiV1Record → ADMIN
 	* @dev [update] `signatureManager`
 	* @param _signatureManager {address}
 	*/
@@ -218,7 +218,7 @@ interface IIglooFiV1Vault
 
 	/**
 	* @notice Update `withdrawalDelaySeconds`
-	* @dev [restriction] AccessControlEnumerable → DEFAULT_ADMIN_ROLE
+	* @dev [restriction] IglooFiV1Record → ADMIN
 	* @dev [update] `withdrawalDelaySeconds` to new value
 	* @param _withdrawalDelaySeconds {uint256}
 	* Emits: `UpdatedWithdrawalDelaySeconds`
@@ -230,7 +230,7 @@ interface IIglooFiV1Vault
 
 	/**
 	* @notice Create a withdrawalRequest
-	* @dev [restriction] AccessControlEnumerable → VOTER
+	* @dev [restriction] IglooFiV1Record → MEMBER
 	* @dev [increment] `_withdrawalRequestId`
 	*      [add] `_withdrawalRequest` value
 	*      [push-into] `_withdrawalRequestIds`
@@ -257,7 +257,7 @@ interface IIglooFiV1Vault
 
 	/**
 	* @notice Vote on withdrawalRequest
-	* @dev [restriction] AccessControlEnumerable → VOTER
+	* @dev [restriction] IglooFiV1Record → MEMBER
 	* @dev [update] `_withdrawalRequest`
 	* @param withdrawalRequestId {uint256}
 	* @param vote {bool} true (approve) or false (deny)
@@ -270,7 +270,7 @@ interface IIglooFiV1Vault
 
 	/**
 	* @notice Process withdrawalRequest with given `withdrawalRequestId`
-	* @dev [restriction] AccessControlEnumerable → VOTER
+	* @dev [restriction] IglooFiV1Record → MEMBER
 	* @dev [erc20-transfer]
 	*      [decrement] `_tokenBalance`
 	*      [call][internal] `_deleteWithdrawalRequest`
