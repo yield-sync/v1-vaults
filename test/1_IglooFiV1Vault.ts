@@ -87,10 +87,6 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 		mockIglooFiGovernance = stagedContracts.mockIglooFiGovernance;
 	});
 
-
-	/**
-	* @dev Recieving tokens & ethers
-	*/
 	describe("Recieving tokens & ethers", async () => {
 		it("Should be able to recieve ether..", async () => {
 			const [, addr1] = await ethers.getSigners();
@@ -120,11 +116,28 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 		});
 	});
 
-
-	/**
-	* @dev Constructor Initialized Values
-	*/
 	describe("Constructor Initialized Values", async () => {
+		it(
+			"Should intialize againstVoteCountRequired as 2..",
+			async () => {
+				expect(await iglooFiV1Vault.againstVoteCountRequired()).to.equal(2);
+			}
+		);
+
+		it(
+			"Should intialize forVoteCountRequired as 2..",
+			async () => {
+				expect(await iglooFiV1Vault.forVoteCountRequired()).to.equal(2);
+			}
+		);
+
+		it(
+			"Should initialize withdrawalDelaySeconds 5..",
+			async () => {
+				expect(await iglooFiV1Vault.withdrawalDelaySeconds()).to.equal(5);
+			}
+		);
+
 		it(
 			"Should have admin set properly..",
 			async () => {
@@ -150,7 +163,7 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 		it(
 			"Should have added members correctly..",
 				async () => {
-				const [owner, addr1] = await ethers.getSigners();
+				const [, addr1] = await ethers.getSigners();
 
 				expect(
 					(await iglooFiV1VaultRecord.participant_iglooFiV1Vault_access(
@@ -166,27 +179,6 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 				expect(
 					(await iglooFiV1VaultRecord.member_iglooFiV1Vaults(addr1.address))[0]
 				).to.be.equal(iglooFiV1Vault.address);
-			}
-		);
-
-		it(
-			"Should intialize againstVoteCountRequired as 2..",
-			async () => {
-				expect(await iglooFiV1Vault.againstVoteCountRequired()).to.equal(2);
-			}
-		);
-
-		it(
-			"Should intialize forVoteCountRequired as 2..",
-			async () => {
-				expect(await iglooFiV1Vault.forVoteCountRequired()).to.equal(2);
-			}
-		);
-
-		it(
-			"Should initialize withdrawalDelaySeconds 5..",
-			async () => {
-				expect(await iglooFiV1Vault.withdrawalDelaySeconds()).to.equal(5);
 			}
 		);
 	});
