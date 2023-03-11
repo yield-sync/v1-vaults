@@ -93,18 +93,15 @@ describe("MockAdmin.sol - Mock Admin Contract", async () => {
 	});
 
 	/**
-	* @dev AccessControlEnumerable
-	*/
-	describe("AccessControlEnumerable", async () => {
-		it("Should allow admin to add a contract-based admin..", async () => {
-			await iglooFiV1Vault.addAdmin(mockAdmin.address);
-		});
-	});
-
-		/**
 	 * @dev Restriction: DEFAULT_ADMIN_ROLE
 	*/
 	describe("Restriction: DEFAULT_ADMIN_ROLE", async () => {
+		describe("addAdmin()", async () => {
+			it("Should allow admin to add a contract-based admin..", async () => {
+				await iglooFiV1Vault.addAdmin(mockAdmin.address);
+			});
+		});
+
 		/**
 		 * @dev deleteWithdrawalRequest
 		*/

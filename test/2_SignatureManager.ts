@@ -89,7 +89,7 @@ describe("SignatureManager.sol - Signature Manager Contract", async () => {
 		/**
 		* @dev updatePause
 		*/
-		describe("updatePause", async () => {
+		describe("updatePause()", async () => {
 			it(
 				"Should revert when unauthorized msg.sender calls..",
 				async () => {
