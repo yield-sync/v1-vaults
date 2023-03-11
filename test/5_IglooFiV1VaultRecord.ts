@@ -50,7 +50,7 @@ const stageContracts = async () => {
 };
 
 
-describe("IglooFiV1VaultRecord.sol - IglooFi V1 Vault Record Contract", async () => {
+describe("[5] IglooFiV1VaultRecord.sol - IglooFi V1 Vault Record Contract", async () => {
 	let iglooFiV1Vault: Contract;
 	let iglooFiV1VaultFactory: Contract;
 	let iglooFiV1VaultRecord: Contract;

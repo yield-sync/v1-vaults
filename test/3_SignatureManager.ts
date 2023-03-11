@@ -58,7 +58,7 @@ const stageContracts = async () => {
 };
 
 
-describe("SignatureManager.sol - Signature Manager Contract", async () => {
+describe("[3] SignatureManager.sol - Signature Manager Contract", async () => {
 	let iglooFiV1Vault: Contract;
 	let iglooFiV1VaultFactory: Contract;
 	let iglooFiV1VaultRecord: Contract;

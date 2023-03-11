@@ -4,7 +4,7 @@ import { Contract, ContractFactory } from "ethers";
 const { ethers } = require("hardhat");
 
 
-describe("IglooFiV1VaultFactory.sol - IglooFi V1 Vault Factory Contract", async () => {
+describe("[0] IglooFiV1VaultFactory.sol - IglooFi V1 Vault Factory Contract", async () => {
 	let iglooFiV1VaultFactory: Contract;
 	let iglooFiV1VaultRecord: Contract;
 	let mockIglooFiGovernance: Contract;
