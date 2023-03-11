@@ -144,7 +144,7 @@ interface IIglooFiV1VaultFactory {
 	;
 
 	/**
-	* @notice Transfer Ether to 
+	* @notice Transfer Ether to
 	* @dev [restriction] IIglooFiGovernance AccessControlEnumerable → DEFAULT_ADMIN_ROLE
 	* @dev [transfer]
 	* @param to {uint256}

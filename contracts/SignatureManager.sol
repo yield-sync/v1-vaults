@@ -23,7 +23,7 @@ contract SignatureManager is
 	// [address]
 	address public override iglooFiGovernance;
 	address public iglooFiV1VaultRecord;
-	
+
 	// [bytes4]
 	bytes4 public constant ERC1271_MAGIC_VALUE = 0x1626ba7e;
 
@@ -84,7 +84,7 @@ contract SignatureManager is
 	{
 		return _vaultMessageHashes[iglooFiV1VaultAddress];
 	}
-	
+
 	/// @inheritdoc ISignatureManager
 	function vaultMessageHashData(address iglooFiV1VaultAddress, bytes32 messageHash)
 		public
@@ -95,7 +95,7 @@ contract SignatureManager is
 		return _vaultMessageHashData[iglooFiV1VaultAddress][messageHash];
 	}
 
-	
+
 	/// @inheritdoc ISignatureManager
 	function signMessageHash(address iglooFiV1VaultAddress, bytes32 messageHash, bytes memory signature)
 		public

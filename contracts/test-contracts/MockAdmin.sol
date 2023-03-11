@@ -16,7 +16,7 @@ contract MockAdmin is Ownable {
 			).creator != address(0),
 			"No WithdrawalRequest found"
 		);
-		
+
 		_;
 	}
 

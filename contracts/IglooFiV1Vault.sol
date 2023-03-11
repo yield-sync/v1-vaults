@@ -57,7 +57,7 @@ contract IglooFiV1Vault is
 		againstVoteCountRequired = _againstVoteCountRequired;
 		forVoteCountRequired = _forVoteCountRequired;
 		withdrawalDelaySeconds = _withdrawalDelaySeconds;
-		
+
 		_withdrawalRequestIdTracker = 0;
 	}
 
@@ -340,7 +340,7 @@ contract IglooFiV1Vault is
 		{
 			require(_withdrawalRequest[withdrawalRequestId].votedMembers[i] != msg.sender, "Already voted");
 		}
-		
+
 		if (vote)
 		{
 			_withdrawalRequest[withdrawalRequestId].forVoteCount++;
@@ -409,7 +409,7 @@ contract IglooFiV1Vault is
 			{
 				// [transfer]
 				(bool success, ) = wR.to.call{value: wR.amount}("");
-				
+
 				require(success, "Unable to send value");
 			}
 

@@ -148,7 +148,7 @@ interface IIglooFiV1Vault
 	* @dev [restriction] IglooFiV1Record → admin
 	* @dev [remove] address with admin on `IglooFiV1Record`
 	* @param member {address} Address of the member to remove
-	*/	
+	*/
 	function removeAdmin(address member)
 		external
 	;
@@ -168,7 +168,7 @@ interface IIglooFiV1Vault
 	* @dev [restriction] IglooFiV1Record → admin
 	* @dev [remove] address with member on `IglooFiV1Record`
 	* @param member {address} Address of the member to remove
-	*/	
+	*/
 	function removeMember(address member)
 		external
 	;

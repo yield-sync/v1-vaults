@@ -28,7 +28,7 @@ contract MockDapp is
 	function recoverSigner(bytes32 hash, uint8 v, bytes32 r, bytes32 s) public pure override returns (address) {
 		return ECDSA.recover(ECDSA.toEthSignedMessageHash(hash), v, r, s);
 	}
-	
+
 	function getDomainSeperator() public view override returns (bytes32) {
 		return _domainSeparatorV4();
 	}

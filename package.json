@@ -1,24 +1,24 @@
 {
-  "name": "igloo-fi-v1-vaults",
-  "version": "0.0.1",
-  "description": "",
-  "main": "scripts/deploy.js",
-  "scripts": {},
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/igloo-fi/v1-vaults.git"
-  },
-  "keywords": [],
-  "author": "Aleem Ahmed",
-  "license": "ISC",
-  "devDependencies": {
-    "@igloo-fi/v1-sdk": "^0.0.17",
-    "@nomicfoundation/hardhat-chai-matchers": "^1.0.5",
-    "@nomicfoundation/hardhat-toolbox": "^2.0.1",
-    "@nomiclabs/hardhat-solhint": "^3.0.0",
-    "@openzeppelin/contracts": "^4.8.1",
-    "@openzeppelin/contracts-upgradeable": "^4.8.1",
-    "dotenv": "^16.0.3",
-    "hardhat": "^2.12.6"
-  }
+	"name": "igloo-fi-v1-vaults",
+	"version": "0.0.1",
+	"description": "",
+	"main": "scripts/deploy.js",
+	"scripts": {},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/igloo-fi/v1-vaults.git"
+	},
+	"keywords": [],
+	"author": "Aleem Ahmed",
+	"license": "ISC",
+	"devDependencies": {
+		"@igloo-fi/v1-sdk": "^0.0.17",
+		"@nomicfoundation/hardhat-chai-matchers": "^1.0.5",
+		"@nomicfoundation/hardhat-toolbox": "^2.0.1",
+		"@nomiclabs/hardhat-solhint": "^3.0.0",
+		"@openzeppelin/contracts": "^4.8.1",
+		"@openzeppelin/contracts-upgradeable": "^4.8.1",
+		"dotenv": "^16.0.3",
+		"hardhat": "^2.12.6"
+	}
 }
