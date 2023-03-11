@@ -827,7 +827,6 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 			});
 		});
 
-
 		describe("withdrawalRequest Against", async () => {
 			/**
 			 * @dev voteOnWithdrawalRequest
@@ -888,7 +887,6 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 				});
 			});
 		});
-
 
 		describe("openWithdrawalRequestIds()", async () => {
 			it(
