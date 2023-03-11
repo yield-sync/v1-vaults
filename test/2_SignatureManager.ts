@@ -8,7 +8,7 @@ const chainId: number = 31337;
 
 
 const stageContracts = async () => {
-	const [owner, addr1] = await ethers.getSigners();
+	const [owner, addr1, addr2] = await ethers.getSigners();
 
 	const IglooFiV1Vault: ContractFactory = await ethers.getContractFactory("IglooFiV1Vault");
 	const IglooFiV1VaultFactory: ContractFactory = await ethers.getContractFactory("IglooFiV1VaultFactory");
@@ -29,7 +29,7 @@ const stageContracts = async () => {
 	// Deploy a vault
 	await iglooFiV1VaultFactory.deployIglooFiV1Vault(
 		owner.address,
-		[addr1.address],
+		[addr1.address, addr2.address],
 		ethers.constants.AddressZero,
 		true,
 		2,
@@ -69,8 +69,6 @@ describe("SignatureManager.sol - Signature Manager Contract", async () => {
 
 
 	before("[before] Set up contracts..", async () => {
-		const [, addr1, addr2] = await ethers.getSigners();
-
 		const stagedContracts = await stageContracts();
 
 		iglooFiV1Vault = stagedContracts.iglooFiV1Vault;
@@ -80,9 +78,6 @@ describe("SignatureManager.sol - Signature Manager Contract", async () => {
 		mockDapp = stagedContracts.mockDapp;
 		mockIglooFiGovernance = stagedContracts.mockIglooFiGovernance;
 		signatureManager = stagedContracts.signatureManager;
-
-		await iglooFiV1Vault.addMember(addr1.address);
-		await iglooFiV1Vault.addMember(addr2.address);
 
 		await iglooFiV1Vault.updateSignatureManager(signatureManager.address);
 	});

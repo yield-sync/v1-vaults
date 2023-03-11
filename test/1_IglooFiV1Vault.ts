@@ -196,29 +196,6 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 	 * @dev Restriction: DEFAULT_ADMIN_ROLE
 	*/
 	describe("Restriction: DEFAULT_ADMIN_ROLE", async () => {
-		describe("updateSignatureManager()", async () => {
-			it(
-				"Should revert when unauthorized msg.sender calls..",
-				async () => {
-					const [, addr1] = await ethers.getSigners();
-
-					await expect(
-						iglooFiV1Vault.connect(addr1).updateSignatureManager(addr1.address)
-					).to.be.rejected;
-				}
-			);
-
-			it(
-				"Should be able to set a signature manager contract..",
-				async () => {
-
-					await iglooFiV1Vault.updateSignatureManager(signatureManager.address);
-
-					expect(await iglooFiV1Vault.signatureManager()).to.be.equal(signatureManager.address);
-				}
-			);
-		});
-
 		describe("addAdmin()", async () => {
 			it("Should allow admin to add another admin..", async () => {
 				const [, , , , addr4] = await ethers.getSigners();
@@ -287,13 +264,6 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 				async () => {
 					const [, , addr2] = await ethers.getSigners();
 
-					console.log(
-						addr2.address,
-						await iglooFiV1VaultRecord.participant_iglooFiV1Vault_access(iglooFiV1Vault.address, addr2.address),
-						await iglooFiV1VaultRecord.member_iglooFiV1Vaults(addr2.address),
-						await iglooFiV1VaultRecord.iglooFiV1Vault_members(iglooFiV1Vault.address)
-					)
-
 					await iglooFiV1Vault.addMember(addr2.address);
 
 					expect(
@@ -344,6 +314,28 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 			);
 		});
 
+		describe("updateSignatureManager()", async () => {
+			it(
+				"Should revert when unauthorized msg.sender calls..",
+				async () => {
+					const [, addr1] = await ethers.getSigners();
+
+					await expect(
+						iglooFiV1Vault.connect(addr1).updateSignatureManager(addr1.address)
+					).to.be.rejected;
+				}
+			);
+
+			it(
+				"Should be able to set a signature manager contract..",
+				async () => {
+
+					await iglooFiV1Vault.updateSignatureManager(signatureManager.address);
+
+					expect(await iglooFiV1Vault.signatureManager()).to.be.equal(signatureManager.address);
+				}
+			);
+		});
 
 		describe("updateAgainstVoteCountRequired()", async () => {
 			it(
