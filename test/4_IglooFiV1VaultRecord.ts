@@ -13,14 +13,14 @@ const stageContracts = async () => {
 	const MockIglooFiGovernance: ContractFactory = await ethers.getContractFactory("MockIglooFiGovernance");
 	const MockAdmin: ContractFactory = await ethers.getContractFactory("MockAdmin");
 	const SignatureManager: ContractFactory = await ethers.getContractFactory("SignatureManager");
-	
+
 	// Deploy
 	const mockIglooFiGovernance: Contract = await (await MockIglooFiGovernance.deploy()).deployed();
 	const iglooFiV1VaultRecord: Contract = await (await IglooFiV1VaultRecord.deploy()).deployed();
 	const iglooFiV1VaultFactory: Contract = await (
 		await IglooFiV1VaultFactory.deploy(mockIglooFiGovernance.address, iglooFiV1VaultRecord.address)
 	).deployed();
-	
+
 	// Deploy a vault
 	await iglooFiV1VaultFactory.deployIglooFiV1Vault(
 		owner.address,

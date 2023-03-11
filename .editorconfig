@@ -3,8 +3,14 @@
 # top-most EditorConfig file
 root = true
 
+[*.{sol,ts,yul}]
+charset = utf-8
+insert_final_newline = true
+indent_size = 4
+indent_style = tab
+trim_trailing_whitespace = true
 
-[*.{sol,yul,package.json,.travis.yml}]
+[{package.json,.travis.yml}]
 charset = utf-8
 insert_final_newline = true
 indent_size = 4

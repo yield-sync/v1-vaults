@@ -17,7 +17,7 @@ const stageContracts = async () => {
 	const MockDapp: ContractFactory = await ethers.getContractFactory("MockDapp");
 	const MockIglooFiGovernance: ContractFactory = await ethers.getContractFactory("MockIglooFiGovernance");
 	const SignatureManager: ContractFactory = await ethers.getContractFactory("SignatureManager");
-	
+
 	// Deploy
 	const mockIglooFiGovernance: Contract = await (await MockIglooFiGovernance.deploy()).deployed();
 	const iglooFiV1VaultRecord: Contract = await (await IglooFiV1VaultRecord.deploy()).deployed();
@@ -25,7 +25,7 @@ const stageContracts = async () => {
 		await IglooFiV1VaultFactory.deploy(mockIglooFiGovernance.address, iglooFiV1VaultRecord.address)
 	).deployed();
 	const mockDapp: Contract = await (await MockDapp.deploy()).deployed();
-	
+
 	// Deploy a vault
 	await iglooFiV1VaultFactory.deployIglooFiV1Vault(
 		owner.address,
@@ -108,7 +108,7 @@ describe("SignatureManager.sol - Signature Manager Contract", async () => {
 				"Should be able to set true..",
 				async () => {
 					await signatureManager.updatePause(false);
-					
+
 					expect(await signatureManager.paused()).to.be.false;
 				}
 			);
@@ -117,9 +117,9 @@ describe("SignatureManager.sol - Signature Manager Contract", async () => {
 				"Should be able to set false..",
 				async () => {
 					await signatureManager.updatePause(true);
-					
+
 					expect(await signatureManager.paused()).to.be.true;
-				
+
 					// Unpause for the rest of the test
 					await signatureManager.updatePause(false);
 				}
@@ -180,7 +180,7 @@ describe("SignatureManager.sol - Signature Manager Contract", async () => {
 				iglooFiV1Vault.address,
 				retrievedBytes32[0]
 			);
-			
+
 			expect(messageHashData[0]).to.be.equal(signature);
 			expect(messageHashData[1]).to.be.equal(addr1.address);
 			expect(messageHashData[2][0]).to.be.equal(addr1.address);
@@ -216,7 +216,7 @@ describe("SignatureManager.sol - Signature Manager Contract", async () => {
 				iglooFiV1Vault.address,
 				retrievedBytes32[0]
 			);
-			
+
 			expect(
 				await iglooFiV1Vault.isValidSignature(retrievedBytes32[0], messageHashData[0])
 			).to.be.equal("0x00000000");
@@ -232,14 +232,14 @@ describe("SignatureManager.sol - Signature Manager Contract", async () => {
 				iglooFiV1Vault.address,
 				retrievedBytes32[0]
 			);
-				
+
 			// [contract]
 			await signatureManager.connect(addr2).signMessageHash(
 				iglooFiV1Vault.address,
 				retrievedBytes32[0],
 				messageHashData[0]
 			);
-			
+
 			expect(
 				await iglooFiV1Vault.isValidSignature(retrievedBytes32[0], messageHashData[0])
 			).to.be.equal("0x1626ba7e");
@@ -276,23 +276,23 @@ describe("SignatureManager.sol - Signature Manager Contract", async () => {
 					points: 1
 				}
 			};
-			
+
 			/**
 			 * @dev To get the payload use the line below
 			 * ethers.utils._TypedDataEncoder.getPayload(msg.domain, msg.types, msg.value);
 			*/
-			
+
 			// [ethers] Get hash
 			const messageHash: Bytes = ethers.utils._TypedDataEncoder.hash(
 				message.domain,
 				message.types,
 				message.value
 			);
-			
+
 			// Test for onchain generated hash
 			expect(
 				await mockDapp.hashTypedDataV4(await mockDapp.getStructHash(ethers.constants.AddressZero, 1))
-			).to.be.equal(messageHash);		
+			).to.be.equal(messageHash);
 
 			// [hardhat] Sign Message
 			const signature: Signature = await addr1.signMessage(ethers.utils.arrayify(messageHash));
@@ -309,7 +309,7 @@ describe("SignatureManager.sol - Signature Manager Contract", async () => {
 				iglooFiV1Vault.address,
 				retrievedBytes32[1]
 			);
-			
+
 			expect(messageHashData[0]).to.be.equal(signature);
 			expect(messageHashData[1]).to.be.equal(addr1.address);
 			expect(messageHashData[2][0]).to.be.equal(addr1.address);
@@ -324,7 +324,7 @@ describe("SignatureManager.sol - Signature Manager Contract", async () => {
 				iglooFiV1Vault.address,
 				retrievedBytes32[0]
 			);
-			
+
 			expect(
 				await iglooFiV1Vault.isValidSignature(retrievedBytes32[0], messageHashData[0])
 			).to.be.equal("0x00000000");

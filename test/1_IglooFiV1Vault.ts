@@ -19,13 +19,13 @@ const stageContracts = async () => {
 	const MockERC721: ContractFactory = await ethers.getContractFactory("MockERC721");
 	const MockIglooFiGovernance: ContractFactory = await ethers.getContractFactory("MockIglooFiGovernance");
 	const SignatureManager: ContractFactory = await ethers.getContractFactory("SignatureManager");
-	
+
 	const mockIglooFiGovernance: Contract = await (await MockIglooFiGovernance.deploy()).deployed();
 	const iglooFiV1VaultRecord: Contract = await (await IglooFiV1VaultRecord.deploy()).deployed();
 	const iglooFiV1VaultFactory: Contract = await (
 		await IglooFiV1VaultFactory.deploy(mockIglooFiGovernance.address, iglooFiV1VaultRecord.address)
 	).deployed();
-	
+
 	// Deploy a vault
 	await iglooFiV1VaultFactory.deployIglooFiV1Vault(
 		owner.address,
@@ -76,7 +76,7 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 
 	before("[before] Set up contracts..", async () => {
 		const stagedContracts = await stageContracts();
-		
+
 		iglooFiV1Vault = stagedContracts.iglooFiV1Vault
 		iglooFiV1VaultFactory = stagedContracts.iglooFiV1VaultFactory
 		iglooFiV1VaultRecord = stagedContracts.iglooFiV1VaultRecord
@@ -141,7 +141,7 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 				(await iglooFiV1VaultRecord.admin_iglooFiV1Vaults(addr4.address))[0]
 			).to.be.equal(iglooFiV1Vault.address);
 
-			
+
 			expect(
 				(await iglooFiV1VaultRecord.iglooFiV1Vault_admins(iglooFiV1Vault.address))[1]
 			).to.be.equal(addr4.address);
@@ -149,7 +149,7 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 
 		it("Should allow admin to add a contract-based admin..", async () => {
 			await iglooFiV1Vault.addAdmin(mockAdmin.address);
-			
+
 			expect(
 				(await iglooFiV1VaultRecord.participant_iglooFiV1Vault_access(
 					mockAdmin.address,
@@ -161,7 +161,7 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 				(await iglooFiV1VaultRecord.admin_iglooFiV1Vaults(mockAdmin.address))[0]
 			).to.be.equal(iglooFiV1Vault.address);
 
-			
+
 			expect(
 				(await iglooFiV1VaultRecord.iglooFiV1Vault_admins(iglooFiV1Vault.address))[2]
 			).to.be.equal(mockAdmin.address);
@@ -238,7 +238,7 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 				async () => {
 
 					await iglooFiV1Vault.updateSignatureManager(signatureManager.address);
-					
+
 					expect(await iglooFiV1Vault.signatureManager()).to.be.equal(signatureManager.address);
 				}
 			);
@@ -308,7 +308,7 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 				"Should revert when unauthorized msg.sender calls..",
 				async () => {
 					const [, addr1] = await ethers.getSigners();
-					
+
 					await expect(iglooFiV1Vault.connect(addr1).updateAgainstVoteCountRequired(1)).to.be.rejected;
 				}
 			);
@@ -329,7 +329,7 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 				"Should revert when unauthorized msg.sender calls..",
 				async () => {
 					const [, addr1] = await ethers.getSigners();
-					
+
 					await expect(iglooFiV1Vault.connect(addr1).updateForVoteCountRequired(1)).to.be.rejected;
 				}
 			);
@@ -376,7 +376,7 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 		describe("AccessControlEnumerable", async () => {
 			it("Should NOT allow member to add another member..", async () => {
 				const [, addr1, , , addr4] = await ethers.getSigners();
-				
+
 				await expect(
 					iglooFiV1Vault.connect(addr1).addMember(addr4.address)
 				).to.be.rejected;
@@ -397,7 +397,7 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 						"Should revert when unauthorized msg.sender calls..",
 						async () => {
 							const [, , addr2] = await ethers.getSigners();
-							
+
 							await expect(
 								iglooFiV1Vault.connect(addr2).createWithdrawalRequest(
 									true,
@@ -416,7 +416,7 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 						"Should revert when amount is set to 0 or less..",
 						async () => {
 							const [, addr1] = await ethers.getSigners();
-							
+
 							await expect(
 								iglooFiV1Vault.connect(addr1).createWithdrawalRequest(
 									true,
@@ -435,7 +435,7 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 						"Should be able to create a WithdrawalRequest for Ether..",
 						async () => {
 							const [, addr1, addr2] = await ethers.getSigners();
-							
+
 							await iglooFiV1Vault.connect(addr1).createWithdrawalRequest(
 								true,
 								false,
@@ -445,9 +445,9 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 								ethers.utils.parseEther(".5"),
 								0
 							);
-							
+
 							const createdWithdrawalRequest: any = await iglooFiV1Vault.withdrawalRequest(0);
-							
+
 							expect(createdWithdrawalRequest[0]).to.be.true;
 							expect(createdWithdrawalRequest[1]).to.be.false;
 							expect(createdWithdrawalRequest[2]).to.be.false;
@@ -482,7 +482,7 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 						"Should revert when unauthorized msg.sender calls..",
 						async () => {
 							const [,, addr2] = await ethers.getSigners();
-							
+
 							await expect(iglooFiV1Vault.connect(addr2).voteOnWithdrawalRequest(0, true)).to.be.rejected;
 						}
 					);
@@ -491,7 +491,7 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 						"Should be able vote on WithdrawalRequest and add member to _withdrawalRequest[].votedMembers..",
 						async () => {
 							const [, addr1] = await ethers.getSigners();
-							
+
 							await iglooFiV1Vault.connect(addr1).voteOnWithdrawalRequest(0, true);
 
 							const createdWithdrawalRequest: any = await iglooFiV1Vault.withdrawalRequest(0);
@@ -505,7 +505,7 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 						"Should revert with 'Already voted' when attempting to vote again..",
 						async () => {
 							const [, addr1] = await ethers.getSigners();
-							
+
 							await expect(
 								iglooFiV1Vault.connect(addr1).voteOnWithdrawalRequest(0, true)
 							).to.be.rejectedWith("Already voted");
@@ -522,7 +522,7 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 						"Should revert when unauthorized msg.sender calls..",
 						async () => {
 							const [,, addr2] = await ethers.getSigners();
-							
+
 							await expect(iglooFiV1Vault.connect(addr2).processWithdrawalRequest(0)).to.be.rejected;
 						}
 					);
@@ -533,7 +533,7 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 							const [,addr1] = await ethers.getSigners();
 
 							await iglooFiV1Vault.updateForVoteCountRequired(2);
-							
+
 							await expect(
 								iglooFiV1Vault.connect(addr1).processWithdrawalRequest(0)
 							).to.be.rejectedWith("!forVoteCountRequired && !againstVoteCount");
@@ -549,29 +549,29 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 
 							// Fast-forward 6 days
 							await ethers.provider.send('evm_increaseTime', [sixDaysInSeconds]);
-							
+
 							await expect(
 								iglooFiV1Vault.connect(addr1).processWithdrawalRequest(0)
 							).to.be.rejectedWith("Not enough time has passed");
 						}
 					);
-					
+
 					it(
 						"Should process WithdrawalRequest for Ether..",
 						async () => {
 							const [, addr1, addr2] = await ethers.getSigners();
 
 							const recieverBalanceBefore = await ethers.provider.getBalance(addr2.address);
-							
+
 							// Fast-forward 7 days
 							await ethers.provider.send('evm_increaseTime', [sevenDaysInSeconds]);
-							
+
 							await iglooFiV1Vault.connect(addr1).processWithdrawalRequest(0);
 
 							const recieverBalanceAfter = await ethers.provider.getBalance(addr2.address);
 
 							await expect(
-								ethers.utils.formatUnits(recieverBalanceAfter) - 
+								ethers.utils.formatUnits(recieverBalanceAfter) -
 								ethers.utils.formatUnits(recieverBalanceBefore)
 							).to.be.equal(.5);
 						}
@@ -592,7 +592,7 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 						"Should be able to create a WithdrawalRequest for ERC20 token..",
 						async () => {
 							const [, addr1, addr2] = await ethers.getSigners();
-							
+
 							await iglooFiV1Vault.connect(addr1).createWithdrawalRequest(
 								false,
 								true,
@@ -602,7 +602,7 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 								50,
 								0
 							);
-							
+
 							const createdWithdrawalRequest: any = await iglooFiV1Vault.withdrawalRequest(1);
 
 							expect(createdWithdrawalRequest[0]).to.be.false;
@@ -639,7 +639,7 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 						"Should be able vote on WithdrawalRequest and add member to _withdrawalRequest[].votedMembers..",
 						async () => {
 							const [, addr1] = await ethers.getSigners();
-							
+
 							await iglooFiV1Vault.connect(addr1).voteOnWithdrawalRequest(1, true);
 
 							const createdWithdrawalRequest: any = await iglooFiV1Vault.withdrawalRequest(1);
@@ -664,7 +664,7 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 
 							// Fast-forward 7 days
 							await ethers.provider.send('evm_increaseTime', [sevenDaysInSeconds]);
-							
+
 							await iglooFiV1Vault.connect(addr1).processWithdrawalRequest(1);
 
 							const recieverBalanceAfter = await mockERC20.balanceOf(addr2.address);
@@ -695,7 +695,7 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 						"Should be able to create a WithdrawalRequest for ERC721 token..",
 						async () => {
 							const [, addr1, addr2] = await ethers.getSigners();
-							
+
 							await iglooFiV1Vault.connect(addr1).createWithdrawalRequest(
 								false,
 								false,
@@ -705,7 +705,7 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 								1,
 								1
 							);
-							
+
 							const createdWithdrawalRequest: any = await iglooFiV1Vault.withdrawalRequest(2);
 
 							expect(createdWithdrawalRequest[0]).to.be.false;
@@ -742,7 +742,7 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 						"Should be able vote on WithdrawalRequest and add member to _withdrawalRequest[].votedMembers..",
 						async () => {
 							const [, addr1] = await ethers.getSigners();
-							
+
 							await iglooFiV1Vault.connect(addr1).voteOnWithdrawalRequest(2, true);
 
 							const createdWithdrawalRequest: any = await iglooFiV1Vault.withdrawalRequest(2);
@@ -764,10 +764,10 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 							const [, addr1, addr2] = await ethers.getSigners();
 
 							const recieverBalanceBefore = await mockERC721.balanceOf(addr2.address);
-							
+
 							// Fast-forward 7 days
 							await ethers.provider.send('evm_increaseTime', [sevenDaysInSeconds]);
-							
+
 							await iglooFiV1Vault.connect(addr1).processWithdrawalRequest(2);
 
 							const recieverBalanceAfter = await mockERC721.balanceOf(addr2.address);
@@ -796,7 +796,7 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 					"Should be able vote on WithdrawalRequest and add member to _withdrawalRequest[].votedMembers..",
 					async () => {
 						const [, addr1, addr2] = await ethers.getSigners();
-						
+
 						await iglooFiV1Vault.connect(addr1).createWithdrawalRequest(
 							true,
 							false,
@@ -808,7 +808,7 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 						)
 
 						const openWithdrawalRequestIds = await iglooFiV1Vault.openWithdrawalRequestIds()
-						
+
 						iglooFiV1Vault.connect(addr1).voteOnWithdrawalRequest(
 							openWithdrawalRequestIds[openWithdrawalRequestIds.length - 1],
 							false
@@ -832,7 +832,7 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 					const [, addr1] = await ethers.getSigners();
 
 					const openWithdrawalRequestIds = await iglooFiV1Vault.openWithdrawalRequestIds();
-						
+
 					iglooFiV1Vault.connect(addr1).processWithdrawalRequest(
 						openWithdrawalRequestIds[openWithdrawalRequestIds.length - 1]
 					);
@@ -854,7 +854,7 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 				"Should be able to keep record of multiple open WithdrawalRequest Ids..",
 				async () => {
 					const [, addr1, addr2] = await ethers.getSigners();
-					
+
 					await iglooFiV1Vault.connect(addr1).createWithdrawalRequest(
 						false,
 						true,
@@ -874,7 +874,7 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 						50,
 						0
 					);
-					
+
 					expect((await iglooFiV1Vault.openWithdrawalRequestIds())[0]).to.be.equal(4);
 					expect((await iglooFiV1Vault.openWithdrawalRequestIds())[1]).to.be.equal(5);
 				}
@@ -892,7 +892,7 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 				"Should be able to update WithdrawalRequest.forVoteCount..",
 				async () => {
 					const [, addr1, addr2] = await ethers.getSigners();
-					
+
 					await iglooFiV1Vault.connect(addr1).createWithdrawalRequest(
 						false,
 						true,
@@ -912,8 +912,8 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 					await iglooFiV1Vault.updateWithdrawalRequest(
 						openWithdrawalRequestIds[openWithdrawalRequestIds.length - 1],
 						[
-							withdrawalRequest[0], 
-							withdrawalRequest[1], 
+							withdrawalRequest[0],
+							withdrawalRequest[1],
 							withdrawalRequest[2],
 							withdrawalRequest[3],
 							withdrawalRequest[4],
@@ -930,11 +930,11 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 					const updatedWithdrawalRequest: any = await iglooFiV1Vault.withdrawalRequest(
 						openWithdrawalRequestIds[openWithdrawalRequestIds.length - 1]
 					);
-					
+
 					expect(updatedWithdrawalRequest[8]).to.be.equal(1);
 				}
 			);
-		
+
 			it(
 				"Should be able to update withdrawalRequest.latestRelevantApproveVoteTime..",
 				async () => {
@@ -958,8 +958,8 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 					await iglooFiV1Vault.updateWithdrawalRequest(
 						wRiD,
 						[
-							withdrawalRequest[0], 
-							withdrawalRequest[1], 
+							withdrawalRequest[0],
+							withdrawalRequest[1],
 							withdrawalRequest[2],
 							withdrawalRequest[3],
 							withdrawalRequest[4],
@@ -988,7 +988,7 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 				"Should revert when unauthorized msg.sender calls..",
 				async () => {
 					const [, addr1] = await ethers.getSigners();
-					
+
 					await expect(iglooFiV1Vault.connect(addr1).deleteWithdrawalRequest(2)).to.be.rejected;
 				}
 			);
@@ -1009,7 +1009,7 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 					);
 
 					const beforeWithdrawalRequests = await iglooFiV1Vault.openWithdrawalRequestIds();
-					
+
 					await iglooFiV1Vault.deleteWithdrawalRequest(
 						beforeWithdrawalRequests[beforeWithdrawalRequests.length - 1]
 					);

@@ -9,14 +9,14 @@ describe("IglooFiV1VaultFactory.sol - IglooFi V1 Vault Factory Contract", async 
 	let iglooFiV1VaultRecord: Contract;
 	let mockIglooFiGovernance: Contract;
 	let mockSignatureManager: Contract;
-	
+
 
 	before("[before] Set up contracts..", async () => {
 		const IglooFiV1VaultFactory: ContractFactory = await ethers.getContractFactory("IglooFiV1VaultFactory");
 		const IglooFiV1VaultRecord: ContractFactory = await ethers.getContractFactory("IglooFiV1VaultRecord");
 		const MockIglooFiGovernance: ContractFactory = await ethers.getContractFactory("MockIglooFiGovernance");
 		const MockSignatureManager: ContractFactory = await ethers.getContractFactory("MockSignatureManager");
-		
+
 		// Deploy
 		mockIglooFiGovernance = await (await MockIglooFiGovernance.deploy()).deployed();
 		iglooFiV1VaultRecord = await (await IglooFiV1VaultRecord.deploy()).deployed();
@@ -37,7 +37,7 @@ describe("IglooFiV1VaultFactory.sol - IglooFi V1 Vault Factory Contract", async 
 			"Should be able to recieve ether..",
 			async () => {
 				const [, addr1] = await ethers.getSigners();
-				
+
 				// Send ether to IglooFiV1VaultFactory contract
 				await addr1.sendTransaction({
 					to: iglooFiV1VaultFactory.address,
@@ -214,7 +214,7 @@ describe("IglooFiV1VaultFactory.sol - IglooFi V1 Vault Factory Contract", async 
 				"Should be able to deploy IglooFiV1Vault.sol with custom signature manager..",
 				async () => {
 					const [, addr1] = await ethers.getSigners();
-					
+
 					const IglooFiV1Vault = await ethers.getContractFactory("IglooFiV1Vault");
 
 					await iglooFiV1VaultFactory.deployIglooFiV1Vault(
@@ -245,9 +245,9 @@ describe("IglooFiV1VaultFactory.sol - IglooFi V1 Vault Factory Contract", async 
 					"Should have admin set properly..",
 					async () => {
 						const [, addr1] = await ethers.getSigners();
-						
+
 						const IglooFiV1Vault = await ethers.getContractFactory("IglooFiV1Vault");
-						
+
 						// Retreive the deployed vault's address
 						const deployedAddress = await iglooFiV1VaultFactory.iglooFiV1VaultIdToAddress(0);
 
