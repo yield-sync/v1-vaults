@@ -122,64 +122,9 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 
 
 	/**
-	* @dev AccessControlEnumerable
-	*/
-	describe("AccessControlEnumerable", async () => {
-		it("Should allow admin to add another admin..", async () => {
-			const [, , , , addr4] = await ethers.getSigners();
-
-			await iglooFiV1Vault.addAdmin(addr4.address);
-
-			expect(
-				(await iglooFiV1VaultRecord.participant_iglooFiV1Vault_access(
-					addr4.address,
-					iglooFiV1Vault.address
-				))[0]
-			).to.be.true;
-
-			expect(
-				(await iglooFiV1VaultRecord.admin_iglooFiV1Vaults(addr4.address))[0]
-			).to.be.equal(iglooFiV1Vault.address);
-
-
-			expect(
-				(await iglooFiV1VaultRecord.iglooFiV1Vault_admins(iglooFiV1Vault.address))[1]
-			).to.be.equal(addr4.address);
-		});
-
-		it("Should allow admin to add a contract-based admin..", async () => {
-			await iglooFiV1Vault.addAdmin(mockAdmin.address);
-
-			expect(
-				(await iglooFiV1VaultRecord.participant_iglooFiV1Vault_access(
-					mockAdmin.address,
-					iglooFiV1Vault.address
-				))[0]
-			).to.be.true;
-
-			expect(
-				(await iglooFiV1VaultRecord.admin_iglooFiV1Vaults(mockAdmin.address))[0]
-			).to.be.equal(iglooFiV1Vault.address);
-
-
-			expect(
-				(await iglooFiV1VaultRecord.iglooFiV1Vault_admins(iglooFiV1Vault.address))[2]
-			).to.be.equal(mockAdmin.address);
-		});
-	});
-
-
-	/**
 	* @dev Constructor Initialized Values
 	*/
 	describe("Constructor Initialized Values", async () => {
-		it(
-			"Should have added members correctly..",
-				async () => {
-				const [owner, addr1] = await ethers.getSigners();
-			}
-		);
-
 		it(
 			"Should have admin set properly..",
 			async () => {
@@ -191,6 +136,36 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 						iglooFiV1Vault.address
 					))[0]
 				).to.be.true;
+
+				expect(
+					(await iglooFiV1VaultRecord.iglooFiV1Vault_admins(iglooFiV1Vault.address))[0]
+				).to.be.equal(owner.address);
+
+				expect(
+					(await iglooFiV1VaultRecord.admin_iglooFiV1Vaults(owner.address))[0]
+				).to.be.equal(iglooFiV1Vault.address);
+			}
+		);
+
+		it(
+			"Should have added members correctly..",
+				async () => {
+				const [owner, addr1] = await ethers.getSigners();
+
+				expect(
+					(await iglooFiV1VaultRecord.participant_iglooFiV1Vault_access(
+						addr1.address,
+						iglooFiV1Vault.address
+					))[1]
+				).to.be.true;
+
+				expect(
+					(await iglooFiV1VaultRecord.iglooFiV1Vault_members(iglooFiV1Vault.address))[0]
+				).to.be.equal(addr1.address);
+
+				expect(
+					(await iglooFiV1VaultRecord.member_iglooFiV1Vaults(addr1.address))[0]
+				).to.be.equal(iglooFiV1Vault.address);
 			}
 		);
 
@@ -244,6 +219,49 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 			);
 		});
 
+		describe("addAdmin()", async () => {
+			it("Should allow admin to add another admin..", async () => {
+				const [, , , , addr4] = await ethers.getSigners();
+
+				await iglooFiV1Vault.addAdmin(addr4.address);
+
+				expect(
+					(await iglooFiV1VaultRecord.participant_iglooFiV1Vault_access(
+						addr4.address,
+						iglooFiV1Vault.address
+					))[0]
+				).to.be.true;
+
+				expect(
+					(await iglooFiV1VaultRecord.admin_iglooFiV1Vaults(addr4.address))[0]
+				).to.be.equal(iglooFiV1Vault.address);
+
+
+				expect(
+					(await iglooFiV1VaultRecord.iglooFiV1Vault_admins(iglooFiV1Vault.address))[1]
+				).to.be.equal(addr4.address);
+			});
+
+			it("Should allow admin to add a contract-based admin..", async () => {
+				await iglooFiV1Vault.addAdmin(mockAdmin.address);
+
+				expect(
+					(await iglooFiV1VaultRecord.participant_iglooFiV1Vault_access(
+						mockAdmin.address,
+						iglooFiV1Vault.address
+					))[0]
+				).to.be.true;
+
+				expect(
+					(await iglooFiV1VaultRecord.admin_iglooFiV1Vaults(mockAdmin.address))[0]
+				).to.be.equal(iglooFiV1Vault.address);
+
+
+				expect(
+					(await iglooFiV1VaultRecord.iglooFiV1Vault_admins(iglooFiV1Vault.address))[2]
+				).to.be.equal(mockAdmin.address);
+			});
+		});
 
 		describe("addMember()", async () => {
 			it(
@@ -256,22 +274,46 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 			);
 
 			it(
-				"Should be able to set up MEMBER role for an address..",
+				"Should NOT be able to set up MEMBER role for an address that already is member..",
 				async () => {
 					const [, addr1] = await ethers.getSigners();
 
-					await iglooFiV1Vault.addMember(addr1.address);
+					await expect(iglooFiV1Vault.addMember(addr1.address)).to.be.rejectedWith("Already member");
+				}
+			);
+
+			it(
+				"Should be able to set up MEMBER role for an address..",
+				async () => {
+					const [, , addr2] = await ethers.getSigners();
+
+					console.log(
+						addr2.address,
+						await iglooFiV1VaultRecord.participant_iglooFiV1Vault_access(iglooFiV1Vault.address, addr2.address),
+						await iglooFiV1VaultRecord.member_iglooFiV1Vaults(addr2.address),
+						await iglooFiV1VaultRecord.iglooFiV1Vault_members(iglooFiV1Vault.address)
+					)
+
+					await iglooFiV1Vault.addMember(addr2.address);
 
 					expect(
 						(await iglooFiV1VaultRecord.participant_iglooFiV1Vault_access(
-							addr1.address,
+							addr2.address,
 							iglooFiV1Vault.address
 						))[1]
 					).to.be.true;
+
+					expect(
+						(await iglooFiV1VaultRecord.member_iglooFiV1Vaults(addr2.address))[0]
+					).to.be.equal(iglooFiV1Vault.address);
+
+
+					expect(
+						(await iglooFiV1VaultRecord.iglooFiV1Vault_members(iglooFiV1Vault.address))[1]
+					).to.be.equal(addr2.address);
 				}
 			);
 		});
-
 
 		describe("removeMember()", async () => {
 			it(
@@ -286,15 +328,15 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 			it(
 				"Should be able to remove address from MEMBER role..",
 				async () => {
-					const [,, addr2] = await ethers.getSigners();
+					const [, ,  , , addr5] = await ethers.getSigners();
 
-					await iglooFiV1Vault.addMember(addr2.address)
+					await iglooFiV1Vault.addMember(addr5.address)
 
-					await iglooFiV1Vault.removeMember(addr2.address)
+					await iglooFiV1Vault.removeMember(addr5.address)
 
 					expect(
 						(await iglooFiV1VaultRecord.participant_iglooFiV1Vault_access(
-							addr2.address,
+							addr5.address,
 							iglooFiV1Vault.address
 						))[1]
 					).to.be.false;
@@ -373,7 +415,7 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 	 * @dev Restriction: MEMBER
 	*/
 	describe("Restriction: MEMBER", async () => {
-		describe("AccessControlEnumerable", async () => {
+		describe("addMember()", async () => {
 			it("Should NOT allow member to add another member..", async () => {
 				const [, addr1, , , addr4] = await ethers.getSigners();
 
@@ -382,7 +424,6 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 				).to.be.rejected;
 			});
 		});
-
 
 		describe("withdrawalRequest For", async () => {
 			/**
@@ -396,14 +437,14 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 					it(
 						"Should revert when unauthorized msg.sender calls..",
 						async () => {
-							const [, , addr2] = await ethers.getSigners();
+						const [, , , , addr4] = await ethers.getSigners();
 
 							await expect(
-								iglooFiV1Vault.connect(addr2).createWithdrawalRequest(
+								iglooFiV1Vault.connect(addr4).createWithdrawalRequest(
 									true,
 									false,
 									false,
-									addr2.address,
+									addr4.address,
 									ethers.constants.AddressZero,
 									ethers.utils.parseEther(".5"),
 									0
@@ -481,9 +522,9 @@ describe("IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 					it(
 						"Should revert when unauthorized msg.sender calls..",
 						async () => {
-							const [,, addr2] = await ethers.getSigners();
+							const [, , , , addr4] = await ethers.getSigners();
 
-							await expect(iglooFiV1Vault.connect(addr2).voteOnWithdrawalRequest(0, true)).to.be.rejected;
+							await expect(iglooFiV1Vault.connect(addr4).voteOnWithdrawalRequest(0, true)).to.be.rejected;
 						}
 					);
 

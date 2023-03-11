@@ -91,6 +91,8 @@ contract IglooFiV1VaultRecord is
 	{
 		require(_iglooFiV1Vault == msg.sender, "!_iglooFiV1Vault");
 
+		require(!_participant_iglooFiV1Vault_access[admin][_iglooFiV1Vault].admin, "Already admin");
+
 		_admin_iglooFiV1Vaults[admin].push(_iglooFiV1Vault);
 
 		_iglooFiV1Vault_admins[_iglooFiV1Vault].push(admin);
@@ -151,6 +153,8 @@ contract IglooFiV1VaultRecord is
 		override
 	{
 		require(_iglooFiV1Vault == msg.sender, "!_iglooFiV1Vault");
+
+		require(!_participant_iglooFiV1Vault_access[member][_iglooFiV1Vault].member, "Already member");
 
 		_member_iglooFiV1Vaults[member].push(_iglooFiV1Vault);
 
