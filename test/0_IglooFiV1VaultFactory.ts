@@ -44,7 +44,7 @@ describe("[0] IglooFiV1VaultFactory.sol - IglooFi V1 Vault Factory Contract", as
 		mockSignatureManager = stagedContracts.mockSignatureManager;
 	});
 
-	describe("Recieving tokens & ethers", async () => {
+	describe("Receiving tokens & ethers", async () => {
 		it(
 			"Should be able to recieve ether..",
 			async () => {
@@ -63,7 +63,7 @@ describe("[0] IglooFiV1VaultFactory.sol - IglooFi V1 Vault Factory Contract", as
 		);
 	});
 
-	describe("Constructor Initialized values", async () => {
+	describe("Initial values", async () => {
 		it(
 			"Should initialize `iglooFiGovernance` to `MockIglooFiGovernance` address..",
 			async () => {

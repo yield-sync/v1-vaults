@@ -73,7 +73,6 @@ describe("[1] IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 	let mockERC721: Contract;
 	let mockIglooFiGovernance: Contract;
 
-
 	before("[before] Set up contracts..", async () => {
 		const stagedContracts = await stageContracts();
 
@@ -87,7 +86,7 @@ describe("[1] IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 		mockIglooFiGovernance = stagedContracts.mockIglooFiGovernance;
 	});
 
-	describe("Recieving tokens & ethers", async () => {
+	describe("Receiving tokens & ethers", async () => {
 		it("Should be able to recieve ether..", async () => {
 			const [, addr1] = await ethers.getSigners();
 
@@ -116,7 +115,7 @@ describe("[1] IglooFiV1Vault.sol - IglooFi V1 Vault Contract", async () => {
 		});
 	});
 
-	describe("Constructor Initialized Values", async () => {
+	describe("Initial Values", async () => {
 		it(
 			"Should intialize againstVoteCountRequired as 2..",
 			async () => {
