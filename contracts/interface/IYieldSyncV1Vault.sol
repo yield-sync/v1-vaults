@@ -20,9 +20,9 @@ struct WithdrawalRequest {
 
 
 /**
-* @title IIglooFiV1Vault
+* @title IYieldSyncV1Vault
 */
-interface IIglooFiV1Vault
+interface IYieldSyncV1Vault
 {
 	event CreatedWithdrawalRequest(uint256 withdrawalRequestId);
 	event DeletedWithdrawalRequest(uint256 withdrawalRequestId);
@@ -53,7 +53,7 @@ interface IIglooFiV1Vault
 	* @dev [view-address]
 	* @return {address}
 	*/
-	function iglooFiV1VaultRecord()
+	function yieldSyncV1VaultRecord()
 		external
 		view
 		returns (address)
@@ -134,9 +134,9 @@ interface IIglooFiV1Vault
 
 
 	/**
-	* @notice Assign Admin to an address on IglooFiV1Record
-	* @dev [restriction] IglooFiV1Record → admin
-	* @dev [add] address to admin on `IglooFiV1Record`
+	* @notice Assign Admin to an address on YieldSyncV1Record
+	* @dev [restriction] YieldSyncV1Record → admin
+	* @dev [add] address to admin on `YieldSyncV1Record`
 	* @param targetAddress {address}
 	*/
 	function addAdmin(address targetAddress)
@@ -145,8 +145,8 @@ interface IIglooFiV1Vault
 
 	/**
 	* @notice Remove a member
-	* @dev [restriction] IglooFiV1Record → admin
-	* @dev [remove] address with admin on `IglooFiV1Record`
+	* @dev [restriction] YieldSyncV1Record → admin
+	* @dev [remove] address with admin on `YieldSyncV1Record`
 	* @param member {address} Address of the member to remove
 	*/
 	function removeAdmin(address member)
@@ -154,9 +154,9 @@ interface IIglooFiV1Vault
 	;
 
 	/**
-	* @notice Assign member to an address on IglooFiV1Record
-	* @dev [restriction] IglooFiV1Record → admin
-	* @dev [add] address to member on `IglooFiV1Record`
+	* @notice Assign member to an address on YieldSyncV1Record
+	* @dev [restriction] YieldSyncV1Record → admin
+	* @dev [add] address to member on `YieldSyncV1Record`
 	* @param targetAddress {address}
 	*/
 	function addMember(address targetAddress)
@@ -165,8 +165,8 @@ interface IIglooFiV1Vault
 
 	/**
 	* @notice Remove a member
-	* @dev [restriction] IglooFiV1Record → admin
-	* @dev [remove] address with member on `IglooFiV1Record`
+	* @dev [restriction] YieldSyncV1Record → admin
+	* @dev [remove] address with member on `YieldSyncV1Record`
 	* @param member {address} Address of the member to remove
 	*/
 	function removeMember(address member)
@@ -175,7 +175,7 @@ interface IIglooFiV1Vault
 
 	/**
 	* @notice Delete withdrawalRequest & all associated values
-	* @dev [restriction] IglooFiV1Record → admin
+	* @dev [restriction] YieldSyncV1Record → admin
 	* @dev [call][internal] {_deleteWithdrawalRequest}
 	* @param withdrawalRequestId {uint256}
 	* Emits: `DeletedWithdrawalRequest`
@@ -186,7 +186,7 @@ interface IIglooFiV1Vault
 
 	/**
 	* @notice Update withdrawalRequest
-	* @dev [restriction] IglooFiV1Record → admin
+	* @dev [restriction] YieldSyncV1Record → admin
 	* @dev [update] `_withdrawalRequest`
 	* @param withdrawalRequestId {uint256}
 	* @param __withdrawalRequest {WithdrawalRequest}
@@ -198,7 +198,7 @@ interface IIglooFiV1Vault
 
 	/**
 	* @notice Update Against Vote Count Required
-	* @dev [restriction] IglooFiV1Record → admin
+	* @dev [restriction] YieldSyncV1Record → admin
 	* @dev [update] `againstVoteCountRequired`
 	* @param _againstVoteCountRequired {uint256}
 	* Emits: `UpdatedAgainstVoteCountRequired`
@@ -209,7 +209,7 @@ interface IIglooFiV1Vault
 
 	/**
 	* @notice Update For Vote Count Required
-	* @dev [restriction] IglooFiV1Record → admin
+	* @dev [restriction] YieldSyncV1Record → admin
 	* @dev [update] `forVoteCountRequired`
 	* @param _forVoteCountRequired {uint256}
 	* Emits: `UpdatedRequiredVoteCount`
@@ -220,7 +220,7 @@ interface IIglooFiV1Vault
 
 	/**
 	* @notice Update Signature Manager Contract
-	* @dev [restriction] IglooFiV1Record → admin
+	* @dev [restriction] YieldSyncV1Record → admin
 	* @dev [update] `signatureManager`
 	* @param _signatureManager {address}
 	*/
@@ -230,7 +230,7 @@ interface IIglooFiV1Vault
 
 	/**
 	* @notice Update `withdrawalDelaySeconds`
-	* @dev [restriction] IglooFiV1Record → admin
+	* @dev [restriction] YieldSyncV1Record → admin
 	* @dev [update] `withdrawalDelaySeconds` to new value
 	* @param _withdrawalDelaySeconds {uint256}
 	* Emits: `UpdatedWithdrawalDelaySeconds`
@@ -242,7 +242,7 @@ interface IIglooFiV1Vault
 
 	/**
 	* @notice Create a withdrawalRequest
-	* @dev [restriction] IglooFiV1Record → member
+	* @dev [restriction] YieldSyncV1Record → member
 	* @dev [increment] `_withdrawalRequestId`
 	*      [add] `_withdrawalRequest` value
 	*      [push-into] `_withdrawalRequestIds`
@@ -269,7 +269,7 @@ interface IIglooFiV1Vault
 
 	/**
 	* @notice Vote on withdrawalRequest
-	* @dev [restriction] IglooFiV1Record → member
+	* @dev [restriction] YieldSyncV1Record → member
 	* @dev [update] `_withdrawalRequest`
 	* @param withdrawalRequestId {uint256}
 	* @param vote {bool} true (approve) or false (deny)
@@ -282,7 +282,7 @@ interface IIglooFiV1Vault
 
 	/**
 	* @notice Process withdrawalRequest with given `withdrawalRequestId`
-	* @dev [restriction] IglooFiV1Record → member
+	* @dev [restriction] YieldSyncV1Record → member
 	* @dev [erc20-transfer]
 	*      [decrement] `_tokenBalance`
 	*      [call][internal] `_deleteWithdrawalRequest`

@@ -2,14 +2,14 @@
 pragma solidity ^0.8.18;
 
 
-import { IIglooFiGovernance } from "@igloo-fi/v1-sdk/contracts/interface/IIglooFiGovernance.sol";
-import { IIglooFiV1Vault } from "@igloo-fi/v1-sdk/contracts/interface/IIglooFiV1Vault.sol";
+import { IYieldSyncGovernance } from "@yield-sync/v1-sdk/contracts/interface/IYieldSyncGovernance.sol";
+import { IYieldSyncV1Vault } from "@yield-sync/v1-sdk/contracts/interface/IYieldSyncV1Vault.sol";
 import { IERC1271 } from "@openzeppelin/contracts/interfaces/IERC1271.sol";
 import { Pausable } from "@openzeppelin/contracts/security/Pausable.sol";
 import { ECDSA } from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 
 import { ISignatureManager, MessageHashData } from "./interface/ISignatureManager.sol";
-import { IIglooFiV1VaultRecord } from "./interface/IIglooFiV1VaultRecord.sol";
+import { IYieldSyncV1VaultRecord } from "./interface/IYieldSyncV1VaultRecord.sol";
 
 
 /**
@@ -21,32 +21,32 @@ contract SignatureManager is
 	ISignatureManager
 {
 	// [address]
-	address public override iglooFiGovernance;
-	address public iglooFiV1VaultRecord;
+	address public override yieldSyncGovernance;
+	address public yieldSyncV1VaultRecord;
 
 	// [bytes4]
 	bytes4 public constant ERC1271_MAGIC_VALUE = 0x1626ba7e;
 
 	// [mapping]
-	mapping (address iglooFiV1VaultAddress => bytes32[] messageHash) internal _vaultMessageHashes;
+	mapping (address yieldSyncV1VaultAddress => bytes32[] messageHash) internal _vaultMessageHashes;
 	mapping (
-		address iglooFiV1VaultAddress => mapping (bytes32 messageHash => MessageHashData messageHashData)
+		address yieldSyncV1VaultAddress => mapping (bytes32 messageHash => MessageHashData messageHashData)
 	) internal _vaultMessageHashData;
 
 
-	constructor (address _iglooFiGovernance, address _iglooFiV1VaultRecord)
+	constructor (address _yieldSyncGovernance, address _yieldSyncV1VaultRecord)
 	{
 		_pause();
 
-		iglooFiGovernance = _iglooFiGovernance;
-		iglooFiV1VaultRecord = _iglooFiV1VaultRecord;
+		yieldSyncGovernance = _yieldSyncGovernance;
+		yieldSyncV1VaultRecord = _yieldSyncV1VaultRecord;
 	}
 
 
-	modifier onlyIglooFiGovernanceAdmin() {
+	modifier onlyYieldSyncGovernanceAdmin() {
 		require(
-			IIglooFiGovernance(iglooFiGovernance).hasRole(
-				IIglooFiGovernance(iglooFiGovernance).governanceRoles("DEFAULT_ADMIN_ROLE"),
+			IYieldSyncGovernance(yieldSyncGovernance).hasRole(
+				IYieldSyncGovernance(yieldSyncGovernance).governanceRoles("DEFAULT_ADMIN_ROLE"),
 				msg.sender
 			),
 			"!auth"
@@ -70,46 +70,46 @@ contract SignatureManager is
 		return (
 			_vaultMessageHashes[msg.sender][_vaultMessageHashes[msg.sender].length -1] == _messageHash &&
 			vMHD.signer == recovered &&
-			vMHD.signatureCount >= IIglooFiV1Vault(payable(msg.sender)).forVoteCountRequired()
+			vMHD.signatureCount >= IYieldSyncV1Vault(payable(msg.sender)).forVoteCountRequired()
 		) ? ERC1271_MAGIC_VALUE : bytes4(0);
 	}
 
 
 	/// @inheritdoc ISignatureManager
-	function vaultMessageHashes(address iglooFiV1VaultAddress)
+	function vaultMessageHashes(address yieldSyncV1VaultAddress)
 		public
 		view
 		override
 		returns (bytes32[] memory)
 	{
-		return _vaultMessageHashes[iglooFiV1VaultAddress];
+		return _vaultMessageHashes[yieldSyncV1VaultAddress];
 	}
 
 	/// @inheritdoc ISignatureManager
-	function vaultMessageHashData(address iglooFiV1VaultAddress, bytes32 messageHash)
+	function vaultMessageHashData(address yieldSyncV1VaultAddress, bytes32 messageHash)
 		public
 		view
 		override
 		returns (MessageHashData memory)
 	{
-		return _vaultMessageHashData[iglooFiV1VaultAddress][messageHash];
+		return _vaultMessageHashData[yieldSyncV1VaultAddress][messageHash];
 	}
 
 
 	/// @inheritdoc ISignatureManager
-	function signMessageHash(address iglooFiV1VaultAddress, bytes32 messageHash, bytes memory signature)
+	function signMessageHash(address yieldSyncV1VaultAddress, bytes32 messageHash, bytes memory signature)
 		public
 		override
 		whenNotPaused()
 	{
-		(, bool msgSenderIsMember) = IIglooFiV1VaultRecord(iglooFiV1VaultRecord).participant_iglooFiV1Vault_access(
+		(, bool msgSenderIsMember) = IYieldSyncV1VaultRecord(yieldSyncV1VaultRecord).participant_yieldSyncV1Vault_access(
 			msg.sender,
-			iglooFiV1VaultAddress
+			yieldSyncV1VaultAddress
 		);
 
 		require(msgSenderIsMember, "!member");
 
-		MessageHashData memory vMHD = _vaultMessageHashData[iglooFiV1VaultAddress][messageHash];
+		MessageHashData memory vMHD = _vaultMessageHashData[yieldSyncV1VaultAddress][messageHash];
 
 		for (uint i = 0; i < vMHD.signedMembers.length; i++) {
 			require(vMHD.signedMembers[i] != msg.sender, "Already signed");
@@ -120,25 +120,25 @@ contract SignatureManager is
 
 			address recovered = ECDSA.recover(ECDSA.toEthSignedMessageHash(messageHash), signature);
 
-			(, bool recoveredIsMember) = IIglooFiV1VaultRecord(iglooFiV1VaultRecord).participant_iglooFiV1Vault_access(
+			(, bool recoveredIsMember) = IYieldSyncV1VaultRecord(yieldSyncV1VaultRecord).participant_yieldSyncV1Vault_access(
 				recovered,
-				iglooFiV1VaultAddress
+				yieldSyncV1VaultAddress
 			);
 
 			require(recoveredIsMember, "!member");
 
-			_vaultMessageHashData[iglooFiV1VaultAddress][messageHash] = MessageHashData({
+			_vaultMessageHashData[yieldSyncV1VaultAddress][messageHash] = MessageHashData({
 				signature: signature,
 				signer: recovered,
 				signedMembers: initialsignedMembers,
 				signatureCount: 0
 			});
 
-			_vaultMessageHashes[iglooFiV1VaultAddress].push(messageHash);
+			_vaultMessageHashes[yieldSyncV1VaultAddress].push(messageHash);
 		}
 
-		_vaultMessageHashData[iglooFiV1VaultAddress][messageHash].signedMembers.push(msg.sender);
-		_vaultMessageHashData[iglooFiV1VaultAddress][messageHash].signatureCount++;
+		_vaultMessageHashData[yieldSyncV1VaultAddress][messageHash].signedMembers.push(msg.sender);
+		_vaultMessageHashData[yieldSyncV1VaultAddress][messageHash].signatureCount++;
 	}
 
 
@@ -146,7 +146,7 @@ contract SignatureManager is
 	function updatePause(bool pause)
 		public
 		override
-		onlyIglooFiGovernanceAdmin()
+		onlyYieldSyncGovernanceAdmin()
 	{
 		if (pause)
 		{

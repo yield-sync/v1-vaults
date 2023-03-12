@@ -10,24 +10,24 @@ const chainId: number = 31337;
 const stageContracts = async () => {
 	const [owner, addr1, addr2] = await ethers.getSigners();
 
-	const IglooFiV1Vault: ContractFactory = await ethers.getContractFactory("IglooFiV1Vault");
-	const IglooFiV1VaultFactory: ContractFactory = await ethers.getContractFactory("IglooFiV1VaultFactory");
-	const IglooFiV1VaultRecord: ContractFactory = await ethers.getContractFactory("IglooFiV1VaultRecord");
+	const YieldSyncV1Vault: ContractFactory = await ethers.getContractFactory("YieldSyncV1Vault");
+	const YieldSyncV1VaultFactory: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultFactory");
+	const YieldSyncV1VaultRecord: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultRecord");
 	const MockAdmin: ContractFactory = await ethers.getContractFactory("MockAdmin");
 	const MockDapp: ContractFactory = await ethers.getContractFactory("MockDapp");
-	const MockIglooFiGovernance: ContractFactory = await ethers.getContractFactory("MockIglooFiGovernance");
+	const MockYieldSyncGovernance: ContractFactory = await ethers.getContractFactory("MockYieldSyncGovernance");
 	const SignatureManager: ContractFactory = await ethers.getContractFactory("SignatureManager");
 
 	// Deploy
-	const mockIglooFiGovernance: Contract = await (await MockIglooFiGovernance.deploy()).deployed();
-	const iglooFiV1VaultRecord: Contract = await (await IglooFiV1VaultRecord.deploy()).deployed();
-	const iglooFiV1VaultFactory: Contract = await (
-		await IglooFiV1VaultFactory.deploy(mockIglooFiGovernance.address, iglooFiV1VaultRecord.address)
+	const mockYieldSyncGovernance: Contract = await (await MockYieldSyncGovernance.deploy()).deployed();
+	const yieldSyncV1VaultRecord: Contract = await (await YieldSyncV1VaultRecord.deploy()).deployed();
+	const yieldSyncV1VaultFactory: Contract = await (
+		await YieldSyncV1VaultFactory.deploy(mockYieldSyncGovernance.address, yieldSyncV1VaultRecord.address)
 	).deployed();
 	const mockDapp: Contract = await (await MockDapp.deploy()).deployed();
 
 	// Deploy a vault
-	await iglooFiV1VaultFactory.deployIglooFiV1Vault(
+	await yieldSyncV1VaultFactory.deployYieldSyncV1Vault(
 		owner.address,
 		[addr1.address, addr2.address],
 		ethers.constants.AddressZero,
@@ -39,47 +39,47 @@ const stageContracts = async () => {
 	);
 
 	// Attach the deployed vault's address
-	const iglooFiV1Vault: Contract = await IglooFiV1Vault.attach(iglooFiV1VaultFactory.iglooFiV1VaultIdToAddress(0));
+	const yieldSyncV1Vault: Contract = await YieldSyncV1Vault.attach(yieldSyncV1VaultFactory.yieldSyncV1VaultIdToAddress(0));
 
 	const mockAdmin: Contract = await (await MockAdmin.deploy()).deployed();
 	const signatureManager: Contract = await (
-		await SignatureManager.deploy(mockIglooFiGovernance.address, iglooFiV1VaultRecord.address)
+		await SignatureManager.deploy(mockYieldSyncGovernance.address, yieldSyncV1VaultRecord.address)
 	).deployed();
 
 	return {
-		iglooFiV1Vault,
-		iglooFiV1VaultFactory,
-		iglooFiV1VaultRecord,
+		yieldSyncV1Vault,
+		yieldSyncV1VaultFactory,
+		yieldSyncV1VaultRecord,
 		mockAdmin,
 		mockDapp,
-		mockIglooFiGovernance,
+		mockYieldSyncGovernance,
 		signatureManager
 	};
 };
 
 
 describe("[3] SignatureManager.sol - Signature Manager Contract", async () => {
-	let iglooFiV1Vault: Contract;
-	let iglooFiV1VaultFactory: Contract;
-	let iglooFiV1VaultRecord: Contract;
+	let yieldSyncV1Vault: Contract;
+	let yieldSyncV1VaultFactory: Contract;
+	let yieldSyncV1VaultRecord: Contract;
 	let mockAdmin: Contract;
 	let mockDapp: Contract;
-	let mockIglooFiGovernance: Contract;
+	let mockYieldSyncGovernance: Contract;
 	let signatureManager: Contract;
 
 
 	before("[before] Set up contracts..", async () => {
 		const stagedContracts = await stageContracts();
 
-		iglooFiV1Vault = stagedContracts.iglooFiV1Vault;
-		iglooFiV1VaultFactory = stagedContracts.iglooFiV1VaultFactory;
-		iglooFiV1VaultRecord = stagedContracts.iglooFiV1VaultRecord;
+		yieldSyncV1Vault = stagedContracts.yieldSyncV1Vault;
+		yieldSyncV1VaultFactory = stagedContracts.yieldSyncV1VaultFactory;
+		yieldSyncV1VaultRecord = stagedContracts.yieldSyncV1VaultRecord;
 		mockAdmin = stagedContracts.mockAdmin;
 		mockDapp = stagedContracts.mockDapp;
-		mockIglooFiGovernance = stagedContracts.mockIglooFiGovernance;
+		mockYieldSyncGovernance = stagedContracts.mockYieldSyncGovernance;
 		signatureManager = stagedContracts.signatureManager;
 
-		await iglooFiV1Vault.updateSignatureManager(signatureManager.address);
+		await yieldSyncV1Vault.updateSignatureManager(signatureManager.address);
 	});
 
 	/**
@@ -135,7 +135,7 @@ describe("[3] SignatureManager.sol - Signature Manager Contract", async () => {
 
 			await expect(
 				signatureManager.connect(addr3).signMessageHash(
-					iglooFiV1Vault.address,
+					yieldSyncV1Vault.address,
 					messageHash,
 					signature
 				)
@@ -164,15 +164,15 @@ describe("[3] SignatureManager.sol - Signature Manager Contract", async () => {
 			const signature: Signature = await addr1.signMessage(ethers.utils.arrayify(messageHash));
 
 			// [contract] Sign message hash
-			await signatureManager.connect(addr1).signMessageHash(iglooFiV1Vault.address, messageHash, signature);
+			await signatureManager.connect(addr1).signMessageHash(yieldSyncV1Vault.address, messageHash, signature);
 
 			// [contract]
-			const retrievedBytes32 = await signatureManager.vaultMessageHashes(iglooFiV1Vault.address);
+			const retrievedBytes32 = await signatureManager.vaultMessageHashes(yieldSyncV1Vault.address);
 
 			expect(retrievedBytes32[0]).to.be.equal(messageHash);
 
 			const messageHashData: any = await signatureManager.vaultMessageHashData(
-				iglooFiV1Vault.address,
+				yieldSyncV1Vault.address,
 				retrievedBytes32[0]
 			);
 
@@ -186,57 +186,57 @@ describe("[3] SignatureManager.sol - Signature Manager Contract", async () => {
 			const [, addr1] = await ethers.getSigners();
 
 			// [contract]
-			const retrievedBytes32 = await signatureManager.vaultMessageHashes(iglooFiV1Vault.address);
+			const retrievedBytes32 = await signatureManager.vaultMessageHashes(yieldSyncV1Vault.address);
 
 			const messageHashData: Bytes = await signatureManager.vaultMessageHashData(
-				iglooFiV1Vault.address,
+				yieldSyncV1Vault.address,
 				retrievedBytes32[0]
 			);
 
 			// [contract]
 			await expect(
 				signatureManager.connect(addr1).signMessageHash(
-					iglooFiV1Vault.address,
+					yieldSyncV1Vault.address,
 					retrievedBytes32[0],
 					messageHashData[0]
 				)
 			).to.be.rejectedWith("Already signed");
 		});
 
-		it("Should fail iglooFiV1Vault.isValidSignature() due to not enough votes..", async () => {
+		it("Should fail yieldSyncV1Vault.isValidSignature() due to not enough votes..", async () => {
 			// [contract]
-			const retrievedBytes32 = await signatureManager.vaultMessageHashes(iglooFiV1Vault.address);
+			const retrievedBytes32 = await signatureManager.vaultMessageHashes(yieldSyncV1Vault.address);
 
 			const messageHashData = await signatureManager.vaultMessageHashData(
-				iglooFiV1Vault.address,
+				yieldSyncV1Vault.address,
 				retrievedBytes32[0]
 			);
 
 			expect(
-				await iglooFiV1Vault.isValidSignature(retrievedBytes32[0], messageHashData[0])
+				await yieldSyncV1Vault.isValidSignature(retrievedBytes32[0], messageHashData[0])
 			).to.be.equal("0x00000000");
 		});
 
-		it("Should pass iglooFiV1Vault.isValidSignature() due to enough votes..", async () => {
+		it("Should pass yieldSyncV1Vault.isValidSignature() due to enough votes..", async () => {
 			const [, , addr2] = await ethers.getSigners();
 
 			// [contract]
-			const retrievedBytes32 = await signatureManager.vaultMessageHashes(iglooFiV1Vault.address);
+			const retrievedBytes32 = await signatureManager.vaultMessageHashes(yieldSyncV1Vault.address);
 
 			const messageHashData: Bytes = await signatureManager.vaultMessageHashData(
-				iglooFiV1Vault.address,
+				yieldSyncV1Vault.address,
 				retrievedBytes32[0]
 			);
 
 			// [contract]
 			await signatureManager.connect(addr2).signMessageHash(
-				iglooFiV1Vault.address,
+				yieldSyncV1Vault.address,
 				retrievedBytes32[0],
 				messageHashData[0]
 			);
 
 			expect(
-				await iglooFiV1Vault.isValidSignature(retrievedBytes32[0], messageHashData[0])
+				await yieldSyncV1Vault.isValidSignature(retrievedBytes32[0], messageHashData[0])
 			).to.be.equal("0x1626ba7e");
 		});
 	});
@@ -293,15 +293,15 @@ describe("[3] SignatureManager.sol - Signature Manager Contract", async () => {
 			const signature: Signature = await addr1.signMessage(ethers.utils.arrayify(messageHash));
 
 			// [contract] Sign message hash
-			await signatureManager.connect(addr1).signMessageHash(iglooFiV1Vault.address, messageHash, signature);
+			await signatureManager.connect(addr1).signMessageHash(yieldSyncV1Vault.address, messageHash, signature);
 
 			// [contract]
-			const retrievedBytes32: Bytes = await signatureManager.vaultMessageHashes(iglooFiV1Vault.address);
+			const retrievedBytes32: Bytes = await signatureManager.vaultMessageHashes(yieldSyncV1Vault.address);
 
 			expect(retrievedBytes32[1]).to.be.equal(messageHash);
 
 			const messageHashData: any = await signatureManager.vaultMessageHashData(
-				iglooFiV1Vault.address,
+				yieldSyncV1Vault.address,
 				retrievedBytes32[1]
 			);
 
@@ -311,17 +311,17 @@ describe("[3] SignatureManager.sol - Signature Manager Contract", async () => {
 			expect(messageHashData[3]).to.be.equal(1);
 		});
 
-		it("Should fail iglooFiV1Vault.isValidSignature() due to not being latest signature..", async () => {
+		it("Should fail yieldSyncV1Vault.isValidSignature() due to not being latest signature..", async () => {
 			// [contract]
-			const retrievedBytes32 = await signatureManager.vaultMessageHashes(iglooFiV1Vault.address);
+			const retrievedBytes32 = await signatureManager.vaultMessageHashes(yieldSyncV1Vault.address);
 
 			const messageHashData = await signatureManager.vaultMessageHashData(
-				iglooFiV1Vault.address,
+				yieldSyncV1Vault.address,
 				retrievedBytes32[0]
 			);
 
 			expect(
-				await iglooFiV1Vault.isValidSignature(retrievedBytes32[0], messageHashData[0])
+				await yieldSyncV1Vault.isValidSignature(retrievedBytes32[0], messageHashData[0])
 			).to.be.equal("0x00000000");
 		});
 	});

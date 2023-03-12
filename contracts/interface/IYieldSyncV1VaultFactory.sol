@@ -3,10 +3,10 @@ pragma solidity ^0.8.18;
 
 
 /**
-* @title IIglooFiV1VaultFactory
+* @title IYieldSyncV1VaultFactory
 */
-interface IIglooFiV1VaultFactory {
-	event DeployedIglooFiV1Vault(address indexed vaultAddress);
+interface IYieldSyncV1VaultFactory {
+	event DeployedYieldSyncV1Vault(address indexed vaultAddress);
 	event UpdatedDefaultSignatureManager(address defaultSignatureManager);
 	event UpdatedFee(uint256 fee);
 
@@ -36,24 +36,24 @@ interface IIglooFiV1VaultFactory {
 	;
 
 	/**
-	* @notice IglooFi Governance Contract Address
+	* @notice YieldSync Governance Contract Address
 	* @dev [!restriction]
 	* @dev [view-address]
 	* @return {address}
 	*/
-	function iglooFiGovernance()
+	function yieldSyncGovernance()
 		external
 		view
 		returns (address)
 	;
 
 	/**
-	* @notice IglooFiV1Vault Record Contract Address
+	* @notice YieldSyncV1Vault Record Contract Address
 	* @dev [!restriction]
 	* @dev [view-address]
 	* @return {address}
 	*/
-	function iglooFiV1VaultRecord()
+	function yieldSyncV1VaultRecord()
 		external
 		view
 		returns (address)
@@ -78,20 +78,20 @@ interface IIglooFiV1VaultFactory {
 	* @dev [view-uint256]
 	* @return {uint256}
 	*/
-	function iglooFiV1VaultIdTracker()
+	function yieldSyncV1VaultIdTracker()
 		external
 		view
 		returns (uint256)
 	;
 
 	/**
-	* @notice IglooFiV1Vault Id to Address
+	* @notice YieldSyncV1Vault Id to Address
 	* @dev [!restriction]
 	* @dev [view]
-	* @param iglooFiV1VaultId {uint256}
+	* @param yieldSyncV1VaultId {uint256}
 	* @return {address}
 	*/
-	function iglooFiV1VaultIdToAddress(uint256 iglooFiV1VaultId)
+	function yieldSyncV1VaultIdToAddress(uint256 yieldSyncV1VaultId)
 		external
 		view
 		returns (address)
@@ -109,7 +109,7 @@ interface IIglooFiV1VaultFactory {
 	* @param withdrawalDelaySeconds {uint256}
 	* @return {address} Deployed vault
 	*/
-	function deployIglooFiV1Vault(
+	function deployYieldSyncV1Vault(
 		address admin,
 		address[] memory members,
 		address signatureManager,
@@ -125,7 +125,7 @@ interface IIglooFiV1VaultFactory {
 
 	/**
 	* @notice Updates default signature manager
-	* @dev [restriction] IIglooFiGovernance AccessControlEnumerable → DEFAULT_ADMIN_ROLE
+	* @dev [restriction] IYieldSyncGovernance AccessControlEnumerable → DEFAULT_ADMIN_ROLE
 	* @dev [update] `defaultSignatureManager`
 	* @param _defaultSignatureManager {address}
 	*/
@@ -135,7 +135,7 @@ interface IIglooFiV1VaultFactory {
 
 	/**
 	* @notice Update fee
-	* @dev [restriction] IIglooFiGovernance AccessControlEnumerable → DEFAULT_ADMIN_ROLE
+	* @dev [restriction] IYieldSyncGovernance AccessControlEnumerable → DEFAULT_ADMIN_ROLE
 	* @dev [update] `fee`
 	* @param _fee {uint256}
 	*/
@@ -145,7 +145,7 @@ interface IIglooFiV1VaultFactory {
 
 	/**
 	* @notice Transfer Ether to
-	* @dev [restriction] IIglooFiGovernance AccessControlEnumerable → DEFAULT_ADMIN_ROLE
+	* @dev [restriction] IYieldSyncGovernance AccessControlEnumerable → DEFAULT_ADMIN_ROLE
 	* @dev [transfer]
 	* @param to {uint256}
 	*/

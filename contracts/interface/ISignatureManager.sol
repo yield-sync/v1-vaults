@@ -16,12 +16,12 @@ struct MessageHashData {
 interface ISignatureManager
 {
 	/**
-	* @notice CONSTANT Address of IglooFi Governance contract
+	* @notice CONSTANT Address of YieldSync Governance contract
 	* @dev [!restriction]
 	* @dev [view-address]
 	* @return {address}
 	*/
-	function iglooFiGovernance()
+	function yieldSyncGovernance()
 		external
 		view
 		returns (address)
@@ -31,10 +31,10 @@ interface ISignatureManager
 	* @notice Getter for `_vaultMessageHashes`
 	* @dev [!restriction]
 	* @dev [view][mapping]
-	* @param iglooFiV1Vault {address}
+	* @param yieldSyncV1Vault {address}
 	* @return {bytes32[]}
 	*/
-	function vaultMessageHashes(address iglooFiV1Vault)
+	function vaultMessageHashes(address yieldSyncV1Vault)
 		external
 		view
 		returns (bytes32[] memory)
@@ -44,11 +44,11 @@ interface ISignatureManager
 	* @notice Getter for `_vaultMessageHashData`
 	* @dev [!restriction][public]
 	* @dev [view][mapping]
-	* @param iglooFiV1Vault {address}
+	* @param yieldSyncV1Vault {address}
 	* @param messageHash {bytes32}
 	* @return {MessageHashData}
 	*/
-	function vaultMessageHashData(address iglooFiV1Vault, bytes32 messageHash)
+	function vaultMessageHashData(address yieldSyncV1Vault, bytes32 messageHash)
 		external
 		view
 		returns (MessageHashData memory)
@@ -59,18 +59,18 @@ interface ISignatureManager
 	* @notice Sign a Message Hash
 	* @dev [!restriction][public]
 	* @dev [create] `_vaultMessageHashData` value
-	* @param iglooFiV1Vault {address}
+	* @param yieldSyncV1Vault {address}
 	* @param messageHash {bytes32}
 	* @param signature {bytes}
 	*/
-	function signMessageHash(address iglooFiV1Vault, bytes32 messageHash, bytes memory signature)
+	function signMessageHash(address yieldSyncV1Vault, bytes32 messageHash, bytes memory signature)
 		external
 	;
 
 
 	/**
 	* @notice Set pause
-	* @dev [restriction] IIglooFiGovernance IglooFiV1Record → DEFAULT_ADMIN_ROLE
+	* @dev [restriction] IYieldSyncGovernance YieldSyncV1Record → DEFAULT_ADMIN_ROLE
 	* @dev [call-internal]
 	* @param pause {bool}
 	*/

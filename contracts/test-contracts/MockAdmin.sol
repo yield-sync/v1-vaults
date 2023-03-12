@@ -5,13 +5,13 @@ pragma solidity ^0.8.18;
 import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
 import { IAccessControlEnumerable } from "@openzeppelin/contracts/access/IAccessControlEnumerable.sol";
 
-import { IIglooFiV1Vault, WithdrawalRequest } from "../interface/IIglooFiV1Vault.sol";
+import { IYieldSyncV1Vault, WithdrawalRequest } from "../interface/IYieldSyncV1Vault.sol";
 
 
 contract MockAdmin is Ownable {
-	modifier validWithdrawalRequest(address iglooFiV1VaultAddress, uint256 withdrawalRequestId) {
+	modifier validWithdrawalRequest(address yieldSyncV1VaultAddress, uint256 withdrawalRequestId) {
 		require(
-			IIglooFiV1Vault(payable(iglooFiV1VaultAddress)).withdrawalRequest(
+			IYieldSyncV1Vault(payable(yieldSyncV1VaultAddress)).withdrawalRequest(
 				withdrawalRequestId
 			).creator != address(0),
 			"No WithdrawalRequest found"
@@ -22,15 +22,15 @@ contract MockAdmin is Ownable {
 
 
 	function updateWithdrawalRequestLatestRelevantApproveVoteTime(
-		address iglooFiV1VaultAddress,
+		address yieldSyncV1VaultAddress,
 		uint256 withdrawalRequestId,
 		bool arithmaticSign,
 		uint256 timeInSeconds
 	)
 		public
-		validWithdrawalRequest(iglooFiV1VaultAddress, withdrawalRequestId)
+		validWithdrawalRequest(yieldSyncV1VaultAddress, withdrawalRequestId)
 	{
-		WithdrawalRequest memory wR = IIglooFiV1Vault(payable(iglooFiV1VaultAddress)).withdrawalRequest(
+		WithdrawalRequest memory wR = IYieldSyncV1Vault(payable(yieldSyncV1VaultAddress)).withdrawalRequest(
 			withdrawalRequestId
 		);
 
@@ -45,6 +45,6 @@ contract MockAdmin is Ownable {
 			wR.latestRelevantApproveVoteTime -= (timeInSeconds * 1 seconds);
 		}
 
-		IIglooFiV1Vault(payable(iglooFiV1VaultAddress)).updateWithdrawalRequest(withdrawalRequestId, wR);
+		IYieldSyncV1Vault(payable(yieldSyncV1VaultAddress)).updateWithdrawalRequest(withdrawalRequestId, wR);
 	}
 }

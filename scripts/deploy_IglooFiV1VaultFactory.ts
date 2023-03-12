@@ -2,7 +2,7 @@ import { Contract, ContractFactory } from "ethers";
 import { ethers } from "hardhat";
 
 
-let iglooFiV1VaultFactory: Contract;
+let yieldSyncV1VaultFactory: Contract;
 
 
 async function main() {
@@ -11,17 +11,17 @@ async function main() {
 	console.log("Deploying contract with Account:", owner.address);
 	console.log("Account Balance:", await owner.getBalance());
 
-	const IglooFiV1VaultFactory: ContractFactory = await ethers.getContractFactory("IglooFiV1VaultFactory");
-	iglooFiV1VaultFactory = await (await IglooFiV1VaultFactory.deploy("")).deployed();
+	const YieldSyncV1VaultFactory: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultFactory");
+	yieldSyncV1VaultFactory = await (await YieldSyncV1VaultFactory.deploy("")).deployed();
 
-	console.log("Contract address:", iglooFiV1VaultFactory.address);
+	console.log("Contract address:", yieldSyncV1VaultFactory.address);
 	console.log("Account Balance:", await owner.getBalance());
 }
 
 
 main()
 	.then(() => {
-		
+
 		process.exit(0);
 	})
 	.catch((error) => {

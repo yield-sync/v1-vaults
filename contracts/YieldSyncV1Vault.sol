@@ -6,19 +6,19 @@ import { IERC1271 } from "@openzeppelin/contracts/interfaces/IERC1271.sol";
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { IERC721 } from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 
-import { IIglooFiV1Vault, WithdrawalRequest } from "./interface/IIglooFiV1Vault.sol";
-import { IIglooFiV1VaultRecord } from "./interface/IIglooFiV1VaultRecord.sol";
+import { IYieldSyncV1Vault, WithdrawalRequest } from "./interface/IYieldSyncV1Vault.sol";
+import { IYieldSyncV1VaultRecord } from "./interface/IYieldSyncV1VaultRecord.sol";
 
 
 /**
-* @title IglooFiV1Vault
+* @title YieldSyncV1Vault
 */
-contract IglooFiV1Vault is
+contract YieldSyncV1Vault is
 	IERC1271,
-	IIglooFiV1Vault
+	IYieldSyncV1Vault
 {
 	// [address]
-	address public override iglooFiV1VaultRecord;
+	address public override yieldSyncV1VaultRecord;
 	address public override signatureManager;
 
 	// [uint256]
@@ -34,7 +34,7 @@ contract IglooFiV1Vault is
 
 
 	constructor (
-		address _iglooFiV1VaultRecord,
+		address _yieldSyncV1VaultRecord,
 		address admin,
 		address[] memory members,
 		address _signatureManager,
@@ -45,14 +45,14 @@ contract IglooFiV1Vault is
 	{
 		require(_forVoteCountRequired > 0, "!_forVoteCountRequired");
 
-		IIglooFiV1VaultRecord(_iglooFiV1VaultRecord).addAdmin(address(this), admin);
+		IYieldSyncV1VaultRecord(_yieldSyncV1VaultRecord).addAdmin(address(this), admin);
 
 		for (uint i = 0; i < members.length; i++)
 		{
-			IIglooFiV1VaultRecord(_iglooFiV1VaultRecord).addMember(address(this), members[i]);
+			IYieldSyncV1VaultRecord(_yieldSyncV1VaultRecord).addMember(address(this), members[i]);
 		}
 
-		iglooFiV1VaultRecord = _iglooFiV1VaultRecord;
+		yieldSyncV1VaultRecord = _yieldSyncV1VaultRecord;
 		signatureManager = _signatureManager;
 		againstVoteCountRequired = _againstVoteCountRequired;
 		forVoteCountRequired = _forVoteCountRequired;
@@ -91,7 +91,7 @@ contract IglooFiV1Vault is
 
 	modifier onlyAdmin()
 	{
-		(bool admin,) = IIglooFiV1VaultRecord(iglooFiV1VaultRecord).participant_iglooFiV1Vault_access(
+		(bool admin,) = IYieldSyncV1VaultRecord(yieldSyncV1VaultRecord).participant_yieldSyncV1Vault_access(
 			msg.sender,
 			address(this)
 		);
@@ -104,7 +104,7 @@ contract IglooFiV1Vault is
 
 	modifier onlyMember()
 	{
-		(, bool member) = IIglooFiV1VaultRecord(iglooFiV1VaultRecord).participant_iglooFiV1Vault_access(
+		(, bool member) = IYieldSyncV1VaultRecord(yieldSyncV1VaultRecord).participant_yieldSyncV1Vault_access(
 			msg.sender,
 			address(this)
 		);
@@ -153,7 +153,7 @@ contract IglooFiV1Vault is
 	}
 
 
-	/// @inheritdoc IIglooFiV1Vault
+	/// @inheritdoc IYieldSyncV1Vault
 	function openWithdrawalRequestIds()
 		public
 		view
@@ -163,7 +163,7 @@ contract IglooFiV1Vault is
 		return _openWithdrawalRequestIds;
 	}
 
-	/// @inheritdoc IIglooFiV1Vault
+	/// @inheritdoc IYieldSyncV1Vault
 	function withdrawalRequest(uint256 withdrawalRequestId)
 		public
 		view
@@ -175,44 +175,44 @@ contract IglooFiV1Vault is
 	}
 
 
-	/// @inheritdoc IIglooFiV1Vault
+	/// @inheritdoc IYieldSyncV1Vault
 	function addAdmin(address targetAddress)
 		public
 		override
 		onlyAdmin()
 	{
-		IIglooFiV1VaultRecord(iglooFiV1VaultRecord).addAdmin(address(this), targetAddress);
+		IYieldSyncV1VaultRecord(yieldSyncV1VaultRecord).addAdmin(address(this), targetAddress);
 	}
 
-	/// @inheritdoc IIglooFiV1Vault
+	/// @inheritdoc IYieldSyncV1Vault
 	function removeAdmin(address admin)
 		public
 		override
 		onlyAdmin()
 	{
-		IIglooFiV1VaultRecord(iglooFiV1VaultRecord).removeAdmin(address(this), admin);
+		IYieldSyncV1VaultRecord(yieldSyncV1VaultRecord).removeAdmin(address(this), admin);
 	}
 
-	/// @inheritdoc IIglooFiV1Vault
+	/// @inheritdoc IYieldSyncV1Vault
 	function addMember(address targetAddress)
 		public
 		override
 		onlyAdmin()
 	{
-		IIglooFiV1VaultRecord(iglooFiV1VaultRecord).addMember(address(this), targetAddress);
+		IYieldSyncV1VaultRecord(yieldSyncV1VaultRecord).addMember(address(this), targetAddress);
 	}
 
-	/// @inheritdoc IIglooFiV1Vault
+	/// @inheritdoc IYieldSyncV1Vault
 	function removeMember(address member)
 		public
 		override
 		onlyAdmin()
 	{
-		IIglooFiV1VaultRecord(iglooFiV1VaultRecord).removeMember(address(this), member);
+		IYieldSyncV1VaultRecord(yieldSyncV1VaultRecord).removeMember(address(this), member);
 	}
 
 
-	/// @inheritdoc IIglooFiV1Vault
+	/// @inheritdoc IYieldSyncV1Vault
 	function deleteWithdrawalRequest(uint256 withdrawalRequestId)
 		public
 		override
@@ -224,7 +224,7 @@ contract IglooFiV1Vault is
 		emit DeletedWithdrawalRequest(withdrawalRequestId);
 	}
 
-	/// @inheritdoc IIglooFiV1Vault
+	/// @inheritdoc IYieldSyncV1Vault
 	function updateWithdrawalRequest(uint256 withdrawalRequestId, WithdrawalRequest memory __withdrawalRequest)
 		public
 		override
@@ -236,7 +236,7 @@ contract IglooFiV1Vault is
 		emit UpdatedWithdrawalRequest(__withdrawalRequest);
 	}
 
-	/// @inheritdoc IIglooFiV1Vault
+	/// @inheritdoc IYieldSyncV1Vault
 	function updateAgainstVoteCountRequired(uint256 _againstVoteCountRequired)
 		public
 		override
@@ -249,7 +249,7 @@ contract IglooFiV1Vault is
 		emit UpdatedAgainstVoteCountRequired(againstVoteCountRequired);
 	}
 
-	/// @inheritdoc IIglooFiV1Vault
+	/// @inheritdoc IYieldSyncV1Vault
 	function updateForVoteCountRequired(uint256 _forVoteCountRequired)
 		public
 		override
@@ -262,7 +262,7 @@ contract IglooFiV1Vault is
 		emit UpdatedForVoteCountRequired(forVoteCountRequired);
 	}
 
-	/// @inheritdoc IIglooFiV1Vault
+	/// @inheritdoc IYieldSyncV1Vault
 	function updateSignatureManager(address _signatureManager)
 		public
 		override
@@ -273,7 +273,7 @@ contract IglooFiV1Vault is
 		emit UpdatedSignatureManger(signatureManager);
 	}
 
-	/// @inheritdoc IIglooFiV1Vault
+	/// @inheritdoc IYieldSyncV1Vault
 	function updateWithdrawalDelaySeconds(uint256 _withdrawalDelaySeconds)
 		public
 		override
@@ -287,7 +287,7 @@ contract IglooFiV1Vault is
 	}
 
 
-	/// @inheritdoc IIglooFiV1Vault
+	/// @inheritdoc IYieldSyncV1Vault
 	function createWithdrawalRequest(
 		bool forEther,
 		bool forERC20,
@@ -329,7 +329,7 @@ contract IglooFiV1Vault is
 		emit CreatedWithdrawalRequest(_withdrawalRequestIdTracker - 1);
 	}
 
-	/// @inheritdoc IIglooFiV1Vault
+	/// @inheritdoc IYieldSyncV1Vault
 	function voteOnWithdrawalRequest(uint256 withdrawalRequestId, bool vote)
 		public
 		override
@@ -367,7 +367,7 @@ contract IglooFiV1Vault is
 		emit MemberVoted(withdrawalRequestId, msg.sender, vote);
 	}
 
-	/// @inheritdoc IIglooFiV1Vault
+	/// @inheritdoc IYieldSyncV1Vault
 	function processWithdrawalRequest(uint256 withdrawalRequestId)
 		public
 		override

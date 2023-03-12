@@ -7,22 +7,22 @@ const { ethers } = require("hardhat");
 const stageContracts = async () => {
 	const [owner, addr1, addr2] = await ethers.getSigners();
 
-	const IglooFiV1Vault: ContractFactory = await ethers.getContractFactory("IglooFiV1Vault");
-	const IglooFiV1VaultFactory: ContractFactory = await ethers.getContractFactory("IglooFiV1VaultFactory");
-	const IglooFiV1VaultRecord: ContractFactory = await ethers.getContractFactory("IglooFiV1VaultRecord");
-	const MockIglooFiGovernance: ContractFactory = await ethers.getContractFactory("MockIglooFiGovernance");
+	const YieldSyncV1Vault: ContractFactory = await ethers.getContractFactory("YieldSyncV1Vault");
+	const YieldSyncV1VaultFactory: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultFactory");
+	const YieldSyncV1VaultRecord: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultRecord");
+	const MockYieldSyncGovernance: ContractFactory = await ethers.getContractFactory("MockYieldSyncGovernance");
 	const MockAdmin: ContractFactory = await ethers.getContractFactory("MockAdmin");
 	const SignatureManager: ContractFactory = await ethers.getContractFactory("SignatureManager");
 
 	// Deploy
-	const mockIglooFiGovernance: Contract = await (await MockIglooFiGovernance.deploy()).deployed();
-	const iglooFiV1VaultRecord: Contract = await (await IglooFiV1VaultRecord.deploy()).deployed();
-	const iglooFiV1VaultFactory: Contract = await (
-		await IglooFiV1VaultFactory.deploy(mockIglooFiGovernance.address, iglooFiV1VaultRecord.address)
+	const mockYieldSyncGovernance: Contract = await (await MockYieldSyncGovernance.deploy()).deployed();
+	const yieldSyncV1VaultRecord: Contract = await (await YieldSyncV1VaultRecord.deploy()).deployed();
+	const yieldSyncV1VaultFactory: Contract = await (
+		await YieldSyncV1VaultFactory.deploy(mockYieldSyncGovernance.address, yieldSyncV1VaultRecord.address)
 	).deployed();
 
 	// Deploy a vault
-	await iglooFiV1VaultFactory.deployIglooFiV1Vault(
+	await yieldSyncV1VaultFactory.deployYieldSyncV1Vault(
 		owner.address,
 		[addr1.address, addr2.address],
 		ethers.constants.AddressZero,
@@ -34,18 +34,18 @@ const stageContracts = async () => {
 	);
 
 	// Attach the deployed vault's address
-	const iglooFiV1Vault: Contract = await IglooFiV1Vault.attach(iglooFiV1VaultFactory.iglooFiV1VaultIdToAddress(0));
+	const yieldSyncV1Vault: Contract = await YieldSyncV1Vault.attach(yieldSyncV1VaultFactory.yieldSyncV1VaultIdToAddress(0));
 
 	const mockAdmin: Contract = await (await MockAdmin.deploy()).deployed();
 	const signatureManager: Contract = await (
-		await SignatureManager.deploy(mockIglooFiGovernance.address, iglooFiV1VaultRecord.address)
+		await SignatureManager.deploy(mockYieldSyncGovernance.address, yieldSyncV1VaultRecord.address)
 	).deployed();
 
 	return {
-		iglooFiV1Vault,
-		iglooFiV1VaultFactory,
-		iglooFiV1VaultRecord,
-		mockIglooFiGovernance,
+		yieldSyncV1Vault,
+		yieldSyncV1VaultFactory,
+		yieldSyncV1VaultRecord,
+		mockYieldSyncGovernance,
 		mockAdmin,
 		signatureManager
 	};
@@ -53,10 +53,10 @@ const stageContracts = async () => {
 
 
 describe("[4] MockAdmin.sol - Mock Admin Contract", async () => {
-	let iglooFiV1Vault: Contract;
-	let iglooFiV1VaultFactory: Contract;
-	let iglooFiV1VaultRecord: Contract;
-	let mockIglooFiGovernance: Contract;
+	let yieldSyncV1Vault: Contract;
+	let yieldSyncV1VaultFactory: Contract;
+	let yieldSyncV1VaultRecord: Contract;
+	let mockYieldSyncGovernance: Contract;
 	let mockAdmin: Contract;
 	let signatureManager: Contract;
 
@@ -66,22 +66,22 @@ describe("[4] MockAdmin.sol - Mock Admin Contract", async () => {
 
 		const stagedContracts = await stageContracts();
 
-		iglooFiV1Vault = stagedContracts.iglooFiV1Vault;
-		iglooFiV1VaultFactory = stagedContracts.iglooFiV1VaultFactory;
-		iglooFiV1VaultRecord = stagedContracts.iglooFiV1VaultRecord;
-		mockIglooFiGovernance = stagedContracts.mockIglooFiGovernance;
+		yieldSyncV1Vault = stagedContracts.yieldSyncV1Vault;
+		yieldSyncV1VaultFactory = stagedContracts.yieldSyncV1VaultFactory;
+		yieldSyncV1VaultRecord = stagedContracts.yieldSyncV1VaultRecord;
+		mockYieldSyncGovernance = stagedContracts.mockYieldSyncGovernance;
 		mockAdmin = stagedContracts.mockAdmin;
 		signatureManager = stagedContracts.signatureManager;
 
-		await iglooFiV1Vault.updateSignatureManager(signatureManager.address);
+		await yieldSyncV1Vault.updateSignatureManager(signatureManager.address);
 
-		// Send ether to IglooFiV1Vault contract
+		// Send ether to YieldSyncV1Vault contract
 		await addr1.sendTransaction({
-			to: iglooFiV1Vault.address,
+			to: yieldSyncV1Vault.address,
 			value: ethers.utils.parseEther("1")
 		});
 
-		await iglooFiV1Vault.connect(addr1).createWithdrawalRequest(
+		await yieldSyncV1Vault.connect(addr1).createWithdrawalRequest(
 			true,
 			false,
 			false,
@@ -98,7 +98,7 @@ describe("[4] MockAdmin.sol - Mock Admin Contract", async () => {
 	describe("Restriction: DEFAULT_ADMIN_ROLE", async () => {
 		describe("addAdmin()", async () => {
 			it("Should allow admin to add a contract-based admin..", async () => {
-				await iglooFiV1Vault.addAdmin(mockAdmin.address);
+				await yieldSyncV1Vault.addAdmin(mockAdmin.address);
 			});
 		});
 
@@ -109,16 +109,16 @@ describe("[4] MockAdmin.sol - Mock Admin Contract", async () => {
 			it(
 				"Should update the latestRelevantApproveVoteTime to ADD seconds..",
 				async () => {
-					const beforeBlockTimestamp = BigInt((await iglooFiV1Vault.withdrawalRequest(0))[10]);
+					const beforeBlockTimestamp = BigInt((await yieldSyncV1Vault.withdrawalRequest(0))[10]);
 
 					await mockAdmin.updateWithdrawalRequestLatestRelevantApproveVoteTime(
-						iglooFiV1Vault.address,
+						yieldSyncV1Vault.address,
 						0,
 						true,
 						4000
 					);
 
-					const afterBlockTimestamp = BigInt((await iglooFiV1Vault.withdrawalRequest(0))[10]);
+					const afterBlockTimestamp = BigInt((await yieldSyncV1Vault.withdrawalRequest(0))[10]);
 
 					expect(BigInt(beforeBlockTimestamp + BigInt(4000))).to.be.equal(afterBlockTimestamp);
 				}
