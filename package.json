@@ -6,7 +6,7 @@
 	"scripts": {},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/igloo-fi/v1-vaults.git"
+		"url": "git+https://github.com/yield-sync/v1-vaults.git"
 	},
 	"keywords": [],
 	"author": "Aleem Ahmed",
