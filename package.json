@@ -9,10 +9,10 @@
 		"url": "git+https://github.com/yield-sync/v1-vaults.git"
 	},
 	"keywords": [],
-	"author": "Aleem Ahmed",
+	"author": "",
 	"license": "ISC",
 	"devDependencies": {
-		"@yield-sync/v1-sdk": "^0.0.22",
+		"@yield-sync/v1-sdk": "^0.0.23",
 		"@nomicfoundation/hardhat-chai-matchers": "^1.0.5",
 		"@nomicfoundation/hardhat-toolbox": "^2.0.1",
 		"@nomiclabs/hardhat-solhint": "^3.0.0",
