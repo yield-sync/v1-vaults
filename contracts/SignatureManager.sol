@@ -46,7 +46,7 @@ contract SignatureManager is
 	modifier onlyYieldSyncGovernanceAdmin() {
 		require(
 			IYieldSyncGovernance(yieldSyncGovernance).hasRole(
-				IYieldSyncGovernance(yieldSyncGovernance).governanceRoles("DEFAULT_ADMIN_ROLE"),
+				IYieldSyncGovernance(yieldSyncGovernance).role_roleHash("DEFAULT_ADMIN_ROLE"),
 				msg.sender
 			),
 			"!auth"
