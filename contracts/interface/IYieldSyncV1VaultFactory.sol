@@ -85,13 +85,26 @@ interface IYieldSyncV1VaultFactory {
 	;
 
 	/**
-	* @notice YieldSyncV1Vault Id to Address
+	* @notice yieldSyncV1VaultAddress to yieldSyncV1VaultId
 	* @dev [!restriction]
-	* @dev [view]
+	* @dev [view-mapping]
+	* @param yieldSyncV1VaultAddress {address}
+	* @return {uint256}
+	*/
+	function yieldSyncV1VaultAddress_yieldSyncV1VaultId(address yieldSyncV1VaultAddress)
+		external
+		view
+		returns (uint256)
+	;
+
+	/**
+	* @notice yieldSyncV1VaultId to yieldSyncV1VaultAddress
+	* @dev [!restriction]
+	* @dev [view-mapping]
 	* @param yieldSyncV1VaultId {uint256}
 	* @return {address}
 	*/
-	function yieldSyncV1VaultIdToAddress(uint256 yieldSyncV1VaultId)
+	function yieldSyncV1VaultId_yieldSyncV1VaultAddress(uint256 yieldSyncV1VaultId)
 		external
 		view
 		returns (address)

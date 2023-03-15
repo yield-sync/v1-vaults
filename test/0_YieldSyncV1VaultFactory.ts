@@ -197,7 +197,7 @@ describe("[0] YieldSyncV1VaultFactory.sol - YieldSync V1 Vault Factory Contract"
 						{ value: 1 }
 					);
 
-					expect(await yieldSyncV1VaultFactory.yieldSyncV1VaultIdToAddress(0)).to.equal(
+					expect(await yieldSyncV1VaultFactory.yieldSyncV1VaultId_yieldSyncV1VaultAddress(0)).to.equal(
 						(await deployedObj.wait()).events[0].args[0]
 					);
 				}
@@ -223,7 +223,7 @@ describe("[0] YieldSyncV1VaultFactory.sol - YieldSync V1 Vault Factory Contract"
 
 					// Attach the deployed vault's address
 					const yieldSyncV1Vault = await YieldSyncV1Vault.attach(
-						await yieldSyncV1VaultFactory.yieldSyncV1VaultIdToAddress(1)
+						await yieldSyncV1VaultFactory.yieldSyncV1VaultId_yieldSyncV1VaultAddress(1)
 					);
 
 					expect(await yieldSyncV1Vault.signatureManager()).to.be.equal(mockSignatureManager.address);
@@ -239,7 +239,7 @@ describe("[0] YieldSyncV1VaultFactory.sol - YieldSync V1 Vault Factory Contract"
 						const YieldSyncV1Vault = await ethers.getContractFactory("YieldSyncV1Vault");
 
 						// Retreive the deployed vault's address
-						const deployedAddress = await yieldSyncV1VaultFactory.yieldSyncV1VaultIdToAddress(0);
+						const deployedAddress = await yieldSyncV1VaultFactory.yieldSyncV1VaultId_yieldSyncV1VaultAddress(0);
 
 						// Attach the deployed vault's address
 						const yieldSyncV1Vault = await YieldSyncV1Vault.attach(deployedAddress);

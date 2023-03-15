@@ -24,10 +24,12 @@ contract YieldSyncV1VaultFactory is
 	uint256 public override yieldSyncV1VaultIdTracker;
 
 	// [mapping]
-	// yieldSyncV1VaultAddress => yieldSyncV1VaultId
-	mapping (address => uint256) internal _yieldSyncV1VaultAddressToId;
-	// yieldSyncV1VaultId => yieldSyncV1VaultId
-	mapping (uint256 => address) internal _yieldSyncV1VaultIdToAddress;
+	mapping (
+		address yieldSyncV1VaultAddress => uint256 yieldSyncV1VaultId
+	) public override yieldSyncV1VaultAddress_yieldSyncV1VaultId;
+	mapping (
+		uint256 yieldSyncV1VaultId => address yieldSyncV1VaultAddress
+	) public override yieldSyncV1VaultId_yieldSyncV1VaultAddress;
 
 
 	constructor (address _yieldSyncGovernance, address _yieldSyncV1VaultRecord)
@@ -69,17 +71,6 @@ contract YieldSyncV1VaultFactory is
 
 
 	/// @inheritdoc IYieldSyncV1VaultFactory
-	function yieldSyncV1VaultIdToAddress(uint256 yieldSyncV1VaultId)
-		public
-		view
-		override
-		returns (address)
-	{
-		return _yieldSyncV1VaultIdToAddress[yieldSyncV1VaultId];
-	}
-
-
-	/// @inheritdoc IYieldSyncV1VaultFactory
 	function deployYieldSyncV1Vault(
 		address admin,
 		address[] memory members,
@@ -106,8 +97,8 @@ contract YieldSyncV1VaultFactory is
 			withdrawalDelaySeconds
 		);
 
-		_yieldSyncV1VaultAddressToId[address(deployedContract)] = yieldSyncV1VaultIdTracker;
-		_yieldSyncV1VaultIdToAddress[yieldSyncV1VaultIdTracker] = address(deployedContract);
+		yieldSyncV1VaultAddress_yieldSyncV1VaultId[address(deployedContract)] = yieldSyncV1VaultIdTracker;
+		yieldSyncV1VaultId_yieldSyncV1VaultAddress[yieldSyncV1VaultIdTracker] = address(deployedContract);
 
 		yieldSyncV1VaultIdTracker++;
 

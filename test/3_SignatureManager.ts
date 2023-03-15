@@ -39,7 +39,7 @@ const stageContracts = async () => {
 	);
 
 	// Attach the deployed vault's address
-	const yieldSyncV1Vault: Contract = await YieldSyncV1Vault.attach(yieldSyncV1VaultFactory.yieldSyncV1VaultIdToAddress(0));
+	const yieldSyncV1Vault: Contract = await YieldSyncV1Vault.attach(yieldSyncV1VaultFactory.yieldSyncV1VaultId_yieldSyncV1VaultAddress(0));
 
 	const mockAdmin: Contract = await (await MockAdmin.deploy()).deployed();
 	const signatureManager: Contract = await (
