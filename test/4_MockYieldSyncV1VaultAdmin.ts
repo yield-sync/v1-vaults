@@ -109,7 +109,7 @@ describe("[4] MockAdmin.sol - Mock Admin Contract", async () => {
 			it(
 				"Should update the latestRelevantApproveVoteTime to ADD seconds..",
 				async () => {
-					const beforeBlockTimestamp = BigInt((await yieldSyncV1Vault.withdrawalRequest(0))[10]);
+					const beforeBlockTimestamp = BigInt((await yieldSyncV1Vault.withdrawalRequestId_withdralRequest(0))[10]);
 
 					await mockAdmin.updateWithdrawalRequestLatestRelevantApproveVoteTime(
 						yieldSyncV1Vault.address,
@@ -118,7 +118,7 @@ describe("[4] MockAdmin.sol - Mock Admin Contract", async () => {
 						4000
 					);
 
-					const afterBlockTimestamp = BigInt((await yieldSyncV1Vault.withdrawalRequest(0))[10]);
+					const afterBlockTimestamp = BigInt((await yieldSyncV1Vault.withdrawalRequestId_withdralRequest(0))[10]);
 
 					expect(BigInt(beforeBlockTimestamp + BigInt(4000))).to.be.equal(afterBlockTimestamp);
 				}

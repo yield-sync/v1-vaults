@@ -11,7 +11,7 @@ import { IYieldSyncV1Vault, WithdrawalRequest } from "../interface/IYieldSyncV1V
 contract MockAdmin is Ownable {
 	modifier validWithdrawalRequest(address yieldSyncV1VaultAddress, uint256 withdrawalRequestId) {
 		require(
-			IYieldSyncV1Vault(payable(yieldSyncV1VaultAddress)).withdrawalRequest(
+			IYieldSyncV1Vault(payable(yieldSyncV1VaultAddress)).withdrawalRequestId_withdralRequest(
 				withdrawalRequestId
 			).creator != address(0),
 			"No WithdrawalRequest found"
@@ -30,7 +30,7 @@ contract MockAdmin is Ownable {
 		public
 		validWithdrawalRequest(yieldSyncV1VaultAddress, withdrawalRequestId)
 	{
-		WithdrawalRequest memory wR = IYieldSyncV1Vault(payable(yieldSyncV1VaultAddress)).withdrawalRequest(
+		WithdrawalRequest memory wR = IYieldSyncV1Vault(payable(yieldSyncV1VaultAddress)).withdrawalRequestId_withdralRequest(
 			withdrawalRequestId
 		);
 

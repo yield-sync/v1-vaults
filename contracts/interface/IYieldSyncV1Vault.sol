@@ -114,7 +114,7 @@ interface IYieldSyncV1Vault
 	* @dev [view-uint256[]]
 	* @return {uint256[]}
 	*/
-	function openWithdrawalRequestIds()
+	function idsOfOpenWithdrawalRequests()
 		external
 		view
 		returns (uint256[] memory)
@@ -127,7 +127,7 @@ interface IYieldSyncV1Vault
 	* @param withdrawalRequestId {uint256}
 	* @return {WithdrawalRequest}
 	*/
-	function withdrawalRequest(uint256 withdrawalRequestId)
+	function withdrawalRequestId_withdralRequest(uint256 withdrawalRequestId)
 		external
 		view returns (WithdrawalRequest memory)
 	;

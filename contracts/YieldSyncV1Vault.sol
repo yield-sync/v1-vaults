@@ -26,10 +26,12 @@ contract YieldSyncV1Vault is
 	uint256 public override forVoteCountRequired;
 	uint256 public override withdrawalDelaySeconds;
 	uint256 internal _withdrawalRequestIdTracker;
-	uint256[] internal _openWithdrawalRequestIds;
+	uint256[] internal _idsOfOpenWithdrawalRequests;
 
 	// [mapping]
-	mapping (uint256 withdrawalRequestId => WithdrawalRequest withdralRequest) internal _withdrawalRequest;
+	mapping (
+		uint256 withdrawalRequestId => WithdrawalRequest withdralRequest
+	) internal _withdrawalRequestId_withdralRequest;
 
 
 	constructor (
@@ -78,9 +80,9 @@ contract YieldSyncV1Vault is
 	modifier validWithdrawalRequest(uint256 withdrawalRequestId)
 	{
 		require(
-			_withdrawalRequest[withdrawalRequestId].forEther ||
-			_withdrawalRequest[withdrawalRequestId].forERC20 ||
-			_withdrawalRequest[withdrawalRequestId].forERC721,
+			_withdrawalRequestId_withdralRequest[withdrawalRequestId].forEther ||
+			_withdrawalRequestId_withdralRequest[withdrawalRequestId].forERC20 ||
+			_withdrawalRequestId_withdralRequest[withdrawalRequestId].forERC721,
 			"No WithdrawalRequest found"
 		);
 
@@ -117,23 +119,23 @@ contract YieldSyncV1Vault is
 	/**
 	* @notice Delete WithdrawalRequest
 	* @dev [restriction][internal]
-	* @dev [delete] `_withdrawalRequest` value
-	*      [delete] `_openWithdrawalRequestIds` value
+	* @dev [delete] `_withdrawalRequestId_withdralRequest` value
+	*      [delete] `_idsOfOpenWithdrawalRequests` value
 	* @param withdrawalRequestId {uint256}
 	* Emits: `DeletedWithdrawalRequest`
 	*/
 	function _deleteWithdrawalRequest(uint256 withdrawalRequestId)
 		internal
 	{
-		delete _withdrawalRequest[withdrawalRequestId];
+		delete _withdrawalRequestId_withdralRequest[withdrawalRequestId];
 
-		for (uint256 i = 0; i < _openWithdrawalRequestIds.length; i++)
+		for (uint256 i = 0; i < _idsOfOpenWithdrawalRequests.length; i++)
 		{
-			if (_openWithdrawalRequestIds[i] == withdrawalRequestId)
+			if (_idsOfOpenWithdrawalRequests[i] == withdrawalRequestId)
 			{
-				_openWithdrawalRequestIds[i] = _openWithdrawalRequestIds[_openWithdrawalRequestIds.length - 1];
+				_idsOfOpenWithdrawalRequests[i] = _idsOfOpenWithdrawalRequests[_idsOfOpenWithdrawalRequests.length - 1];
 
-				_openWithdrawalRequestIds.pop();
+				_idsOfOpenWithdrawalRequests.pop();
 
 				break;
 			}
@@ -153,24 +155,24 @@ contract YieldSyncV1Vault is
 
 
 	/// @inheritdoc IYieldSyncV1Vault
-	function openWithdrawalRequestIds()
+	function idsOfOpenWithdrawalRequests()
 		public
 		view
 		override
 		returns (uint256[] memory)
 	{
-		return _openWithdrawalRequestIds;
+		return _idsOfOpenWithdrawalRequests;
 	}
 
 	/// @inheritdoc IYieldSyncV1Vault
-	function withdrawalRequest(uint256 withdrawalRequestId)
+	function withdrawalRequestId_withdralRequest(uint256 withdrawalRequestId)
 		public
 		view
 		override
 		validWithdrawalRequest(withdrawalRequestId)
 		returns (WithdrawalRequest memory)
 	{
-		return _withdrawalRequest[withdrawalRequestId];
+		return _withdrawalRequestId_withdralRequest[withdrawalRequestId];
 	}
 
 
@@ -230,7 +232,7 @@ contract YieldSyncV1Vault is
 		onlyAdmin()
 		validWithdrawalRequest(withdrawalRequestId)
 	{
-		_withdrawalRequest[withdrawalRequestId] = __withdrawalRequest;
+		_withdrawalRequestId_withdralRequest[withdrawalRequestId] = __withdrawalRequest;
 
 		emit UpdatedWithdrawalRequest(__withdrawalRequest);
 	}
@@ -304,7 +306,7 @@ contract YieldSyncV1Vault is
 
 		address[] memory initialVotedMembers;
 
-		_withdrawalRequest[_withdrawalRequestIdTracker] = WithdrawalRequest(
+		_withdrawalRequestId_withdralRequest[_withdrawalRequestIdTracker] = WithdrawalRequest(
 			{
 				forEther: forEther,
 				forERC20: forERC20,
@@ -321,7 +323,7 @@ contract YieldSyncV1Vault is
 			}
 		);
 
-		_openWithdrawalRequestIds.push(_withdrawalRequestIdTracker);
+		_idsOfOpenWithdrawalRequests.push(_withdrawalRequestIdTracker);
 
 		_withdrawalRequestIdTracker++;
 
@@ -335,32 +337,35 @@ contract YieldSyncV1Vault is
 		onlyMember()
 		validWithdrawalRequest(withdrawalRequestId)
 	{
-		for (uint256 i = 0; i < _withdrawalRequest[withdrawalRequestId].votedMembers.length; i++)
+		for (uint256 i = 0; i < _withdrawalRequestId_withdralRequest[withdrawalRequestId].votedMembers.length; i++)
 		{
-			require(_withdrawalRequest[withdrawalRequestId].votedMembers[i] != msg.sender, "Already voted");
+			require(
+				_withdrawalRequestId_withdralRequest[withdrawalRequestId].votedMembers[i] != msg.sender,
+				"Already voted"
+			);
 		}
 
 		if (vote)
 		{
-			_withdrawalRequest[withdrawalRequestId].forVoteCount++;
+			_withdrawalRequestId_withdralRequest[withdrawalRequestId].forVoteCount++;
 		}
 		else {
-			_withdrawalRequest[withdrawalRequestId].againstVoteCount++;
+			_withdrawalRequestId_withdralRequest[withdrawalRequestId].againstVoteCount++;
 		}
 
 		if (
-			_withdrawalRequest[withdrawalRequestId].forVoteCount >= forVoteCountRequired ||
-			_withdrawalRequest[withdrawalRequestId].againstVoteCount >= againstVoteCountRequired
+			_withdrawalRequestId_withdralRequest[withdrawalRequestId].forVoteCount >= forVoteCountRequired ||
+			_withdrawalRequestId_withdralRequest[withdrawalRequestId].againstVoteCount >= againstVoteCountRequired
 		)
 		{
 			emit WithdrawalRequestReadyToBeProcessed(withdrawalRequestId);
 		}
 
-		_withdrawalRequest[withdrawalRequestId].votedMembers.push(msg.sender);
+		_withdrawalRequestId_withdralRequest[withdrawalRequestId].votedMembers.push(msg.sender);
 
-		if (_withdrawalRequest[withdrawalRequestId].forVoteCount < forVoteCountRequired)
+		if (_withdrawalRequestId_withdralRequest[withdrawalRequestId].forVoteCount < forVoteCountRequired)
 		{
-			_withdrawalRequest[withdrawalRequestId].latestRelevantApproveVoteTime = block.timestamp;
+			_withdrawalRequestId_withdralRequest[withdrawalRequestId].latestRelevantApproveVoteTime = block.timestamp;
 		}
 
 		emit MemberVoted(withdrawalRequestId, msg.sender, vote);
@@ -373,7 +378,7 @@ contract YieldSyncV1Vault is
 		onlyMember()
 		validWithdrawalRequest(withdrawalRequestId)
 	{
-		WithdrawalRequest memory wR = _withdrawalRequest[withdrawalRequestId];
+		WithdrawalRequest memory wR = _withdrawalRequestId_withdralRequest[withdrawalRequestId];
 
 		require(
 			wR.forVoteCount >= forVoteCountRequired || wR.againstVoteCount >= againstVoteCountRequired,

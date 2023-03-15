@@ -470,7 +470,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 								0
 							);
 
-							const createdWithdrawalRequest: any = await yieldSyncV1Vault.withdrawalRequest(0);
+							const createdWithdrawalRequest: any = await yieldSyncV1Vault.withdrawalRequestId_withdralRequest(0);
 
 							expect(createdWithdrawalRequest[0]).to.be.true;
 							expect(createdWithdrawalRequest[1]).to.be.false;
@@ -487,12 +487,12 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 					);
 
 					it(
-						"Should have '0' in _openWithdrawalRequestIds[0]..",
+						"Should have '0' in _idsOfOpenWithdrawalRequests[0]..",
 						async () => {
-							const openWithdrawalRequestIds = await yieldSyncV1Vault.openWithdrawalRequestIds();
+							const idsOfOpenWithdrawalRequests = await yieldSyncV1Vault.idsOfOpenWithdrawalRequests();
 
-							expect(openWithdrawalRequestIds.length).to.be.equal(1);
-							expect(openWithdrawalRequestIds[0]).to.be.equal(0);
+							expect(idsOfOpenWithdrawalRequests.length).to.be.equal(1);
+							expect(idsOfOpenWithdrawalRequests[0]).to.be.equal(0);
 						}
 					);
 				});
@@ -518,7 +518,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 
 							await yieldSyncV1Vault.connect(addr1).voteOnWithdrawalRequest(0, true);
 
-							const createdWithdrawalRequest: any = await yieldSyncV1Vault.withdrawalRequest(0);
+							const createdWithdrawalRequest: any = await yieldSyncV1Vault.withdrawalRequestId_withdralRequest(0);
 
 							expect(createdWithdrawalRequest[8]).to.be.equal(1);
 							expect(createdWithdrawalRequest[11][0]).to.be.equal(addr1.address);
@@ -627,7 +627,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 								0
 							);
 
-							const createdWithdrawalRequest: any = await yieldSyncV1Vault.withdrawalRequest(1);
+							const createdWithdrawalRequest: any = await yieldSyncV1Vault.withdrawalRequestId_withdralRequest(1);
 
 							expect(createdWithdrawalRequest[0]).to.be.false;
 							expect(createdWithdrawalRequest[1]).to.be.true;
@@ -644,12 +644,12 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 					);
 
 					it(
-						"Should have '1' in _openWithdrawalRequestIds[0]..",
+						"Should have '1' in _idsOfOpenWithdrawalRequests[0]..",
 						async () => {
-							const openWithdrawalRequestIds = await yieldSyncV1Vault.openWithdrawalRequestIds();
+							const idsOfOpenWithdrawalRequests = await yieldSyncV1Vault.idsOfOpenWithdrawalRequests();
 
-							expect(openWithdrawalRequestIds.length).to.be.equal(1);
-							expect(openWithdrawalRequestIds[0]).to.be.equal(1);
+							expect(idsOfOpenWithdrawalRequests.length).to.be.equal(1);
+							expect(idsOfOpenWithdrawalRequests[0]).to.be.equal(1);
 						}
 					);
 				});
@@ -666,7 +666,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 
 							await yieldSyncV1Vault.connect(addr1).voteOnWithdrawalRequest(1, true);
 
-							const createdWithdrawalRequest: any = await yieldSyncV1Vault.withdrawalRequest(1);
+							const createdWithdrawalRequest: any = await yieldSyncV1Vault.withdrawalRequestId_withdralRequest(1);
 
 							expect(createdWithdrawalRequest[8]).to.be.equal(1);
 							expect(createdWithdrawalRequest[11][0]).to.be.equal(addr1.address);
@@ -698,9 +698,9 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 					);
 
 					it(
-						"_openWithdrawalRequestIds should be empty..",
+						"_idsOfOpenWithdrawalRequests should be empty..",
 						async () => {
-							expect((await yieldSyncV1Vault.openWithdrawalRequestIds()).length).to.be.equal(0);
+							expect((await yieldSyncV1Vault.idsOfOpenWithdrawalRequests()).length).to.be.equal(0);
 						}
 					);
 				});
@@ -730,7 +730,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 								1
 							);
 
-							const createdWithdrawalRequest: any = await yieldSyncV1Vault.withdrawalRequest(2);
+							const createdWithdrawalRequest: any = await yieldSyncV1Vault.withdrawalRequestId_withdralRequest(2);
 
 							expect(createdWithdrawalRequest[0]).to.be.false;
 							expect(createdWithdrawalRequest[1]).to.be.false;
@@ -747,12 +747,12 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 					);
 
 					it(
-						"Should have '2' in _openWithdrawalRequestIds[0]..",
+						"Should have '2' in _idsOfOpenWithdrawalRequests[0]..",
 						async () => {
-							const openWithdrawalRequestIds = await yieldSyncV1Vault.openWithdrawalRequestIds();
+							const idsOfOpenWithdrawalRequests = await yieldSyncV1Vault.idsOfOpenWithdrawalRequests();
 
-							expect(openWithdrawalRequestIds.length).to.be.equal(1);
-							expect(openWithdrawalRequestIds[0]).to.be.equal(2);
+							expect(idsOfOpenWithdrawalRequests.length).to.be.equal(1);
+							expect(idsOfOpenWithdrawalRequests[0]).to.be.equal(2);
 						}
 					);
 				});
@@ -769,7 +769,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 
 							await yieldSyncV1Vault.connect(addr1).voteOnWithdrawalRequest(2, true);
 
-							const createdWithdrawalRequest: any = await yieldSyncV1Vault.withdrawalRequest(2);
+							const createdWithdrawalRequest: any = await yieldSyncV1Vault.withdrawalRequestId_withdralRequest(2);
 
 							expect(createdWithdrawalRequest[8]).to.be.equal(1);
 							expect(createdWithdrawalRequest[11][0]).to.be.equal(addr1.address);
@@ -801,9 +801,9 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 					);
 
 					it(
-						"_openWithdrawalRequestIds should be empty..",
+						"_idsOfOpenWithdrawalRequests should be empty..",
 						async () => {
-							expect((await yieldSyncV1Vault.openWithdrawalRequestIds()).length).to.be.equal(0);
+							expect((await yieldSyncV1Vault.idsOfOpenWithdrawalRequests()).length).to.be.equal(0);
 						}
 					);
 				});
@@ -830,15 +830,15 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 							0
 						)
 
-						const openWithdrawalRequestIds = await yieldSyncV1Vault.openWithdrawalRequestIds()
+						const idsOfOpenWithdrawalRequests = await yieldSyncV1Vault.idsOfOpenWithdrawalRequests()
 
 						yieldSyncV1Vault.connect(addr1).voteOnWithdrawalRequest(
-							openWithdrawalRequestIds[openWithdrawalRequestIds.length - 1],
+							idsOfOpenWithdrawalRequests[idsOfOpenWithdrawalRequests.length - 1],
 							false
 						)
 
-						const createdWithdrawalRequest = await yieldSyncV1Vault.withdrawalRequest(
-							openWithdrawalRequestIds[openWithdrawalRequestIds.length - 1]
+						const createdWithdrawalRequest = await yieldSyncV1Vault.withdrawalRequestId_withdralRequest(
+							idsOfOpenWithdrawalRequests[idsOfOpenWithdrawalRequests.length - 1]
 						)
 
 						expect(createdWithdrawalRequest[9]).to.be.equal(1);
@@ -854,24 +854,24 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 				it("Should delete withdrawalRequest due to againstVoteCount met..", async () => {
 					const [, addr1] = await ethers.getSigners();
 
-					const openWithdrawalRequestIds = await yieldSyncV1Vault.openWithdrawalRequestIds();
+					const idsOfOpenWithdrawalRequests = await yieldSyncV1Vault.idsOfOpenWithdrawalRequests();
 
 					yieldSyncV1Vault.connect(addr1).processWithdrawalRequest(
-						openWithdrawalRequestIds[openWithdrawalRequestIds.length - 1]
+						idsOfOpenWithdrawalRequests[idsOfOpenWithdrawalRequests.length - 1]
 					);
 
-					await expect((await yieldSyncV1Vault.openWithdrawalRequestIds()).length).to.be.equal(0);
+					await expect((await yieldSyncV1Vault.idsOfOpenWithdrawalRequests()).length).to.be.equal(0);
 
 					await expect(
-						yieldSyncV1Vault.withdrawalRequest(
-							openWithdrawalRequestIds[openWithdrawalRequestIds.length - 1]
+						yieldSyncV1Vault.withdrawalRequestId_withdralRequest(
+							idsOfOpenWithdrawalRequests[idsOfOpenWithdrawalRequests.length - 1]
 						)
 					).to.be.rejectedWith("No WithdrawalRequest found");
 				});
 			});
 		});
 
-		describe("openWithdrawalRequestIds()", async () => {
+		describe("idsOfOpenWithdrawalRequests()", async () => {
 			it(
 				"Should be able to keep record of multiple open WithdrawalRequest Ids..",
 				async () => {
@@ -897,8 +897,8 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 						0
 					);
 
-					expect((await yieldSyncV1Vault.openWithdrawalRequestIds())[0]).to.be.equal(4);
-					expect((await yieldSyncV1Vault.openWithdrawalRequestIds())[1]).to.be.equal(5);
+					expect((await yieldSyncV1Vault.idsOfOpenWithdrawalRequests())[0]).to.be.equal(4);
+					expect((await yieldSyncV1Vault.idsOfOpenWithdrawalRequests())[1]).to.be.equal(5);
 				}
 			);
 		});
@@ -925,14 +925,14 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 						0
 					);
 
-					const openWithdrawalRequestIds = await yieldSyncV1Vault.openWithdrawalRequestIds()
+					const idsOfOpenWithdrawalRequests = await yieldSyncV1Vault.idsOfOpenWithdrawalRequests()
 
-					const withdrawalRequest: any = await yieldSyncV1Vault.withdrawalRequest(
-						openWithdrawalRequestIds[openWithdrawalRequestIds.length - 1]
+					const withdrawalRequest: any = await yieldSyncV1Vault.withdrawalRequestId_withdralRequest(
+						idsOfOpenWithdrawalRequests[idsOfOpenWithdrawalRequests.length - 1]
 					);
 
 					await yieldSyncV1Vault.updateWithdrawalRequest(
-						openWithdrawalRequestIds[openWithdrawalRequestIds.length - 1],
+						idsOfOpenWithdrawalRequests[idsOfOpenWithdrawalRequests.length - 1],
 						[
 							withdrawalRequest[0],
 							withdrawalRequest[1],
@@ -949,8 +949,8 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 						]
 					);
 
-					const updatedWithdrawalRequest: any = await yieldSyncV1Vault.withdrawalRequest(
-						openWithdrawalRequestIds[openWithdrawalRequestIds.length - 1]
+					const updatedWithdrawalRequest: any = await yieldSyncV1Vault.withdrawalRequestId_withdralRequest(
+						idsOfOpenWithdrawalRequests[idsOfOpenWithdrawalRequests.length - 1]
 					);
 
 					expect(updatedWithdrawalRequest[8]).to.be.equal(1);
@@ -972,10 +972,10 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 						0
 					);
 
-					const openWithdrawalRequestIds = await yieldSyncV1Vault.openWithdrawalRequestIds();
-					const wRiD: number = openWithdrawalRequestIds[openWithdrawalRequestIds.length - 1];
+					const idsOfOpenWithdrawalRequests = await yieldSyncV1Vault.idsOfOpenWithdrawalRequests();
+					const wRiD: number = idsOfOpenWithdrawalRequests[idsOfOpenWithdrawalRequests.length - 1];
 
-					const withdrawalRequest: any = await yieldSyncV1Vault.withdrawalRequest(wRiD);
+					const withdrawalRequest: any = await yieldSyncV1Vault.withdrawalRequestId_withdralRequest(wRiD);
 
 					await yieldSyncV1Vault.updateWithdrawalRequest(
 						wRiD,
@@ -998,7 +998,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 					expect(
 						BigInt(withdrawalRequest[9]) + BigInt(10)
 					).to.be.greaterThanOrEqual(
-						BigInt((await yieldSyncV1Vault.withdrawalRequest(wRiD))[9])
+						BigInt((await yieldSyncV1Vault.withdrawalRequestId_withdralRequest(wRiD))[9])
 					);
 				}
 			);
@@ -1030,7 +1030,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 						0
 					);
 
-					const beforeWithdrawalRequests = await yieldSyncV1Vault.openWithdrawalRequestIds();
+					const beforeWithdrawalRequests = await yieldSyncV1Vault.idsOfOpenWithdrawalRequests();
 
 					await yieldSyncV1Vault.deleteWithdrawalRequest(
 						beforeWithdrawalRequests[beforeWithdrawalRequests.length - 1]
@@ -1039,11 +1039,11 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 					expect(
 						beforeWithdrawalRequests.length - 1
 					).to.be.equal(
-						(await yieldSyncV1Vault.openWithdrawalRequestIds()).length
+						(await yieldSyncV1Vault.idsOfOpenWithdrawalRequests()).length
 					);
 
 					await expect(
-						yieldSyncV1Vault.withdrawalRequest(
+						yieldSyncV1Vault.withdrawalRequestId_withdralRequest(
 							beforeWithdrawalRequests[beforeWithdrawalRequests.length - 1]
 						)
 					).to.be.rejectedWith("No WithdrawalRequest found");
