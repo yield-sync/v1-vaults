@@ -29,8 +29,7 @@ contract YieldSyncV1Vault is
 	uint256[] internal _openWithdrawalRequestIds;
 
 	// [mapping]
-	// withdrawalRequestId => withdralRequest
-	mapping (uint256 => WithdrawalRequest) internal _withdrawalRequest;
+	mapping (uint256 withdrawalRequestId => WithdrawalRequest withdralRequest) internal _withdrawalRequest;
 
 
 	constructor (
