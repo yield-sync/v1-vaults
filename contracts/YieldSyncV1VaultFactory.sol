@@ -58,7 +58,7 @@ contract YieldSyncV1VaultFactory is
 	{
 		require(
 			IYieldSyncGovernance(yieldSyncGovernance).hasRole(
-				IYieldSyncGovernance(yieldSyncGovernance).role_roleHash("DEFAULT_ADMIN_ROLE"),
+				IYieldSyncGovernance(yieldSyncGovernance).roleString_roleHash("DEFAULT_ADMIN_ROLE"),
 				msg.sender
 			),
 			"!auth"
