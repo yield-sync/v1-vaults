@@ -43,7 +43,8 @@ contract SignatureManager is
 	}
 
 
-	modifier onlyYieldSyncGovernanceAdmin() {
+	modifier onlyYieldSyncGovernanceAdmin()
+	{
 		require(
 			IYieldSyncGovernance(yieldSyncGovernance).hasRole(
 				IYieldSyncGovernance(yieldSyncGovernance).roleString_roleHash("DEFAULT_ADMIN_ROLE"),
@@ -111,11 +112,13 @@ contract SignatureManager is
 
 		MessageHashData memory vMHD = _vaultMessageHashData[yieldSyncV1VaultAddress][messageHash];
 
-		for (uint i = 0; i < vMHD.signedMembers.length; i++) {
+		for (uint i = 0; i < vMHD.signedMembers.length; i++)
+		{
 			require(vMHD.signedMembers[i] != msg.sender, "Already signed");
 		}
 
-		if (vMHD.signer == address(0)) {
+		if (vMHD.signer == address(0))
+		{
 			address[] memory initialsignedMembers;
 
 			address recovered = ECDSA.recover(ECDSA.toEthSignedMessageHash(messageHash), signature);
