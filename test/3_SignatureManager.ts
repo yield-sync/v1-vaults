@@ -28,7 +28,7 @@ const stageContracts = async () => {
 
 	// Deploy a vault
 	await yieldSyncV1VaultFactory.deployYieldSyncV1Vault(
-		owner.address,
+		[owner.address],
 		[addr1.address, addr2.address],
 		ethers.constants.AddressZero,
 		true,

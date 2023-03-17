@@ -114,7 +114,7 @@ interface IYieldSyncV1VaultFactory {
 	* @notice Creates a Vault
 	* @dev [!restriction]
 	* @dev [create]
-	* @param admin {address}
+	* @param admins {address[]}
 	* @param members {address[]}
 	* @param signatureManager {address}
 	* @param againstVoteCountRequired {uint256}
@@ -123,7 +123,7 @@ interface IYieldSyncV1VaultFactory {
 	* @return {address} Deployed vault
 	*/
 	function deployYieldSyncV1Vault(
-		address admin,
+		address[] memory admins,
 		address[] memory members,
 		address signatureManager,
 		bool useDefaultSignatureManager,

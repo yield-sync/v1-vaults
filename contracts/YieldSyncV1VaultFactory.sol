@@ -72,7 +72,7 @@ contract YieldSyncV1VaultFactory is
 
 	/// @inheritdoc IYieldSyncV1VaultFactory
 	function deployYieldSyncV1Vault(
-		address admin,
+		address[] memory admins,
 		address[] memory members,
 		address signatureManager,
 		bool useDefaultSignatureManager,
@@ -89,7 +89,7 @@ contract YieldSyncV1VaultFactory is
 
 		YieldSyncV1Vault deployedContract = new YieldSyncV1Vault(
 			yieldSyncV1VaultRecord,
-			admin,
+			admins,
 			members,
 			useDefaultSignatureManager ? defaultSignatureManager : signatureManager,
 			againstVoteCountRequired,

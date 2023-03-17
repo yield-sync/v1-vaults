@@ -187,7 +187,7 @@ describe("[0] YieldSyncV1VaultFactory.sol - YieldSync V1 Vault Factory Contract"
 					const [, addr1] = await ethers.getSigners();
 
 					const deployedObj = await yieldSyncV1VaultFactory.deployYieldSyncV1Vault(
-						addr1.address,
+						[addr1.address],
 						[addr1.address],
 						ethers.constants.AddressZero,
 						true,
@@ -211,7 +211,7 @@ describe("[0] YieldSyncV1VaultFactory.sol - YieldSync V1 Vault Factory Contract"
 					const YieldSyncV1Vault = await ethers.getContractFactory("YieldSyncV1Vault");
 
 					await yieldSyncV1VaultFactory.deployYieldSyncV1Vault(
-						addr1.address,
+						[addr1.address],
 						[addr1.address],
 						mockSignatureManager.address,
 						false,

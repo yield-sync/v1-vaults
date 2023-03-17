@@ -36,7 +36,7 @@ contract YieldSyncV1Vault is
 
 	constructor (
 		address _yieldSyncV1VaultRecord,
-		address admin,
+		address[] memory admins,
 		address[] memory members,
 		address _signatureManager,
 		uint256 _againstVoteCountRequired,
@@ -46,7 +46,10 @@ contract YieldSyncV1Vault is
 	{
 		require(_forVoteCountRequired > 0, "!_forVoteCountRequired");
 
-		IYieldSyncV1VaultRecord(_yieldSyncV1VaultRecord).addAdmin(address(this), admin);
+		for (uint i = 0; i < admins.length; i++)
+		{
+			IYieldSyncV1VaultRecord(_yieldSyncV1VaultRecord).addAdmin(address(this), admins[i]);
+		}
 
 		for (uint i = 0; i < members.length; i++)
 		{
