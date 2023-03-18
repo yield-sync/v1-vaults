@@ -18,7 +18,7 @@ contract YieldSyncV1Vault is
 	IYieldSyncV1Vault
 {
 	// [address]
-	address public override yieldSyncV1VaultRecord;
+	address public override immutable YieldSyncV1VaultRecord;
 	address public override signatureManager;
 
 	// [uint256]
@@ -35,7 +35,7 @@ contract YieldSyncV1Vault is
 
 
 	constructor (
-		address _yieldSyncV1VaultRecord,
+		address _YieldSyncV1VaultRecord,
 		address[] memory admins,
 		address[] memory members,
 		address _signatureManager,
@@ -44,19 +44,20 @@ contract YieldSyncV1Vault is
 		uint256 _withdrawalDelaySeconds
 	)
 	{
+		YieldSyncV1VaultRecord = _YieldSyncV1VaultRecord;
+
 		require(_forVoteCountRequired > 0, "!_forVoteCountRequired");
 
 		for (uint i = 0; i < admins.length; i++)
 		{
-			IYieldSyncV1VaultRecord(_yieldSyncV1VaultRecord).addAdmin(address(this), admins[i]);
+			IYieldSyncV1VaultRecord(_YieldSyncV1VaultRecord).addAdmin(address(this), admins[i]);
 		}
 
 		for (uint i = 0; i < members.length; i++)
 		{
-			IYieldSyncV1VaultRecord(_yieldSyncV1VaultRecord).addMember(address(this), members[i]);
+			IYieldSyncV1VaultRecord(_YieldSyncV1VaultRecord).addMember(address(this), members[i]);
 		}
 
-		yieldSyncV1VaultRecord = _yieldSyncV1VaultRecord;
 		signatureManager = _signatureManager;
 		againstVoteCountRequired = _againstVoteCountRequired;
 		forVoteCountRequired = _forVoteCountRequired;
@@ -95,7 +96,7 @@ contract YieldSyncV1Vault is
 
 	modifier onlyAdmin()
 	{
-		(bool admin,) = IYieldSyncV1VaultRecord(yieldSyncV1VaultRecord).participant_yieldSyncV1Vault_access(
+		(bool admin,) = IYieldSyncV1VaultRecord(YieldSyncV1VaultRecord).participant_yieldSyncV1Vault_access(
 			msg.sender,
 			address(this)
 		);
@@ -108,7 +109,7 @@ contract YieldSyncV1Vault is
 
 	modifier onlyMember()
 	{
-		(, bool member) = IYieldSyncV1VaultRecord(yieldSyncV1VaultRecord).participant_yieldSyncV1Vault_access(
+		(, bool member) = IYieldSyncV1VaultRecord(YieldSyncV1VaultRecord).participant_yieldSyncV1Vault_access(
 			msg.sender,
 			address(this)
 		);
@@ -185,7 +186,7 @@ contract YieldSyncV1Vault is
 		override
 		onlyAdmin()
 	{
-		IYieldSyncV1VaultRecord(yieldSyncV1VaultRecord).addAdmin(address(this), targetAddress);
+		IYieldSyncV1VaultRecord(YieldSyncV1VaultRecord).addAdmin(address(this), targetAddress);
 	}
 
 	/// @inheritdoc IYieldSyncV1Vault
@@ -194,7 +195,7 @@ contract YieldSyncV1Vault is
 		override
 		onlyAdmin()
 	{
-		IYieldSyncV1VaultRecord(yieldSyncV1VaultRecord).removeAdmin(address(this), admin);
+		IYieldSyncV1VaultRecord(YieldSyncV1VaultRecord).removeAdmin(address(this), admin);
 	}
 
 	/// @inheritdoc IYieldSyncV1Vault
@@ -203,7 +204,7 @@ contract YieldSyncV1Vault is
 		override
 		onlyAdmin()
 	{
-		IYieldSyncV1VaultRecord(yieldSyncV1VaultRecord).addMember(address(this), targetAddress);
+		IYieldSyncV1VaultRecord(YieldSyncV1VaultRecord).addMember(address(this), targetAddress);
 	}
 
 	/// @inheritdoc IYieldSyncV1Vault
@@ -212,7 +213,7 @@ contract YieldSyncV1Vault is
 		override
 		onlyAdmin()
 	{
-		IYieldSyncV1VaultRecord(yieldSyncV1VaultRecord).removeMember(address(this), member);
+		IYieldSyncV1VaultRecord(YieldSyncV1VaultRecord).removeMember(address(this), member);
 	}
 
 

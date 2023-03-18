@@ -34,12 +34,12 @@ contract SignatureManager is
 	) internal _vaultMessageHashData;
 
 
-	constructor (address _yieldSyncGovernance, address _yieldSyncV1VaultRecord)
+	constructor (address _yieldSyncGovernance, address _YieldSyncV1VaultRecord)
 	{
 		_pause();
 
 		yieldSyncGovernance = _yieldSyncGovernance;
-		yieldSyncV1VaultRecord = _yieldSyncV1VaultRecord;
+		yieldSyncV1VaultRecord = _YieldSyncV1VaultRecord;
 	}
 
 

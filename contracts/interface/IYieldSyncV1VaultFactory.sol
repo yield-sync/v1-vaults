@@ -24,24 +24,12 @@ interface IYieldSyncV1VaultFactory {
 
 
 	/**
-	* @notice Signature Manager Contract Address
-	* @dev [!restriction]
-	* @dev [view-address]
-	* @return {address}
-	*/
-	function defaultSignatureManager()
-		external
-		view
-		returns (address)
-	;
-
-	/**
 	* @notice YieldSync Governance Contract Address
 	* @dev [!restriction]
 	* @dev [view-address]
 	* @return {address}
 	*/
-	function yieldSyncGovernance()
+	function YieldSyncGovernance()
 		external
 		view
 		returns (address)
@@ -53,7 +41,19 @@ interface IYieldSyncV1VaultFactory {
 	* @dev [view-address]
 	* @return {address}
 	*/
-	function yieldSyncV1VaultRecord()
+	function YieldSyncV1VaultRecord()
+		external
+		view
+		returns (address)
+	;
+
+	/**
+	* @notice Signature Manager Contract Address
+	* @dev [!restriction]
+	* @dev [view-address]
+	* @return {address}
+	*/
+	function defaultSignatureManager()
 		external
 		view
 		returns (address)

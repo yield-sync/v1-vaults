@@ -20,16 +20,13 @@ contract YieldSyncV1VaultRecord is
 	IYieldSyncV1VaultRecord
 {
 	// [mapping]
-	// admin => yieldSyncV1Vaults
-	mapping (address => address[]) internal _admin_yieldSyncV1Vaults;
-	// yieldSyncV1Vault => admins
-	mapping (address => address[]) internal _yieldSyncV1Vault_admins;
-	// yieldSyncV1Vault => members
-	mapping (address => address[]) internal _yieldSyncV1Vault_members;
-	// member => yieldSyncV1Vaults
-	mapping (address => address[]) internal _member_yieldSyncV1Vaults;
-	// participant => (yieldSyncV1Vault => access)
-	mapping (address => mapping (address => Access)) internal _participant_yieldSyncV1Vault_access;
+	mapping (address admin => address[] yieldSyncV1Vaults) internal _admin_yieldSyncV1Vaults;
+	mapping (address yieldSyncV1Vault  => address[] admins) internal _yieldSyncV1Vault_admins;
+	mapping (address yieldSyncV1Vault => address[] members) internal _yieldSyncV1Vault_members;
+	mapping (address member => address[] yieldSyncV1Vaults) internal _member_yieldSyncV1Vaults;
+	mapping (
+		address participant => mapping (address yieldSyncV1Vault => Access access)
+	) internal _participant_yieldSyncV1Vault_access;
 
 
 	/// @inheritdoc IYieldSyncV1VaultRecord

@@ -67,7 +67,7 @@ describe("[0] YieldSyncV1VaultFactory.sol - YieldSync V1 Vault Factory Contract"
 		it(
 			"Should initialize `yieldSyncGovernance` to `MockYieldSyncGovernance` address..",
 			async () => {
-				expect(await yieldSyncV1VaultFactory.yieldSyncGovernance()).to.equal(
+				expect(await yieldSyncV1VaultFactory.YieldSyncGovernance()).to.equal(
 					mockYieldSyncGovernance.address
 				);
 			}

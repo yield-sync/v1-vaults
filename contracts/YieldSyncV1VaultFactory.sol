@@ -15,9 +15,9 @@ contract YieldSyncV1VaultFactory is
 	IYieldSyncV1VaultFactory
 {
 	// [address]
+	address public override immutable YieldSyncGovernance;
+	address public override immutable YieldSyncV1VaultRecord;
 	address public override defaultSignatureManager;
-	address public override yieldSyncGovernance;
-	address public override yieldSyncV1VaultRecord;
 
 	// [uint256]
 	uint256 public override fee;
@@ -32,10 +32,10 @@ contract YieldSyncV1VaultFactory is
 	) public override yieldSyncV1VaultId_yieldSyncV1VaultAddress;
 
 
-	constructor (address _yieldSyncGovernance, address _yieldSyncV1VaultRecord)
+	constructor (address _YieldSyncGovernance, address _YieldSyncV1VaultRecord)
 	{
-		yieldSyncGovernance = _yieldSyncGovernance;
-		yieldSyncV1VaultRecord = _yieldSyncV1VaultRecord;
+		YieldSyncGovernance = _YieldSyncGovernance;
+		YieldSyncV1VaultRecord = _YieldSyncV1VaultRecord;
 
 		fee = 0;
 		yieldSyncV1VaultIdTracker = 0;
@@ -59,8 +59,8 @@ contract YieldSyncV1VaultFactory is
 	modifier onlyYieldSyncGovernanceAdmin()
 	{
 		require(
-			IYieldSyncGovernance(yieldSyncGovernance).hasRole(
-				IYieldSyncGovernance(yieldSyncGovernance).roleString_roleHash("DEFAULT_ADMIN_ROLE"),
+			IYieldSyncGovernance(YieldSyncGovernance).hasRole(
+				IYieldSyncGovernance(YieldSyncGovernance).roleString_roleHash("DEFAULT_ADMIN_ROLE"),
 				msg.sender
 			),
 			"!auth"
@@ -88,7 +88,7 @@ contract YieldSyncV1VaultFactory is
 		require(msg.value >= fee, "!msg.value");
 
 		YieldSyncV1Vault deployedContract = new YieldSyncV1Vault(
-			yieldSyncV1VaultRecord,
+			YieldSyncV1VaultRecord,
 			admins,
 			members,
 			useDefaultSignatureManager ? defaultSignatureManager : signatureManager,
