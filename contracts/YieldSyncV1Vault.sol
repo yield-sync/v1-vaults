@@ -50,12 +50,12 @@ contract YieldSyncV1Vault is
 
 		for (uint i = 0; i < admins.length; i++)
 		{
-			IYieldSyncV1VaultRecord(_YieldSyncV1VaultRecord).addAdmin(address(this), admins[i]);
+			IYieldSyncV1VaultRecord(YieldSyncV1VaultRecord).addAdmin(address(this), admins[i]);
 		}
 
 		for (uint i = 0; i < members.length; i++)
 		{
-			IYieldSyncV1VaultRecord(_YieldSyncV1VaultRecord).addMember(address(this), members[i]);
+			IYieldSyncV1VaultRecord(YieldSyncV1VaultRecord).addMember(address(this), members[i]);
 		}
 
 		signatureManager = _signatureManager;

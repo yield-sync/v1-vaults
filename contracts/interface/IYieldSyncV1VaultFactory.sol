@@ -24,7 +24,7 @@ interface IYieldSyncV1VaultFactory {
 
 
 	/**
-	* @notice YieldSync Governance Contract Address
+	* @notice YieldSyncGovernance Contract Address
 	* @dev [!restriction]
 	* @dev [view-address]
 	* @return {address}
@@ -36,7 +36,7 @@ interface IYieldSyncV1VaultFactory {
 	;
 
 	/**
-	* @notice YieldSyncV1Vault Record Contract Address
+	* @notice YieldSyncV1VaultRecord Contract Address
 	* @dev [!restriction]
 	* @dev [view-address]
 	* @return {address}
@@ -48,7 +48,7 @@ interface IYieldSyncV1VaultFactory {
 	;
 
 	/**
-	* @notice Signature Manager Contract Address
+	* @notice Default SignatureManager Contract Address
 	* @dev [!restriction]
 	* @dev [view-address]
 	* @return {address}
@@ -73,7 +73,7 @@ interface IYieldSyncV1VaultFactory {
 	;
 
 	/**
-	* @notice Vault Id Tracker
+	* @notice yieldSyncV1Vault Id Tracker
 	* @dev [!restriction]
 	* @dev [view-uint256]
 	* @return {uint256}

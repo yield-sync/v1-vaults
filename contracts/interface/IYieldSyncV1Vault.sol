@@ -48,7 +48,7 @@ interface IYieldSyncV1Vault
 
 
 	/**
-	* @notice Address of signature manager
+	* @notice YieldSyncV1Vault Contract Address
 	* @dev [!restriction]
 	* @dev [view-address]
 	* @return {address}
@@ -60,7 +60,7 @@ interface IYieldSyncV1Vault
 	;
 
 	/**
-	* @notice Address of signature manager
+	* @notice signatureManager Contract Address
 	* @dev [!restriction]
 	* @dev [view-address]
 	* @return {address}
@@ -84,7 +84,7 @@ interface IYieldSyncV1Vault
 	;
 
 	/**
-	* @notice Required For Vote Count
+	* @notice For Vote Count Required
 	* @dev [!restriction]
 	* @dev [view-uint256]
 	* @return {uint256}
@@ -96,7 +96,7 @@ interface IYieldSyncV1Vault
 	;
 
 	/**
-	* @notice Withdrawal delay in minutes
+	* @notice Withdrawal Delay In Seconds
 	* @dev [!restriction]
 	* @dev [view-uint256]
 	* @return {uint256}
@@ -109,7 +109,7 @@ interface IYieldSyncV1Vault
 
 
 	/**
-	* @notice Getter for active withdrawlRequests
+	* @notice Ids of Open withdrawlRequests
 	* @dev [!restriction]
 	* @dev [view-uint256[]]
 	* @return {uint256[]}
@@ -121,7 +121,7 @@ interface IYieldSyncV1Vault
 	;
 
 	/**
-	* @notice Getter for `_withdrawalRequest`
+	* @notice withdrawalRequestId to withdralRequest
 	* @dev [!restriction]
 	* @dev [view][mapping]
 	* @param withdrawalRequestId {uint256}
@@ -134,9 +134,9 @@ interface IYieldSyncV1Vault
 
 
 	/**
-	* @notice Assign Admin to an address on YieldSyncV1Record
-	* @dev [restriction] YieldSyncV1Record → admin
-	* @dev [add] address to admin on `YieldSyncV1Record`
+	* @notice Add Admin
+	* @dev [restriction] `YieldSyncV1Record` → admin
+	* @dev [add] admin on `YieldSyncV1Record`
 	* @param targetAddress {address}
 	*/
 	function addAdmin(address targetAddress)
@@ -144,19 +144,19 @@ interface IYieldSyncV1Vault
 	;
 
 	/**
-	* @notice Remove a member
-	* @dev [restriction] YieldSyncV1Record → admin
-	* @dev [remove] address with admin on `YieldSyncV1Record`
-	* @param member {address} Address of the member to remove
+	* @notice Remove Admin
+	* @dev [restriction] `YieldSyncV1Record` → admin
+	* @dev [remove] admin on `YieldSyncV1Record`
+	* @param admin {address}
 	*/
-	function removeAdmin(address member)
+	function removeAdmin(address admin)
 		external
 	;
 
 	/**
-	* @notice Assign member to an address on YieldSyncV1Record
-	* @dev [restriction] YieldSyncV1Record → admin
-	* @dev [add] address to member on `YieldSyncV1Record`
+	* @notice Add Member
+	* @dev [restriction] `YieldSyncV1Record` → admin
+	* @dev [add] member `YieldSyncV1Record`
 	* @param targetAddress {address}
 	*/
 	function addMember(address targetAddress)
@@ -164,10 +164,10 @@ interface IYieldSyncV1Vault
 	;
 
 	/**
-	* @notice Remove a member
-	* @dev [restriction] YieldSyncV1Record → admin
-	* @dev [remove] address with member on `YieldSyncV1Record`
-	* @param member {address} Address of the member to remove
+	* @notice Remove Member
+	* @dev [restriction] `YieldSyncV1Record` → admin
+	* @dev [remove] member on `YieldSyncV1Record`
+	* @param member {address}
 	*/
 	function removeMember(address member)
 		external
@@ -175,7 +175,7 @@ interface IYieldSyncV1Vault
 
 	/**
 	* @notice Delete withdrawalRequest & all associated values
-	* @dev [restriction] YieldSyncV1Record → admin
+	* @dev [restriction] `YieldSyncV1Record` → admin
 	* @dev [call][internal] {_deleteWithdrawalRequest}
 	* @param withdrawalRequestId {uint256}
 	* Emits: `DeletedWithdrawalRequest`
@@ -186,7 +186,7 @@ interface IYieldSyncV1Vault
 
 	/**
 	* @notice Update withdrawalRequest
-	* @dev [restriction] YieldSyncV1Record → admin
+	* @dev [restriction] `YieldSyncV1Record` → admin
 	* @dev [update] `_withdrawalRequest`
 	* @param withdrawalRequestId {uint256}
 	* @param __withdrawalRequest {WithdrawalRequest}
@@ -198,7 +198,7 @@ interface IYieldSyncV1Vault
 
 	/**
 	* @notice Update Against Vote Count Required
-	* @dev [restriction] YieldSyncV1Record → admin
+	* @dev [restriction] `YieldSyncV1Record` → admin
 	* @dev [update] `againstVoteCountRequired`
 	* @param _againstVoteCountRequired {uint256}
 	* Emits: `UpdatedAgainstVoteCountRequired`
@@ -209,7 +209,7 @@ interface IYieldSyncV1Vault
 
 	/**
 	* @notice Update For Vote Count Required
-	* @dev [restriction] YieldSyncV1Record → admin
+	* @dev [restriction] `YieldSyncV1Record` → admin
 	* @dev [update] `forVoteCountRequired`
 	* @param _forVoteCountRequired {uint256}
 	* Emits: `UpdatedRequiredVoteCount`
@@ -220,7 +220,7 @@ interface IYieldSyncV1Vault
 
 	/**
 	* @notice Update Signature Manager Contract
-	* @dev [restriction] YieldSyncV1Record → admin
+	* @dev [restriction] `YieldSyncV1Record` → admin
 	* @dev [update] `signatureManager`
 	* @param _signatureManager {address}
 	*/
@@ -230,7 +230,7 @@ interface IYieldSyncV1Vault
 
 	/**
 	* @notice Update `withdrawalDelaySeconds`
-	* @dev [restriction] YieldSyncV1Record → admin
+	* @dev [restriction] `YieldSyncV1Record` → admin
 	* @dev [update] `withdrawalDelaySeconds` to new value
 	* @param _withdrawalDelaySeconds {uint256}
 	* Emits: `UpdatedWithdrawalDelaySeconds`
@@ -242,7 +242,7 @@ interface IYieldSyncV1Vault
 
 	/**
 	* @notice Create a withdrawalRequest
-	* @dev [restriction] YieldSyncV1Record → member
+	* @dev [restriction] `YieldSyncV1Record` → member
 	* @dev [increment] `_withdrawalRequestId`
 	*      [add] `_withdrawalRequest` value
 	*      [push-into] `_withdrawalRequestIds`
@@ -269,7 +269,7 @@ interface IYieldSyncV1Vault
 
 	/**
 	* @notice Vote on withdrawalRequest
-	* @dev [restriction] YieldSyncV1Record → member
+	* @dev [restriction] `YieldSyncV1Record` → member
 	* @dev [update] `_withdrawalRequest`
 	* @param withdrawalRequestId {uint256}
 	* @param vote {bool} true (approve) or false (deny)
@@ -282,7 +282,7 @@ interface IYieldSyncV1Vault
 
 	/**
 	* @notice Process withdrawalRequest with given `withdrawalRequestId`
-	* @dev [restriction] YieldSyncV1Record → member
+	* @dev [restriction] `YieldSyncV1Record` → member
 	* @dev [erc20-transfer]
 	*      [decrement] `_tokenBalance`
 	*      [call][internal] `_deleteWithdrawalRequest`
