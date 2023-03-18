@@ -21,8 +21,8 @@ contract SignatureManager is
 	ISignatureManager
 {
 	// [address]
-	address public override yieldSyncGovernance;
-	address public yieldSyncV1VaultRecord;
+	address public override immutable YieldSyncGovernance;
+	address public override immutable YieldSyncV1VaultRecord;
 
 	// [bytes4]
 	bytes4 public constant ERC1271_MAGIC_VALUE = 0x1626ba7e;
@@ -34,24 +34,18 @@ contract SignatureManager is
 	) internal _vaultMessageHashData;
 
 
-	constructor (address _yieldSyncGovernance, address _YieldSyncV1VaultRecord)
+	constructor (address _YieldSyncGovernance, address _YieldSyncV1VaultRecord)
 	{
 		_pause();
 
-		yieldSyncGovernance = _yieldSyncGovernance;
-		yieldSyncV1VaultRecord = _YieldSyncV1VaultRecord;
+		YieldSyncGovernance = _YieldSyncGovernance;
+		YieldSyncV1VaultRecord = _YieldSyncV1VaultRecord;
 	}
 
 
-	modifier onlyYieldSyncGovernanceAdmin()
+	modifier only_YieldSyncGovernance_DEFAULT_ADMIN_ROLE()
 	{
-		require(
-			IYieldSyncGovernance(yieldSyncGovernance).hasRole(
-				IYieldSyncGovernance(yieldSyncGovernance).roleString_roleHash("DEFAULT_ADMIN_ROLE"),
-				msg.sender
-			),
-			"!auth"
-		);
+		require(IYieldSyncGovernance(YieldSyncGovernance).hasRole(bytes32(0), msg.sender), "!auth");
 
 		_;
 	}
@@ -103,7 +97,7 @@ contract SignatureManager is
 		override
 		whenNotPaused()
 	{
-		(, bool msgSenderIsMember) = IYieldSyncV1VaultRecord(yieldSyncV1VaultRecord).participant_yieldSyncV1Vault_access(
+		(, bool msgSenderIsMember) = IYieldSyncV1VaultRecord(YieldSyncV1VaultRecord).participant_yieldSyncV1Vault_access(
 			msg.sender,
 			yieldSyncV1VaultAddress
 		);
@@ -123,7 +117,7 @@ contract SignatureManager is
 
 			address recovered = ECDSA.recover(ECDSA.toEthSignedMessageHash(messageHash), signature);
 
-			(, bool recoveredIsMember) = IYieldSyncV1VaultRecord(yieldSyncV1VaultRecord).participant_yieldSyncV1Vault_access(
+			(, bool recoveredIsMember) = IYieldSyncV1VaultRecord(YieldSyncV1VaultRecord).participant_yieldSyncV1Vault_access(
 				recovered,
 				yieldSyncV1VaultAddress
 			);
@@ -149,7 +143,7 @@ contract SignatureManager is
 	function updatePause(bool pause)
 		public
 		override
-		onlyYieldSyncGovernanceAdmin()
+		only_YieldSyncGovernance_DEFAULT_ADMIN_ROLE()
 	{
 		if (pause)
 		{

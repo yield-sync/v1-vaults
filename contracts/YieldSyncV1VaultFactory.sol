@@ -56,15 +56,9 @@ contract YieldSyncV1VaultFactory is
 	}
 
 
-	modifier onlyYieldSyncGovernanceAdmin()
+	modifier only_YieldSyncGovernance_DEFAULT_ADMIN_ROLE()
 	{
-		require(
-			IYieldSyncGovernance(YieldSyncGovernance).hasRole(
-				IYieldSyncGovernance(YieldSyncGovernance).roleString_roleHash("DEFAULT_ADMIN_ROLE"),
-				msg.sender
-			),
-			"!auth"
-		);
+		require(IYieldSyncGovernance(YieldSyncGovernance).hasRole(bytes32(0), msg.sender), "!auth");
 
 		_;
 	}
@@ -112,7 +106,7 @@ contract YieldSyncV1VaultFactory is
 	function updateDefaultSignatureManager(address _defaultSignatureManager)
 		public
 		override
-		onlyYieldSyncGovernanceAdmin()
+		only_YieldSyncGovernance_DEFAULT_ADMIN_ROLE()
 	{
 		defaultSignatureManager = _defaultSignatureManager;
 
@@ -123,7 +117,7 @@ contract YieldSyncV1VaultFactory is
 	function updateFee(uint256 _fee)
 		public
 		override
-		onlyYieldSyncGovernanceAdmin()
+		only_YieldSyncGovernance_DEFAULT_ADMIN_ROLE()
 	{
 		fee = _fee;
 
@@ -134,7 +128,7 @@ contract YieldSyncV1VaultFactory is
 	function transferEther(address to)
 		public
 		override
-		onlyYieldSyncGovernanceAdmin()
+		only_YieldSyncGovernance_DEFAULT_ADMIN_ROLE()
 	{
 		// [transfer]
 		(bool success, ) = to.call{value: address(this).balance}("");

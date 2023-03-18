@@ -16,12 +16,24 @@ struct MessageHashData {
 interface ISignatureManager
 {
 	/**
-	* @notice CONSTANT Address of YieldSync Governance contract
+	* @notice YieldSyncGovernance Contract Address
 	* @dev [!restriction]
 	* @dev [view-address]
 	* @return {address}
 	*/
-	function yieldSyncGovernance()
+	function YieldSyncGovernance()
+		external
+		view
+		returns (address)
+	;
+
+	/**
+	* @notice YieldSyncV1VaultRecord Contract Address
+	* @dev [!restriction]
+	* @dev [view-address]
+	* @return {address}
+	*/
+	function YieldSyncV1VaultRecord()
 		external
 		view
 		returns (address)
