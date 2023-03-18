@@ -14,6 +14,20 @@ import { IYieldSyncV1VaultFactory } from "./interface/IYieldSyncV1VaultFactory.s
 contract YieldSyncV1VaultFactory is
 	IYieldSyncV1VaultFactory
 {
+	receive ()
+		external
+		payable
+		override
+	{}
+
+
+	fallback ()
+		external
+		payable
+		override
+	{}
+
+
 	// [address]
 	address public override immutable YieldSyncGovernance;
 	address public override immutable YieldSyncV1VaultRecord;
@@ -40,20 +54,6 @@ contract YieldSyncV1VaultFactory is
 		fee = 0;
 		yieldSyncV1VaultIdTracker = 0;
 	}
-
-
-	receive ()
-		external
-		payable
-		override
-	{}
-
-
-	fallback ()
-		external
-		payable
-		override
-	{}
 
 
 	modifier onlyYieldSyncGovernanceAdmin()

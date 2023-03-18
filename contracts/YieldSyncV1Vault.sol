@@ -17,6 +17,20 @@ contract YieldSyncV1Vault is
 	IERC1271,
 	IYieldSyncV1Vault
 {
+	receive ()
+		external
+		payable
+		override
+	{}
+
+
+	fallback ()
+		external
+		payable
+		override
+	{}
+
+
 	// [address]
 	address public override immutable YieldSyncV1VaultRecord;
 	address public override signatureManager;
@@ -67,20 +81,6 @@ contract YieldSyncV1Vault is
 	}
 
 
-	receive ()
-		external
-		payable
-		override
-	{}
-
-
-	fallback ()
-		external
-		payable
-		override
-	{}
-
-
 	modifier validWithdrawalRequest(uint256 withdrawalRequestId)
 	{
 		require(
@@ -93,7 +93,6 @@ contract YieldSyncV1Vault is
 		_;
 	}
 
-
 	modifier onlyAdmin()
 	{
 		(bool admin,) = IYieldSyncV1VaultRecord(YieldSyncV1VaultRecord).participant_yieldSyncV1Vault_access(
@@ -105,7 +104,6 @@ contract YieldSyncV1Vault is
 
 		_;
 	}
-
 
 	modifier onlyMember()
 	{
