@@ -2,8 +2,8 @@
 pragma solidity ^0.8.18;
 
 
-import { IYieldSyncGovernance } from "@yield-sync/v1-sdk/contracts/interface/IYieldSyncGovernance.sol";
 import { IYieldSyncV1Vault } from "@yield-sync/v1-sdk/contracts/interface/IYieldSyncV1Vault.sol";
+import { IAccessControlEnumerable } from "@openzeppelin/contracts/access/IAccessControlEnumerable.sol";
 import { IERC1271 } from "@openzeppelin/contracts/interfaces/IERC1271.sol";
 import { Pausable } from "@openzeppelin/contracts/security/Pausable.sol";
 import { ECDSA } from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
@@ -45,7 +45,7 @@ contract SignatureManager is
 
 	modifier only_YieldSyncGovernance_DEFAULT_ADMIN_ROLE()
 	{
-		require(IYieldSyncGovernance(YieldSyncGovernance).hasRole(bytes32(0), msg.sender), "!auth");
+		require(IAccessControlEnumerable(YieldSyncGovernance).hasRole(bytes32(0), msg.sender), "!auth");
 
 		_;
 	}

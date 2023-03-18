@@ -12,7 +12,7 @@
 	"author": "",
 	"license": "ISC",
 	"devDependencies": {
-		"@yield-sync/v1-sdk": "^0.0.32",
+		"@yield-sync/v1-sdk": "^0.0.33",
 		"@nomicfoundation/hardhat-chai-matchers": "^1.0.5",
 		"@nomicfoundation/hardhat-toolbox": "^2.0.1",
 		"@nomiclabs/hardhat-solhint": "^3.0.0",

@@ -2,7 +2,7 @@
 pragma solidity ^0.8.18;
 
 
-import { IYieldSyncGovernance } from "@yield-sync/v1-sdk/contracts/interface/IYieldSyncGovernance.sol";
+import { IAccessControlEnumerable } from "@openzeppelin/contracts/access/IAccessControlEnumerable.sol";
 
 import { YieldSyncV1Vault } from "./YieldSyncV1Vault.sol";
 import { IYieldSyncV1VaultFactory } from "./interface/IYieldSyncV1VaultFactory.sol";
@@ -58,7 +58,7 @@ contract YieldSyncV1VaultFactory is
 
 	modifier only_YieldSyncGovernance_DEFAULT_ADMIN_ROLE()
 	{
-		require(IYieldSyncGovernance(YieldSyncGovernance).hasRole(bytes32(0), msg.sender), "!auth");
+		require(IAccessControlEnumerable(YieldSyncGovernance).hasRole(bytes32(0), msg.sender), "!auth");
 
 		_;
 	}
