@@ -70,7 +70,7 @@ interface ISignatureManager
 
 	/**
 	* @notice Set pause
-	* @dev [restriction] IYieldSyncGovernance YieldSyncV1Record → DEFAULT_ADMIN_ROLE
+	* @dev [restriction] `IYieldSyncGovernance` AccessControlEnumerable → DEFAULT_ADMIN_ROLE
 	* @dev [call-internal]
 	* @param pause {bool}
 	*/

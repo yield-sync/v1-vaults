@@ -138,7 +138,7 @@ interface IYieldSyncV1VaultFactory {
 
 	/**
 	* @notice Updates default signature manager
-	* @dev [restriction] IYieldSyncGovernance AccessControlEnumerable → DEFAULT_ADMIN_ROLE
+	* @dev [restriction] `IYieldSyncGovernance` AccessControlEnumerable → DEFAULT_ADMIN_ROLE
 	* @dev [update] `defaultSignatureManager`
 	* @param _defaultSignatureManager {address}
 	*/
@@ -148,7 +148,7 @@ interface IYieldSyncV1VaultFactory {
 
 	/**
 	* @notice Update fee
-	* @dev [restriction] IYieldSyncGovernance AccessControlEnumerable → DEFAULT_ADMIN_ROLE
+	* @dev [restriction] `IYieldSyncGovernance` AccessControlEnumerable → DEFAULT_ADMIN_ROLE
 	* @dev [update] `fee`
 	* @param _fee {uint256}
 	*/
@@ -158,7 +158,7 @@ interface IYieldSyncV1VaultFactory {
 
 	/**
 	* @notice Transfer Ether to
-	* @dev [restriction] IYieldSyncGovernance AccessControlEnumerable → DEFAULT_ADMIN_ROLE
+	* @dev [restriction] `IYieldSyncGovernance` AccessControlEnumerable → DEFAULT_ADMIN_ROLE
 	* @dev [transfer]
 	* @param to {uint256}
 	*/
