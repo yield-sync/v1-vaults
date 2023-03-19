@@ -339,11 +339,9 @@ contract YieldSyncV1Vault is
 		onlyMember()
 		validWithdrawalRequest(withdrawalRequestId)
 	{
-		WithdrawalRequest memory withdrawalRequest = _withdrawalRequestId_withdralRequest[withdrawalRequestId];
-
-		for (uint256 i = 0; i < withdrawalRequest.votedMembers.length; i++)
+		for (uint256 i = 0; i < _withdrawalRequestId_withdralRequest[withdrawalRequestId].votedMembers.length; i++)
 		{
-			require(withdrawalRequest.votedMembers[i] != msg.sender, "Already voted");
+			require(_withdrawalRequestId_withdralRequest[withdrawalRequestId].votedMembers[i] != msg.sender, "Already voted");
 		}
 
 		if (vote)
@@ -356,8 +354,8 @@ contract YieldSyncV1Vault is
 		}
 
 		if (
-			withdrawalRequest.forVoteCount >= forVoteCountRequired ||
-			withdrawalRequest.againstVoteCount >= againstVoteCountRequired
+			_withdrawalRequestId_withdralRequest[withdrawalRequestId].forVoteCount >= forVoteCountRequired ||
+			_withdrawalRequestId_withdralRequest[withdrawalRequestId].againstVoteCount >= againstVoteCountRequired
 		)
 		{
 			emit WithdrawalRequestReadyToBeProcessed(withdrawalRequestId);
@@ -365,7 +363,7 @@ contract YieldSyncV1Vault is
 
 		_withdrawalRequestId_withdralRequest[withdrawalRequestId].votedMembers.push(msg.sender);
 
-		if (withdrawalRequest.forVoteCount < forVoteCountRequired)
+		if (_withdrawalRequestId_withdralRequest[withdrawalRequestId].forVoteCount < forVoteCountRequired)
 		{
 			_withdrawalRequestId_withdralRequest[withdrawalRequestId].latestRelevantApproveVoteTime = block.timestamp;
 		}
@@ -380,51 +378,73 @@ contract YieldSyncV1Vault is
 		onlyMember()
 		validWithdrawalRequest(withdrawalRequestId)
 	{
-		WithdrawalRequest memory withdrawalRequest = _withdrawalRequestId_withdralRequest[withdrawalRequestId];
-
 		require(
-			withdrawalRequest.forVoteCount >= forVoteCountRequired ||
-			withdrawalRequest.againstVoteCount >= againstVoteCountRequired,
+			_withdrawalRequestId_withdralRequest[withdrawalRequestId].forVoteCount >= forVoteCountRequired ||
+			_withdrawalRequestId_withdralRequest[withdrawalRequestId].againstVoteCount >= againstVoteCountRequired,
 			"!forVoteCountRequired && !againstVoteCount"
 		);
 
-		if (withdrawalRequest.forVoteCount >= forVoteCountRequired)
+		if (_withdrawalRequestId_withdralRequest[withdrawalRequestId].forVoteCount >= forVoteCountRequired)
 		{
 			require(
-				block.timestamp - withdrawalRequest.latestRelevantApproveVoteTime >= withdrawalDelaySeconds * 1 seconds,
+				block.timestamp - _withdrawalRequestId_withdralRequest[
+					withdrawalRequestId
+				].latestRelevantApproveVoteTime >= withdrawalDelaySeconds * 1 seconds,
 				"Not enough time has passed"
 			);
 
 			// Transfer accordingly
-			if (withdrawalRequest.forERC20 && !withdrawalRequest.forERC721)
+			if (
+				_withdrawalRequestId_withdralRequest[withdrawalRequestId].forERC20 &&
+				!_withdrawalRequestId_withdralRequest[withdrawalRequestId].forERC721
+			)
 			{
-				if (IERC20(withdrawalRequest.token).balanceOf(address(this)) >= withdrawalRequest.amount)
+				if (
+					IERC20(_withdrawalRequestId_withdralRequest[withdrawalRequestId].token).balanceOf(address(this)) >=
+					_withdrawalRequestId_withdralRequest[withdrawalRequestId].amount
+				)
 				{
 					// [ERC20-transfer]
-					IERC20(withdrawalRequest.token).transfer(withdrawalRequest.to, withdrawalRequest.amount);
-				}
-			}
-			else if (withdrawalRequest.forERC721 && !withdrawalRequest.forERC20)
-			{
-				if (IERC721(withdrawalRequest.token).ownerOf(withdrawalRequest.tokenId) == address(this))
-				{
-					// [ERC721-transfer]
-					IERC721(withdrawalRequest.token).transferFrom(
-						address(this),
-						withdrawalRequest.to,
-						withdrawalRequest.tokenId
+					IERC20(_withdrawalRequestId_withdralRequest[withdrawalRequestId].token).transfer(
+						_withdrawalRequestId_withdralRequest[withdrawalRequestId].to,
+						_withdrawalRequestId_withdralRequest[withdrawalRequestId].amount
 					);
 				}
 			}
-			else if (withdrawalRequest.forEther)
+			else if (
+				_withdrawalRequestId_withdralRequest[withdrawalRequestId].forERC721 &&
+			!_withdrawalRequestId_withdralRequest[withdrawalRequestId].forERC20
+			)
+			{
+				if (
+					IERC721(_withdrawalRequestId_withdralRequest[withdrawalRequestId].token).ownerOf(
+						_withdrawalRequestId_withdralRequest[withdrawalRequestId].tokenId
+					) == address(this)
+				)
+				{
+					// [ERC721-transfer]
+					IERC721(_withdrawalRequestId_withdralRequest[withdrawalRequestId].token).transferFrom(
+						address(this),
+						_withdrawalRequestId_withdralRequest[withdrawalRequestId].to,
+						_withdrawalRequestId_withdralRequest[withdrawalRequestId].tokenId
+					);
+				}
+			}
+			else if (_withdrawalRequestId_withdralRequest[withdrawalRequestId].forEther)
 			{
 				// [transfer]
-				(bool success, ) = withdrawalRequest.to.call{value: withdrawalRequest.amount}("");
+				(bool success, ) = _withdrawalRequestId_withdralRequest[withdrawalRequestId].to.call{
+					value: _withdrawalRequestId_withdralRequest[withdrawalRequestId].amount
+				}("");
 
 				require(success, "Unable to send value");
 			}
 
-			emit TokensWithdrawn(msg.sender, withdrawalRequest.to, withdrawalRequest.amount);
+			emit TokensWithdrawn(
+				msg.sender,
+				_withdrawalRequestId_withdralRequest[withdrawalRequestId].to,
+				_withdrawalRequestId_withdralRequest[withdrawalRequestId].amount
+			);
 		}
 
 		_deleteWithdrawalRequest(withdrawalRequestId);
