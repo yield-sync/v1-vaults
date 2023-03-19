@@ -339,25 +339,25 @@ contract YieldSyncV1Vault is
 		onlyMember()
 		validWithdrawalRequest(withdrawalRequestId)
 	{
-		for (uint256 i = 0; i < _withdrawalRequestId_withdralRequest[withdrawalRequestId].votedMembers.length; i++)
+		WithdrawalRequest memory withdrawalRequest = _withdrawalRequestId_withdralRequest[withdrawalRequestId];
+
+		for (uint256 i = 0; i < withdrawalRequest.votedMembers.length; i++)
 		{
-			require(
-				_withdrawalRequestId_withdralRequest[withdrawalRequestId].votedMembers[i] != msg.sender,
-				"Already voted"
-			);
+			require(withdrawalRequest.votedMembers[i] != msg.sender, "Already voted");
 		}
 
 		if (vote)
 		{
 			_withdrawalRequestId_withdralRequest[withdrawalRequestId].forVoteCount++;
 		}
-		else {
+		else
+		{
 			_withdrawalRequestId_withdralRequest[withdrawalRequestId].againstVoteCount++;
 		}
 
 		if (
-			_withdrawalRequestId_withdralRequest[withdrawalRequestId].forVoteCount >= forVoteCountRequired ||
-			_withdrawalRequestId_withdralRequest[withdrawalRequestId].againstVoteCount >= againstVoteCountRequired
+			withdrawalRequest.forVoteCount >= forVoteCountRequired ||
+			withdrawalRequest.againstVoteCount >= againstVoteCountRequired
 		)
 		{
 			emit WithdrawalRequestReadyToBeProcessed(withdrawalRequestId);
@@ -365,7 +365,7 @@ contract YieldSyncV1Vault is
 
 		_withdrawalRequestId_withdralRequest[withdrawalRequestId].votedMembers.push(msg.sender);
 
-		if (_withdrawalRequestId_withdralRequest[withdrawalRequestId].forVoteCount < forVoteCountRequired)
+		if (withdrawalRequest.forVoteCount < forVoteCountRequired)
 		{
 			_withdrawalRequestId_withdralRequest[withdrawalRequestId].latestRelevantApproveVoteTime = block.timestamp;
 		}
@@ -380,46 +380,51 @@ contract YieldSyncV1Vault is
 		onlyMember()
 		validWithdrawalRequest(withdrawalRequestId)
 	{
-		WithdrawalRequest memory wR = _withdrawalRequestId_withdralRequest[withdrawalRequestId];
+		WithdrawalRequest memory withdrawalRequest = _withdrawalRequestId_withdralRequest[withdrawalRequestId];
 
 		require(
-			wR.forVoteCount >= forVoteCountRequired || wR.againstVoteCount >= againstVoteCountRequired,
+			withdrawalRequest.forVoteCount >= forVoteCountRequired ||
+			withdrawalRequest.againstVoteCount >= againstVoteCountRequired,
 			"!forVoteCountRequired && !againstVoteCount"
 		);
 
-		if (wR.forVoteCount >= forVoteCountRequired)
+		if (withdrawalRequest.forVoteCount >= forVoteCountRequired)
 		{
 			require(
-				block.timestamp - wR.latestRelevantApproveVoteTime >= withdrawalDelaySeconds * 1 seconds,
+				block.timestamp - withdrawalRequest.latestRelevantApproveVoteTime >= withdrawalDelaySeconds * 1 seconds,
 				"Not enough time has passed"
 			);
 
 			// Transfer accordingly
-			if (wR.forERC20 && !wR.forERC721)
+			if (withdrawalRequest.forERC20 && !withdrawalRequest.forERC721)
 			{
-				if (IERC20(wR.token).balanceOf(address(this)) >= wR.amount)
+				if (IERC20(withdrawalRequest.token).balanceOf(address(this)) >= withdrawalRequest.amount)
 				{
 					// [ERC20-transfer]
-					IERC20(wR.token).transfer(wR.to, wR.amount);
+					IERC20(withdrawalRequest.token).transfer(withdrawalRequest.to, withdrawalRequest.amount);
 				}
 			}
-			else if (wR.forERC721 && !wR.forERC20)
+			else if (withdrawalRequest.forERC721 && !withdrawalRequest.forERC20)
 			{
-				if (IERC721(wR.token).ownerOf(wR.tokenId) == address(this))
+				if (IERC721(withdrawalRequest.token).ownerOf(withdrawalRequest.tokenId) == address(this))
 				{
 					// [ERC721-transfer]
-					IERC721(wR.token).transferFrom(address(this), wR.to, wR.tokenId);
+					IERC721(withdrawalRequest.token).transferFrom(
+						address(this),
+						withdrawalRequest.to,
+						withdrawalRequest.tokenId
+					);
 				}
 			}
-			else if (wR.forEther)
+			else if (withdrawalRequest.forEther)
 			{
 				// [transfer]
-				(bool success, ) = wR.to.call{value: wR.amount}("");
+				(bool success, ) = withdrawalRequest.to.call{value: withdrawalRequest.amount}("");
 
 				require(success, "Unable to send value");
 			}
 
-			emit TokensWithdrawn(msg.sender, wR.to, wR.amount);
+			emit TokensWithdrawn(msg.sender, withdrawalRequest.to, withdrawalRequest.amount);
 		}
 
 		_deleteWithdrawalRequest(withdrawalRequestId);
