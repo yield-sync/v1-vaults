@@ -619,8 +619,6 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 								1000
 							);
 
-							const createdWithdrawalRequest: any = await yieldSyncV1Vault.withdrawalRequestId_withdralRequest(1);
-
 							await yieldSyncV1Vault.connect(addr1).voteOnWithdrawalRequest(1, true);
 
 
@@ -858,6 +856,44 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 						}
 					);
 				});
+
+				describe("invalid withdrawalRequest", async () => {
+					it(
+						"Should fail to process request but delete withdrawalRequest..",
+						async () => {
+							const [, addr1, addr2] = await ethers.getSigners();
+
+							await yieldSyncV1Vault.connect(addr1).createWithdrawalRequest(
+								false,
+								false,
+								true,
+								addr2.address,
+								mockERC721.address,
+								1,
+								1
+							);
+
+							await yieldSyncV1Vault.connect(addr1).voteOnWithdrawalRequest(4, true);
+
+
+							const recieverBalanceBefore = await mockERC721.balanceOf(addr2.address);
+
+
+							// Fast-forward 7 days
+							await ethers.provider.send('evm_increaseTime', [sevenDaysInSeconds]);
+
+							await yieldSyncV1Vault.connect(addr1).processWithdrawalRequest(4);
+
+							const recieverBalanceAfter = await mockERC721.balanceOf(addr2.address);
+
+							await expect(
+								ethers.utils.formatUnits(recieverBalanceAfter)
+							).to.be.equal(ethers.utils.formatUnits(recieverBalanceBefore));
+
+							expect((await yieldSyncV1Vault.idsOfOpenWithdrawalRequests()).length).to.be.equal(0);
+						}
+					);
+				});
 			});
 		});
 
@@ -948,8 +984,8 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 						0
 					);
 
-					expect((await yieldSyncV1Vault.idsOfOpenWithdrawalRequests())[0]).to.be.equal(5);
-					expect((await yieldSyncV1Vault.idsOfOpenWithdrawalRequests())[1]).to.be.equal(6);
+					expect((await yieldSyncV1Vault.idsOfOpenWithdrawalRequests())[0]).to.be.equal(6);
+					expect((await yieldSyncV1Vault.idsOfOpenWithdrawalRequests())[1]).to.be.equal(7);
 				}
 			);
 		});

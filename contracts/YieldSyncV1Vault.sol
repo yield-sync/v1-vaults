@@ -410,6 +410,10 @@ contract YieldSyncV1Vault is
 						_withdrawalRequestId_withdralRequest[withdrawalRequestId].amount
 					);
 				}
+				else
+				{
+					emit WithdrawalRequestProcessFailed(withdrawalRequestId);
+				}
 			}
 			else if (
 				_withdrawalRequestId_withdralRequest[withdrawalRequestId].forERC721 &&
@@ -428,6 +432,10 @@ contract YieldSyncV1Vault is
 						_withdrawalRequestId_withdralRequest[withdrawalRequestId].to,
 						_withdrawalRequestId_withdralRequest[withdrawalRequestId].tokenId
 					);
+				}
+				else
+				{
+					emit WithdrawalRequestProcessFailed(withdrawalRequestId);
 				}
 			}
 			else if (_withdrawalRequestId_withdralRequest[withdrawalRequestId].forEther)
