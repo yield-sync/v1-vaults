@@ -437,7 +437,10 @@ contract YieldSyncV1Vault is
 					value: _withdrawalRequestId_withdralRequest[withdrawalRequestId].amount
 				}("");
 
-				require(success, "Unable to send value");
+				if (!success)
+				{
+					emit WithdrawalRequestProcessFailed(withdrawalRequestId);
+				}
 			}
 
 			emit TokensWithdrawn(

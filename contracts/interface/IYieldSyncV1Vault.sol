@@ -34,6 +34,7 @@ interface IYieldSyncV1Vault
 	event UpdatedWithdrawalRequest(WithdrawalRequest withdrawalRequest);
 	event MemberVoted(uint256 withdrawalRequestId, address indexed member, bool vote);
 	event WithdrawalRequestReadyToBeProcessed(uint256 withdrawalRequestId);
+	event WithdrawalRequestProcessFailed(uint256 withdrawalRequestId);
 
 
 	receive ()
