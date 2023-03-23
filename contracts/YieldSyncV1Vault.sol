@@ -412,7 +412,7 @@ contract YieldSyncV1Vault is
 				}
 				else
 				{
-					emit WithdrawalRequestProcessFailed(withdrawalRequestId);
+					emit ProcessWithdrawalRequestFailed(withdrawalRequestId);
 				}
 			}
 			else if (
@@ -435,7 +435,7 @@ contract YieldSyncV1Vault is
 				}
 				else
 				{
-					emit WithdrawalRequestProcessFailed(withdrawalRequestId);
+					emit ProcessWithdrawalRequestFailed(withdrawalRequestId);
 				}
 			}
 			else if (_withdrawalRequestId_withdralRequest[withdrawalRequestId].forEther)
@@ -447,7 +447,7 @@ contract YieldSyncV1Vault is
 
 				if (!success)
 				{
-					emit WithdrawalRequestProcessFailed(withdrawalRequestId);
+					emit ProcessWithdrawalRequestFailed(withdrawalRequestId);
 				}
 			}
 

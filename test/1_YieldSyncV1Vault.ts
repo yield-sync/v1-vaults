@@ -537,10 +537,6 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 					);
 				});
 
-
-				/**
-				 * @dev processWithdrawalRequest
-				*/
 				describe("processWithdrawalRequest()", async () => {
 					it(
 						"Should revert when unauthorized msg.sender calls..",
@@ -602,7 +598,6 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 					);
 				});
 
-
 				describe("invalid withdrawalRequest", async () => {
 					it(
 						"Should fail to process request but delete withdrawalRequest..",
@@ -620,7 +615,6 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 							);
 
 							await yieldSyncV1Vault.connect(addr1).voteOnWithdrawalRequest(1, true);
-
 
 							const recieverBalanceBefore = await ethers.provider.getBalance(addr2.address);
 
@@ -646,9 +640,6 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 			 * @dev Process for withdrawing ERC20
 			*/
 			describe("Requesting ERC20 tokens", async () => {
-				/**
-				 * @dev createWithdrawalRequest
-				*/
 				describe("createWithdrawalRequest", async () => {
 					it(
 						"Should be able to create a WithdrawalRequest for ERC20 token..",
@@ -686,9 +677,6 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 						async () => {
 							const idsOfOpenWithdrawalRequests = await yieldSyncV1Vault.idsOfOpenWithdrawalRequests();
 
-							console.log(idsOfOpenWithdrawalRequests);
-
-
 							expect(idsOfOpenWithdrawalRequests[0]).to.be.equal(2);
 						}
 					);
@@ -703,10 +691,6 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 					);
 				});
 
-
-				/**
-				 * @dev voteOnWithdrawalRequest
-				*/
 				describe("voteOnWithdrawalRequest", async () => {
 					it(
 						"Should be able vote on WithdrawalRequest and add member to _withdrawalRequest[].votedMembers..",
@@ -723,10 +707,6 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 					);
 				});
 
-
-				/**
-				 * @dev processWithdrawalRequest
-				*/
 				describe("processWithdrawalRequest", async () => {
 					it(
 						"Should process WithdrawalRequest for ERC20 token..",
@@ -753,16 +733,46 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 						}
 					);
 				});
+
+				describe("invalid withdrawalRequest", async () => {
+					it(
+						"Should fail to process request but delete withdrawalRequest..",
+						async () => {
+							const [, addr1, addr2] = await ethers.getSigners();
+
+							await yieldSyncV1Vault.connect(addr1).createWithdrawalRequest(
+								false,
+								true,
+								false,
+								addr2.address,
+								mockERC20.address,
+								50,
+								0
+							);
+
+							await yieldSyncV1Vault.connect(addr1).voteOnWithdrawalRequest(3, true);
+
+							const recieverBalanceBefore = await ethers.provider.getBalance(addr2.address);
+
+							// Fast-forward 7 days
+							await ethers.provider.send('evm_increaseTime', [sevenDaysInSeconds]);
+
+							await yieldSyncV1Vault.connect(addr1).processWithdrawalRequest(3);
+
+							const recieverBalanceAfter = await ethers.provider.getBalance(addr2.address);
+
+							await expect(
+								ethers.utils.formatUnits(recieverBalanceAfter)
+							).to.be.equal(ethers.utils.formatUnits(recieverBalanceBefore));
+
+							expect((await yieldSyncV1Vault.idsOfOpenWithdrawalRequests()).length).to.be.equal(0);
+						}
+					);
+				});
 			});
 
 
-			/**
-			 * @dev Process for withdrawing ERC721
-			*/
 			describe("Requesting ERC721 tokens", async () => {
-				/**
-				 * @dev createWithdrawalRequest
-				*/
 				describe("createWithdrawalRequest", async () => {
 					it(
 						"Should be able to create a WithdrawalRequest for ERC721 token..",
@@ -779,7 +789,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 								1
 							);
 
-							const createdWithdrawalRequest: any = await yieldSyncV1Vault.withdrawalRequestId_withdralRequest(3);
+							const createdWithdrawalRequest: any = await yieldSyncV1Vault.withdrawalRequestId_withdralRequest(4);
 
 							expect(createdWithdrawalRequest[0]).to.be.false;
 							expect(createdWithdrawalRequest[1]).to.be.false;
@@ -801,24 +811,21 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 							const idsOfOpenWithdrawalRequests = await yieldSyncV1Vault.idsOfOpenWithdrawalRequests();
 
 							expect(idsOfOpenWithdrawalRequests.length).to.be.equal(1);
-							expect(idsOfOpenWithdrawalRequests[0]).to.be.equal(3);
+							expect(idsOfOpenWithdrawalRequests[0]).to.be.equal(4);
 						}
 					);
 				});
 
 
-				/**
-				 * @dev voteOnWithdrawalRequest
-				*/
 				describe("voteOnWithdrawalRequest", async () => {
 					it(
 						"Should be able vote on WithdrawalRequest and add member to _withdrawalRequest[].votedMembers..",
 						async () => {
 							const [, addr1] = await ethers.getSigners();
 
-							await yieldSyncV1Vault.connect(addr1).voteOnWithdrawalRequest(3, true);
+							await yieldSyncV1Vault.connect(addr1).voteOnWithdrawalRequest(4, true);
 
-							const createdWithdrawalRequest: any = await yieldSyncV1Vault.withdrawalRequestId_withdralRequest(3);
+							const createdWithdrawalRequest: any = await yieldSyncV1Vault.withdrawalRequestId_withdralRequest(4);
 
 							expect(createdWithdrawalRequest[8]).to.be.equal(1);
 							expect(createdWithdrawalRequest[11][0]).to.be.equal(addr1.address);
@@ -827,9 +834,6 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 				});
 
 
-				/**
-				 * @dev processWithdrawalRequest
-				*/
 				describe("processWithdrawalRequest", async () => {
 					it(
 						"Should process WithdrawalRequest for ERC721 token..",
@@ -841,7 +845,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 							// Fast-forward 7 days
 							await ethers.provider.send('evm_increaseTime', [sevenDaysInSeconds]);
 
-							await yieldSyncV1Vault.connect(addr1).processWithdrawalRequest(3);
+							await yieldSyncV1Vault.connect(addr1).processWithdrawalRequest(4);
 
 							const recieverBalanceAfter = await mockERC721.balanceOf(addr2.address);
 
@@ -873,16 +877,14 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 								1
 							);
 
-							await yieldSyncV1Vault.connect(addr1).voteOnWithdrawalRequest(4, true);
-
+							await yieldSyncV1Vault.connect(addr1).voteOnWithdrawalRequest(5, true);
 
 							const recieverBalanceBefore = await mockERC721.balanceOf(addr2.address);
-
 
 							// Fast-forward 7 days
 							await ethers.provider.send('evm_increaseTime', [sevenDaysInSeconds]);
 
-							await yieldSyncV1Vault.connect(addr1).processWithdrawalRequest(4);
+							await yieldSyncV1Vault.connect(addr1).processWithdrawalRequest(5);
 
 							const recieverBalanceAfter = await mockERC721.balanceOf(addr2.address);
 
@@ -898,9 +900,6 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 		});
 
 		describe("withdrawalRequest Against", async () => {
-			/**
-			 * @dev voteOnWithdrawalRequest
-			*/
 			describe("voteOnWithdrawalRequest()", async () => {
 				it(
 					"Should be able vote on WithdrawalRequest and add member to _withdrawalRequest[].votedMembers..",
@@ -934,9 +933,6 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 				);
 			});
 
-			/**
-			 * @dev processWithdrawalRequest
-			*/
 			describe("processWithdrawalRequest()", async () => {
 				it("Should delete withdrawalRequest due to againstVoteCount met..", async () => {
 					const [, addr1] = await ethers.getSigners();
@@ -984,8 +980,8 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 						0
 					);
 
-					expect((await yieldSyncV1Vault.idsOfOpenWithdrawalRequests())[0]).to.be.equal(6);
-					expect((await yieldSyncV1Vault.idsOfOpenWithdrawalRequests())[1]).to.be.equal(7);
+					expect((await yieldSyncV1Vault.idsOfOpenWithdrawalRequests())[0]).to.be.equal(7);
+					expect((await yieldSyncV1Vault.idsOfOpenWithdrawalRequests())[1]).to.be.equal(8);
 				}
 			);
 		});
