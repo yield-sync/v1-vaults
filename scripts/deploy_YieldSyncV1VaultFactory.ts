@@ -1,8 +1,6 @@
+require("dotenv").config();
 import { Contract, ContractFactory } from "ethers";
 import { ethers } from "hardhat";
-
-
-let yieldSyncV1VaultFactory: Contract;
 
 
 async function main() {
@@ -11,8 +9,18 @@ async function main() {
 	console.log("Deploying contract with Account:", owner.address);
 	console.log("Account Balance:", await owner.getBalance());
 
+	// Get factories
 	const YieldSyncV1VaultFactory: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultFactory");
-	yieldSyncV1VaultFactory = await (await YieldSyncV1VaultFactory.deploy("")).deployed();
+	const YieldSyncV1VaultRecord: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultRecord");
+
+	// deploy
+	const yieldSyncV1VaultRecord: Contract = await (await YieldSyncV1VaultRecord.deploy()).deployed();
+	const yieldSyncV1VaultFactory: Contract = await (
+		await YieldSyncV1VaultFactory.deploy(
+			process.env.YIELD_SYNC_GOVERNANCE_ADDRESS,
+			yieldSyncV1VaultRecord.address
+		)
+	).deployed();
 
 	console.log("Contract address:", yieldSyncV1VaultFactory.address);
 	console.log("Account Balance:", await owner.getBalance());
@@ -21,7 +29,6 @@ async function main() {
 
 main()
 	.then(() => {
-
 		process.exit(0);
 	})
 	.catch((error) => {
