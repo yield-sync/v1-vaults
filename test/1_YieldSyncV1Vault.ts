@@ -600,7 +600,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 
 				describe("invalid withdrawalRequest", async () => {
 					it(
-						"Should fail to process request but delete withdrawalRequest..",
+						"Should fail to process request but delete withdrawalRequest after..",
 						async () => {
 							const [, addr1, addr2] = await ethers.getSigners();
 
@@ -628,7 +628,12 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 							await expect(
 								ethers.utils.formatUnits(recieverBalanceAfter)
 							).to.be.equal(ethers.utils.formatUnits(recieverBalanceBefore));
+						}
+					);
 
+					it(
+						"Should have idsOfOpenWithdrawalRequests be empty..",
+						async () => {
 							expect((await yieldSyncV1Vault.idsOfOpenWithdrawalRequests()).length).to.be.equal(0);
 						}
 					);
@@ -764,7 +769,12 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 							await expect(
 								ethers.utils.formatUnits(recieverBalanceAfter)
 							).to.be.equal(ethers.utils.formatUnits(recieverBalanceBefore));
+						}
+					);
 
+					it(
+						"Should have idsOfOpenWithdrawalRequests be empty..",
+						async () => {
 							expect((await yieldSyncV1Vault.idsOfOpenWithdrawalRequests()).length).to.be.equal(0);
 						}
 					);
@@ -890,8 +900,13 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 
 							await expect(
 								ethers.utils.formatUnits(recieverBalanceAfter)
-							).to.be.equal(ethers.utils.formatUnits(recieverBalanceBefore));
+							).to.be.equal(ethers.utils.formatUnits(recieverBalanceBefore))
+						}
+					);
 
+					it(
+						"Should have idsOfOpenWithdrawalRequests be empty..",
+						async () => {
 							expect((await yieldSyncV1Vault.idsOfOpenWithdrawalRequests()).length).to.be.equal(0);
 						}
 					);

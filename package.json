@@ -1,5 +1,5 @@
 {
-	"name": "igloo-fi-v1-vaults",
+	"name": "yield-sync-v1-vaults",
 	"version": "0.0.1",
 	"description": "",
 	"main": "scripts/deploy.js",
