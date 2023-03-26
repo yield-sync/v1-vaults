@@ -341,7 +341,10 @@ contract YieldSyncV1Vault is
 	{
 		for (uint256 i = 0; i < _withdrawalRequestId_withdralRequest[withdrawalRequestId].votedMembers.length; i++)
 		{
-			require(_withdrawalRequestId_withdralRequest[withdrawalRequestId].votedMembers[i] != msg.sender, "Already voted");
+			require(
+				_withdrawalRequestId_withdralRequest[withdrawalRequestId].votedMembers[i] != msg.sender,
+				"Already voted"
+			);
 		}
 
 		if (vote)
