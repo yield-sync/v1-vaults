@@ -59,6 +59,17 @@ interface IYieldSyncV1VaultFactory {
 		returns (address)
 	;
 
+	/**
+	* @notice Transfer Ether Locked
+	* @dev [!restriction]
+	* @dev [view-bool]
+	* @return {bool}
+	*/
+	function transferEtherLocked()
+		external
+		view
+		returns (bool)
+	;
 
 	/**
 	* @notice Fee

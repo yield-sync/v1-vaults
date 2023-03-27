@@ -35,6 +35,9 @@ contract YieldSyncV1Vault is
 	address public override immutable YieldSyncV1VaultRecord;
 	address public override signatureManager;
 
+	// [bool]
+	bool public override processWithdrawalRequestLocked;
+
 	// [uint256]
 	uint256 public override againstVoteCountRequired;
 	uint256 public override forVoteCountRequired;
@@ -73,6 +76,7 @@ contract YieldSyncV1Vault is
 		}
 
 		signatureManager = _signatureManager;
+		processWithdrawalRequestLocked = false;
 		againstVoteCountRequired = _againstVoteCountRequired;
 		forVoteCountRequired = _forVoteCountRequired;
 		withdrawalDelaySeconds = _withdrawalDelaySeconds;
@@ -381,11 +385,14 @@ contract YieldSyncV1Vault is
 		onlyMember()
 		validWithdrawalRequest(withdrawalRequestId)
 	{
+		require(!processWithdrawalRequestLocked, "processWithdrawalRequestLocked");
 		require(
 			_withdrawalRequestId_withdralRequest[withdrawalRequestId].forVoteCount >= forVoteCountRequired ||
 			_withdrawalRequestId_withdralRequest[withdrawalRequestId].againstVoteCount >= againstVoteCountRequired,
 			"!forVoteCountRequired && !againstVoteCount"
 		);
+
+		processWithdrawalRequestLocked = true;
 
 		if (_withdrawalRequestId_withdralRequest[withdrawalRequestId].forVoteCount >= forVoteCountRequired)
 		{
@@ -460,6 +467,8 @@ contract YieldSyncV1Vault is
 				_withdrawalRequestId_withdralRequest[withdrawalRequestId].amount
 			);
 		}
+
+		processWithdrawalRequestLocked = false;
 
 		_deleteWithdrawalRequest(withdrawalRequestId);
 	}

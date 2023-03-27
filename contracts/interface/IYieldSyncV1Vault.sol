@@ -73,6 +73,18 @@ interface IYieldSyncV1Vault
 	;
 
 	/**
+	* @notice Process WithdrawalRequest Locked
+	* @dev [!restriction]
+	* @dev [view-bool]
+	* @return {bool}
+	*/
+	function processWithdrawalRequestLocked()
+		external
+		view
+		returns (bool)
+	;
+
+	/**
 	* @notice Against Vote Count Required
 	* @dev [!restriction]
 	* @dev [view-uint256]

@@ -33,6 +33,9 @@ contract YieldSyncV1VaultFactory is
 	address public override immutable YieldSyncV1VaultRecord;
 	address public override defaultSignatureManager;
 
+	// [bool]
+	bool public override transferEtherLocked;
+
 	// [uint256]
 	uint256 public override fee;
 	uint256 public override yieldSyncV1VaultIdTracker;
@@ -50,6 +53,8 @@ contract YieldSyncV1VaultFactory is
 	{
 		YieldSyncGovernance = _YieldSyncGovernance;
 		YieldSyncV1VaultRecord = _YieldSyncV1VaultRecord;
+
+		transferEtherLocked = false;
 
 		fee = 0;
 		yieldSyncV1VaultIdTracker = 0;
@@ -130,8 +135,14 @@ contract YieldSyncV1VaultFactory is
 		override
 		only_YieldSyncGovernance_DEFAULT_ADMIN_ROLE()
 	{
+		require(!transferEtherLocked, "transferEtherLocked");
+
+		transferEtherLocked = true;
+
 		// [transfer]
 		(bool success, ) = to.call{value: address(this).balance}("");
+
+		transferEtherLocked = false;
 
 		require(success, "Failed");
 	}
