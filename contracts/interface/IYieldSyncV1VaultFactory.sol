@@ -7,8 +7,6 @@ pragma solidity ^0.8.18;
 */
 interface IYieldSyncV1VaultFactory {
 	event DeployedYieldSyncV1Vault(address indexed vaultAddress);
-	event UpdatedDefaultSignatureManager(address defaultSignatureManager);
-	event UpdatedFee(uint256 fee);
 
 
 	receive ()

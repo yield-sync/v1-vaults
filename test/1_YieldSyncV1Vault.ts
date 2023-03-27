@@ -1000,12 +1000,35 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 				}
 			);
 		});
+
+		describe("renounceMembership()", async () => {
+			it("Should allow members to leave a vault..", async () => {
+				const [, , , , , , addr6] = await ethers.getSigners();
+
+				await yieldSyncV1Vault.addMember(addr6.address);
+
+				const vaultsBefore = await yieldSyncV1VaultRecord.member_yieldSyncV1Vaults(addr6.address)
+
+				let found: boolean = false;
+
+				for (let i = 0; i < vaultsBefore.length; i++) {
+					if (vaultsBefore[i] === yieldSyncV1Vault.address) found = true;
+				}
+
+				expect(found).to.be.true;
+
+				await yieldSyncV1Vault.connect(addr6).renounceMembership();
+
+				const vaultsAfter = await yieldSyncV1VaultRecord.member_yieldSyncV1Vaults(addr6.address)
+
+				for (let i = 0; i < vaultsAfter.length; i++) {
+					expect(vaultsAfter[i]).to.not.equal(yieldSyncV1Vault.address);
+				}
+			});
+		});
 	});
 
 
-	/**
-	* @dev Restriction: DEFAULT_ADMIN_ROLE
-	*/
 	describe("Restriction: DEFAULT_ADMIN_ROLE", async () => {
 		describe("updateWithdrawalRequest()", async () => {
 			it(

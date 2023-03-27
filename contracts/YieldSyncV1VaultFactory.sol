@@ -114,8 +114,6 @@ contract YieldSyncV1VaultFactory is
 		only_YieldSyncGovernance_DEFAULT_ADMIN_ROLE()
 	{
 		defaultSignatureManager = _defaultSignatureManager;
-
-		emit UpdatedDefaultSignatureManager(defaultSignatureManager);
 	}
 
 	/// @inheritdoc IYieldSyncV1VaultFactory
@@ -125,8 +123,6 @@ contract YieldSyncV1VaultFactory is
 		only_YieldSyncGovernance_DEFAULT_ADMIN_ROLE()
 	{
 		fee = _fee;
-
-		emit UpdatedFee(fee);
 	}
 
 	/// @inheritdoc IYieldSyncV1VaultFactory

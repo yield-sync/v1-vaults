@@ -218,7 +218,6 @@ contract YieldSyncV1Vault is
 		IYieldSyncV1VaultRecord(YieldSyncV1VaultRecord).removeMember(address(this), member);
 	}
 
-
 	/// @inheritdoc IYieldSyncV1Vault
 	function deleteWithdrawalRequest(uint256 withdrawalRequestId)
 		public
@@ -471,5 +470,14 @@ contract YieldSyncV1Vault is
 		processWithdrawalRequestLocked = false;
 
 		_deleteWithdrawalRequest(withdrawalRequestId);
+	}
+
+	/// @inheritdoc IYieldSyncV1Vault
+	function renounceMembership()
+		public
+		override
+		onlyMember()
+	{
+		IYieldSyncV1VaultRecord(YieldSyncV1VaultRecord).removeMember(address(this), msg.sender);
 	}
 }

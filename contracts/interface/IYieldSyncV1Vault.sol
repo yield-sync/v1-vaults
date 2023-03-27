@@ -305,4 +305,13 @@ interface IYieldSyncV1Vault
 	function processWithdrawalRequest(uint256 withdrawalRequestId)
 		external
 	;
+
+	/**
+	* @notice Renounce Membership
+	* @dev [restriction] `YieldSyncV1Record` → member
+	* @dev [remove] member on `YieldSyncV1Record`
+	*/
+	function renounceMembership()
+		external
+	;
 }
