@@ -443,7 +443,6 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 
 							await expect(
 								yieldSyncV1Vault.connect(addr1).createWithdrawalRequest(
-									true,
 									false,
 									false,
 									addr1.address,
@@ -461,7 +460,6 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 							const [, addr1, addr2] = await ethers.getSigners();
 
 							await yieldSyncV1Vault.connect(addr1).createWithdrawalRequest(
-								true,
 								false,
 								false,
 								addr2.address,
@@ -472,17 +470,16 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 
 							const createdWithdrawalRequest: any = await yieldSyncV1Vault.withdrawalRequestId_withdralRequest(0);
 
-							expect(createdWithdrawalRequest[0]).to.be.true;
+							expect(createdWithdrawalRequest[0]).to.be.false;
 							expect(createdWithdrawalRequest[1]).to.be.false;
-							expect(createdWithdrawalRequest[2]).to.be.false;
-							expect(createdWithdrawalRequest[3]).to.be.equal(addr1.address);
-							expect(createdWithdrawalRequest[4]).to.be.equal(addr2.address);
-							expect(createdWithdrawalRequest[5]).to.be.equal(ethers.constants.AddressZero);
-							expect(createdWithdrawalRequest[6]).to.be.equal(ethers.utils.parseEther(".5"));
+							expect(createdWithdrawalRequest[2]).to.be.equal(addr1.address);
+							expect(createdWithdrawalRequest[3]).to.be.equal(addr2.address);
+							expect(createdWithdrawalRequest[4]).to.be.equal(ethers.constants.AddressZero);
+							expect(createdWithdrawalRequest[5]).to.be.equal(ethers.utils.parseEther(".5"));
+							expect(createdWithdrawalRequest[6]).to.be.equal(0);
 							expect(createdWithdrawalRequest[7]).to.be.equal(0);
 							expect(createdWithdrawalRequest[8]).to.be.equal(0);
-							expect(createdWithdrawalRequest[9]).to.be.equal(0);
-							expect(createdWithdrawalRequest[11].length).to.be.equal(0);
+							expect(createdWithdrawalRequest[10].length).to.be.equal(0);
 						}
 					);
 
@@ -520,8 +517,8 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 
 							const createdWithdrawalRequest: any = await yieldSyncV1Vault.withdrawalRequestId_withdralRequest(0);
 
-							expect(createdWithdrawalRequest[8]).to.be.equal(1);
-							expect(createdWithdrawalRequest[11][0]).to.be.equal(addr1.address);
+							expect(createdWithdrawalRequest[7]).to.be.equal(1);
+							expect(createdWithdrawalRequest[10][0]).to.be.equal(addr1.address);
 						}
 					);
 
@@ -605,7 +602,6 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 							const [, addr1, addr2] = await ethers.getSigners();
 
 							await yieldSyncV1Vault.connect(addr1).createWithdrawalRequest(
-								true,
 								false,
 								false,
 								addr2.address,
@@ -652,7 +648,6 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 							const [, addr1, addr2] = await ethers.getSigners();
 
 							await yieldSyncV1Vault.connect(addr1).createWithdrawalRequest(
-								false,
 								true,
 								false,
 								addr2.address,
@@ -663,17 +658,16 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 
 							const createdWithdrawalRequest: any = await yieldSyncV1Vault.withdrawalRequestId_withdralRequest(2);
 
-							expect(createdWithdrawalRequest[0]).to.be.false;
-							expect(createdWithdrawalRequest[1]).to.be.true;
-							expect(createdWithdrawalRequest[2]).to.be.false;
-							expect(createdWithdrawalRequest[3]).to.be.equal(addr1.address);
-							expect(createdWithdrawalRequest[4]).to.be.equal(addr2.address);
-							expect(createdWithdrawalRequest[5]).to.be.equal(mockERC20.address);
-							expect(createdWithdrawalRequest[6]).to.be.equal(50);
+							expect(createdWithdrawalRequest[0]).to.be.true;
+							expect(createdWithdrawalRequest[1]).to.be.false;
+							expect(createdWithdrawalRequest[2]).to.be.equal(addr1.address);
+							expect(createdWithdrawalRequest[3]).to.be.equal(addr2.address);
+							expect(createdWithdrawalRequest[4]).to.be.equal(mockERC20.address);
+							expect(createdWithdrawalRequest[5]).to.be.equal(50);
+							expect(createdWithdrawalRequest[6]).to.be.equal(0);
 							expect(createdWithdrawalRequest[7]).to.be.equal(0);
 							expect(createdWithdrawalRequest[8]).to.be.equal(0);
-							expect(createdWithdrawalRequest[9]).to.be.equal(0);
-							expect(createdWithdrawalRequest[11].length).to.be.equal(0);
+							expect(createdWithdrawalRequest[10].length).to.be.equal(0);
 						}
 					);
 
@@ -706,8 +700,8 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 
 							const createdWithdrawalRequest: any = await yieldSyncV1Vault.withdrawalRequestId_withdralRequest(2);
 
-							expect(createdWithdrawalRequest[8]).to.be.equal(1);
-							expect(createdWithdrawalRequest[11][0]).to.be.equal(addr1.address);
+							expect(createdWithdrawalRequest[7]).to.be.equal(1);
+							expect(createdWithdrawalRequest[10][0]).to.be.equal(addr1.address);
 						}
 					);
 				});
@@ -746,7 +740,6 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 							const [, addr1, addr2] = await ethers.getSigners();
 
 							await yieldSyncV1Vault.connect(addr1).createWithdrawalRequest(
-								false,
 								true,
 								false,
 								addr2.address,
@@ -791,7 +784,6 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 
 							await yieldSyncV1Vault.connect(addr1).createWithdrawalRequest(
 								false,
-								false,
 								true,
 								addr2.address,
 								mockERC721.address,
@@ -802,16 +794,15 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 							const createdWithdrawalRequest: any = await yieldSyncV1Vault.withdrawalRequestId_withdralRequest(4);
 
 							expect(createdWithdrawalRequest[0]).to.be.false;
-							expect(createdWithdrawalRequest[1]).to.be.false;
-							expect(createdWithdrawalRequest[2]).to.be.true;
-							expect(createdWithdrawalRequest[3]).to.be.equal(addr1.address);
-							expect(createdWithdrawalRequest[4]).to.be.equal(addr2.address);
-							expect(createdWithdrawalRequest[5]).to.be.equal(mockERC721.address);
+							expect(createdWithdrawalRequest[1]).to.be.true;
+							expect(createdWithdrawalRequest[2]).to.be.equal(addr1.address);
+							expect(createdWithdrawalRequest[3]).to.be.equal(addr2.address);
+							expect(createdWithdrawalRequest[4]).to.be.equal(mockERC721.address);
+							expect(createdWithdrawalRequest[5]).to.be.equal(1);
 							expect(createdWithdrawalRequest[6]).to.be.equal(1);
-							expect(createdWithdrawalRequest[7]).to.be.equal(1);
+							expect(createdWithdrawalRequest[7]).to.be.equal(0);
 							expect(createdWithdrawalRequest[8]).to.be.equal(0);
-							expect(createdWithdrawalRequest[9]).to.be.equal(0);
-							expect(createdWithdrawalRequest[11].length).to.be.equal(0);
+							expect(createdWithdrawalRequest[10].length).to.be.equal(0);
 						}
 					);
 
@@ -837,8 +828,8 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 
 							const createdWithdrawalRequest: any = await yieldSyncV1Vault.withdrawalRequestId_withdralRequest(4);
 
-							expect(createdWithdrawalRequest[8]).to.be.equal(1);
-							expect(createdWithdrawalRequest[11][0]).to.be.equal(addr1.address);
+							expect(createdWithdrawalRequest[7]).to.be.equal(1);
+							expect(createdWithdrawalRequest[10][0]).to.be.equal(addr1.address);
 						}
 					);
 				});
@@ -878,7 +869,6 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 							const [, addr1, addr2] = await ethers.getSigners();
 
 							await yieldSyncV1Vault.connect(addr1).createWithdrawalRequest(
-								false,
 								false,
 								true,
 								addr2.address,
@@ -922,7 +912,6 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 						const [, addr1, addr2] = await ethers.getSigners();
 
 						await yieldSyncV1Vault.connect(addr1).createWithdrawalRequest(
-							true,
 							false,
 							false,
 							addr2.address,
@@ -942,8 +931,8 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 							idsOfOpenWithdrawalRequests[idsOfOpenWithdrawalRequests.length - 1]
 						)
 
-						expect(createdWithdrawalRequest[9]).to.be.equal(1);
-						expect(createdWithdrawalRequest[11][0]).to.be.equal(addr1.address);
+						expect(createdWithdrawalRequest[8]).to.be.equal(1);
+						expect(createdWithdrawalRequest[10][0]).to.be.equal(addr1.address);
 					}
 				);
 			});
@@ -976,7 +965,6 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 					const [, addr1, addr2] = await ethers.getSigners();
 
 					await yieldSyncV1Vault.connect(addr1).createWithdrawalRequest(
-						false,
 						true,
 						false,
 						addr2.address,
@@ -986,7 +974,6 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 					);
 
 					await yieldSyncV1Vault.connect(addr1).createWithdrawalRequest(
-						false,
 						true,
 						false,
 						addr2.address,
@@ -1037,7 +1024,6 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 					const [, addr1, addr2] = await ethers.getSigners();
 
 					await yieldSyncV1Vault.connect(addr1).createWithdrawalRequest(
-						false,
 						true,
 						false,
 						addr2.address,
@@ -1062,11 +1048,10 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 							withdrawalRequest[4],
 							withdrawalRequest[5],
 							withdrawalRequest[6],
-							withdrawalRequest[7],
-							withdrawalRequest[8] + 1,
+							withdrawalRequest[7] + 1,
+							withdrawalRequest[8],
 							withdrawalRequest[9],
 							withdrawalRequest[10],
-							withdrawalRequest[11],
 						]
 					);
 
@@ -1074,7 +1059,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 						idsOfOpenWithdrawalRequests[idsOfOpenWithdrawalRequests.length - 1]
 					);
 
-					expect(updatedWithdrawalRequest[8]).to.be.equal(1);
+					expect(updatedWithdrawalRequest[7]).to.be.equal(1);
 				}
 			);
 
@@ -1084,7 +1069,6 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 					const [, addr1, addr2] = await ethers.getSigners();
 
 					await yieldSyncV1Vault.connect(addr1).createWithdrawalRequest(
-						false,
 						true,
 						false,
 						addr2.address,
@@ -1112,7 +1096,6 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 							withdrawalRequest[8],
 							BigInt(withdrawalRequest[9]) + BigInt(10),
 							withdrawalRequest[10],
-							withdrawalRequest[11],
 						]
 					);
 
@@ -1142,7 +1125,6 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 					const [, addr1, addr2] = await ethers.getSigners();
 
 					await yieldSyncV1Vault.connect(addr1).createWithdrawalRequest(
-						false,
 						true,
 						false,
 						addr2.address,

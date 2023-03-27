@@ -4,7 +4,6 @@ pragma solidity ^0.8.18;
 
 /* [struct] */
 struct WithdrawalRequest {
-	bool forEther;
 	bool forERC20;
 	bool forERC721;
 	address creator;
@@ -259,7 +258,6 @@ interface IYieldSyncV1Vault
 	* @dev [increment] `_withdrawalRequestId`
 	*      [add] `_withdrawalRequest` value
 	*      [push-into] `_withdrawalRequestIds`
-	* @param forEther {bool}
 	* @param forERC20 {bool}
 	* @param forERC721 {bool}
 	* @param to {address}
@@ -269,7 +267,6 @@ interface IYieldSyncV1Vault
 	* Emits: `CreatedWithdrawalRequest`
 	*/
 	function createWithdrawalRequest(
-		bool forEther,
 		bool forERC20,
 		bool forERC721,
 		address to,

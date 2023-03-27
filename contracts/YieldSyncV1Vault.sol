@@ -88,9 +88,7 @@ contract YieldSyncV1Vault is
 	modifier validWithdrawalRequest(uint256 withdrawalRequestId)
 	{
 		require(
-			_withdrawalRequestId_withdralRequest[withdrawalRequestId].forEther ||
-			_withdrawalRequestId_withdralRequest[withdrawalRequestId].forERC20 ||
-			_withdrawalRequestId_withdralRequest[withdrawalRequestId].forERC721,
+			_withdrawalRequestId_withdralRequest[withdrawalRequestId].amount > 0,
 			"No WithdrawalRequest found"
 		);
 
@@ -295,7 +293,6 @@ contract YieldSyncV1Vault is
 
 	/// @inheritdoc IYieldSyncV1Vault
 	function createWithdrawalRequest(
-		bool forEther,
 		bool forERC20,
 		bool forERC721,
 		address to,
@@ -313,7 +310,6 @@ contract YieldSyncV1Vault is
 
 		_withdrawalRequestId_withdralRequest[_withdrawalRequestIdTracker] = WithdrawalRequest(
 			{
-				forEther: forEther,
 				forERC20: forERC20,
 				forERC721: forERC721,
 				creator: msg.sender,
@@ -402,7 +398,6 @@ contract YieldSyncV1Vault is
 				"Not enough time has passed"
 			);
 
-			// Transfer accordingly
 			if (
 				_withdrawalRequestId_withdralRequest[withdrawalRequestId].forERC20 &&
 				!_withdrawalRequestId_withdralRequest[withdrawalRequestId].forERC721
@@ -424,9 +419,10 @@ contract YieldSyncV1Vault is
 					emit ProcessWithdrawalRequestFailed(withdrawalRequestId);
 				}
 			}
-			else if (
-				_withdrawalRequestId_withdralRequest[withdrawalRequestId].forERC721 &&
-				!_withdrawalRequestId_withdralRequest[withdrawalRequestId].forERC20
+
+			if (
+				!_withdrawalRequestId_withdralRequest[withdrawalRequestId].forERC20 &&
+				_withdrawalRequestId_withdralRequest[withdrawalRequestId].forERC721
 			)
 			{
 				if (
@@ -447,7 +443,11 @@ contract YieldSyncV1Vault is
 					emit ProcessWithdrawalRequestFailed(withdrawalRequestId);
 				}
 			}
-			else if (_withdrawalRequestId_withdralRequest[withdrawalRequestId].forEther)
+
+			if (
+				!_withdrawalRequestId_withdralRequest[withdrawalRequestId].forERC20 &&
+				!_withdrawalRequestId_withdralRequest[withdrawalRequestId].forERC721
+			)
 			{
 				// [transfer]
 				(bool success, ) = _withdrawalRequestId_withdralRequest[withdrawalRequestId].to.call{
