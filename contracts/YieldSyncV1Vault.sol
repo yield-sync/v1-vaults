@@ -426,7 +426,7 @@ contract YieldSyncV1Vault is
 			}
 			else if (
 				_withdrawalRequestId_withdralRequest[withdrawalRequestId].forERC721 &&
-			!_withdrawalRequestId_withdralRequest[withdrawalRequestId].forERC20
+				!_withdrawalRequestId_withdralRequest[withdrawalRequestId].forERC20
 			)
 			{
 				if (
