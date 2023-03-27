@@ -13,6 +13,7 @@
 		"not-rely-on-time": "off",
 		"private-vars-leading-underscore": "warn",
 		"reason-string": ["warn", { "maxLength": 64 }],
-		"var-name-mixedcase": "off"
+		"var-name-mixedcase": "off",
+		"reentrancy": "off"
 	}
 }
