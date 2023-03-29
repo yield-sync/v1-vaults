@@ -22,7 +22,8 @@ async function main() {
 		)
 	).deployed();
 
-	console.log("Contract address:", yieldSyncV1VaultFactory.address);
+	console.log("yieldSyncV1VaultRecord Contract address:", yieldSyncV1VaultRecord.address);
+	console.log("yieldSyncV1VaultFactory Contract address:", yieldSyncV1VaultFactory.address);
 	console.log("Account Balance:", await owner.getBalance());
 }
 
