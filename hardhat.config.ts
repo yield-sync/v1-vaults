@@ -9,7 +9,13 @@ import "@nomiclabs/hardhat-solhint";
  * @type import("hardhat/config").HardhatUserConfig
 */
 const config: any = {
-	solidity: "0.8.18",
+	etherscan: {
+		apiKey: {
+			mainnet: process.env.ETHERSCAN_API_KEY,
+			goerli: process.env.ETHERSCAN_API_KEY,
+			optimisticEthereum: process.env.OPTIMISTIC_ETHERSCAN_API_KEY,
+		}
+	},
 	networks: {
 		goerli: {
 			url: `https://goerli.infura.io/v3/${process.env.INFURA_API_KEY}`,
@@ -28,13 +34,10 @@ const config: any = {
 			accounts: [`0x${process.env.PRIVATE_KEY}`]
 		},
 	},
-	etherscan: {
-		apiKey: {
-			mainnet: process.env.ETHERSCAN_API_KEY,
-			goerli: process.env.ETHERSCAN_API_KEY,
-			optimisticEthereum: process.env.OPTIMISTIC_ETHERSCAN_API_KEY,
-		}
-	}
+	paths: {
+		sources: "./contracts",
+	},
+	solidity: "0.8.18"
 };
 
 
