@@ -8,61 +8,6 @@ const sevenDaysInSeconds = 7 * 24 * 60 * 60;
 const sixDaysInSeconds = 6 * 24 * 60 * 60;
 
 
-const stageContracts = async () => {
-	const [owner, addr1] = await ethers.getSigners();
-
-	const YieldSyncV1Vault: ContractFactory = await ethers.getContractFactory("YieldSyncV1Vault");
-	const YieldSyncV1VaultFactory: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultFactory");
-	const YieldSyncV1VaultRecord: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultRecord");
-	const MockAdmin: ContractFactory = await ethers.getContractFactory("MockAdmin");
-	const MockERC20: ContractFactory = await ethers.getContractFactory("MockERC20");
-	const MockERC721: ContractFactory = await ethers.getContractFactory("MockERC721");
-	const MockYieldSyncGovernance: ContractFactory = await ethers.getContractFactory("MockYieldSyncGovernance");
-	const SignatureManager: ContractFactory = await ethers.getContractFactory("SignatureManager");
-
-	const mockYieldSyncGovernance: Contract = await (await MockYieldSyncGovernance.deploy()).deployed();
-	const yieldSyncV1VaultRecord: Contract = await (await YieldSyncV1VaultRecord.deploy()).deployed();
-	const yieldSyncV1VaultFactory: Contract = await (
-		await YieldSyncV1VaultFactory.deploy(mockYieldSyncGovernance.address, yieldSyncV1VaultRecord.address)
-	).deployed();
-
-	// Deploy a vault
-	await yieldSyncV1VaultFactory.deployYieldSyncV1Vault(
-		[owner.address],
-		[addr1.address],
-		ethers.constants.AddressZero,
-		true,
-		2,
-		2,
-		5,
-		{ value: 1 }
-	);
-
-	// Attach the deployed vault's address
-	const yieldSyncV1Vault: Contract = await YieldSyncV1Vault.attach(
-		await yieldSyncV1VaultFactory.yieldSyncV1VaultId_yieldSyncV1VaultAddress(0)
-	);
-
-	const signatureManager: Contract = await (
-		await SignatureManager.deploy(mockYieldSyncGovernance.address, yieldSyncV1VaultRecord.address)
-	).deployed();
-	const mockAdmin: Contract = await (await MockAdmin.deploy()).deployed();
-	const mockERC20: Contract = await (await MockERC20.deploy()).deployed();
-	const mockERC721: Contract = await (await MockERC721.deploy()).deployed();
-
-	return {
-		yieldSyncV1Vault,
-		yieldSyncV1VaultFactory,
-		yieldSyncV1VaultRecord,
-		signatureManager,
-		mockAdmin,
-		mockERC20,
-		mockERC721,
-		mockYieldSyncGovernance
-	};
-};
-
-
 describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 	let yieldSyncV1Vault: Contract;
 	let yieldSyncV1VaultFactory: Contract;
@@ -74,16 +19,52 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 	let mockYieldSyncGovernance: Contract;
 
 	before("[before] Set up contracts..", async () => {
-		const stagedContracts = await stageContracts();
+		const [owner, addr1] = await ethers.getSigners();
 
-		yieldSyncV1Vault = stagedContracts.yieldSyncV1Vault
-		yieldSyncV1VaultFactory = stagedContracts.yieldSyncV1VaultFactory
-		yieldSyncV1VaultRecord = stagedContracts.yieldSyncV1VaultRecord
-		signatureManager = stagedContracts.signatureManager
-		mockAdmin = stagedContracts.mockAdmin
-		mockERC20 = stagedContracts.mockERC20
-		mockERC721 = stagedContracts.mockERC721
-		mockYieldSyncGovernance = stagedContracts.mockYieldSyncGovernance;
+
+		// Contract Factory
+		const MockAdmin: ContractFactory = await ethers.getContractFactory("MockAdmin");
+		const MockERC20: ContractFactory = await ethers.getContractFactory("MockERC20");
+		const MockERC721: ContractFactory = await ethers.getContractFactory("MockERC721");
+
+		const MockYieldSyncGovernance: ContractFactory = await ethers.getContractFactory("MockYieldSyncGovernance");
+		const YieldSyncV1Vault: ContractFactory = await ethers.getContractFactory("YieldSyncV1Vault");
+		const YieldSyncV1VaultFactory: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultFactory");
+		const YieldSyncV1VaultRecord: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultRecord");
+		const SignatureManager: ContractFactory = await ethers.getContractFactory("SignatureManager");
+
+
+		// Contract
+		mockAdmin = await (await MockAdmin.deploy()).deployed();
+		mockERC20 = await (await MockERC20.deploy()).deployed();
+		mockERC721 = await (await MockERC721.deploy()).deployed();
+
+		mockYieldSyncGovernance = await (await MockYieldSyncGovernance.deploy()).deployed();
+		yieldSyncV1VaultRecord = await (await YieldSyncV1VaultRecord.deploy()).deployed();
+		yieldSyncV1VaultFactory = await (
+			await YieldSyncV1VaultFactory.deploy(mockYieldSyncGovernance.address, yieldSyncV1VaultRecord.address)
+		).deployed();
+
+		// Deploy a vault
+		await yieldSyncV1VaultFactory.deployYieldSyncV1Vault(
+			[owner.address],
+			[addr1.address],
+			ethers.constants.AddressZero,
+			true,
+			2,
+			2,
+			5,
+			{ value: 1 }
+		);
+
+		// Attach the deployed vault's address
+		yieldSyncV1Vault = await YieldSyncV1Vault.attach(
+			await yieldSyncV1VaultFactory.yieldSyncV1VaultId_yieldSyncV1VaultAddress(0)
+		);
+
+		signatureManager = await (
+			await SignatureManager.deploy(mockYieldSyncGovernance.address, yieldSyncV1VaultRecord.address)
+		).deployed();
 	});
 
 	describe("Receiving tokens & ethers", async () => {
