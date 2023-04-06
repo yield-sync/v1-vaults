@@ -68,32 +68,41 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 	});
 
 	describe("Receiving tokens & ethers", async () => {
-		it("Should be able to recieve ether..", async () => {
-			const [, addr1] = await ethers.getSigners();
+		it(
+			"Should be able to recieve ether..",
+			async () => {
+				const [, addr1] = await ethers.getSigners();
 
-			// Send ether to YieldSyncV1Vault contract
-			await addr1.sendTransaction({
-				to: yieldSyncV1Vault.address,
-				value: ethers.utils.parseEther(".5")
-			});
+				// Send ether to YieldSyncV1Vault contract
+				await addr1.sendTransaction({
+					to: yieldSyncV1Vault.address,
+					value: ethers.utils.parseEther(".5")
+				});
 
-			await expect(
-				await ethers.provider.getBalance(yieldSyncV1Vault.address)
-			).to.be.greaterThanOrEqual(ethers.utils.parseEther(".5"));
-		});
+				await expect(
+					await ethers.provider.getBalance(yieldSyncV1Vault.address)
+				).to.be.greaterThanOrEqual(ethers.utils.parseEther(".5"));
+			}
+		);
 
-		it("Should be able to recieve ERC20 tokens..", async () => {
-			await mockERC20.transfer(yieldSyncV1Vault.address, 50);
+		it(
+			"Should be able to recieve ERC20 tokens..",
+			async () => {
+				await mockERC20.transfer(yieldSyncV1Vault.address, 50);
 
-			expect(await mockERC20.balanceOf(yieldSyncV1Vault.address)).to.equal(50);
-		});
+				expect(await mockERC20.balanceOf(yieldSyncV1Vault.address)).to.equal(50);
+			}
+		);
 
-		it("Should be able to recieve ERC721 tokens..", async () => {
-			const [owner] = await ethers.getSigners();
-			await mockERC721.transferFrom(owner.address, yieldSyncV1Vault.address, 1);
+		it(
+			"Should be able to recieve ERC721 tokens..",
+			async () => {
+				const [owner] = await ethers.getSigners();
+				await mockERC721.transferFrom(owner.address, yieldSyncV1Vault.address, 1);
 
-			expect(await mockERC721.balanceOf(yieldSyncV1Vault.address)).to.equal(1);
-		});
+				expect(await mockERC721.balanceOf(yieldSyncV1Vault.address)).to.equal(1);
+			}
+		);
 	});
 
 	describe("Initial Values", async () => {
@@ -142,7 +151,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 
 		it(
 			"Should have added members correctly..",
-				async () => {
+			async () => {
 				const [, addr1] = await ethers.getSigners();
 
 				expect(
@@ -164,52 +173,55 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 	});
 
 
-	/**
-	 * @dev Restriction: DEFAULT_ADMIN_ROLE
-	*/
 	describe("Restriction: DEFAULT_ADMIN_ROLE", async () => {
 		describe("addAdmin()", async () => {
-			it("Should allow admin to add another admin..", async () => {
-				const [, , , , addr4] = await ethers.getSigners();
+			it(
+				"Should allow admin to add another admin..",
+				async () => {
+					const [, , , , addr4] = await ethers.getSigners();
 
-				await yieldSyncV1Vault.addAdmin(addr4.address);
+					await yieldSyncV1Vault.addAdmin(addr4.address);
 
-				expect(
-					(await yieldSyncV1VaultRecord.participant_yieldSyncV1Vault_access(
-						addr4.address,
-						yieldSyncV1Vault.address
-					))[0]
-				).to.be.true;
+					expect(
+						(await yieldSyncV1VaultRecord.participant_yieldSyncV1Vault_access(
+							addr4.address,
+							yieldSyncV1Vault.address
+						))[0]
+					).to.be.true;
 
-				expect(
-					(await yieldSyncV1VaultRecord.admin_yieldSyncV1Vaults(addr4.address))[0]
-				).to.be.equal(yieldSyncV1Vault.address);
-
-
-				expect(
-					(await yieldSyncV1VaultRecord.yieldSyncV1Vault_admins(yieldSyncV1Vault.address))[1]
-				).to.be.equal(addr4.address);
-			});
-
-			it("Should allow admin to add a contract-based admin..", async () => {
-				await yieldSyncV1Vault.addAdmin(mockAdmin.address);
-
-				expect(
-					(await yieldSyncV1VaultRecord.participant_yieldSyncV1Vault_access(
-						mockAdmin.address,
-						yieldSyncV1Vault.address
-					))[0]
-				).to.be.true;
-
-				expect(
-					(await yieldSyncV1VaultRecord.admin_yieldSyncV1Vaults(mockAdmin.address))[0]
-				).to.be.equal(yieldSyncV1Vault.address);
+					expect(
+						(await yieldSyncV1VaultRecord.admin_yieldSyncV1Vaults(addr4.address))[0]
+					).to.be.equal(yieldSyncV1Vault.address);
 
 
-				expect(
-					(await yieldSyncV1VaultRecord.yieldSyncV1Vault_admins(yieldSyncV1Vault.address))[2]
-				).to.be.equal(mockAdmin.address);
-			});
+					expect(
+						(await yieldSyncV1VaultRecord.yieldSyncV1Vault_admins(yieldSyncV1Vault.address))[1]
+					).to.be.equal(addr4.address);
+				}
+			);
+
+			it(
+				"Should allow admin to add a contract-based admin..",
+				async () => {
+					await yieldSyncV1Vault.addAdmin(mockAdmin.address);
+
+					expect(
+						(await yieldSyncV1VaultRecord.participant_yieldSyncV1Vault_access(
+							mockAdmin.address,
+							yieldSyncV1Vault.address
+						))[0]
+					).to.be.true;
+
+					expect(
+						(await yieldSyncV1VaultRecord.admin_yieldSyncV1Vaults(mockAdmin.address))[0]
+					).to.be.equal(yieldSyncV1Vault.address);
+
+
+					expect(
+						(await yieldSyncV1VaultRecord.yieldSyncV1Vault_admins(yieldSyncV1Vault.address))[2]
+					).to.be.equal(mockAdmin.address);
+				}
+			);
 		});
 
 		describe("addMember()", async () => {
@@ -380,19 +392,19 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 	*/
 	describe("Restriction: MEMBER", async () => {
 		describe("addMember()", async () => {
-			it("Should NOT allow member to add another member..", async () => {
-				const [, addr1, , , addr4] = await ethers.getSigners();
+			it(
+				"Should NOT allow member to add another member..",
+				async () => {
+					const [, addr1, , , addr4] = await ethers.getSigners();
 
-				await expect(
-					yieldSyncV1Vault.connect(addr1).addMember(addr4.address)
-				).to.be.rejected;
-			});
+					await expect(
+						yieldSyncV1Vault.connect(addr1).addMember(addr4.address)
+					).to.be.rejected;
+				}
+			);
 		});
 
 		describe("withdrawalRequest For", async () => {
-			/**
-			 * @notice Process for withdrawling Ether
-			*/
 			describe("Requesting Ether", async () => {
 				/**
 				 * @dev createWithdrawalRequest
@@ -401,7 +413,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 					it(
 						"Should revert when unauthorized msg.sender calls..",
 						async () => {
-						const [, , , , addr4] = await ethers.getSigners();
+							const [, , , , addr4] = await ethers.getSigners();
 
 							await expect(
 								yieldSyncV1Vault.connect(addr4).createWithdrawalRequest(
@@ -490,7 +502,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 					);
 
 					it(
-						"Should be able vote on WithdrawalRequest and add member to _withdrawalRequest[].votedMembers..",
+						"Should be able vote on WithdrawalRequest & add member to _withdrawalRequest[].votedMembers..",
 						async () => {
 							const [, addr1] = await ethers.getSigners();
 
@@ -919,23 +931,26 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 			});
 
 			describe("processWithdrawalRequest()", async () => {
-				it("Should delete withdrawalRequest due to againstVoteCount met..", async () => {
-					const [, addr1] = await ethers.getSigners();
+				it(
+					"Should delete withdrawalRequest due to againstVoteCount met..",
+					async () => {
+						const [, addr1] = await ethers.getSigners();
 
-					const idsOfOpenWithdrawalRequests = await yieldSyncV1Vault.idsOfOpenWithdrawalRequests();
+						const idsOfOpenWithdrawalRequests = await yieldSyncV1Vault.idsOfOpenWithdrawalRequests();
 
-					yieldSyncV1Vault.connect(addr1).processWithdrawalRequest(
-						idsOfOpenWithdrawalRequests[idsOfOpenWithdrawalRequests.length - 1]
-					);
-
-					await expect((await yieldSyncV1Vault.idsOfOpenWithdrawalRequests()).length).to.be.equal(0);
-
-					await expect(
-						yieldSyncV1Vault.withdrawalRequestId_withdralRequest(
+						yieldSyncV1Vault.connect(addr1).processWithdrawalRequest(
 							idsOfOpenWithdrawalRequests[idsOfOpenWithdrawalRequests.length - 1]
-						)
-					).to.be.rejectedWith("No WithdrawalRequest found");
-				});
+						);
+
+						await expect((await yieldSyncV1Vault.idsOfOpenWithdrawalRequests()).length).to.be.equal(0);
+
+						await expect(
+							yieldSyncV1Vault.withdrawalRequestId_withdralRequest(
+								idsOfOpenWithdrawalRequests[idsOfOpenWithdrawalRequests.length - 1]
+							)
+						).to.be.rejectedWith("No WithdrawalRequest found");
+					}
+				);
 			});
 		});
 
@@ -970,29 +985,34 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 		});
 
 		describe("renounceMembership()", async () => {
-			it("Should allow members to leave a vault..", async () => {
-				const [, , , , , , addr6] = await ethers.getSigners();
+			it(
+				"Should allow members to leave a vault..",
+				async () => {
+					const [, , , , , , addr6] = await ethers.getSigners();
 
-				await yieldSyncV1Vault.addMember(addr6.address);
+					await yieldSyncV1Vault.addMember(addr6.address);
 
-				const vaultsBefore = await yieldSyncV1VaultRecord.member_yieldSyncV1Vaults(addr6.address)
+					const vaultsBefore = await yieldSyncV1VaultRecord.member_yieldSyncV1Vaults(addr6.address)
 
-				let found: boolean = false;
+					let found: boolean = false;
 
-				for (let i = 0; i < vaultsBefore.length; i++) {
-					if (vaultsBefore[i] === yieldSyncV1Vault.address) found = true;
+					for (let i = 0; i < vaultsBefore.length; i++)
+					{
+						if (vaultsBefore[i] === yieldSyncV1Vault.address) found = true;
+					}
+
+					expect(found).to.be.true;
+
+					await yieldSyncV1Vault.connect(addr6).renounceMembership();
+
+					const vaultsAfter = await yieldSyncV1VaultRecord.member_yieldSyncV1Vaults(addr6.address)
+
+					for (let i = 0; i < vaultsAfter.length; i++)
+					{
+						expect(vaultsAfter[i]).to.not.equal(yieldSyncV1Vault.address);
+					}
 				}
-
-				expect(found).to.be.true;
-
-				await yieldSyncV1Vault.connect(addr6).renounceMembership();
-
-				const vaultsAfter = await yieldSyncV1VaultRecord.member_yieldSyncV1Vaults(addr6.address)
-
-				for (let i = 0; i < vaultsAfter.length; i++) {
-					expect(vaultsAfter[i]).to.not.equal(yieldSyncV1Vault.address);
-				}
-			});
+			);
 		});
 	});
 
