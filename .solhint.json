@@ -8,6 +8,7 @@
 		"func-order": "off",
 		"quotes": ["error", "double"],
 		"max-line-length": ["error", 120],
+		"no-console": "warn",
 		"no-empty-blocks": "off",
 		"no-global-import": "warn",
 		"not-rely-on-time": "off",
