@@ -53,7 +53,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 			true,
 			2,
 			2,
-			5,
+			sixDaysInSeconds,
 			{ value: 1 }
 		);
 
@@ -65,20 +65,21 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 		signatureManager = await (
 			await SignatureManager.deploy(mockYieldSyncGovernance.address, yieldSyncV1VaultRecord.address)
 		).deployed();
+
+		// Send ether to YieldSyncV1Vault contract
+		await addr1.sendTransaction({ to: yieldSyncV1Vault.address, value: ethers.utils.parseEther(".5") });
+
+		// Send ERC20 to YieldSyncV1Vault contract
+		await mockERC20.transfer(yieldSyncV1Vault.address, 50);
+
+		// Send ERC721 to YieldSyncV1Vault contract
+		await mockERC721.transferFrom(owner.address, yieldSyncV1Vault.address, 1);
 	});
 
 	describe("Receiving tokens & ethers", async () => {
 		it(
 			"Should be able to recieve ether..",
 			async () => {
-				const [, addr1] = await ethers.getSigners();
-
-				// Send ether to YieldSyncV1Vault contract
-				await addr1.sendTransaction({
-					to: yieldSyncV1Vault.address,
-					value: ethers.utils.parseEther(".5")
-				});
-
 				await expect(
 					await ethers.provider.getBalance(yieldSyncV1Vault.address)
 				).to.be.greaterThanOrEqual(ethers.utils.parseEther(".5"));
@@ -88,8 +89,6 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 		it(
 			"Should be able to recieve ERC20 tokens..",
 			async () => {
-				await mockERC20.transfer(yieldSyncV1Vault.address, 50);
-
 				expect(await mockERC20.balanceOf(yieldSyncV1Vault.address)).to.equal(50);
 			}
 		);
@@ -97,10 +96,6 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 		it(
 			"Should be able to recieve ERC721 tokens..",
 			async () => {
-				const [owner] = await ethers.getSigners();
-
-				await mockERC721.transferFrom(owner.address, yieldSyncV1Vault.address, 1);
-
 				expect(await mockERC721.balanceOf(yieldSyncV1Vault.address)).to.equal(1);
 			}
 		);
@@ -122,9 +117,9 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 		);
 
 		it(
-			"Should initialize withdrawalDelaySeconds 5..",
+			"Should initialize withdrawalDelaySeconds as sixDaysInSeconds..",
 			async () => {
-				expect(await yieldSyncV1Vault.withdrawalDelaySeconds()).to.equal(5);
+				expect(await yieldSyncV1Vault.withdrawalDelaySeconds()).to.equal(sixDaysInSeconds);
 			}
 		);
 
@@ -283,7 +278,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 			it(
 				"Should be able to remove address from MEMBER role..",
 				async () => {
-					const [, ,  , , addr5] = await ethers.getSigners();
+					const [, , , , addr5] = await ethers.getSigners();
 
 					await yieldSyncV1Vault.addMember(addr5.address)
 
@@ -408,7 +403,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 			);
 		});
 
-		describe("withdrawalRequest For", async () => {
+		describe("withdrawalRequests", async () => {
 			describe("Requesting Ether", async () => {
 				describe("createWithdrawalRequest()", async () => {
 					it(
@@ -462,7 +457,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 								0
 							);
 
-							const createdWithdrawalRequest: any = await yieldSyncV1Vault
+							const createdWithdrawalRequest = await yieldSyncV1Vault
 								.withdrawalRequestId_withdralRequest(0)
 							;
 
@@ -543,7 +538,9 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 							// Vote
 							await yieldSyncV1Vault.connect(addr1).voteOnWithdrawalRequest(0, true);
 
-							const createdWithdrawalRequest: any = await yieldSyncV1Vault.withdrawalRequestId_withdralRequest(0);
+							const createdWithdrawalRequest = await yieldSyncV1Vault
+								.withdrawalRequestId_withdralRequest(0)
+							;
 
 							// Vote count
 							expect(createdWithdrawalRequest[7]).to.be.equal(1);
@@ -657,15 +654,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 						async () => {
 							const [, addr1, addr2] = await ethers.getSigners();
 
-							// Send ether to YieldSyncV1Vault contract
-							await addr1.sendTransaction({
-								to: yieldSyncV1Vault.address,
-								value: ethers.utils.parseEther(".5")
-							});
-
 							await yieldSyncV1Vault.updateForVoteCountRequired(1);
-
-							await yieldSyncV1Vault.updateWithdrawalDelaySeconds(sevenDaysInSeconds);
 
 							await yieldSyncV1Vault.connect(addr1).createWithdrawalRequest(
 								false,
@@ -678,8 +667,8 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 
 							await yieldSyncV1Vault.connect(addr1).voteOnWithdrawalRequest(0, true);
 
-							// Fast-forward 7 days
-							await ethers.provider.send('evm_increaseTime', [sevenDaysInSeconds]);
+							// Fast-forward 6 days
+							await ethers.provider.send('evm_increaseTime', [sixDaysInSeconds]);
 
 							const recieverBalanceBefore = ethers.utils.formatUnits(
 								await ethers.provider.getBalance(addr2.address)
@@ -713,7 +702,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 								false,
 								addr2.address,
 								ethers.constants.AddressZero,
-								ethers.utils.parseEther(".5"),
+								ethers.utils.parseEther(".6"),
 								0
 							);
 
@@ -745,7 +734,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 			 * @dev Process for withdrawing ERC20
 			*/
 			describe("Requesting ERC20 tokens", async () => {
-				describe("createWithdrawalRequest", async () => {
+				describe("createWithdrawalRequest()", async () => {
 					it(
 						"Should be able to create a WithdrawalRequest for ERC20 token..",
 						async () => {
@@ -816,7 +805,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 					);
 				});
 
-				describe("voteOnWithdrawalRequest", async () => {
+				describe("voteOnWithdrawalRequest()", async () => {
 					it(
 						"Should be able vote on WithdrawalRequest and add member to _withdrawalRequest[].votedMembers..",
 						async () => {
@@ -843,17 +832,13 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 					);
 				});
 
-				describe("processWithdrawalRequest", async () => {
+				describe("processWithdrawalRequest()", async () => {
 					it(
 						"Should process WithdrawalRequest for ERC20 token..",
 						async () => {
 							const [, addr1, addr2] = await ethers.getSigners();
 
-							await mockERC20.transfer(yieldSyncV1Vault.address, 50);
-
 							await yieldSyncV1Vault.updateForVoteCountRequired(1);
-
-							await yieldSyncV1Vault.updateWithdrawalDelaySeconds(sevenDaysInSeconds);
 
 							await yieldSyncV1Vault.connect(addr1).createWithdrawalRequest(
 								true,
@@ -868,8 +853,8 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 
 							const recieverBalanceBefore = await mockERC20.balanceOf(addr2.address);
 
-							// Fast-forward 7 days
-							await ethers.provider.send('evm_increaseTime', [sevenDaysInSeconds]);
+							// Fast-forward 6 days
+							await ethers.provider.send('evm_increaseTime', [sixDaysInSeconds]);
 
 							await yieldSyncV1Vault.connect(addr1).processWithdrawalRequest(0);
 
@@ -880,7 +865,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 					);
 				});
 
-				describe("invalid withdrawalRequest", async () => {
+				describe("invalid ERC20 withdrawalRequest", async () => {
 					it(
 						"Should fail to process request but delete withdrawalRequest..",
 						async () => {
@@ -893,7 +878,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 								false,
 								addr2.address,
 								mockERC20.address,
-								50,
+								51,
 								0
 							);
 
@@ -1003,9 +988,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 					it(
 						"Should process WithdrawalRequest for ERC721 token..",
 						async () => {
-							const [owner, addr1, addr2] = await ethers.getSigners();
-
-							await mockERC721.transferFrom(owner.address, yieldSyncV1Vault.address, 1);
+							const [, addr1, addr2] = await ethers.getSigners();
 
 							await yieldSyncV1Vault.updateForVoteCountRequired(1);
 
@@ -1020,8 +1003,8 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 
 							await yieldSyncV1Vault.connect(addr1).voteOnWithdrawalRequest(0, true);
 
-							// Fast-forward 7 days
-							await ethers.provider.send('evm_increaseTime', [sevenDaysInSeconds]);
+							// Fast-forward 6 days
+							await ethers.provider.send('evm_increaseTime', [sixDaysInSeconds]);
 
 							const recieverBalanceBefore = await mockERC721.balanceOf(addr2.address);
 
@@ -1048,7 +1031,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 								addr2.address,
 								mockERC721.address,
 								1,
-								1
+								2
 							);
 
 							await yieldSyncV1Vault.connect(addr1).voteOnWithdrawalRequest(0, true);
