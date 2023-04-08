@@ -4,83 +4,49 @@ import { Contract, ContractFactory } from "ethers";
 const { ethers } = require("hardhat");
 
 
-const stageContracts = async () => {
-	const [owner, addr1, addr2, addr3] = await ethers.getSigners();
-
-	const YieldSyncV1Vault: ContractFactory = await ethers.getContractFactory("YieldSyncV1Vault");
-	const YieldSyncV1VaultFactory: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultFactory");
-	const YieldSyncV1VaultRecord: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultRecord");
-	const MockAdmin: ContractFactory = await ethers.getContractFactory("MockAdmin");
-	const MockERC20: ContractFactory = await ethers.getContractFactory("MockERC20");
-	const MockERC721: ContractFactory = await ethers.getContractFactory("MockERC721");
-	const MockYieldSyncGovernance: ContractFactory = await ethers.getContractFactory("MockYieldSyncGovernance");
-	const SignatureManager: ContractFactory = await ethers.getContractFactory("SignatureManager");
-
-	const mockYieldSyncGovernance: Contract = await (await MockYieldSyncGovernance.deploy()).deployed();
-	const yieldSyncV1VaultRecord: Contract = await (await YieldSyncV1VaultRecord.deploy()).deployed();
-	const yieldSyncV1VaultFactory: Contract = await (
-		await YieldSyncV1VaultFactory.deploy(mockYieldSyncGovernance.address, yieldSyncV1VaultRecord.address)
-	).deployed();
-
-	// Deploy a vault
-	await yieldSyncV1VaultFactory.deployYieldSyncV1Vault(
-		[owner.address],
-		[addr1.address, addr2.address, addr3.address],
-		ethers.constants.AddressZero,
-		true,
-		2,
-		2,
-		5,
-		{ value: 1 }
-	);
-
-	// Attach the deployed vault's address
-	const yieldSyncV1Vault: Contract = await YieldSyncV1Vault.attach(
-		await yieldSyncV1VaultFactory.yieldSyncV1VaultId_yieldSyncV1VaultAddress(0)
-	);
-
-	const signatureManager: Contract = await (
-		await SignatureManager.deploy(mockYieldSyncGovernance.address, yieldSyncV1VaultRecord.address)
-	).deployed();
-	const mockAdmin: Contract = await (await MockAdmin.deploy()).deployed();
-	const mockERC20: Contract = await (await MockERC20.deploy()).deployed();
-	const mockERC721: Contract = await (await MockERC721.deploy()).deployed();
-
-	return {
-		yieldSyncV1Vault,
-		yieldSyncV1VaultFactory,
-		yieldSyncV1VaultRecord,
-		signatureManager,
-		mockAdmin,
-		mockERC20,
-		mockERC721,
-		mockYieldSyncGovernance
-	};
-};
-
-
 describe("[2] YieldSyncV1VaultRecord.sol - YieldSync V1 Vault Record Contract", async () => {
 	let yieldSyncV1Vault: Contract;
 	let yieldSyncV1VaultFactory: Contract;
 	let yieldSyncV1VaultRecord: Contract;
 	let signatureManager: Contract;
-	let mockAdmin: Contract;
-	let mockERC20: Contract;
-	let mockERC721: Contract;
 	let mockYieldSyncGovernance: Contract;
 
 
-	before("[before] Set up contracts..", async () => {
-		const stagedContracts = await stageContracts();
+	beforeEach("[before] Set up contracts..", async () => {
+		const [owner, addr1, addr2, addr3] = await ethers.getSigners();
 
-		yieldSyncV1Vault = stagedContracts.yieldSyncV1Vault
-		yieldSyncV1VaultFactory = stagedContracts.yieldSyncV1VaultFactory
-		yieldSyncV1VaultRecord = stagedContracts.yieldSyncV1VaultRecord
-		signatureManager = stagedContracts.signatureManager
-		mockAdmin = stagedContracts.mockAdmin
-		mockERC20 = stagedContracts.mockERC20
-		mockERC721 = stagedContracts.mockERC721
-		mockYieldSyncGovernance = stagedContracts.mockYieldSyncGovernance;
+		const YieldSyncV1Vault: ContractFactory = await ethers.getContractFactory("YieldSyncV1Vault");
+		const YieldSyncV1VaultFactory: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultFactory");
+		const YieldSyncV1VaultRecord: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultRecord");
+		const MockYieldSyncGovernance: ContractFactory = await ethers.getContractFactory("MockYieldSyncGovernance");
+		const SignatureManager: ContractFactory = await ethers.getContractFactory("SignatureManager");
+
+		mockYieldSyncGovernance = await (await MockYieldSyncGovernance.deploy()).deployed();
+		yieldSyncV1VaultRecord = await (await YieldSyncV1VaultRecord.deploy()).deployed();
+		yieldSyncV1VaultFactory = await (
+			await YieldSyncV1VaultFactory.deploy(mockYieldSyncGovernance.address, yieldSyncV1VaultRecord.address)
+		).deployed();
+
+		// Deploy a vault
+		await yieldSyncV1VaultFactory.deployYieldSyncV1Vault(
+			[owner.address],
+			[addr1.address, addr2.address, addr3.address],
+			ethers.constants.AddressZero,
+			true,
+			2,
+			2,
+			5,
+			{ value: 1 }
+		);
+
+		// Attach the deployed vault's address
+		yieldSyncV1Vault = await YieldSyncV1Vault.attach(
+			await yieldSyncV1VaultFactory.yieldSyncV1VaultId_yieldSyncV1VaultAddress(0)
+		);
+
+		signatureManager = await (
+			await SignatureManager.deploy(mockYieldSyncGovernance.address, yieldSyncV1VaultRecord.address)
+		).deployed();
 	});
 
 	describe("admin_yieldSyncV1Vaults()", async () => {
@@ -211,6 +177,9 @@ describe("[2] YieldSyncV1VaultRecord.sol - YieldSync V1 Vault Record Contract", 
 		it("Should not be able to double add..", async () => {
 			const [, , , , addr4] = await ethers.getSigners();
 
+
+			await yieldSyncV1Vault.addAdmin(addr4.address)
+
 			await expect(yieldSyncV1Vault.addAdmin(addr4.address)).to.be.rejectedWith("Already admin");
 		});
 	});
@@ -281,6 +250,8 @@ describe("[2] YieldSyncV1VaultRecord.sol - YieldSync V1 Vault Record Contract", 
 		it("Should not be able to double add..", async () => {
 			const [, , , , addr4] = await ethers.getSigners();
 
+			await yieldSyncV1Vault.addMember(addr4.address)
+
 			await expect(yieldSyncV1Vault.addMember(addr4.address)).to.be.rejectedWith("Already member");
 		});
 	});
@@ -316,7 +287,7 @@ describe("[2] YieldSyncV1VaultRecord.sol - YieldSync V1 Vault Record Contract", 
 			// yieldSyncV1Vault_members
 			const yieldSyncV1Vault_members = await yieldSyncV1VaultRecord.yieldSyncV1Vault_members(yieldSyncV1Vault.address);
 
-			expect(yieldSyncV1Vault_members.length).to.be.equal(3);
+			expect(yieldSyncV1Vault_members.length).to.be.equal(2);
 
 			for (let i = 0; i < yieldSyncV1Vault_members.length; i++) {
 				const member = yieldSyncV1Vault_members[i];
