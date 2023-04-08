@@ -4,44 +4,35 @@ import { Contract, ContractFactory } from "ethers";
 const { ethers } = require("hardhat");
 
 
-const stageContracts = async () => {
-	const YieldSyncV1VaultFactory: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultFactory");
-	const YieldSyncV1VaultRecord: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultRecord");
-	const MockYieldSyncGovernance: ContractFactory = await ethers.getContractFactory("MockYieldSyncGovernance");
-	const MockSignatureManager: ContractFactory = await ethers.getContractFactory("MockSignatureManager");
-
-	// Deploy
-	const mockYieldSyncGovernance: Contract = await (await MockYieldSyncGovernance.deploy()).deployed();
-	const yieldSyncV1VaultRecord: Contract = await (await YieldSyncV1VaultRecord.deploy()).deployed();
-	const yieldSyncV1VaultFactory: Contract = await (
-		await YieldSyncV1VaultFactory.deploy(mockYieldSyncGovernance.address, yieldSyncV1VaultRecord.address)
-	).deployed();
-	const mockSignatureManager: Contract = await (
-		await MockSignatureManager.deploy(mockYieldSyncGovernance.address, yieldSyncV1VaultRecord.address)
-	).deployed();
-
-	return {
-		yieldSyncV1VaultFactory,
-		yieldSyncV1VaultRecord,
-		mockYieldSyncGovernance,
-		mockSignatureManager
-	};
-}
-
-
 describe("[0] YieldSyncV1VaultFactory.sol - YieldSync V1 Vault Factory Contract", async () => {
 	let yieldSyncV1VaultFactory: Contract;
 	let yieldSyncV1VaultRecord: Contract;
 	let mockYieldSyncGovernance: Contract;
 	let mockSignatureManager: Contract;
 
-	before("[before] Set up contracts..", async () => {
-		const stagedContracts = await stageContracts();
+	beforeEach("[before] Set up contracts..", async () => {
+		const [, addr1] = await ethers.getSigners();
 
-		yieldSyncV1VaultFactory = stagedContracts.yieldSyncV1VaultFactory
-		yieldSyncV1VaultRecord = stagedContracts.yieldSyncV1VaultRecord
-		mockYieldSyncGovernance = stagedContracts.mockYieldSyncGovernance;
-		mockSignatureManager = stagedContracts.mockSignatureManager;
+		const YieldSyncV1VaultFactory: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultFactory");
+		const YieldSyncV1VaultRecord: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultRecord");
+		const MockYieldSyncGovernance: ContractFactory = await ethers.getContractFactory("MockYieldSyncGovernance");
+		const MockSignatureManager: ContractFactory = await ethers.getContractFactory("MockSignatureManager");
+
+		// Deploy
+		mockYieldSyncGovernance = await (await MockYieldSyncGovernance.deploy()).deployed();
+		yieldSyncV1VaultRecord = await (await YieldSyncV1VaultRecord.deploy()).deployed();
+		yieldSyncV1VaultFactory = await (
+			await YieldSyncV1VaultFactory.deploy(mockYieldSyncGovernance.address, yieldSyncV1VaultRecord.address)
+		).deployed();
+		mockSignatureManager = await (
+			await MockSignatureManager.deploy(mockYieldSyncGovernance.address, yieldSyncV1VaultRecord.address)
+		).deployed();
+
+		// Send ether to YieldSyncV1VaultFactory contract
+		await addr1.sendTransaction({
+			to: yieldSyncV1VaultFactory.address,
+			value: ethers.utils.parseEther("1"),
+		});
 	});
 
 	describe("Receiving tokens & ethers", async () => {
@@ -182,6 +173,27 @@ describe("[0] YieldSyncV1VaultFactory.sol - YieldSync V1 Vault Factory Contract"
 	describe("!Restriction", async () => {
 		describe("deployYieldSyncV1Vault()", async () => {
 			it(
+				"Should fail to deploy YieldSyncV1Vault.sol due to not enough msg.value..",
+				async () => {
+					const [, addr1] = await ethers.getSigners();
+
+					await yieldSyncV1VaultFactory.updateFee(ethers.utils.parseEther("1"));
+
+
+					await expect(yieldSyncV1VaultFactory.deployYieldSyncV1Vault(
+						[addr1.address],
+						[addr1.address],
+						ethers.constants.AddressZero,
+						true,
+						2,
+						2,
+						10,
+						{ value: ethers.utils.parseEther(".5") }
+					)).to.be.rejectedWith("!msg.value");
+				}
+			);
+
+			it(
 				"Should be able to record deployed YieldSyncV1Vault.sol..",
 				async () => {
 					const [, addr1] = await ethers.getSigners();
@@ -208,6 +220,8 @@ describe("[0] YieldSyncV1VaultFactory.sol - YieldSync V1 Vault Factory Contract"
 				async () => {
 					const [, addr1] = await ethers.getSigners();
 
+					await yieldSyncV1VaultFactory.updateDefaultSignatureManager(ethers.constants.AddressZero);
+
 					const YieldSyncV1Vault = await ethers.getContractFactory("YieldSyncV1Vault");
 
 					await yieldSyncV1VaultFactory.deployYieldSyncV1Vault(
@@ -223,7 +237,7 @@ describe("[0] YieldSyncV1VaultFactory.sol - YieldSync V1 Vault Factory Contract"
 
 					// Attach the deployed vault's address
 					const yieldSyncV1Vault = await YieldSyncV1Vault.attach(
-						await yieldSyncV1VaultFactory.yieldSyncV1VaultId_yieldSyncV1VaultAddress(1)
+						await yieldSyncV1VaultFactory.yieldSyncV1VaultId_yieldSyncV1VaultAddress(0)
 					);
 
 					expect(await yieldSyncV1Vault.signatureManager()).to.be.equal(mockSignatureManager.address);
@@ -238,11 +252,21 @@ describe("[0] YieldSyncV1VaultFactory.sol - YieldSync V1 Vault Factory Contract"
 
 						const YieldSyncV1Vault = await ethers.getContractFactory("YieldSyncV1Vault");
 
-						// Retreive the deployed vault's address
-						const deployedAddress = await yieldSyncV1VaultFactory.yieldSyncV1VaultId_yieldSyncV1VaultAddress(0);
+						await yieldSyncV1VaultFactory.deployYieldSyncV1Vault(
+							[addr1.address],
+							[addr1.address],
+							mockSignatureManager.address,
+							false,
+							2,
+							2,
+							10,
+							{ value: 1 }
+						);
 
 						// Attach the deployed vault's address
-						const yieldSyncV1Vault = await YieldSyncV1Vault.attach(deployedAddress);
+						const yieldSyncV1Vault = await YieldSyncV1Vault.attach(
+							await yieldSyncV1VaultFactory.yieldSyncV1VaultId_yieldSyncV1VaultAddress(0)
+						);
 
 						expect(
 							(await yieldSyncV1VaultRecord.participant_yieldSyncV1Vault_access(
