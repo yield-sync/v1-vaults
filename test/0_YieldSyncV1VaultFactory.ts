@@ -179,7 +179,6 @@ describe("[0] YieldSyncV1VaultFactory.sol - YieldSync V1 Vault Factory Contract"
 
 					await yieldSyncV1VaultFactory.updateFee(ethers.utils.parseEther("1"));
 
-
 					await expect(yieldSyncV1VaultFactory.deployYieldSyncV1Vault(
 						[addr1.address],
 						[addr1.address],
