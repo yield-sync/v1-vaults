@@ -10,9 +10,6 @@ import { IYieldSyncV1Vault, WithdrawalRequest } from "./interface/IYieldSyncV1Va
 import { IYieldSyncV1VaultRecord } from "./interface/IYieldSyncV1VaultRecord.sol";
 
 
-/**
-* @title YieldSyncV1Vault
-*/
 contract YieldSyncV1Vault is
 	IERC1271,
 	IYieldSyncV1Vault

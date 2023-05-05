@@ -13,9 +13,6 @@ struct Access {
 }
 
 
-/**
-* @title YieldSyncV1VaultRecord
-*/
 contract YieldSyncV1VaultRecord is
 	IYieldSyncV1VaultRecord
 {

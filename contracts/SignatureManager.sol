@@ -12,9 +12,6 @@ import { ISignatureManager, MessageHashData } from "./interface/ISignatureManage
 import { IYieldSyncV1VaultRecord } from "./interface/IYieldSyncV1VaultRecord.sol";
 
 
-/**
-* @title SignatureManager
-*/
 contract SignatureManager is
 	IERC1271,
 	Pausable,

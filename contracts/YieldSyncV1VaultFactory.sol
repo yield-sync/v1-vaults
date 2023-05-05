@@ -8,9 +8,6 @@ import { YieldSyncV1Vault } from "./YieldSyncV1Vault.sol";
 import { IYieldSyncV1VaultFactory } from "./interface/IYieldSyncV1VaultFactory.sol";
 
 
-/**
-* @title YieldSyncV1VaultFactory
-*/
 contract YieldSyncV1VaultFactory is
 	IYieldSyncV1VaultFactory
 {
