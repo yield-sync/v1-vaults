@@ -25,19 +25,15 @@ contract YieldSyncV1VaultFactory is
 	{}
 
 
-	// [address]
 	address public override immutable YieldSyncGovernance;
 	address public override immutable YieldSyncV1VaultRecord;
 	address public override defaultSignatureManager;
 
-	// [bool]
 	bool public override transferEtherLocked;
 
-	// [uint256]
 	uint256 public override fee;
 	uint256 public override yieldSyncV1VaultIdTracker;
 
-	// [mapping]
 	mapping (
 		address yieldSyncV1VaultAddress => uint256 yieldSyncV1VaultId
 	) public override yieldSyncV1VaultAddress_yieldSyncV1VaultId;

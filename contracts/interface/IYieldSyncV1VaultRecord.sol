@@ -2,9 +2,6 @@
 pragma solidity ^0.8.18;
 
 
-/**
-* @title ISignatureManager
-*/
 interface IYieldSyncV1VaultRecord
 {
 	/**

@@ -10,9 +10,6 @@ struct MessageHashData {
 }
 
 
-/**
-* @title ISignatureManager
-*/
 interface ISignatureManager
 {
 	/**

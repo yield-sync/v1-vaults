@@ -28,21 +28,17 @@ contract YieldSyncV1Vault is
 	{}
 
 
-	// [address]
 	address public override immutable YieldSyncV1VaultRecord;
 	address public override signatureManager;
 
-	// [bool]
 	bool public override processWithdrawalRequestLocked;
 
-	// [uint256]
 	uint256 public override againstVoteCountRequired;
 	uint256 public override forVoteCountRequired;
 	uint256 public override withdrawalDelaySeconds;
 	uint256 internal _withdrawalRequestIdTracker;
 	uint256[] internal _idsOfOpenWithdrawalRequests;
 
-	// [mapping]
 	mapping (
 		uint256 withdrawalRequestId => WithdrawalRequest withdralRequest
 	) internal _withdrawalRequestId_withdralRequest;

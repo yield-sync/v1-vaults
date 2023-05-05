@@ -17,14 +17,11 @@ contract SignatureManager is
 	Pausable,
 	ISignatureManager
 {
-	// [address]
 	address public override immutable YieldSyncGovernance;
 	address public override immutable YieldSyncV1VaultRecord;
 
-	// [bytes4]
 	bytes4 public constant ERC1271_MAGIC_VALUE = 0x1626ba7e;
 
-	// [mapping]
 	mapping (address yieldSyncV1VaultAddress => bytes32[] messageHash) internal _vaultMessageHashes;
 	mapping (
 		address yieldSyncV1VaultAddress => mapping (bytes32 messageHash => MessageHashData messageHashData)

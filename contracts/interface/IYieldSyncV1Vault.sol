@@ -2,7 +2,6 @@
 pragma solidity ^0.8.18;
 
 
-/* [struct] */
 struct WithdrawalRequest {
 	bool forERC20;
 	bool forERC721;
@@ -18,9 +17,6 @@ struct WithdrawalRequest {
 }
 
 
-/**
-* @title IYieldSyncV1Vault
-*/
 interface IYieldSyncV1Vault
 {
 	event CreatedWithdrawalRequest(uint256 withdrawalRequestId);

@@ -16,7 +16,6 @@ struct Access {
 contract YieldSyncV1VaultRecord is
 	IYieldSyncV1VaultRecord
 {
-	// [mapping]
 	mapping (address admin => address[] yieldSyncV1Vaults) internal _admin_yieldSyncV1Vaults;
 	mapping (address yieldSyncV1Vault  => address[] admins) internal _yieldSyncV1Vault_admins;
 	mapping (address yieldSyncV1Vault => address[] members) internal _yieldSyncV1Vault_members;
