@@ -9,7 +9,7 @@ import { Pausable } from "@openzeppelin/contracts/security/Pausable.sol";
 import { ECDSA } from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 
 import { ISignatureManager, MessageHashData } from "./interface/ISignatureManager.sol";
-import { IYieldSyncV1VaultRecord } from "./interface/IYieldSyncV1VaultRecord.sol";
+import { IYieldSyncV1VaultAccessControl } from "./interface/IYieldSyncV1VaultAccessControl.sol";
 
 
 contract SignatureManager is
@@ -18,7 +18,7 @@ contract SignatureManager is
 	ISignatureManager
 {
 	address public override immutable YieldSyncGovernance;
-	address public override immutable YieldSyncV1VaultRecord;
+	address public override immutable YieldSyncV1VaultAccessControl;
 
 	bytes4 public constant ERC1271_MAGIC_VALUE = 0x1626ba7e;
 
@@ -28,12 +28,12 @@ contract SignatureManager is
 	) internal _vaultMessageHashData;
 
 
-	constructor (address _YieldSyncGovernance, address _YieldSyncV1VaultRecord)
+	constructor (address _YieldSyncGovernance, address _YieldSyncV1VaultAccessControl)
 	{
 		_pause();
 
 		YieldSyncGovernance = _YieldSyncGovernance;
-		YieldSyncV1VaultRecord = _YieldSyncV1VaultRecord;
+		YieldSyncV1VaultAccessControl = _YieldSyncV1VaultAccessControl;
 	}
 
 
@@ -91,7 +91,7 @@ contract SignatureManager is
 		override
 		whenNotPaused()
 	{
-		(, bool msgSenderIsMember) = IYieldSyncV1VaultRecord(YieldSyncV1VaultRecord).participant_yieldSyncV1Vault_access(
+		(, bool msgSenderIsMember) = IYieldSyncV1VaultAccessControl(YieldSyncV1VaultAccessControl).participant_yieldSyncV1Vault_access(
 			msg.sender,
 			yieldSyncV1VaultAddress
 		);
@@ -111,7 +111,7 @@ contract SignatureManager is
 
 			address recovered = ECDSA.recover(ECDSA.toEthSignedMessageHash(messageHash), signature);
 
-			(, bool recoveredIsMember) = IYieldSyncV1VaultRecord(YieldSyncV1VaultRecord).participant_yieldSyncV1Vault_access(
+			(, bool recoveredIsMember) = IYieldSyncV1VaultAccessControl(YieldSyncV1VaultAccessControl).participant_yieldSyncV1Vault_access(
 				recovered,
 				yieldSyncV1VaultAddress
 			);

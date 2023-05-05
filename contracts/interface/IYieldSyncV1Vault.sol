@@ -49,7 +49,7 @@ interface IYieldSyncV1Vault
 	* @dev [view-address]
 	* @return {address}
 	*/
-	function YieldSyncV1VaultRecord()
+	function YieldSyncV1VaultAccessControl()
 		external
 		view
 		returns (address)

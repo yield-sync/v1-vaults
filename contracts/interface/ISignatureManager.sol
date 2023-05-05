@@ -25,12 +25,12 @@ interface ISignatureManager
 	;
 
 	/**
-	* @notice YieldSyncV1VaultRecord Contract Address
+	* @notice YieldSyncV1VaultAccessControl Contract Address
 	* @dev [!restriction]
 	* @dev [view-address]
 	* @return {address}
 	*/
-	function YieldSyncV1VaultRecord()
+	function YieldSyncV1VaultAccessControl()
 		external
 		view
 		returns (address)

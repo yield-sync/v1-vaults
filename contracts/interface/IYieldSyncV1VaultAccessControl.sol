@@ -2,7 +2,7 @@
 pragma solidity ^0.8.18;
 
 
-interface IYieldSyncV1VaultRecord
+interface IYieldSyncV1VaultAccessControl
 {
 	/**
 	* @notice

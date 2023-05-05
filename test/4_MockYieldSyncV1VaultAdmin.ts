@@ -9,16 +9,16 @@ const stageContracts = async () => {
 
 	const YieldSyncV1Vault: ContractFactory = await ethers.getContractFactory("YieldSyncV1Vault");
 	const YieldSyncV1VaultFactory: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultFactory");
-	const YieldSyncV1VaultRecord: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultRecord");
+	const YieldSyncV1VaultAccessControl: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultAccessControl");
 	const MockYieldSyncGovernance: ContractFactory = await ethers.getContractFactory("MockYieldSyncGovernance");
 	const MockAdmin: ContractFactory = await ethers.getContractFactory("MockAdmin");
 	const SignatureManager: ContractFactory = await ethers.getContractFactory("SignatureManager");
 
 	// Deploy
 	const mockYieldSyncGovernance: Contract = await (await MockYieldSyncGovernance.deploy()).deployed();
-	const yieldSyncV1VaultRecord: Contract = await (await YieldSyncV1VaultRecord.deploy()).deployed();
+	const yieldSyncV1VaultAccessControl: Contract = await (await YieldSyncV1VaultAccessControl.deploy()).deployed();
 	const yieldSyncV1VaultFactory: Contract = await (
-		await YieldSyncV1VaultFactory.deploy(mockYieldSyncGovernance.address, yieldSyncV1VaultRecord.address)
+		await YieldSyncV1VaultFactory.deploy(mockYieldSyncGovernance.address, yieldSyncV1VaultAccessControl.address)
 	).deployed();
 
 	// Deploy a vault
@@ -38,13 +38,13 @@ const stageContracts = async () => {
 
 	const mockAdmin: Contract = await (await MockAdmin.deploy()).deployed();
 	const signatureManager: Contract = await (
-		await SignatureManager.deploy(mockYieldSyncGovernance.address, yieldSyncV1VaultRecord.address)
+		await SignatureManager.deploy(mockYieldSyncGovernance.address, yieldSyncV1VaultAccessControl.address)
 	).deployed();
 
 	return {
 		yieldSyncV1Vault,
 		yieldSyncV1VaultFactory,
-		yieldSyncV1VaultRecord,
+		yieldSyncV1VaultAccessControl,
 		mockYieldSyncGovernance,
 		mockAdmin,
 		signatureManager
@@ -55,7 +55,7 @@ const stageContracts = async () => {
 describe("[4] MockAdmin.sol - Mock Admin Contract", async () => {
 	let yieldSyncV1Vault: Contract;
 	let yieldSyncV1VaultFactory: Contract;
-	let yieldSyncV1VaultRecord: Contract;
+	let yieldSyncV1VaultAccessControl: Contract;
 	let mockYieldSyncGovernance: Contract;
 	let mockAdmin: Contract;
 	let signatureManager: Contract;
@@ -68,7 +68,7 @@ describe("[4] MockAdmin.sol - Mock Admin Contract", async () => {
 
 		yieldSyncV1Vault = stagedContracts.yieldSyncV1Vault;
 		yieldSyncV1VaultFactory = stagedContracts.yieldSyncV1VaultFactory;
-		yieldSyncV1VaultRecord = stagedContracts.yieldSyncV1VaultRecord;
+		yieldSyncV1VaultAccessControl = stagedContracts.yieldSyncV1VaultAccessControl;
 		mockYieldSyncGovernance = stagedContracts.mockYieldSyncGovernance;
 		mockAdmin = stagedContracts.mockAdmin;
 		signatureManager = stagedContracts.signatureManager;

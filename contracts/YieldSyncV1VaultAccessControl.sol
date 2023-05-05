@@ -4,7 +4,7 @@ pragma solidity ^0.8.18;
 
 import { IYieldSyncV1Vault } from "@yield-sync/v1-sdk/contracts/interface/IYieldSyncV1Vault.sol";
 
-import { IYieldSyncV1VaultRecord } from "./interface/IYieldSyncV1VaultRecord.sol";
+import { IYieldSyncV1VaultAccessControl } from "./interface/IYieldSyncV1VaultAccessControl.sol";
 
 
 struct Access {
@@ -13,8 +13,8 @@ struct Access {
 }
 
 
-contract YieldSyncV1VaultRecord is
-	IYieldSyncV1VaultRecord
+contract YieldSyncV1VaultAccessControl is
+	IYieldSyncV1VaultAccessControl
 {
 	mapping (address admin => address[] yieldSyncV1Vaults) internal _admin_yieldSyncV1Vaults;
 	mapping (address yieldSyncV1Vault  => address[] admins) internal _yieldSyncV1Vault_admins;
@@ -25,7 +25,7 @@ contract YieldSyncV1VaultRecord is
 	) internal _participant_yieldSyncV1Vault_access;
 
 
-	/// @inheritdoc IYieldSyncV1VaultRecord
+	/// @inheritdoc IYieldSyncV1VaultAccessControl
 	function admin_yieldSyncV1Vaults(address admin)
 		public
 		view
@@ -35,7 +35,7 @@ contract YieldSyncV1VaultRecord is
 		return _admin_yieldSyncV1Vaults[admin];
 	}
 
-	/// @inheritdoc IYieldSyncV1VaultRecord
+	/// @inheritdoc IYieldSyncV1VaultAccessControl
 	function yieldSyncV1Vault_admins(address yieldSyncV1Vault)
 		public
 		view
@@ -45,7 +45,7 @@ contract YieldSyncV1VaultRecord is
 		return _yieldSyncV1Vault_admins[yieldSyncV1Vault];
 	}
 
-	/// @inheritdoc IYieldSyncV1VaultRecord
+	/// @inheritdoc IYieldSyncV1VaultAccessControl
 	function yieldSyncV1Vault_members(address yieldSyncV1Vault)
 		public
 		view
@@ -55,7 +55,7 @@ contract YieldSyncV1VaultRecord is
 		return _yieldSyncV1Vault_members[yieldSyncV1Vault];
 	}
 
-	/// @inheritdoc IYieldSyncV1VaultRecord
+	/// @inheritdoc IYieldSyncV1VaultAccessControl
 	function member_yieldSyncV1Vaults(address member)
 		public
 		view
@@ -65,7 +65,7 @@ contract YieldSyncV1VaultRecord is
 		return _member_yieldSyncV1Vaults[member];
 	}
 
-	/// @inheritdoc IYieldSyncV1VaultRecord
+	/// @inheritdoc IYieldSyncV1VaultAccessControl
 	function participant_yieldSyncV1Vault_access(address participant, address yieldSyncV1Vault)
 		public
 		view
@@ -77,7 +77,7 @@ contract YieldSyncV1VaultRecord is
 	}
 
 
-	/// @inheritdoc IYieldSyncV1VaultRecord
+	/// @inheritdoc IYieldSyncV1VaultAccessControl
 	function addAdmin(address _yieldSyncV1Vault, address admin)
 		public
 		override
@@ -96,7 +96,7 @@ contract YieldSyncV1VaultRecord is
 		});
 	}
 
-	/// @inheritdoc IYieldSyncV1VaultRecord
+	/// @inheritdoc IYieldSyncV1VaultAccessControl
 	function removeAdmin(address _yieldSyncV1Vault, address admin)
 		public
 		override
@@ -140,7 +140,7 @@ contract YieldSyncV1VaultRecord is
 	}
 
 
-	/// @inheritdoc IYieldSyncV1VaultRecord
+	/// @inheritdoc IYieldSyncV1VaultAccessControl
 	function addMember(address _yieldSyncV1Vault, address member)
 		public
 		override
@@ -159,7 +159,7 @@ contract YieldSyncV1VaultRecord is
 		});
 	}
 
-	/// @inheritdoc IYieldSyncV1VaultRecord
+	/// @inheritdoc IYieldSyncV1VaultAccessControl
 	function removeMember(address _yieldSyncV1Vault, address member)
 		public
 		override

@@ -26,7 +26,7 @@ contract YieldSyncV1VaultFactory is
 
 
 	address public override immutable YieldSyncGovernance;
-	address public override immutable YieldSyncV1VaultRecord;
+	address public override immutable YieldSyncV1VaultAccessControl;
 	address public override defaultSignatureManager;
 
 	bool public override transferEtherLocked;
@@ -42,10 +42,10 @@ contract YieldSyncV1VaultFactory is
 	) public override yieldSyncV1VaultId_yieldSyncV1VaultAddress;
 
 
-	constructor (address _YieldSyncGovernance, address _YieldSyncV1VaultRecord)
+	constructor (address _YieldSyncGovernance, address _YieldSyncV1VaultAccessControl)
 	{
 		YieldSyncGovernance = _YieldSyncGovernance;
-		YieldSyncV1VaultRecord = _YieldSyncV1VaultRecord;
+		YieldSyncV1VaultAccessControl = _YieldSyncV1VaultAccessControl;
 
 		transferEtherLocked = false;
 
@@ -80,7 +80,7 @@ contract YieldSyncV1VaultFactory is
 		require(msg.value >= fee, "!msg.value");
 
 		YieldSyncV1Vault deployedContract = new YieldSyncV1Vault(
-			YieldSyncV1VaultRecord,
+			YieldSyncV1VaultAccessControl,
 			admins,
 			members,
 			useDefaultSignatureManager ? defaultSignatureManager : signatureManager,

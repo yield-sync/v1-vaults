@@ -6,7 +6,7 @@ const { ethers } = require("hardhat");
 
 describe("[0] YieldSyncV1VaultFactory.sol - YieldSync V1 Vault Factory Contract", async () => {
 	let yieldSyncV1VaultFactory: Contract;
-	let yieldSyncV1VaultRecord: Contract;
+	let yieldSyncV1VaultAccessControl: Contract;
 	let mockYieldSyncGovernance: Contract;
 	let mockSignatureManager: Contract;
 
@@ -14,18 +14,18 @@ describe("[0] YieldSyncV1VaultFactory.sol - YieldSync V1 Vault Factory Contract"
 		const [, addr1] = await ethers.getSigners();
 
 		const YieldSyncV1VaultFactory: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultFactory");
-		const YieldSyncV1VaultRecord: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultRecord");
+		const YieldSyncV1VaultAccessControl: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultAccessControl");
 		const MockYieldSyncGovernance: ContractFactory = await ethers.getContractFactory("MockYieldSyncGovernance");
 		const MockSignatureManager: ContractFactory = await ethers.getContractFactory("MockSignatureManager");
 
 		// Deploy
 		mockYieldSyncGovernance = await (await MockYieldSyncGovernance.deploy()).deployed();
-		yieldSyncV1VaultRecord = await (await YieldSyncV1VaultRecord.deploy()).deployed();
+		yieldSyncV1VaultAccessControl = await (await YieldSyncV1VaultAccessControl.deploy()).deployed();
 		yieldSyncV1VaultFactory = await (
-			await YieldSyncV1VaultFactory.deploy(mockYieldSyncGovernance.address, yieldSyncV1VaultRecord.address)
+			await YieldSyncV1VaultFactory.deploy(mockYieldSyncGovernance.address, yieldSyncV1VaultAccessControl.address)
 		).deployed();
 		mockSignatureManager = await (
-			await MockSignatureManager.deploy(mockYieldSyncGovernance.address, yieldSyncV1VaultRecord.address)
+			await MockSignatureManager.deploy(mockYieldSyncGovernance.address, yieldSyncV1VaultAccessControl.address)
 		).deployed();
 
 		// Send ether to YieldSyncV1VaultFactory contract
@@ -268,7 +268,7 @@ describe("[0] YieldSyncV1VaultFactory.sol - YieldSync V1 Vault Factory Contract"
 						);
 
 						expect(
-							(await yieldSyncV1VaultRecord.participant_yieldSyncV1Vault_access(
+							(await yieldSyncV1VaultAccessControl.participant_yieldSyncV1Vault_access(
 								addr1.address,
 								yieldSyncV1Vault.address
 							))[0]

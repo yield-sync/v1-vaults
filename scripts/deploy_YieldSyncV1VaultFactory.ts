@@ -11,18 +11,18 @@ async function main() {
 
 	// Get factories
 	const YieldSyncV1VaultFactory: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultFactory");
-	const YieldSyncV1VaultRecord: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultRecord");
+	const YieldSyncV1VaultAccessControl: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultAccessControl");
 
 	// deploy
-	const yieldSyncV1VaultRecord: Contract = await (await YieldSyncV1VaultRecord.deploy()).deployed();
+	const yieldSyncV1VaultAccessControl: Contract = await (await YieldSyncV1VaultAccessControl.deploy()).deployed();
 	const yieldSyncV1VaultFactory: Contract = await (
 		await YieldSyncV1VaultFactory.deploy(
 			process.env.YIELD_SYNC_GOVERNANCE_ADDRESS,
-			yieldSyncV1VaultRecord.address
+			yieldSyncV1VaultAccessControl.address
 		)
 	).deployed();
 
-	console.log("yieldSyncV1VaultRecord Contract address:", yieldSyncV1VaultRecord.address);
+	console.log("yieldSyncV1VaultAccessControl Contract address:", yieldSyncV1VaultAccessControl.address);
 	console.log("yieldSyncV1VaultFactory Contract address:", yieldSyncV1VaultFactory.address);
 	console.log("Account Balance:", await owner.getBalance());
 }

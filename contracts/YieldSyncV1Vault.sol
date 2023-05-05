@@ -7,7 +7,7 @@ import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { IERC721 } from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 
 import { IYieldSyncV1Vault, WithdrawalRequest } from "./interface/IYieldSyncV1Vault.sol";
-import { IYieldSyncV1VaultRecord } from "./interface/IYieldSyncV1VaultRecord.sol";
+import { IYieldSyncV1VaultAccessControl } from "./interface/IYieldSyncV1VaultAccessControl.sol";
 
 
 contract YieldSyncV1Vault is
@@ -28,7 +28,7 @@ contract YieldSyncV1Vault is
 	{}
 
 
-	address public override immutable YieldSyncV1VaultRecord;
+	address public override immutable YieldSyncV1VaultAccessControl;
 	address public override signatureManager;
 
 	bool public override processWithdrawalRequestLocked;
@@ -45,7 +45,7 @@ contract YieldSyncV1Vault is
 
 
 	constructor (
-		address _YieldSyncV1VaultRecord,
+		address _YieldSyncV1VaultAccessControl,
 		address[] memory admins,
 		address[] memory members,
 		address _signatureManager,
@@ -54,18 +54,18 @@ contract YieldSyncV1Vault is
 		uint256 _withdrawalDelaySeconds
 	)
 	{
-		YieldSyncV1VaultRecord = _YieldSyncV1VaultRecord;
+		YieldSyncV1VaultAccessControl = _YieldSyncV1VaultAccessControl;
 
 		require(_forVoteCountRequired > 0, "!_forVoteCountRequired");
 
 		for (uint i = 0; i < admins.length; i++)
 		{
-			IYieldSyncV1VaultRecord(YieldSyncV1VaultRecord).addAdmin(address(this), admins[i]);
+			IYieldSyncV1VaultAccessControl(YieldSyncV1VaultAccessControl).addAdmin(address(this), admins[i]);
 		}
 
 		for (uint i = 0; i < members.length; i++)
 		{
-			IYieldSyncV1VaultRecord(YieldSyncV1VaultRecord).addMember(address(this), members[i]);
+			IYieldSyncV1VaultAccessControl(YieldSyncV1VaultAccessControl).addMember(address(this), members[i]);
 		}
 
 		signatureManager = _signatureManager;
@@ -90,7 +90,7 @@ contract YieldSyncV1Vault is
 
 	modifier onlyAdmin()
 	{
-		(bool admin,) = IYieldSyncV1VaultRecord(YieldSyncV1VaultRecord).participant_yieldSyncV1Vault_access(
+		(bool admin,) = IYieldSyncV1VaultAccessControl(YieldSyncV1VaultAccessControl).participant_yieldSyncV1Vault_access(
 			msg.sender,
 			address(this)
 		);
@@ -102,7 +102,7 @@ contract YieldSyncV1Vault is
 
 	modifier onlyMember()
 	{
-		(, bool member) = IYieldSyncV1VaultRecord(YieldSyncV1VaultRecord).participant_yieldSyncV1Vault_access(
+		(, bool member) = IYieldSyncV1VaultAccessControl(YieldSyncV1VaultAccessControl).participant_yieldSyncV1Vault_access(
 			msg.sender,
 			address(this)
 		);
@@ -179,7 +179,7 @@ contract YieldSyncV1Vault is
 		override
 		onlyAdmin()
 	{
-		IYieldSyncV1VaultRecord(YieldSyncV1VaultRecord).addAdmin(address(this), targetAddress);
+		IYieldSyncV1VaultAccessControl(YieldSyncV1VaultAccessControl).addAdmin(address(this), targetAddress);
 	}
 
 	/// @inheritdoc IYieldSyncV1Vault
@@ -188,7 +188,7 @@ contract YieldSyncV1Vault is
 		override
 		onlyAdmin()
 	{
-		IYieldSyncV1VaultRecord(YieldSyncV1VaultRecord).removeAdmin(address(this), admin);
+		IYieldSyncV1VaultAccessControl(YieldSyncV1VaultAccessControl).removeAdmin(address(this), admin);
 	}
 
 	/// @inheritdoc IYieldSyncV1Vault
@@ -197,7 +197,7 @@ contract YieldSyncV1Vault is
 		override
 		onlyAdmin()
 	{
-		IYieldSyncV1VaultRecord(YieldSyncV1VaultRecord).addMember(address(this), targetAddress);
+		IYieldSyncV1VaultAccessControl(YieldSyncV1VaultAccessControl).addMember(address(this), targetAddress);
 	}
 
 	/// @inheritdoc IYieldSyncV1Vault
@@ -206,7 +206,7 @@ contract YieldSyncV1Vault is
 		override
 		onlyAdmin()
 	{
-		IYieldSyncV1VaultRecord(YieldSyncV1VaultRecord).removeMember(address(this), member);
+		IYieldSyncV1VaultAccessControl(YieldSyncV1VaultAccessControl).removeMember(address(this), member);
 	}
 
 	/// @inheritdoc IYieldSyncV1Vault
@@ -471,6 +471,6 @@ contract YieldSyncV1Vault is
 		override
 		onlyMember()
 	{
-		IYieldSyncV1VaultRecord(YieldSyncV1VaultRecord).removeMember(address(this), msg.sender);
+		IYieldSyncV1VaultAccessControl(YieldSyncV1VaultAccessControl).removeMember(address(this), msg.sender);
 	}
 }

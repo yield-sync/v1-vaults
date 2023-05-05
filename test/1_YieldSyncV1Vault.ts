@@ -11,7 +11,7 @@ const sixDaysInSeconds = 6 * 24 * 60 * 60;
 describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 	let yieldSyncV1Vault: Contract;
 	let yieldSyncV1VaultFactory: Contract;
-	let yieldSyncV1VaultRecord: Contract;
+	let yieldSyncV1VaultAccessControl: Contract;
 	let signatureManager: Contract;
 	let mockAdmin: Contract;
 	let mockERC20: Contract;
@@ -30,7 +30,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 		const MockYieldSyncGovernance: ContractFactory = await ethers.getContractFactory("MockYieldSyncGovernance");
 		const YieldSyncV1Vault: ContractFactory = await ethers.getContractFactory("YieldSyncV1Vault");
 		const YieldSyncV1VaultFactory: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultFactory");
-		const YieldSyncV1VaultRecord: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultRecord");
+		const YieldSyncV1VaultAccessControl: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultAccessControl");
 		const SignatureManager: ContractFactory = await ethers.getContractFactory("SignatureManager");
 
 
@@ -40,9 +40,9 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 		mockERC721 = await (await MockERC721.deploy()).deployed();
 
 		mockYieldSyncGovernance = await (await MockYieldSyncGovernance.deploy()).deployed();
-		yieldSyncV1VaultRecord = await (await YieldSyncV1VaultRecord.deploy()).deployed();
+		yieldSyncV1VaultAccessControl = await (await YieldSyncV1VaultAccessControl.deploy()).deployed();
 		yieldSyncV1VaultFactory = await (
-			await YieldSyncV1VaultFactory.deploy(mockYieldSyncGovernance.address, yieldSyncV1VaultRecord.address)
+			await YieldSyncV1VaultFactory.deploy(mockYieldSyncGovernance.address, yieldSyncV1VaultAccessControl.address)
 		).deployed();
 
 		// Deploy a vault
@@ -63,7 +63,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 		);
 
 		signatureManager = await (
-			await SignatureManager.deploy(mockYieldSyncGovernance.address, yieldSyncV1VaultRecord.address)
+			await SignatureManager.deploy(mockYieldSyncGovernance.address, yieldSyncV1VaultAccessControl.address)
 		).deployed();
 
 		// Send ether to YieldSyncV1Vault contract
@@ -129,18 +129,18 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 				const [owner] = await ethers.getSigners();
 
 				expect(
-					(await yieldSyncV1VaultRecord.participant_yieldSyncV1Vault_access(
+					(await yieldSyncV1VaultAccessControl.participant_yieldSyncV1Vault_access(
 						owner.address,
 						yieldSyncV1Vault.address
 					))[0]
 				).to.be.true;
 
 				expect(
-					(await yieldSyncV1VaultRecord.yieldSyncV1Vault_admins(yieldSyncV1Vault.address))[0]
+					(await yieldSyncV1VaultAccessControl.yieldSyncV1Vault_admins(yieldSyncV1Vault.address))[0]
 				).to.be.equal(owner.address);
 
 				expect(
-					(await yieldSyncV1VaultRecord.admin_yieldSyncV1Vaults(owner.address))[0]
+					(await yieldSyncV1VaultAccessControl.admin_yieldSyncV1Vaults(owner.address))[0]
 				).to.be.equal(yieldSyncV1Vault.address);
 			}
 		);
@@ -151,18 +151,18 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 				const [, addr1] = await ethers.getSigners();
 
 				expect(
-					(await yieldSyncV1VaultRecord.participant_yieldSyncV1Vault_access(
+					(await yieldSyncV1VaultAccessControl.participant_yieldSyncV1Vault_access(
 						addr1.address,
 						yieldSyncV1Vault.address
 					))[1]
 				).to.be.true;
 
 				expect(
-					(await yieldSyncV1VaultRecord.yieldSyncV1Vault_members(yieldSyncV1Vault.address))[0]
+					(await yieldSyncV1VaultAccessControl.yieldSyncV1Vault_members(yieldSyncV1Vault.address))[0]
 				).to.be.equal(addr1.address);
 
 				expect(
-					(await yieldSyncV1VaultRecord.member_yieldSyncV1Vaults(addr1.address))[0]
+					(await yieldSyncV1VaultAccessControl.member_yieldSyncV1Vaults(addr1.address))[0]
 				).to.be.equal(yieldSyncV1Vault.address);
 			}
 		);
@@ -179,19 +179,19 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 					await yieldSyncV1Vault.addAdmin(addr4.address);
 
 					expect(
-						(await yieldSyncV1VaultRecord.participant_yieldSyncV1Vault_access(
+						(await yieldSyncV1VaultAccessControl.participant_yieldSyncV1Vault_access(
 							addr4.address,
 							yieldSyncV1Vault.address
 						))[0]
 					).to.be.true;
 
 					expect(
-						(await yieldSyncV1VaultRecord.admin_yieldSyncV1Vaults(addr4.address))[0]
+						(await yieldSyncV1VaultAccessControl.admin_yieldSyncV1Vaults(addr4.address))[0]
 					).to.be.equal(yieldSyncV1Vault.address);
 
 
 					expect(
-						(await yieldSyncV1VaultRecord.yieldSyncV1Vault_admins(yieldSyncV1Vault.address))[1]
+						(await yieldSyncV1VaultAccessControl.yieldSyncV1Vault_admins(yieldSyncV1Vault.address))[1]
 					).to.be.equal(addr4.address);
 				}
 			);
@@ -202,19 +202,19 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 					await yieldSyncV1Vault.addAdmin(mockAdmin.address);
 
 					expect(
-						(await yieldSyncV1VaultRecord.participant_yieldSyncV1Vault_access(
+						(await yieldSyncV1VaultAccessControl.participant_yieldSyncV1Vault_access(
 							mockAdmin.address,
 							yieldSyncV1Vault.address
 						))[0]
 					).to.be.true;
 
 					expect(
-						(await yieldSyncV1VaultRecord.admin_yieldSyncV1Vaults(mockAdmin.address))[0]
+						(await yieldSyncV1VaultAccessControl.admin_yieldSyncV1Vaults(mockAdmin.address))[0]
 					).to.be.equal(yieldSyncV1Vault.address);
 
 
 					expect(
-						(await yieldSyncV1VaultRecord.yieldSyncV1Vault_admins(yieldSyncV1Vault.address))[1]
+						(await yieldSyncV1VaultAccessControl.yieldSyncV1Vault_admins(yieldSyncV1Vault.address))[1]
 					).to.be.equal(mockAdmin.address);
 				}
 			);
@@ -247,19 +247,19 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 					await yieldSyncV1Vault.addMember(addr2.address);
 
 					expect(
-						(await yieldSyncV1VaultRecord.participant_yieldSyncV1Vault_access(
+						(await yieldSyncV1VaultAccessControl.participant_yieldSyncV1Vault_access(
 							addr2.address,
 							yieldSyncV1Vault.address
 						))[1]
 					).to.be.true;
 
 					expect(
-						(await yieldSyncV1VaultRecord.member_yieldSyncV1Vaults(addr2.address))[0]
+						(await yieldSyncV1VaultAccessControl.member_yieldSyncV1Vaults(addr2.address))[0]
 					).to.be.equal(yieldSyncV1Vault.address);
 
 
 					expect(
-						(await yieldSyncV1VaultRecord.yieldSyncV1Vault_members(yieldSyncV1Vault.address))[1]
+						(await yieldSyncV1VaultAccessControl.yieldSyncV1Vault_members(yieldSyncV1Vault.address))[1]
 					).to.be.equal(addr2.address);
 				}
 			);
@@ -283,7 +283,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 					await yieldSyncV1Vault.addMember(addr5.address)
 
 					expect(
-						(await yieldSyncV1VaultRecord.participant_yieldSyncV1Vault_access(
+						(await yieldSyncV1VaultAccessControl.participant_yieldSyncV1Vault_access(
 							addr5.address,
 							yieldSyncV1Vault.address
 						))[1]
@@ -292,7 +292,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 					await yieldSyncV1Vault.removeMember(addr5.address)
 
 					expect(
-						(await yieldSyncV1VaultRecord.participant_yieldSyncV1Vault_access(
+						(await yieldSyncV1VaultAccessControl.participant_yieldSyncV1Vault_access(
 							addr5.address,
 							yieldSyncV1Vault.address
 						))[1]
@@ -1149,7 +1149,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 
 					await yieldSyncV1Vault.addMember(addr6.address);
 
-					const vaultsBefore = await yieldSyncV1VaultRecord.member_yieldSyncV1Vaults(addr6.address)
+					const vaultsBefore = await yieldSyncV1VaultAccessControl.member_yieldSyncV1Vaults(addr6.address)
 
 					let found: boolean = false;
 
@@ -1162,7 +1162,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 
 					await yieldSyncV1Vault.connect(addr6).renounceMembership();
 
-					const vaultsAfter = await yieldSyncV1VaultRecord.member_yieldSyncV1Vaults(addr6.address)
+					const vaultsAfter = await yieldSyncV1VaultAccessControl.member_yieldSyncV1Vaults(addr6.address)
 
 					for (let i = 0; i < vaultsAfter.length; i++)
 					{
