@@ -90,10 +90,9 @@ contract YieldSyncV1Vault is
 
 	modifier onlyAdmin()
 	{
-		(bool admin,) = IYieldSyncV1VaultAccessControl(YieldSyncV1VaultAccessControl).participant_yieldSyncV1Vault_access(
-			msg.sender,
-			address(this)
-		);
+		(bool admin,) = IYieldSyncV1VaultAccessControl(
+			YieldSyncV1VaultAccessControl
+		).participant_yieldSyncV1Vault_access(msg.sender, address(this));
 
 		require(admin, "!admin");
 
@@ -102,10 +101,9 @@ contract YieldSyncV1Vault is
 
 	modifier onlyMember()
 	{
-		(, bool member) = IYieldSyncV1VaultAccessControl(YieldSyncV1VaultAccessControl).participant_yieldSyncV1Vault_access(
-			msg.sender,
-			address(this)
-		);
+		(, bool member) = IYieldSyncV1VaultAccessControl(
+			YieldSyncV1VaultAccessControl
+		).participant_yieldSyncV1Vault_access(msg.sender, address(this));
 
 		require(member, "!member");
 
