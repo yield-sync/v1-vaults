@@ -1,6 +1,6 @@
 require("dotenv").config();
 import { Contract, ContractFactory } from "ethers";
-import { ethers } from "hardhat";
+import { ethers, run } from "hardhat";
 
 
 async function main() {
@@ -21,6 +21,50 @@ async function main() {
 			yieldSyncV1VaultAccessControl.address
 		)
 	).deployed();
+
+	console.log("Waiting 30 seconds before verifying..");
+
+	// Delay
+	const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
+
+	// Delay
+	await delay(30000);
+
+	// verify
+	try
+	{
+		// yieldSyncV1VaultAccessControl
+		await run(
+			"verify:verify",
+			{
+				address: yieldSyncV1VaultAccessControl.address,
+				constructorArguments: [],
+			}
+		);
+
+		// yieldSyncV1VaultFactory
+		await run(
+			"verify:verify",
+			{
+				address: yieldSyncV1VaultFactory.address,
+				constructorArguments: [
+					process.env.YIELD_SYNC_GOVERNANCE_ADDRESS,
+					yieldSyncV1VaultAccessControl.address
+				],
+			}
+		);
+	}
+	catch (e: any)
+	{
+		if (e.message.toLowerCase().includes("already verified"))
+		{
+			console.log("Already verified!");
+		}
+		else
+		{
+			console.log(e);
+		}
+	}
 
 	console.log("yieldSyncV1VaultAccessControl Contract address:", yieldSyncV1VaultAccessControl.address);
 	console.log("yieldSyncV1VaultFactory Contract address:", yieldSyncV1VaultFactory.address);
