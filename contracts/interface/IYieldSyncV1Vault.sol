@@ -10,8 +10,8 @@ struct WithdrawalRequest {
 	address token;
 	uint256 amount;
 	uint256 tokenId;
-	uint256 forVoteCount;
-	uint256 againstVoteCount;
+	uint256 approveVoteCount;
+	uint256 denyVoteCount;
 	uint256 latestRelevantApproveVoteTime;
 	address[] votedMembers;
 }
@@ -22,8 +22,8 @@ interface IYieldSyncV1Vault
 	event CreatedWithdrawalRequest(uint256 withdrawalRequestId);
 	event DeletedWithdrawalRequest(uint256 withdrawalRequestId);
 	event TokensWithdrawn(address indexed withdrawer, address indexed token, uint256 amount);
-	event UpdatedAgainstVoteCountRequired(uint256 againstVoteCountRequired);
-	event UpdatedForVoteCountRequired(uint256 forVoteCountRequired);
+	event UpdatedDenyVoteCountRequired(uint256 denyVoteCountRequired);
+	event UpdatedApproveVoteCountRequired(uint256 approveVoteCountRequired);
 	event UpdatedSignatureManger(address signatureManager);
 	event UpdatedWithdrawalDelaySeconds(uint256 withdrawalDelaySeconds);
 	event UpdatedWithdrawalRequest(WithdrawalRequest withdrawalRequest);
@@ -85,7 +85,7 @@ interface IYieldSyncV1Vault
 	* @dev [view-uint256]
 	* @return {uint256}
 	*/
-	function againstVoteCountRequired()
+	function denyVoteCountRequired()
 		external
 		view
 		returns (uint256)
@@ -97,7 +97,7 @@ interface IYieldSyncV1Vault
 	* @dev [view-uint256]
 	* @return {uint256}
 	*/
-	function forVoteCountRequired()
+	function approveVoteCountRequired()
 		external
 		view
 		returns (uint256)
@@ -207,22 +207,22 @@ interface IYieldSyncV1Vault
 	/**
 	* @notice Update Against Vote Count Required
 	* @dev [restriction] `YieldSyncV1Record` → admin
-	* @dev [update] `againstVoteCountRequired`
-	* @param _againstVoteCountRequired {uint256}
-	* Emits: `UpdatedAgainstVoteCountRequired`
+	* @dev [update] `denyVoteCountRequired`
+	* @param _denyVoteCountRequired {uint256}
+	* Emits: `UpdatedDenyVoteCountRequired`
 	*/
-	function updateAgainstVoteCountRequired(uint256 _againstVoteCountRequired)
+	function updateDenyVoteCountRequired(uint256 _denyVoteCountRequired)
 		external
 	;
 
 	/**
 	* @notice Update For Vote Count Required
 	* @dev [restriction] `YieldSyncV1Record` → admin
-	* @dev [update] `forVoteCountRequired`
-	* @param _forVoteCountRequired {uint256}
+	* @dev [update] `approveVoteCountRequired`
+	* @param _approveVoteCountRequired {uint256}
 	* Emits: `UpdatedRequiredVoteCount`
 	*/
-	function updateForVoteCountRequired(uint256 _forVoteCountRequired)
+	function updateApproveVoteCountRequired(uint256 _approveVoteCountRequired)
 		external
 	;
 

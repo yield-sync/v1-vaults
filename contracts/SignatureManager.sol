@@ -59,7 +59,7 @@ contract SignatureManager is
 		return (
 			_vaultMessageHashes[msg.sender][_vaultMessageHashes[msg.sender].length -1] == _messageHash &&
 			vMHD.signer == recovered &&
-			vMHD.signatureCount >= IYieldSyncV1Vault(payable(msg.sender)).forVoteCountRequired()
+			vMHD.signatureCount >= IYieldSyncV1Vault(payable(msg.sender)).approveVoteCountRequired()
 		) ? ERC1271_MAGIC_VALUE : bytes4(0);
 	}
 

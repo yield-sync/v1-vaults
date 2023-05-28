@@ -103,16 +103,16 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 
 	describe("Initial Values", async () => {
 		it(
-			"Should intialize againstVoteCountRequired as 2..",
+			"Should intialize denyVoteCountRequired as 2..",
 			async () => {
-				expect(await yieldSyncV1Vault.againstVoteCountRequired()).to.equal(2);
+				expect(await yieldSyncV1Vault.denyVoteCountRequired()).to.equal(2);
 			}
 		);
 
 		it(
-			"Should intialize forVoteCountRequired as 2..",
+			"Should intialize approveVoteCountRequired as 2..",
 			async () => {
-				expect(await yieldSyncV1Vault.forVoteCountRequired()).to.equal(2);
+				expect(await yieldSyncV1Vault.approveVoteCountRequired()).to.equal(2);
 			}
 		);
 
@@ -324,43 +324,43 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 			);
 		});
 
-		describe("updateAgainstVoteCountRequired()", async () => {
+		describe("updateDenyVoteCountRequired()", async () => {
 			it(
 				"Should revert when unauthorized msg.sender calls..",
 				async () => {
 					const [, addr1] = await ethers.getSigners();
 
-					await expect(yieldSyncV1Vault.connect(addr1).updateAgainstVoteCountRequired(1)).to.be.rejected;
+					await expect(yieldSyncV1Vault.connect(addr1).updateDenyVoteCountRequired(1)).to.be.rejected;
 				}
 			);
 
 			it(
-				"Should be able to update againstVoteCountRequired..",
+				"Should be able to update denyVoteCountRequired..",
 				async () => {
-					await yieldSyncV1Vault.updateAgainstVoteCountRequired(1)
+					await yieldSyncV1Vault.updateDenyVoteCountRequired(1)
 
-					await expect(await yieldSyncV1Vault.againstVoteCountRequired()).to.be.equal(1);
+					await expect(await yieldSyncV1Vault.denyVoteCountRequired()).to.be.equal(1);
 				}
 			);
 		});
 
 
-		describe("updateForVoteCountRequired()", async () => {
+		describe("updateApproveVoteCountRequired()", async () => {
 			it(
 				"Should revert when unauthorized msg.sender calls..",
 				async () => {
 					const [, addr1] = await ethers.getSigners();
 
-					await expect(yieldSyncV1Vault.connect(addr1).updateForVoteCountRequired(1)).to.be.rejected;
+					await expect(yieldSyncV1Vault.connect(addr1).updateApproveVoteCountRequired(1)).to.be.rejected;
 				}
 			);
 
 			it(
-				"Should be able to update forVoteCountRequired..",
+				"Should be able to update approveVoteCountRequired..",
 				async () => {
-					await yieldSyncV1Vault.updateForVoteCountRequired(1)
+					await yieldSyncV1Vault.updateApproveVoteCountRequired(1)
 
-					await expect(await yieldSyncV1Vault.forVoteCountRequired()).to.be.equal(1);
+					await expect(await yieldSyncV1Vault.approveVoteCountRequired()).to.be.equal(1);
 				}
 			);
 		});
@@ -600,7 +600,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 						async () => {
 							const [, addr1] = await ethers.getSigners();
 
-							await yieldSyncV1Vault.updateForVoteCountRequired(2);
+							await yieldSyncV1Vault.updateApproveVoteCountRequired(2);
 
 							await yieldSyncV1Vault.connect(addr1).createWithdrawalRequest(
 								false,
@@ -615,9 +615,9 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 
 							await expect(
 								yieldSyncV1Vault.connect(addr1).processWithdrawalRequest(0)
-							).to.be.rejectedWith("!forVoteCountRequired && !againstVoteCount");
+							).to.be.rejectedWith("!approveVoteCountRequired && !denyVoteCount");
 
-							await yieldSyncV1Vault.updateForVoteCountRequired(1);
+							await yieldSyncV1Vault.updateApproveVoteCountRequired(1);
 						}
 					);
 
@@ -626,7 +626,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 						async () => {
 							const [, addr1] = await ethers.getSigners();
 
-							await yieldSyncV1Vault.updateForVoteCountRequired(1);
+							await yieldSyncV1Vault.updateApproveVoteCountRequired(1);
 							await yieldSyncV1Vault.updateWithdrawalDelaySeconds(sevenDaysInSeconds);
 
 							await yieldSyncV1Vault.connect(addr1).createWithdrawalRequest(
@@ -654,7 +654,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 						async () => {
 							const [, addr1, addr2] = await ethers.getSigners();
 
-							await yieldSyncV1Vault.updateForVoteCountRequired(1);
+							await yieldSyncV1Vault.updateApproveVoteCountRequired(1);
 
 							await yieldSyncV1Vault.connect(addr1).createWithdrawalRequest(
 								false,
@@ -693,7 +693,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 						async () => {
 							const [, addr1, addr2] = await ethers.getSigners();
 
-							await yieldSyncV1Vault.updateForVoteCountRequired(1);
+							await yieldSyncV1Vault.updateApproveVoteCountRequired(1);
 
 							await yieldSyncV1Vault.updateWithdrawalDelaySeconds(sevenDaysInSeconds);
 
@@ -811,7 +811,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 						async () => {
 							const [, addr1, addr2] = await ethers.getSigners();
 
-							await yieldSyncV1Vault.updateForVoteCountRequired(1);
+							await yieldSyncV1Vault.updateApproveVoteCountRequired(1);
 
 							await yieldSyncV1Vault.connect(addr1).createWithdrawalRequest(
 								true,
@@ -838,7 +838,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 						async () => {
 							const [, addr1, addr2] = await ethers.getSigners();
 
-							await yieldSyncV1Vault.updateForVoteCountRequired(1);
+							await yieldSyncV1Vault.updateApproveVoteCountRequired(1);
 
 							await yieldSyncV1Vault.connect(addr1).createWithdrawalRequest(
 								true,
@@ -871,7 +871,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 						async () => {
 							const [, addr1, addr2] = await ethers.getSigners();
 
-							await yieldSyncV1Vault.updateForVoteCountRequired(1);
+							await yieldSyncV1Vault.updateApproveVoteCountRequired(1);
 
 							await yieldSyncV1Vault.connect(addr1).createWithdrawalRequest(
 								true,
@@ -990,7 +990,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 						async () => {
 							const [, addr1, addr2] = await ethers.getSigners();
 
-							await yieldSyncV1Vault.updateForVoteCountRequired(1);
+							await yieldSyncV1Vault.updateApproveVoteCountRequired(1);
 
 							await yieldSyncV1Vault.connect(addr1).createWithdrawalRequest(
 								false,
@@ -1023,7 +1023,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 						async () => {
 							const [, addr1, addr2] = await ethers.getSigners();
 
-							await yieldSyncV1Vault.updateForVoteCountRequired(1);
+							await yieldSyncV1Vault.updateApproveVoteCountRequired(1);
 
 							await yieldSyncV1Vault.connect(addr1).createWithdrawalRequest(
 								false,
@@ -1082,11 +1082,11 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 
 			describe("processWithdrawalRequest()", async () => {
 				it(
-					"Should delete withdrawalRequest due to againstVoteCount met..",
+					"Should delete withdrawalRequest due to denyVoteCount met..",
 					async () => {
 						const [, addr1, addr2] = await ethers.getSigners();
 
-						await yieldSyncV1Vault.updateAgainstVoteCountRequired(1);
+						await yieldSyncV1Vault.updateDenyVoteCountRequired(1);
 
 						await yieldSyncV1Vault.connect(addr1).createWithdrawalRequest(
 							false,
@@ -1177,7 +1177,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 	describe("Restriction: DEFAULT_ADMIN_ROLE", async () => {
 		describe("updateWithdrawalRequest()", async () => {
 			it(
-				"Should be able to update WithdrawalRequest.forVoteCount..",
+				"Should be able to update WithdrawalRequest.approveVoteCount..",
 				async () => {
 					const [, addr1, addr2] = await ethers.getSigners();
 

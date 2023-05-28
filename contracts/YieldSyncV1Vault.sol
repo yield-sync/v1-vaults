@@ -33,8 +33,8 @@ contract YieldSyncV1Vault is
 
 	bool public override processWithdrawalRequestLocked;
 
-	uint256 public override againstVoteCountRequired;
-	uint256 public override forVoteCountRequired;
+	uint256 public override denyVoteCountRequired;
+	uint256 public override approveVoteCountRequired;
 	uint256 public override withdrawalDelaySeconds;
 	uint256 internal _withdrawalRequestIdTracker;
 	uint256[] internal _idsOfOpenWithdrawalRequests;
@@ -49,14 +49,14 @@ contract YieldSyncV1Vault is
 		address[] memory admins,
 		address[] memory members,
 		address _signatureManager,
-		uint256 _againstVoteCountRequired,
-		uint256 _forVoteCountRequired,
+		uint256 _denyVoteCountRequired,
+		uint256 _approveVoteCountRequired,
 		uint256 _withdrawalDelaySeconds
 	)
 	{
 		YieldSyncV1VaultAccessControl = _YieldSyncV1VaultAccessControl;
 
-		require(_forVoteCountRequired > 0, "!_forVoteCountRequired");
+		require(_approveVoteCountRequired > 0, "!_approveVoteCountRequired");
 
 		for (uint i = 0; i < admins.length; i++)
 		{
@@ -70,8 +70,8 @@ contract YieldSyncV1Vault is
 
 		signatureManager = _signatureManager;
 		processWithdrawalRequestLocked = false;
-		againstVoteCountRequired = _againstVoteCountRequired;
-		forVoteCountRequired = _forVoteCountRequired;
+		denyVoteCountRequired = _denyVoteCountRequired;
+		approveVoteCountRequired = _approveVoteCountRequired;
 		withdrawalDelaySeconds = _withdrawalDelaySeconds;
 
 		_withdrawalRequestIdTracker = 0;
@@ -232,29 +232,29 @@ contract YieldSyncV1Vault is
 	}
 
 	/// @inheritdoc IYieldSyncV1Vault
-	function updateAgainstVoteCountRequired(uint256 _againstVoteCountRequired)
+	function updateDenyVoteCountRequired(uint256 _denyVoteCountRequired)
 		public
 		override
 		onlyAdmin()
 	{
-		require(_againstVoteCountRequired > 0, "!_againstVoteCountRequired");
+		require(_denyVoteCountRequired > 0, "!_denyVoteCountRequired");
 
-		againstVoteCountRequired = _againstVoteCountRequired;
+		denyVoteCountRequired = _denyVoteCountRequired;
 
-		emit UpdatedAgainstVoteCountRequired(againstVoteCountRequired);
+		emit UpdatedDenyVoteCountRequired(denyVoteCountRequired);
 	}
 
 	/// @inheritdoc IYieldSyncV1Vault
-	function updateForVoteCountRequired(uint256 _forVoteCountRequired)
+	function updateApproveVoteCountRequired(uint256 _approveVoteCountRequired)
 		public
 		override
 		onlyAdmin()
 	{
-		require(_forVoteCountRequired > 0, "!_forVoteCountRequired");
+		require(_approveVoteCountRequired > 0, "!_approveVoteCountRequired");
 
-		forVoteCountRequired = _forVoteCountRequired;
+		approveVoteCountRequired = _approveVoteCountRequired;
 
-		emit UpdatedForVoteCountRequired(forVoteCountRequired);
+		emit UpdatedApproveVoteCountRequired(approveVoteCountRequired);
 	}
 
 	/// @inheritdoc IYieldSyncV1Vault
@@ -308,8 +308,8 @@ contract YieldSyncV1Vault is
 				token: tokenAddress,
 				amount: amount,
 				tokenId: tokenId,
-				forVoteCount: 0,
-				againstVoteCount: 0,
+				approveVoteCount: 0,
+				denyVoteCount: 0,
 				latestRelevantApproveVoteTime: block.timestamp,
 				votedMembers: initialVotedMembers
 			}
@@ -329,6 +329,12 @@ contract YieldSyncV1Vault is
 		onlyMember()
 		validWithdrawalRequest(withdrawalRequestId)
 	{
+		require(
+			_withdrawalRequestId_withdralRequest[withdrawalRequestId].approveVoteCount < approveVoteCountRequired &&
+			_withdrawalRequestId_withdralRequest[withdrawalRequestId].denyVoteCount < denyVoteCountRequired,
+			"Voting closed"
+		);
+
 		for (uint256 i = 0; i < _withdrawalRequestId_withdralRequest[withdrawalRequestId].votedMembers.length; i++)
 		{
 			require(
@@ -339,16 +345,16 @@ contract YieldSyncV1Vault is
 
 		if (vote)
 		{
-			_withdrawalRequestId_withdralRequest[withdrawalRequestId].forVoteCount++;
+			_withdrawalRequestId_withdralRequest[withdrawalRequestId].approveVoteCount++;
 		}
 		else
 		{
-			_withdrawalRequestId_withdralRequest[withdrawalRequestId].againstVoteCount++;
+			_withdrawalRequestId_withdralRequest[withdrawalRequestId].denyVoteCount++;
 		}
 
 		if (
-			_withdrawalRequestId_withdralRequest[withdrawalRequestId].forVoteCount >= forVoteCountRequired ||
-			_withdrawalRequestId_withdralRequest[withdrawalRequestId].againstVoteCount >= againstVoteCountRequired
+			_withdrawalRequestId_withdralRequest[withdrawalRequestId].approveVoteCount >= approveVoteCountRequired ||
+			_withdrawalRequestId_withdralRequest[withdrawalRequestId].denyVoteCount >= denyVoteCountRequired
 		)
 		{
 			emit WithdrawalRequestReadyToBeProcessed(withdrawalRequestId);
@@ -356,7 +362,7 @@ contract YieldSyncV1Vault is
 
 		_withdrawalRequestId_withdralRequest[withdrawalRequestId].votedMembers.push(msg.sender);
 
-		if (_withdrawalRequestId_withdralRequest[withdrawalRequestId].forVoteCount < forVoteCountRequired)
+		if (_withdrawalRequestId_withdralRequest[withdrawalRequestId].approveVoteCount < approveVoteCountRequired)
 		{
 			_withdrawalRequestId_withdralRequest[withdrawalRequestId].latestRelevantApproveVoteTime = block.timestamp;
 		}
@@ -373,14 +379,14 @@ contract YieldSyncV1Vault is
 	{
 		require(!processWithdrawalRequestLocked, "processWithdrawalRequestLocked");
 		require(
-			_withdrawalRequestId_withdralRequest[withdrawalRequestId].forVoteCount >= forVoteCountRequired ||
-			_withdrawalRequestId_withdralRequest[withdrawalRequestId].againstVoteCount >= againstVoteCountRequired,
-			"!forVoteCountRequired && !againstVoteCount"
+			_withdrawalRequestId_withdralRequest[withdrawalRequestId].approveVoteCount >= approveVoteCountRequired ||
+			_withdrawalRequestId_withdralRequest[withdrawalRequestId].denyVoteCount >= denyVoteCountRequired,
+			"!approveVoteCountRequired && !denyVoteCount"
 		);
 
 		processWithdrawalRequestLocked = true;
 
-		if (_withdrawalRequestId_withdralRequest[withdrawalRequestId].forVoteCount >= forVoteCountRequired)
+		if (_withdrawalRequestId_withdralRequest[withdrawalRequestId].approveVoteCount >= approveVoteCountRequired)
 		{
 			require(
 				block.timestamp - _withdrawalRequestId_withdralRequest[
