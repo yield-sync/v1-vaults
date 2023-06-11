@@ -6,7 +6,7 @@ import { IERC1271 } from "@openzeppelin/contracts/interfaces/IERC1271.sol";
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { IERC721 } from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 
-import { IYieldSyncV1Vault, WithdrawalRequest } from "./interface/IYieldSyncV1Vault.sol";
+import { IYieldSyncV1Vault, TransferRequest } from "./interface/IYieldSyncV1Vault.sol";
 import { IYieldSyncV1VaultAccessControl } from "./interface/IYieldSyncV1VaultAccessControl.sol";
 
 
@@ -31,17 +31,17 @@ contract YieldSyncV1Vault is
 	address public override immutable YieldSyncV1VaultAccessControl;
 	address public override signatureManager;
 
-	bool public override processWithdrawalRequestLocked;
+	bool public override processTransferRequestLocked;
 
-	uint256 public override denyVoteCountRequired;
-	uint256 public override approveVoteCountRequired;
-	uint256 public override withdrawalDelaySeconds;
-	uint256 internal _withdrawalRequestIdTracker;
-	uint256[] internal _idsOfOpenWithdrawalRequests;
+	uint256 public override againstVoteCountRequired;
+	uint256 public override forVoteCountRequired;
+	uint256 public override transferDelaySeconds;
+	uint256 internal _transferRequestIdTracker;
+	uint256[] internal _idsOfOpenTransferRequests;
 
 	mapping (
-		uint256 withdrawalRequestId => WithdrawalRequest withdralRequest
-	) internal _withdrawalRequestId_withdralRequest;
+		uint256 transferRequestId => TransferRequest transferRequest
+	) internal _transferRequestId_transferRequest;
 
 
 	constructor (
@@ -49,14 +49,14 @@ contract YieldSyncV1Vault is
 		address[] memory admins,
 		address[] memory members,
 		address _signatureManager,
-		uint256 _denyVoteCountRequired,
-		uint256 _approveVoteCountRequired,
-		uint256 _withdrawalDelaySeconds
+		uint256 _againstVoteCountRequired,
+		uint256 _forVoteCountRequired,
+		uint256 _transferDelaySeconds
 	)
 	{
 		YieldSyncV1VaultAccessControl = _YieldSyncV1VaultAccessControl;
 
-		require(_approveVoteCountRequired > 0, "!_approveVoteCountRequired");
+		require(_forVoteCountRequired > 0, "!_forVoteCountRequired");
 
 		for (uint i = 0; i < admins.length; i++)
 		{
@@ -69,20 +69,20 @@ contract YieldSyncV1Vault is
 		}
 
 		signatureManager = _signatureManager;
-		processWithdrawalRequestLocked = false;
-		denyVoteCountRequired = _denyVoteCountRequired;
-		approveVoteCountRequired = _approveVoteCountRequired;
-		withdrawalDelaySeconds = _withdrawalDelaySeconds;
+		processTransferRequestLocked = false;
+		againstVoteCountRequired = _againstVoteCountRequired;
+		forVoteCountRequired = _forVoteCountRequired;
+		transferDelaySeconds = _transferDelaySeconds;
 
-		_withdrawalRequestIdTracker = 0;
+		_transferRequestIdTracker = 0;
 	}
 
 
-	modifier validWithdrawalRequest(uint256 withdrawalRequestId)
+	modifier validTransferRequest(uint256 transferRequestId)
 	{
 		require(
-			_withdrawalRequestId_withdralRequest[withdrawalRequestId].amount > 0,
-			"No WithdrawalRequest found"
+			_transferRequestId_transferRequest[transferRequestId].amount > 0,
+			"No TransferRequest found"
 		);
 
 		_;
@@ -112,25 +112,25 @@ contract YieldSyncV1Vault is
 
 
 	/**
-	* @notice Delete WithdrawalRequest
+	* @notice Delete TransferRequest
 	* @dev [restriction][internal]
-	* @dev [delete] `_withdrawalRequestId_withdralRequest` value
-	*      [delete] `_idsOfOpenWithdrawalRequests` value
-	* @param withdrawalRequestId {uint256}
-	* Emits: `DeletedWithdrawalRequest`
+	* @dev [delete] `_transferRequestId_transferRequest` value
+	*      [delete] `_idsOfOpenTransferRequests` value
+	* @param transferRequestId {uint256}
+	* Emits: `DeletedTransferRequest`
 	*/
-	function _deleteWithdrawalRequest(uint256 withdrawalRequestId)
+	function _deleteTransferRequest(uint256 transferRequestId)
 		internal
 	{
-		delete _withdrawalRequestId_withdralRequest[withdrawalRequestId];
+		delete _transferRequestId_transferRequest[transferRequestId];
 
-		for (uint256 i = 0; i < _idsOfOpenWithdrawalRequests.length; i++)
+		for (uint256 i = 0; i < _idsOfOpenTransferRequests.length; i++)
 		{
-			if (_idsOfOpenWithdrawalRequests[i] == withdrawalRequestId)
+			if (_idsOfOpenTransferRequests[i] == transferRequestId)
 			{
-				_idsOfOpenWithdrawalRequests[i] = _idsOfOpenWithdrawalRequests[_idsOfOpenWithdrawalRequests.length - 1];
+				_idsOfOpenTransferRequests[i] = _idsOfOpenTransferRequests[_idsOfOpenTransferRequests.length - 1];
 
-				_idsOfOpenWithdrawalRequests.pop();
+				_idsOfOpenTransferRequests.pop();
 
 				break;
 			}
@@ -150,24 +150,24 @@ contract YieldSyncV1Vault is
 
 
 	/// @inheritdoc IYieldSyncV1Vault
-	function idsOfOpenWithdrawalRequests()
+	function idsOfOpenTransferRequests()
 		public
 		view
 		override
 		returns (uint256[] memory)
 	{
-		return _idsOfOpenWithdrawalRequests;
+		return _idsOfOpenTransferRequests;
 	}
 
 	/// @inheritdoc IYieldSyncV1Vault
-	function withdrawalRequestId_withdralRequest(uint256 withdrawalRequestId)
+	function transferRequestId_transferRequest(uint256 transferRequestId)
 		public
 		view
 		override
-		validWithdrawalRequest(withdrawalRequestId)
-		returns (WithdrawalRequest memory)
+		validTransferRequest(transferRequestId)
+		returns (TransferRequest memory)
 	{
-		return _withdrawalRequestId_withdralRequest[withdrawalRequestId];
+		return _transferRequestId_transferRequest[transferRequestId];
 	}
 
 
@@ -208,53 +208,53 @@ contract YieldSyncV1Vault is
 	}
 
 	/// @inheritdoc IYieldSyncV1Vault
-	function deleteWithdrawalRequest(uint256 withdrawalRequestId)
+	function deleteTransferRequest(uint256 transferRequestId)
 		public
 		override
 		onlyAdmin()
-		validWithdrawalRequest(withdrawalRequestId)
+		validTransferRequest(transferRequestId)
 	{
-		_deleteWithdrawalRequest(withdrawalRequestId);
+		_deleteTransferRequest(transferRequestId);
 
-		emit DeletedWithdrawalRequest(withdrawalRequestId);
+		emit DeletedTransferRequest(transferRequestId);
 	}
 
 	/// @inheritdoc IYieldSyncV1Vault
-	function updateWithdrawalRequest(uint256 withdrawalRequestId, WithdrawalRequest memory __withdrawalRequest)
+	function updateTransferRequest(uint256 transferRequestId, TransferRequest memory __transferRequest)
 		public
 		override
 		onlyAdmin()
-		validWithdrawalRequest(withdrawalRequestId)
+		validTransferRequest(transferRequestId)
 	{
-		_withdrawalRequestId_withdralRequest[withdrawalRequestId] = __withdrawalRequest;
+		_transferRequestId_transferRequest[transferRequestId] = __transferRequest;
 
-		emit UpdatedWithdrawalRequest(__withdrawalRequest);
+		emit UpdatedTransferRequest(__transferRequest);
 	}
 
 	/// @inheritdoc IYieldSyncV1Vault
-	function updateDenyVoteCountRequired(uint256 _denyVoteCountRequired)
+	function updateAgainstVoteCountRequired(uint256 _againstVoteCountRequired)
 		public
 		override
 		onlyAdmin()
 	{
-		require(_denyVoteCountRequired > 0, "!_denyVoteCountRequired");
+		require(_againstVoteCountRequired > 0, "!_againstVoteCountRequired");
 
-		denyVoteCountRequired = _denyVoteCountRequired;
+		againstVoteCountRequired = _againstVoteCountRequired;
 
-		emit UpdatedDenyVoteCountRequired(denyVoteCountRequired);
+		emit UpdatedAgainstVoteCountRequired(againstVoteCountRequired);
 	}
 
 	/// @inheritdoc IYieldSyncV1Vault
-	function updateApproveVoteCountRequired(uint256 _approveVoteCountRequired)
+	function updateForVoteCountRequired(uint256 _forVoteCountRequired)
 		public
 		override
 		onlyAdmin()
 	{
-		require(_approveVoteCountRequired > 0, "!_approveVoteCountRequired");
+		require(_forVoteCountRequired > 0, "!_forVoteCountRequired");
 
-		approveVoteCountRequired = _approveVoteCountRequired;
+		forVoteCountRequired = _forVoteCountRequired;
 
-		emit UpdatedApproveVoteCountRequired(approveVoteCountRequired);
+		emit UpdatedForVoteCountRequired(forVoteCountRequired);
 	}
 
 	/// @inheritdoc IYieldSyncV1Vault
@@ -269,21 +269,21 @@ contract YieldSyncV1Vault is
 	}
 
 	/// @inheritdoc IYieldSyncV1Vault
-	function updateWithdrawalDelaySeconds(uint256 _withdrawalDelaySeconds)
+	function updateTransferDelaySeconds(uint256 _transferDelaySeconds)
 		public
 		override
 		onlyAdmin()
 	{
-		require(_withdrawalDelaySeconds >= 0, "!_withdrawalDelaySeconds");
+		require(_transferDelaySeconds >= 0, "!_transferDelaySeconds");
 
-		withdrawalDelaySeconds = _withdrawalDelaySeconds;
+		transferDelaySeconds = _transferDelaySeconds;
 
-		emit UpdatedWithdrawalDelaySeconds(withdrawalDelaySeconds);
+		emit UpdatedTransferDelaySeconds(transferDelaySeconds);
 	}
 
 
 	/// @inheritdoc IYieldSyncV1Vault
-	function createWithdrawalRequest(
+	function createTransferRequest(
 		bool forERC20,
 		bool forERC721,
 		address to,
@@ -299,174 +299,174 @@ contract YieldSyncV1Vault is
 
 		address[] memory initialVotedMembers;
 
-		_withdrawalRequestId_withdralRequest[_withdrawalRequestIdTracker] = WithdrawalRequest(
+		_transferRequestId_transferRequest[_transferRequestIdTracker] = TransferRequest(
 			{
 				forERC20: forERC20,
 				forERC721: forERC721,
 				creator: msg.sender,
-				to: to,
 				token: tokenAddress,
-				amount: amount,
 				tokenId: tokenId,
-				approveVoteCount: 0,
-				denyVoteCount: 0,
-				latestRelevantApproveVoteTime: block.timestamp,
+				amount: amount,
+				to: to,
+				forVoteCount: 0,
+				againstVoteCount: 0,
+				latestRelevantForVoteTime: block.timestamp,
 				votedMembers: initialVotedMembers
 			}
 		);
 
-		_idsOfOpenWithdrawalRequests.push(_withdrawalRequestIdTracker);
+		_idsOfOpenTransferRequests.push(_transferRequestIdTracker);
 
-		_withdrawalRequestIdTracker++;
+		_transferRequestIdTracker++;
 
-		emit CreatedWithdrawalRequest(_withdrawalRequestIdTracker - 1);
+		emit CreatedTransferRequest(_transferRequestIdTracker - 1);
 	}
 
 	/// @inheritdoc IYieldSyncV1Vault
-	function voteOnWithdrawalRequest(uint256 withdrawalRequestId, bool vote)
+	function voteOnTransferRequest(uint256 transferRequestId, bool vote)
 		public
 		override
 		onlyMember()
-		validWithdrawalRequest(withdrawalRequestId)
+		validTransferRequest(transferRequestId)
 	{
 		require(
-			_withdrawalRequestId_withdralRequest[withdrawalRequestId].approveVoteCount < approveVoteCountRequired &&
-			_withdrawalRequestId_withdralRequest[withdrawalRequestId].denyVoteCount < denyVoteCountRequired,
+			_transferRequestId_transferRequest[transferRequestId].forVoteCount < forVoteCountRequired &&
+			_transferRequestId_transferRequest[transferRequestId].againstVoteCount < againstVoteCountRequired,
 			"Voting closed"
 		);
 
-		for (uint256 i = 0; i < _withdrawalRequestId_withdralRequest[withdrawalRequestId].votedMembers.length; i++)
+		for (uint256 i = 0; i < _transferRequestId_transferRequest[transferRequestId].votedMembers.length; i++)
 		{
 			require(
-				_withdrawalRequestId_withdralRequest[withdrawalRequestId].votedMembers[i] != msg.sender,
+				_transferRequestId_transferRequest[transferRequestId].votedMembers[i] != msg.sender,
 				"Already voted"
 			);
 		}
 
 		if (vote)
 		{
-			_withdrawalRequestId_withdralRequest[withdrawalRequestId].approveVoteCount++;
+			_transferRequestId_transferRequest[transferRequestId].forVoteCount++;
 		}
 		else
 		{
-			_withdrawalRequestId_withdralRequest[withdrawalRequestId].denyVoteCount++;
+			_transferRequestId_transferRequest[transferRequestId].againstVoteCount++;
 		}
 
 		if (
-			_withdrawalRequestId_withdralRequest[withdrawalRequestId].approveVoteCount >= approveVoteCountRequired ||
-			_withdrawalRequestId_withdralRequest[withdrawalRequestId].denyVoteCount >= denyVoteCountRequired
+			_transferRequestId_transferRequest[transferRequestId].forVoteCount >= forVoteCountRequired ||
+			_transferRequestId_transferRequest[transferRequestId].againstVoteCount >= againstVoteCountRequired
 		)
 		{
-			emit WithdrawalRequestReadyToBeProcessed(withdrawalRequestId);
+			emit TransferRequestReadyToBeProcessed(transferRequestId);
 		}
 
-		_withdrawalRequestId_withdralRequest[withdrawalRequestId].votedMembers.push(msg.sender);
+		_transferRequestId_transferRequest[transferRequestId].votedMembers.push(msg.sender);
 
-		if (_withdrawalRequestId_withdralRequest[withdrawalRequestId].approveVoteCount < approveVoteCountRequired)
+		if (_transferRequestId_transferRequest[transferRequestId].forVoteCount < forVoteCountRequired)
 		{
-			_withdrawalRequestId_withdralRequest[withdrawalRequestId].latestRelevantApproveVoteTime = block.timestamp;
+			_transferRequestId_transferRequest[transferRequestId].latestRelevantForVoteTime = block.timestamp;
 		}
 
-		emit MemberVoted(withdrawalRequestId, msg.sender, vote);
+		emit MemberVoted(transferRequestId, msg.sender, vote);
 	}
 
 	/// @inheritdoc IYieldSyncV1Vault
-	function processWithdrawalRequest(uint256 withdrawalRequestId)
+	function processTransferRequest(uint256 transferRequestId)
 		public
 		override
 		onlyMember()
-		validWithdrawalRequest(withdrawalRequestId)
+		validTransferRequest(transferRequestId)
 	{
-		require(!processWithdrawalRequestLocked, "processWithdrawalRequestLocked");
+		require(!processTransferRequestLocked, "processTransferRequestLocked");
 		require(
-			_withdrawalRequestId_withdralRequest[withdrawalRequestId].approveVoteCount >= approveVoteCountRequired ||
-			_withdrawalRequestId_withdralRequest[withdrawalRequestId].denyVoteCount >= denyVoteCountRequired,
-			"!approveVoteCountRequired && !denyVoteCount"
+			_transferRequestId_transferRequest[transferRequestId].forVoteCount >= forVoteCountRequired ||
+			_transferRequestId_transferRequest[transferRequestId].againstVoteCount >= againstVoteCountRequired,
+			"!forVoteCountRequired && !againstVoteCount"
 		);
 
-		processWithdrawalRequestLocked = true;
+		processTransferRequestLocked = true;
 
-		if (_withdrawalRequestId_withdralRequest[withdrawalRequestId].approveVoteCount >= approveVoteCountRequired)
+		if (_transferRequestId_transferRequest[transferRequestId].forVoteCount >= forVoteCountRequired)
 		{
 			require(
-				block.timestamp - _withdrawalRequestId_withdralRequest[
-					withdrawalRequestId
-				].latestRelevantApproveVoteTime >= withdrawalDelaySeconds * 1 seconds,
+				block.timestamp - _transferRequestId_transferRequest[
+					transferRequestId
+				].latestRelevantForVoteTime >= transferDelaySeconds * 1 seconds,
 				"Not enough time has passed"
 			);
 
 			if (
-				_withdrawalRequestId_withdralRequest[withdrawalRequestId].forERC20 &&
-				!_withdrawalRequestId_withdralRequest[withdrawalRequestId].forERC721
+				_transferRequestId_transferRequest[transferRequestId].forERC20 &&
+				!_transferRequestId_transferRequest[transferRequestId].forERC721
 			)
 			{
 				if (
-					IERC20(_withdrawalRequestId_withdralRequest[withdrawalRequestId].token).balanceOf(address(this)) >=
-					_withdrawalRequestId_withdralRequest[withdrawalRequestId].amount
+					IERC20(_transferRequestId_transferRequest[transferRequestId].token).balanceOf(address(this)) >=
+					_transferRequestId_transferRequest[transferRequestId].amount
 				)
 				{
 					// [ERC20-transfer]
-					IERC20(_withdrawalRequestId_withdralRequest[withdrawalRequestId].token).transfer(
-						_withdrawalRequestId_withdralRequest[withdrawalRequestId].to,
-						_withdrawalRequestId_withdralRequest[withdrawalRequestId].amount
+					IERC20(_transferRequestId_transferRequest[transferRequestId].token).transfer(
+						_transferRequestId_transferRequest[transferRequestId].to,
+						_transferRequestId_transferRequest[transferRequestId].amount
 					);
 				}
 				else
 				{
-					emit ProcessWithdrawalRequestFailed(withdrawalRequestId);
+					emit ProcessTransferRequestFailed(transferRequestId);
 				}
 			}
 
 			if (
-				!_withdrawalRequestId_withdralRequest[withdrawalRequestId].forERC20 &&
-				_withdrawalRequestId_withdralRequest[withdrawalRequestId].forERC721
+				!_transferRequestId_transferRequest[transferRequestId].forERC20 &&
+				_transferRequestId_transferRequest[transferRequestId].forERC721
 			)
 			{
 				if (
-					IERC721(_withdrawalRequestId_withdralRequest[withdrawalRequestId].token).ownerOf(
-						_withdrawalRequestId_withdralRequest[withdrawalRequestId].tokenId
+					IERC721(_transferRequestId_transferRequest[transferRequestId].token).ownerOf(
+						_transferRequestId_transferRequest[transferRequestId].tokenId
 					) == address(this)
 				)
 				{
 					// [ERC721-transfer]
-					IERC721(_withdrawalRequestId_withdralRequest[withdrawalRequestId].token).transferFrom(
+					IERC721(_transferRequestId_transferRequest[transferRequestId].token).transferFrom(
 						address(this),
-						_withdrawalRequestId_withdralRequest[withdrawalRequestId].to,
-						_withdrawalRequestId_withdralRequest[withdrawalRequestId].tokenId
+						_transferRequestId_transferRequest[transferRequestId].to,
+						_transferRequestId_transferRequest[transferRequestId].tokenId
 					);
 				}
 				else
 				{
-					emit ProcessWithdrawalRequestFailed(withdrawalRequestId);
+					emit ProcessTransferRequestFailed(transferRequestId);
 				}
 			}
 
 			if (
-				!_withdrawalRequestId_withdralRequest[withdrawalRequestId].forERC20 &&
-				!_withdrawalRequestId_withdralRequest[withdrawalRequestId].forERC721
+				!_transferRequestId_transferRequest[transferRequestId].forERC20 &&
+				!_transferRequestId_transferRequest[transferRequestId].forERC721
 			)
 			{
 				// [transfer]
-				(bool success, ) = _withdrawalRequestId_withdralRequest[withdrawalRequestId].to.call{
-					value: _withdrawalRequestId_withdralRequest[withdrawalRequestId].amount
+				(bool success, ) = _transferRequestId_transferRequest[transferRequestId].to.call{
+					value: _transferRequestId_transferRequest[transferRequestId].amount
 				}("");
 
 				if (!success)
 				{
-					emit ProcessWithdrawalRequestFailed(withdrawalRequestId);
+					emit ProcessTransferRequestFailed(transferRequestId);
 				}
 			}
 
-			emit TokensWithdrawn(
+			emit TokensTransferred(
 				msg.sender,
-				_withdrawalRequestId_withdralRequest[withdrawalRequestId].to,
-				_withdrawalRequestId_withdralRequest[withdrawalRequestId].amount
+				_transferRequestId_transferRequest[transferRequestId].to,
+				_transferRequestId_transferRequest[transferRequestId].amount
 			);
 		}
 
-		processWithdrawalRequestLocked = false;
+		processTransferRequestLocked = false;
 
-		_deleteWithdrawalRequest(withdrawalRequestId);
+		_deleteTransferRequest(transferRequestId);
 	}
 
 	/// @inheritdoc IYieldSyncV1Vault

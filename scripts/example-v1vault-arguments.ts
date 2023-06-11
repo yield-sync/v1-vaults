@@ -12,6 +12,6 @@ module.exports = [
 	1,
 	// For votes
 	1,
-	// Withdrawl Votes
+	// Transfer Votes
 	0
 ]

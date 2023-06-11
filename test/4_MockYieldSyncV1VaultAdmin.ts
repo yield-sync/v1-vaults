@@ -81,7 +81,7 @@ describe("[4] MockAdmin.sol - Mock Admin Contract", async () => {
 			value: ethers.utils.parseEther("1")
 		});
 
-		await yieldSyncV1Vault.connect(addr1).createWithdrawalRequest(
+		await yieldSyncV1Vault.connect(addr1).createTransferRequest(
 			false,
 			false,
 			addr2.address,
@@ -102,22 +102,22 @@ describe("[4] MockAdmin.sol - Mock Admin Contract", async () => {
 		});
 
 		/**
-		 * @dev deleteWithdrawalRequest
+		 * @dev deleteTransferRequest
 		*/
-		describe("updateWithdrawalRequestLatestRelevantApproveVoteTime()", async () => {
+		describe("updateTransferRequestLatestRelevantForVoteTime()", async () => {
 			it(
-				"Should update the latestRelevantApproveVoteTime to ADD seconds..",
+				"Should update the latestRelevantForVoteTime to ADD seconds..",
 				async () => {
-					const beforeBlockTimestamp = BigInt((await yieldSyncV1Vault.withdrawalRequestId_withdralRequest(0))[9]);
+					const beforeBlockTimestamp = BigInt((await yieldSyncV1Vault.transferRequestId_transferRequest(0))[9]);
 
-					await mockAdmin.updateWithdrawalRequestLatestRelevantApproveVoteTime(
+					await mockAdmin.updateTransferRequestLatestRelevantForVoteTime(
 						yieldSyncV1Vault.address,
 						0,
 						true,
 						4000
 					);
 
-					const afterBlockTimestamp = BigInt((await yieldSyncV1Vault.withdrawalRequestId_withdralRequest(0))[9]);
+					const afterBlockTimestamp = BigInt((await yieldSyncV1Vault.transferRequestId_transferRequest(0))[9]);
 
 					expect(BigInt(beforeBlockTimestamp + BigInt(4000))).to.be.equal(afterBlockTimestamp);
 				}

@@ -59,7 +59,7 @@ contract SignatureManager is
 		return (
 			_vaultMessageHashes[msg.sender][_vaultMessageHashes[msg.sender].length -1] == _messageHash &&
 			vMHD.signer == recovered &&
-			vMHD.signatureCount >= IYieldSyncV1Vault(payable(msg.sender)).approveVoteCountRequired()
+			vMHD.signatureCount >= IYieldSyncV1Vault(payable(msg.sender)).forVoteCountRequired()
 		) ? ERC1271_MAGIC_VALUE : bytes4(0);
 	}
 
@@ -91,7 +91,10 @@ contract SignatureManager is
 		override
 		whenNotPaused()
 	{
-		(, bool msgSenderIsMember) = IYieldSyncV1VaultAccessControl(YieldSyncV1VaultAccessControl).participant_yieldSyncV1Vault_access(
+		(
+			,
+			bool msgSenderIsMember
+		) = IYieldSyncV1VaultAccessControl(YieldSyncV1VaultAccessControl).participant_yieldSyncV1Vault_access(
 			msg.sender,
 			yieldSyncV1VaultAddress
 		);
@@ -111,7 +114,10 @@ contract SignatureManager is
 
 			address recovered = ECDSA.recover(ECDSA.toEthSignedMessageHash(messageHash), signature);
 
-			(, bool recoveredIsMember) = IYieldSyncV1VaultAccessControl(YieldSyncV1VaultAccessControl).participant_yieldSyncV1Vault_access(
+			(
+				,
+				bool recoveredIsMember
+			) = IYieldSyncV1VaultAccessControl(YieldSyncV1VaultAccessControl).participant_yieldSyncV1Vault_access(
 				recovered,
 				yieldSyncV1VaultAddress
 			);

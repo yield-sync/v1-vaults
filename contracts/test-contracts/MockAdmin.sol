@@ -5,46 +5,46 @@ pragma solidity ^0.8.18;
 import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
 import { IAccessControlEnumerable } from "@openzeppelin/contracts/access/IAccessControlEnumerable.sol";
 
-import { IYieldSyncV1Vault, WithdrawalRequest } from "../interface/IYieldSyncV1Vault.sol";
+import { IYieldSyncV1Vault, TransferRequest } from "../interface/IYieldSyncV1Vault.sol";
 
 
 contract MockAdmin is Ownable {
-	modifier validWithdrawalRequest(address yieldSyncV1VaultAddress, uint256 withdrawalRequestId) {
+	modifier validTransferRequest(address yieldSyncV1VaultAddress, uint256 transferRequestId) {
 		require(
-			IYieldSyncV1Vault(payable(yieldSyncV1VaultAddress)).withdrawalRequestId_withdralRequest(
-				withdrawalRequestId
+			IYieldSyncV1Vault(payable(yieldSyncV1VaultAddress)).transferRequestId_transferRequest(
+				transferRequestId
 			).creator != address(0),
-			"No WithdrawalRequest found"
+			"No TransferRequest found"
 		);
 
 		_;
 	}
 
 
-	function updateWithdrawalRequestLatestRelevantApproveVoteTime(
+	function updateTransferRequestLatestRelevantForVoteTime(
 		address yieldSyncV1VaultAddress,
-		uint256 withdrawalRequestId,
+		uint256 transferRequestId,
 		bool arithmaticSign,
 		uint256 timeInSeconds
 	)
 		public
-		validWithdrawalRequest(yieldSyncV1VaultAddress, withdrawalRequestId)
+		validTransferRequest(yieldSyncV1VaultAddress, transferRequestId)
 	{
-		WithdrawalRequest memory wR = IYieldSyncV1Vault(payable(yieldSyncV1VaultAddress)).withdrawalRequestId_withdralRequest(
-			withdrawalRequestId
+		TransferRequest memory wR = IYieldSyncV1Vault(payable(yieldSyncV1VaultAddress)).transferRequestId_transferRequest(
+			transferRequestId
 		);
 
 		if (arithmaticSign)
 		{
-			// [update] WithdrawalRequest within `_withdrawalRequest`
-			wR.latestRelevantApproveVoteTime += (timeInSeconds * 1 seconds);
+			// [update] TransferRequest within `_transferRequest`
+			wR.latestRelevantForVoteTime += (timeInSeconds * 1 seconds);
 		}
 		else
 		{
-			// [update] WithdrawalRequest within `_withdrawalRequest`
-			wR.latestRelevantApproveVoteTime -= (timeInSeconds * 1 seconds);
+			// [update] TransferRequest within `_transferRequest`
+			wR.latestRelevantForVoteTime -= (timeInSeconds * 1 seconds);
 		}
 
-		IYieldSyncV1Vault(payable(yieldSyncV1VaultAddress)).updateWithdrawalRequest(withdrawalRequestId, wR);
+		IYieldSyncV1Vault(payable(yieldSyncV1VaultAddress)).updateTransferRequest(transferRequestId, wR);
 	}
 }
