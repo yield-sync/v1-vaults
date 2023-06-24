@@ -80,10 +80,7 @@ contract YieldSyncV1Vault is
 
 	modifier validTransferRequest(uint256 transferRequestId)
 	{
-		require(
-			_transferRequestId_transferRequest[transferRequestId].amount > 0,
-			"No TransferRequest found"
-		);
+		require(_transferRequestId_transferRequest[transferRequestId].amount > 0, "No TransferRequest found");
 
 		_;
 	}
@@ -92,7 +89,10 @@ contract YieldSyncV1Vault is
 	{
 		(bool admin,) = IYieldSyncV1VaultAccessControl(
 			YieldSyncV1VaultAccessControl
-		).participant_yieldSyncV1Vault_access(msg.sender, address(this));
+		).participant_yieldSyncV1Vault_access(
+			msg.sender,
+			address(this)
+		);
 
 		require(admin, "!admin");
 
@@ -103,7 +103,10 @@ contract YieldSyncV1Vault is
 	{
 		(, bool member) = IYieldSyncV1VaultAccessControl(
 			YieldSyncV1VaultAccessControl
-		).participant_yieldSyncV1Vault_access(msg.sender, address(this));
+		).participant_yieldSyncV1Vault_access(
+			msg.sender,
+			address(this)
+		);
 
 		require(member, "!member");
 
