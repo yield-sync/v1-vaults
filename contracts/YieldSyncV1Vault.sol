@@ -401,8 +401,9 @@ contract YieldSyncV1Vault is
 			)
 			{
 				if (
-					IERC20(_transferRequestId_transferRequest[transferRequestId].token).balanceOf(address(this)) >=
-					_transferRequestId_transferRequest[transferRequestId].amount
+					IERC20(_transferRequestId_transferRequest[transferRequestId].token).balanceOf(
+						address(this)
+					) >= _transferRequestId_transferRequest[transferRequestId].amount
 				)
 				{
 					// [ERC20-transfer]
