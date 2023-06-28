@@ -389,7 +389,10 @@ contract YieldSyncV1Vault is
 
 		processTransferRequestLocked = true;
 
-		if (_transferRequestId_transferRequest[transferRequestId].forVoteCount >= forVoteCountRequired)
+		if (
+			_transferRequestId_transferRequest[transferRequestId].forVoteCount >= forVoteCountRequired &&
+			_transferRequestId_transferRequest[transferRequestId].againstVoteCount < againstVoteCountRequired
+		)
 		{
 			require(
 				block.timestamp - _transferRequestId_transferRequest[
