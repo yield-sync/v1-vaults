@@ -9,20 +9,6 @@ import { IYieldSyncV1VaultAccessControl } from "./interface/IYieldSyncV1VaultAcc
 contract YieldSyncV1VaultTransferRequest is
 	IYieldSyncV1VaultTransferRequest
 {
-	receive ()
-		external
-		payable
-		override
-	{}
-
-
-	fallback ()
-		external
-		payable
-		override
-	{}
-
-
 	uint256 internal _transferRequestIdTracker;
 
 	address public override immutable YieldSyncV1VaultAccessControl;
@@ -211,7 +197,7 @@ contract YieldSyncV1VaultTransferRequest is
 					return (true, true, "Transfer request approved");
 				}
 
-				return (true, false, "Transfer request approved and waiting delay");
+				return (false, true, "Transfer request approved and waiting delay");
 			}
 
 			return (true, false, "Transfer request denied");

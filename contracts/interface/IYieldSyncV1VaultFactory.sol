@@ -114,19 +114,18 @@ interface IYieldSyncV1VaultFactory {
 	* @param admins {address[]}
 	* @param members {address[]}
 	* @param signatureManager {address}
-	* @param againstVoteCountRequired {uint256}
-	* @param forVoteCountRequired {uint256}
-	* @param transferDelaySeconds {uint256}
+	* @param transferRequest {uint256}
+	* @param useDefaultTransferRequest {uint256}
+	* @param useDefaultSignatureManager {uint256}
 	* @return {address} Deployed vault
 	*/
 	function deployYieldSyncV1Vault(
 		address[] memory admins,
 		address[] memory members,
 		address signatureManager,
-		bool useDefaultSignatureManager,
-		uint256 againstVoteCountRequired,
-		uint256 forVoteCountRequired,
-		uint256 transferDelaySeconds
+		address transferRequest,
+		bool useDefaultTransferRequest,
+		bool useDefaultSignatureManager
 	)
 		external
 		payable

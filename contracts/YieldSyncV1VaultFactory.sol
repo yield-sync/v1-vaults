@@ -67,10 +67,9 @@ contract YieldSyncV1VaultFactory is
 		address[] memory admins,
 		address[] memory members,
 		address signatureManager,
-		bool useDefaultSignatureManager,
-		uint256 againstVoteCountRequired,
-		uint256 forVoteCountRequired,
-		uint256 transferDelaySeconds
+		address transferRequest,
+		bool useDefaultTransferRequest,
+		bool useDefaultSignatureManager
 	)
 		public
 		payable
@@ -83,10 +82,8 @@ contract YieldSyncV1VaultFactory is
 			YieldSyncV1VaultAccessControl,
 			admins,
 			members,
-			useDefaultSignatureManager ? defaultSignatureManager : signatureManager,
-			againstVoteCountRequired,
-			forVoteCountRequired,
-			transferDelaySeconds
+			useDefaultTransferRequest ? defaultSignatureManager : transferRequest,
+			useDefaultSignatureManager ? defaultSignatureManager : signatureManager
 		);
 
 		yieldSyncV1VaultAddress_yieldSyncV1VaultId[address(deployedContract)] = yieldSyncV1VaultIdTracker;

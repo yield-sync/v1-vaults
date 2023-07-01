@@ -2,19 +2,7 @@
 pragma solidity ^0.8.18;
 
 
-struct TransferRequest {
-	bool forERC20;
-	bool forERC721;
-	address creator;
-	address token;
-	uint256 tokenId;
-	uint256 amount;
-	address to;
-	uint256 forVoteCount;
-	uint256 againstVoteCount;
-	uint256 latestRelevantForVoteTime;
-	address[] votedMembers;
-}
+import { TransferRequest } from "./IYieldSyncV1Vault.sol";
 
 
 interface IYieldSyncV1VaultTransferRequest
@@ -27,17 +15,6 @@ interface IYieldSyncV1VaultTransferRequest
 	event UpdatedTransferRequest(address yieldSyncV1VaultAddress, TransferRequest transferRequest);
 	event MemberVoted(address yieldSyncV1VaultAddress, uint256 transferRequestId, address indexed member, bool vote);
 	event TransferRequestReadyToBeProcessed(address yieldSyncV1VaultAddress, uint256 transferRequestId);
-
-
-	receive ()
-		external
-		payable
-	;
-
-	fallback ()
-		external
-		payable
-	;
 
 
 	/**
