@@ -28,6 +28,7 @@ contract YieldSyncV1VaultFactory is
 	address public override immutable YieldSyncGovernance;
 	address public override immutable YieldSyncV1VaultAccessControl;
 	address public override defaultSignatureManager;
+	address public override defaultTransferRequestProtocol;
 
 	bool public override transferEtherLocked;
 
@@ -67,8 +68,8 @@ contract YieldSyncV1VaultFactory is
 		address[] memory admins,
 		address[] memory members,
 		address signatureManager,
-		address transferRequest,
-		bool useDefaultTransferRequest,
+		address transferRequestProtocol,
+		bool useDefaultTransferRequestProtocol,
 		bool useDefaultSignatureManager
 	)
 		public
@@ -82,7 +83,7 @@ contract YieldSyncV1VaultFactory is
 			YieldSyncV1VaultAccessControl,
 			admins,
 			members,
-			useDefaultTransferRequest ? defaultSignatureManager : transferRequest,
+			useDefaultTransferRequestProtocol ? defaultTransferRequestProtocol : transferRequestProtocol,
 			useDefaultSignatureManager ? defaultSignatureManager : signatureManager
 		);
 
@@ -104,6 +105,15 @@ contract YieldSyncV1VaultFactory is
 		only_YieldSyncGovernance_DEFAULT_ADMIN_ROLE()
 	{
 		defaultSignatureManager = _defaultSignatureManager;
+	}
+
+	/// @inheritdoc IYieldSyncV1VaultFactory
+	function updateDefaultTransferRequestProtocol(address _defaultTransferRequestProtocol)
+		public
+		override
+		only_YieldSyncGovernance_DEFAULT_ADMIN_ROLE()
+	{
+		defaultTransferRequestProtocol = _defaultTransferRequestProtocol;
 	}
 
 	/// @inheritdoc IYieldSyncV1VaultFactory

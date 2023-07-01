@@ -19,7 +19,7 @@ interface IYieldSyncV1VaultFactory {
 
 
 	/**
-	* @notice YieldSyncGovernance Contract Address
+	* @notice YieldSyncGovernance contract address
 	* @dev [view-address]
 	* @return {address}
 	*/
@@ -30,7 +30,7 @@ interface IYieldSyncV1VaultFactory {
 	;
 
 	/**
-	* @notice YieldSyncV1VaultAccessControl Contract Address
+	* @notice YieldSyncV1VaultAccessControl contract address
 	* @dev [view-address]
 	* @return {address}
 	*/
@@ -41,11 +41,22 @@ interface IYieldSyncV1VaultFactory {
 	;
 
 	/**
-	* @notice Default SignatureManager Contract Address
+	* @notice Default Signature Manager contract address
 	* @dev [view-address]
 	* @return {address}
 	*/
 	function defaultSignatureManager()
+		external
+		view
+		returns (address)
+	;
+
+	/**
+	* @notice Default Transfer Request protocol contract address
+	* @dev [view-address]
+	* @return {address}
+	*/
+	function defaultTransferRequestProtocol()
 		external
 		view
 		returns (address)
@@ -109,13 +120,13 @@ interface IYieldSyncV1VaultFactory {
 	;
 
 	/**
-	* @notice Creates a Vault
+	* @notice Deploy a YieldSyncV1Vault contract
 	* @dev [create]
 	* @param admins {address[]}
 	* @param members {address[]}
 	* @param signatureManager {address}
 	* @param transferRequest {uint256}
-	* @param useDefaultTransferRequest {uint256}
+	* @param useDefaultTransferRequestProtocol {uint256}
 	* @param useDefaultSignatureManager {uint256}
 	* @return {address} Deployed vault
 	*/
@@ -124,7 +135,7 @@ interface IYieldSyncV1VaultFactory {
 		address[] memory members,
 		address signatureManager,
 		address transferRequest,
-		bool useDefaultTransferRequest,
+		bool useDefaultTransferRequestProtocol,
 		bool useDefaultSignatureManager
 	)
 		external
@@ -139,6 +150,16 @@ interface IYieldSyncV1VaultFactory {
 	* @param _defaultSignatureManager {address}
 	*/
 	function updateDefaultSignatureManager(address _defaultSignatureManager)
+		external
+	;
+
+	/**
+	* @notice Updates default transfer request protocol
+	* @dev [restriction] `IYieldSyncGovernance` AccessControlEnumerable → DEFAULT_ADMIN_ROLE
+	* @dev [update] `defaultTransferRequestProtocol`
+	* @param _defaultTransferRequestProtocol {address}
+	*/
+	function updateDefaultTransferRequestProtocol(address _defaultTransferRequestProtocol)
 		external
 	;
 
