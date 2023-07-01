@@ -19,15 +19,14 @@ struct TransferRequest {
 
 interface IYieldSyncV1VaultTransferRequest
 {
-	event CreatedTransferRequest(uint256 transferRequestId);
-	event DeletedTransferRequest(uint256 transferRequestId);
-	event UpdatedAgainstVoteCountRequired(uint256 againstVoteCountRequired);
-	event UpdatedForVoteCountRequired(uint256 forVoteCountRequired);
-	event UpdatedTransferDelaySeconds(uint256 transferDelaySeconds);
-	event UpdatedTransferRequest(TransferRequest transferRequest);
-	event MemberVoted(uint256 transferRequestId, address indexed member, bool vote);
-	event TransferRequestReadyToBeProcessed(uint256 transferRequestId);
-	event ProcessTransferRequestFailed(uint256 transferRequestId);
+	event CreatedTransferRequest(address yieldSyncV1VaultAddress, uint256 transferRequestId);
+	event DeletedTransferRequest(address yieldSyncV1VaultAddress, uint256 transferRequestId);
+	event UpdatedAgainstVoteCountRequired(address yieldSyncV1VaultAddress, uint256 againstVoteCountRequired);
+	event UpdatedForVoteCountRequired(address yieldSyncV1VaultAddress, uint256 forVoteCountRequired);
+	event UpdatedTransferDelaySeconds(address yieldSyncV1VaultAddress, uint256 transferDelaySeconds);
+	event UpdatedTransferRequest(address yieldSyncV1VaultAddress, TransferRequest transferRequest);
+	event MemberVoted(address yieldSyncV1VaultAddress, uint256 transferRequestId, address indexed member, bool vote);
+	event TransferRequestReadyToBeProcessed(address yieldSyncV1VaultAddress, uint256 transferRequestId);
 
 
 	receive ()
@@ -52,23 +51,14 @@ interface IYieldSyncV1VaultTransferRequest
 		returns (address)
 	;
 
-	/**
-	* @notice Process TransferRequest Locked
-	* @dev [view-bool]
-	* @return {bool}
-	*/
-	function processTransferRequestLocked()
-		external
-		view
-		returns (bool)
-	;
 
 	/**
 	* @notice Against Vote Count Required
-	* @dev [view-uint256]
+	* @dev [view][mapping]
+	* @param yieldSyncV1VaultAddress {address}
 	* @return {uint256}
 	*/
-	function againstVoteCountRequired()
+	function yieldSyncV1Vault_againstVoteCountRequired(address yieldSyncV1VaultAddress)
 		external
 		view
 		returns (uint256)
@@ -76,42 +66,27 @@ interface IYieldSyncV1VaultTransferRequest
 
 	/**
 	* @notice For Vote Count Required
-	* @dev [view-uint256]
-	* @return {uint256}
-	*/
-	function forVoteCountRequired()
-		external
-		view
-		returns (uint256)
-	;
-
-	/**
-	* @notice Transfer Delay In Seconds
-	* @dev [view-uint256]
-	* @return {uint256}
-	*/
-	function transferDelaySeconds()
-		external
-		view
-		returns (uint256)
-	;
-
-
-	/**
-	* @notice Transfer Request Ready to Be Processed
-	* @dev [view]
+	* @dev [view][mapping]
 	* @param yieldSyncV1VaultAddress {address}
-	* @param transferRequestId {uint256}
-	* @return readyToBeProcessed {bool}
-	* @return approved {bool}
-	* @return message {string}
+	* @return {uint256}
 	*/
-	function transferRequestStatus(address yieldSyncV1VaultAddress, uint256 transferRequestId)
+	function yieldSyncV1Vault_forVoteCountRequired(address yieldSyncV1VaultAddress)
 		external
 		view
-		returns (bool readyToBeProcessed, bool approved, string memory message)
+		returns (uint256)
 	;
 
+	/**
+	* @notice Transfer Delay Seconds
+	* @dev [view][mapping]
+	* @param yieldSyncV1VaultAddress {address}
+	* @return {uint256}
+	*/
+	function yieldSyncV1Vault_transferDelaySeconds(address yieldSyncV1VaultAddress)
+		external
+		view
+		returns (uint256)
+	;
 
 	/**
 	* @notice Ids of Open transferRequests
@@ -139,6 +114,22 @@ interface IYieldSyncV1VaultTransferRequest
 		external
 		view returns (TransferRequest memory)
 	;
+
+	/**
+	* @notice Transfer Request Ready to Be Processed
+	* @dev [view]
+	* @param yieldSyncV1VaultAddress {address}
+	* @param transferRequestId {uint256}
+	* @return readyToBeProcessed {bool}
+	* @return approved {bool}
+	* @return message {string}
+	*/
+	function transferRequestStatus(address yieldSyncV1VaultAddress, uint256 transferRequestId)
+		external
+		view
+		returns (bool readyToBeProcessed, bool approved, string memory message)
+	;
+
 
 	/**
 	* @notice Delete transferRequest & all associated values

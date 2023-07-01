@@ -23,14 +23,20 @@ contract YieldSyncV1VaultTransferRequest is
 	{}
 
 
+	uint256 internal _transferRequestIdTracker;
+
 	address public override immutable YieldSyncV1VaultAccessControl;
 
-	bool public override processTransferRequestLocked;
+	mapping (
+		address yieldSyncV1Vault => uint256 againstVoteCountRequired
+	) internal _yieldSyncV1Vault_againstVoteCountRequired;
+	mapping (
+		address yieldSyncV1Vault => uint256 forVoteCountRequired
+	) internal _yieldSyncV1Vault_forVoteCountRequired;
+	mapping (
+		address yieldSyncV1Vault => uint256 transferDelaySeconds
+	) internal _yieldSyncV1Vault_transferDelaySeconds;
 
-	uint256 public override againstVoteCountRequired;
-	uint256 public override forVoteCountRequired;
-	uint256 public override transferDelaySeconds;
-	uint256 internal _transferRequestIdTracker;
 	mapping (
 		address yieldSyncV1Vault => uint256[] openTransferRequestsIds
 	) internal _yieldSyncV1Vault_openTransferRequestIds;
@@ -42,21 +48,9 @@ contract YieldSyncV1VaultTransferRequest is
 	) internal _yieldSyncV1Vault_transferRequestId_transferRequest;
 
 
-	constructor (
-		address _YieldSyncV1VaultAccessControl,
-		uint256 _againstVoteCountRequired,
-		uint256 _forVoteCountRequired,
-		uint256 _transferDelaySeconds
-	)
+	constructor (address _YieldSyncV1VaultAccessControl)
 	{
 		YieldSyncV1VaultAccessControl = _YieldSyncV1VaultAccessControl;
-
-		require(_forVoteCountRequired > 0, "!_forVoteCountRequired");
-
-		processTransferRequestLocked = false;
-		againstVoteCountRequired = _againstVoteCountRequired;
-		forVoteCountRequired = _forVoteCountRequired;
-		transferDelaySeconds = _transferDelaySeconds;
 
 		_transferRequestIdTracker = 0;
 	}
@@ -135,41 +129,31 @@ contract YieldSyncV1VaultTransferRequest is
 	}
 
 
-	function transferRequestStatus(address yieldSyncV1VaultAddress, uint256 transferRequestId)
+	function yieldSyncV1Vault_againstVoteCountRequired(address yieldSyncV1VaultAddress)
 		public
 		view
-		onlyMember(yieldSyncV1VaultAddress)
-		validTransferRequest(yieldSyncV1VaultAddress, transferRequestId)
-		returns (bool readyToBeProcessed, bool approved, string memory message)
+		override
+		returns (uint256)
 	{
-		TransferRequest memory transferRequest = _yieldSyncV1Vault_transferRequestId_transferRequest[
-			yieldSyncV1VaultAddress
-		][
-			transferRequestId
-		];
+		return _yieldSyncV1Vault_againstVoteCountRequired[yieldSyncV1VaultAddress];
+	}
 
-		if (
-			transferRequest.forVoteCount >= forVoteCountRequired ||
-			transferRequest.againstVoteCount >= againstVoteCountRequired
-		)
-		{
-			if (
-				transferRequest.forVoteCount >= forVoteCountRequired &&
-				transferRequest.againstVoteCount < againstVoteCountRequired
-			)
-			{
-				if (block.timestamp - transferRequest.latestRelevantForVoteTime >= transferDelaySeconds * 1 seconds)
-				{
-					return (true, true, "Transfer request ready to be processed");
-				}
+	function yieldSyncV1Vault_forVoteCountRequired(address yieldSyncV1VaultAddress)
+		public
+		view
+		override
+		returns (uint256)
+	{
+		return _yieldSyncV1Vault_forVoteCountRequired[yieldSyncV1VaultAddress];
+	}
 
-				return (true, false, "Not enough time has passed");
-			}
-
-			return (true, false, "Transfer request denied");
-		}
-
-		return (false, false, "Transfer request not ready");
+	function yieldSyncV1Vault_transferDelaySeconds(address yieldSyncV1VaultAddress)
+		public
+		view
+		override
+		returns (uint256)
+	{
+		return _yieldSyncV1Vault_againstVoteCountRequired[yieldSyncV1VaultAddress];
 	}
 
 
@@ -195,6 +179,48 @@ contract YieldSyncV1VaultTransferRequest is
 		return _yieldSyncV1Vault_transferRequestId_transferRequest[yieldSyncV1VaultAddress][transferRequestId];
 	}
 
+	function transferRequestStatus(address yieldSyncV1VaultAddress, uint256 transferRequestId)
+		public
+		view
+		onlyMember(yieldSyncV1VaultAddress)
+		validTransferRequest(yieldSyncV1VaultAddress, transferRequestId)
+		returns (bool readyToBeProcessed, bool approved, string memory message)
+	{
+		TransferRequest memory transferRequest = _yieldSyncV1Vault_transferRequestId_transferRequest[
+			yieldSyncV1VaultAddress
+		][
+			transferRequestId
+		];
+
+		if (
+			transferRequest.forVoteCount >= _yieldSyncV1Vault_forVoteCountRequired[yieldSyncV1VaultAddress] ||
+			transferRequest.againstVoteCount >= _yieldSyncV1Vault_againstVoteCountRequired[yieldSyncV1VaultAddress]
+		)
+		{
+			if (
+				transferRequest.forVoteCount >= _yieldSyncV1Vault_forVoteCountRequired[yieldSyncV1VaultAddress] &&
+				transferRequest.againstVoteCount < _yieldSyncV1Vault_againstVoteCountRequired[yieldSyncV1VaultAddress]
+			)
+			{
+				if (
+					block.timestamp - transferRequest.latestRelevantForVoteTime >= (
+						_yieldSyncV1Vault_transferDelaySeconds[yieldSyncV1VaultAddress] * 1 seconds
+					)
+				)
+				{
+					return (true, true, "Transfer request ready to be processed");
+				}
+
+				return (true, false, "Not enough time has passed");
+			}
+
+			return (true, false, "Transfer request denied");
+		}
+
+		return (false, false, "Transfer request not ready");
+	}
+
+
 	function deleteTransferRequest(address yieldSyncV1VaultAddress, uint256 transferRequestId)
 		public
 		override
@@ -203,7 +229,7 @@ contract YieldSyncV1VaultTransferRequest is
 	{
 		_deleteTransferRequest(yieldSyncV1VaultAddress, transferRequestId);
 
-		emit DeletedTransferRequest(transferRequestId);
+		emit DeletedTransferRequest(yieldSyncV1VaultAddress, transferRequestId);
 	}
 
 	function updateTransferRequest(
@@ -220,7 +246,7 @@ contract YieldSyncV1VaultTransferRequest is
 			transferRequestId
 		] = transferRequest;
 
-		emit UpdatedTransferRequest(transferRequest);
+		emit UpdatedTransferRequest(yieldSyncV1VaultAddress, transferRequest);
 	}
 
 	function updateAgainstVoteCountRequired(address yieldSyncV1VaultAddress, uint256 _againstVoteCountRequired)
@@ -230,9 +256,9 @@ contract YieldSyncV1VaultTransferRequest is
 	{
 		require(_againstVoteCountRequired > 0, "!_againstVoteCountRequired");
 
-		againstVoteCountRequired = _againstVoteCountRequired;
+		_yieldSyncV1Vault_againstVoteCountRequired[yieldSyncV1VaultAddress] = _againstVoteCountRequired;
 
-		emit UpdatedAgainstVoteCountRequired(againstVoteCountRequired);
+		emit UpdatedAgainstVoteCountRequired(yieldSyncV1VaultAddress, _againstVoteCountRequired);
 	}
 
 	function updateForVoteCountRequired(address yieldSyncV1VaultAddress, uint256 _forVoteCountRequired)
@@ -242,9 +268,9 @@ contract YieldSyncV1VaultTransferRequest is
 	{
 		require(_forVoteCountRequired > 0, "!_forVoteCountRequired");
 
-		forVoteCountRequired = _forVoteCountRequired;
+		_yieldSyncV1Vault_forVoteCountRequired[yieldSyncV1VaultAddress] = _forVoteCountRequired;
 
-		emit UpdatedForVoteCountRequired(forVoteCountRequired);
+		emit UpdatedForVoteCountRequired(yieldSyncV1VaultAddress, _forVoteCountRequired);
 	}
 
 	function updateTransferDelaySeconds(address yieldSyncV1VaultAddress, uint256 _transferDelaySeconds)
@@ -254,9 +280,9 @@ contract YieldSyncV1VaultTransferRequest is
 	{
 		require(_transferDelaySeconds >= 0, "!_transferDelaySeconds");
 
-		transferDelaySeconds = _transferDelaySeconds;
+		_yieldSyncV1Vault_transferDelaySeconds[yieldSyncV1VaultAddress] = _transferDelaySeconds;
 
-		emit UpdatedTransferDelaySeconds(transferDelaySeconds);
+		emit UpdatedTransferDelaySeconds(yieldSyncV1VaultAddress, _transferDelaySeconds);
 	}
 
 
@@ -299,7 +325,7 @@ contract YieldSyncV1VaultTransferRequest is
 
 		_transferRequestIdTracker++;
 
-		emit CreatedTransferRequest(_transferRequestIdTracker - 1);
+		emit CreatedTransferRequest(yieldSyncV1VaultAddress, _transferRequestIdTracker - 1);
 	}
 
 	function voteOnTransferRequest(address yieldSyncV1VaultAddress, uint256 transferRequestId, bool vote)
@@ -315,8 +341,8 @@ contract YieldSyncV1VaultTransferRequest is
 		];
 
 		require(
-			transferRequest.forVoteCount < forVoteCountRequired &&
-			transferRequest.againstVoteCount < againstVoteCountRequired,
+			transferRequest.forVoteCount < _yieldSyncV1Vault_forVoteCountRequired[yieldSyncV1VaultAddress] &&
+			transferRequest.againstVoteCount < _yieldSyncV1Vault_againstVoteCountRequired[yieldSyncV1VaultAddress],
 			"Voting closed"
 		);
 
@@ -338,16 +364,16 @@ contract YieldSyncV1VaultTransferRequest is
 		}
 
 		if (
-			transferRequest.forVoteCount >= forVoteCountRequired ||
-			transferRequest.againstVoteCount >= againstVoteCountRequired
+			transferRequest.forVoteCount >= _yieldSyncV1Vault_forVoteCountRequired[yieldSyncV1VaultAddress] ||
+			transferRequest.againstVoteCount >= _yieldSyncV1Vault_againstVoteCountRequired[yieldSyncV1VaultAddress]
 		)
 		{
-			emit TransferRequestReadyToBeProcessed(transferRequestId);
+			emit TransferRequestReadyToBeProcessed(yieldSyncV1VaultAddress, transferRequestId);
 		}
 
 		transferRequest.votedMembers.push(msg.sender);
 
-		if (transferRequest.forVoteCount < forVoteCountRequired)
+		if (transferRequest.forVoteCount < _yieldSyncV1Vault_forVoteCountRequired[yieldSyncV1VaultAddress])
 		{
 			transferRequest.latestRelevantForVoteTime = block.timestamp;
 		}
@@ -356,6 +382,6 @@ contract YieldSyncV1VaultTransferRequest is
 			transferRequestId
 		] = transferRequest;
 
-		emit MemberVoted(transferRequestId, msg.sender, vote);
+		emit MemberVoted(yieldSyncV1VaultAddress, transferRequestId, msg.sender, vote);
 	}
 }
