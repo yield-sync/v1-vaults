@@ -208,16 +208,16 @@ contract YieldSyncV1VaultTransferRequest is
 					)
 				)
 				{
-					return (true, true, "Transfer request ready to be processed");
+					return (true, true, "Transfer request approved");
 				}
 
-				return (true, false, "Not enough time has passed");
+				return (true, false, "Transfer request approved and waiting delay");
 			}
 
 			return (true, false, "Transfer request denied");
 		}
 
-		return (false, false, "Transfer request not ready");
+		return (false, false, "Transfer request pending");
 	}
 
 
