@@ -5,8 +5,9 @@ const { ethers } = require("hardhat");
 
 
 describe("[0] YieldSyncV1VaultFactory.sol - YieldSync V1 Vault Factory Contract", async () => {
-	let yieldSyncV1VaultFactory: Contract;
 	let yieldSyncV1VaultAccessControl: Contract;
+	let yieldSyncV1VaultFactory: Contract;
+	let yieldSyncV1VaultTransferRequest: Contract;
 	let mockYieldSyncGovernance: Contract;
 	let mockSignatureManager: Contract;
 
@@ -17,16 +18,27 @@ describe("[0] YieldSyncV1VaultFactory.sol - YieldSync V1 Vault Factory Contract"
 		const YieldSyncV1VaultAccessControl: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultAccessControl");
 		const MockYieldSyncGovernance: ContractFactory = await ethers.getContractFactory("MockYieldSyncGovernance");
 		const MockSignatureManager: ContractFactory = await ethers.getContractFactory("MockSignatureManager");
+		const YieldSyncV1VaultTransferRequest: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultTransferRequest");
 
 		// Deploy
 		mockYieldSyncGovernance = await (await MockYieldSyncGovernance.deploy()).deployed();
 		yieldSyncV1VaultAccessControl = await (await YieldSyncV1VaultAccessControl.deploy()).deployed();
-		yieldSyncV1VaultFactory = await (
-			await YieldSyncV1VaultFactory.deploy(mockYieldSyncGovernance.address, yieldSyncV1VaultAccessControl.address)
+		yieldSyncV1VaultTransferRequest = await (
+			await YieldSyncV1VaultTransferRequest.deploy(yieldSyncV1VaultAccessControl.address)
 		).deployed();
+
+		yieldSyncV1VaultFactory = await (
+			await YieldSyncV1VaultFactory.deploy(
+				mockYieldSyncGovernance.address,
+				yieldSyncV1VaultAccessControl.address,
+				yieldSyncV1VaultTransferRequest.address
+			)
+		).deployed();
+
 		mockSignatureManager = await (
 			await MockSignatureManager.deploy(mockYieldSyncGovernance.address, yieldSyncV1VaultAccessControl.address)
 		).deployed();
+
 
 		// Send ether to YieldSyncV1VaultFactory contract
 		await addr1.sendTransaction({
@@ -183,10 +195,9 @@ describe("[0] YieldSyncV1VaultFactory.sol - YieldSync V1 Vault Factory Contract"
 						[addr1.address],
 						[addr1.address],
 						ethers.constants.AddressZero,
+						ethers.constants.AddressZero,
 						true,
-						2,
-						2,
-						10,
+						true,
 						{ value: ethers.utils.parseEther(".5") }
 					)).to.be.rejectedWith("!msg.value");
 				}
@@ -201,10 +212,9 @@ describe("[0] YieldSyncV1VaultFactory.sol - YieldSync V1 Vault Factory Contract"
 						[addr1.address],
 						[addr1.address],
 						ethers.constants.AddressZero,
+						ethers.constants.AddressZero,
 						true,
-						2,
-						2,
-						10,
+						true,
 						{ value: 1 }
 					);
 
@@ -227,10 +237,9 @@ describe("[0] YieldSyncV1VaultFactory.sol - YieldSync V1 Vault Factory Contract"
 						[addr1.address],
 						[addr1.address],
 						mockSignatureManager.address,
+						ethers.constants.AddressZero,
 						false,
-						2,
-						2,
-						10,
+						true,
 						{ value: 1 }
 					);
 
@@ -255,10 +264,9 @@ describe("[0] YieldSyncV1VaultFactory.sol - YieldSync V1 Vault Factory Contract"
 							[addr1.address],
 							[addr1.address],
 							mockSignatureManager.address,
+							ethers.constants.AddressZero,
 							false,
-							2,
-							2,
-							10,
+							true,
 							{ value: 1 }
 						);
 

@@ -43,10 +43,15 @@ contract YieldSyncV1VaultFactory is
 	) public override yieldSyncV1VaultId_yieldSyncV1VaultAddress;
 
 
-	constructor (address _YieldSyncGovernance, address _YieldSyncV1VaultAccessControl)
+	constructor (
+		address _YieldSyncGovernance,
+		address _YieldSyncV1VaultAccessControl,
+		address _defaultTransferRequestProtocol
+	)
 	{
 		YieldSyncGovernance = _YieldSyncGovernance;
 		YieldSyncV1VaultAccessControl = _YieldSyncV1VaultAccessControl;
+		defaultTransferRequestProtocol = _defaultTransferRequestProtocol;
 
 		transferEtherLocked = false;
 
@@ -69,8 +74,8 @@ contract YieldSyncV1VaultFactory is
 		address[] memory members,
 		address signatureManager,
 		address transferRequestProtocol,
-		bool useDefaultTransferRequestProtocol,
-		bool useDefaultSignatureManager
+		bool useDefaultSignatureManager,
+		bool useDefaultTransferRequestProtocol
 	)
 		public
 		payable
