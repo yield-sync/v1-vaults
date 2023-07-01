@@ -20,7 +20,6 @@ interface IYieldSyncV1VaultFactory {
 
 	/**
 	* @notice YieldSyncGovernance Contract Address
-	* @dev [!restriction]
 	* @dev [view-address]
 	* @return {address}
 	*/
@@ -32,7 +31,6 @@ interface IYieldSyncV1VaultFactory {
 
 	/**
 	* @notice YieldSyncV1VaultAccessControl Contract Address
-	* @dev [!restriction]
 	* @dev [view-address]
 	* @return {address}
 	*/
@@ -44,7 +42,6 @@ interface IYieldSyncV1VaultFactory {
 
 	/**
 	* @notice Default SignatureManager Contract Address
-	* @dev [!restriction]
 	* @dev [view-address]
 	* @return {address}
 	*/
@@ -56,7 +53,6 @@ interface IYieldSyncV1VaultFactory {
 
 	/**
 	* @notice Transfer Ether Locked
-	* @dev [!restriction]
 	* @dev [view-bool]
 	* @return {bool}
 	*/
@@ -68,7 +64,6 @@ interface IYieldSyncV1VaultFactory {
 
 	/**
 	* @notice Fee
-	* @dev [!restriction]
 	* @dev [view-uint256]
 	* @return {uint256}
 	*/
@@ -80,7 +75,6 @@ interface IYieldSyncV1VaultFactory {
 
 	/**
 	* @notice yieldSyncV1Vault Id Tracker
-	* @dev [!restriction]
 	* @dev [view-uint256]
 	* @return {uint256}
 	*/
@@ -92,7 +86,6 @@ interface IYieldSyncV1VaultFactory {
 
 	/**
 	* @notice yieldSyncV1VaultAddress to yieldSyncV1VaultId
-	* @dev [!restriction]
 	* @dev [view-mapping]
 	* @param yieldSyncV1VaultAddress {address}
 	* @return {uint256}
@@ -105,7 +98,6 @@ interface IYieldSyncV1VaultFactory {
 
 	/**
 	* @notice yieldSyncV1VaultId to yieldSyncV1VaultAddress
-	* @dev [!restriction]
 	* @dev [view-mapping]
 	* @param yieldSyncV1VaultId {uint256}
 	* @return {address}
@@ -118,7 +110,6 @@ interface IYieldSyncV1VaultFactory {
 
 	/**
 	* @notice Creates a Vault
-	* @dev [!restriction]
 	* @dev [create]
 	* @param admins {address[]}
 	* @param members {address[]}

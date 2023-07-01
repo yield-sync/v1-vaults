@@ -2,9 +2,6 @@
 pragma solidity ^0.8.18;
 
 
-import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import { IERC721 } from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
-
 import { TransferRequest, IYieldSyncV1VaultTransferRequest } from "./interface/IYieldSyncV1VaultTransferRequest.sol";
 import { IYieldSyncV1VaultAccessControl } from "./interface/IYieldSyncV1VaultAccessControl.sol";
 
@@ -42,7 +39,7 @@ contract YieldSyncV1VaultTransferRequest is
 		address yieldSyncV1Vault => mapping (
 			uint256 transferRequestId => TransferRequest transferRequest
 		)
-	) internal _vaultTransferRequestById;
+	) internal _yieldSyncV1Vault_transferRequestId_transferRequest;
 
 
 	constructor (
@@ -68,7 +65,7 @@ contract YieldSyncV1VaultTransferRequest is
 	modifier validTransferRequest(address yieldSyncV1VaultAddress, uint256 transferRequestId)
 	{
 		require(
-			_vaultTransferRequestById[yieldSyncV1VaultAddress][transferRequestId].amount > 0,
+			_yieldSyncV1Vault_transferRequestId_transferRequest[yieldSyncV1VaultAddress][transferRequestId].amount > 0,
 			"No TransferRequest found"
 		);
 
@@ -107,16 +104,15 @@ contract YieldSyncV1VaultTransferRequest is
 	/**
 	* @notice Delete TransferRequest
 	* @dev [restriction][internal]
-	* @dev [delete] `_vaultTransferRequestById[yieldSyncV1VaultAddress]` value
+	* @dev [delete] `_yieldSyncV1Vault_transferRequestId_transferRequest[yieldSyncV1VaultAddress]` value
 	*      [delete] `_yieldSyncV1VaultAddress_idsOfOpenTransferRequests` value
 	* @param yieldSyncV1VaultAddress {address}
 	* @param transferRequestId {uint256}
-	* Emits: `DeletedTransferRequest`
 	*/
 	function _deleteTransferRequest(address yieldSyncV1VaultAddress, uint256 transferRequestId)
 		internal
 	{
-		delete _vaultTransferRequestById[yieldSyncV1VaultAddress][transferRequestId];
+		delete _yieldSyncV1Vault_transferRequestId_transferRequest[yieldSyncV1VaultAddress][transferRequestId];
 
 		for (uint256 i = 0; i < _yieldSyncV1Vault_openTransferRequestIds[yieldSyncV1VaultAddress].length; i++)
 		{
@@ -139,6 +135,44 @@ contract YieldSyncV1VaultTransferRequest is
 	}
 
 
+	function transferRequestStatus(address yieldSyncV1VaultAddress, uint256 transferRequestId)
+		public
+		view
+		onlyMember(yieldSyncV1VaultAddress)
+		validTransferRequest(yieldSyncV1VaultAddress, transferRequestId)
+		returns (bool readyToBeProcessed, bool approved, string memory message)
+	{
+		TransferRequest memory transferRequest = _yieldSyncV1Vault_transferRequestId_transferRequest[
+			yieldSyncV1VaultAddress
+		][
+			transferRequestId
+		];
+
+		if (
+			transferRequest.forVoteCount >= forVoteCountRequired ||
+			transferRequest.againstVoteCount >= againstVoteCountRequired
+		)
+		{
+			if (
+				transferRequest.forVoteCount >= forVoteCountRequired &&
+				transferRequest.againstVoteCount < againstVoteCountRequired
+			)
+			{
+				if (block.timestamp - transferRequest.latestRelevantForVoteTime >= transferDelaySeconds * 1 seconds)
+				{
+					return (true, true, "Transfer request ready to be processed");
+				}
+
+				return (true, false, "Not enough time has passed");
+			}
+
+			return (true, false, "Transfer request denied");
+		}
+
+		return (false, false, "Transfer request not ready");
+	}
+
+
 	function yieldSyncV1Vault_idsOfOpenTransferRequests(address yieldSyncV1VaultAddress)
 		public
 		view
@@ -148,7 +182,7 @@ contract YieldSyncV1VaultTransferRequest is
 		return _yieldSyncV1Vault_openTransferRequestIds[yieldSyncV1VaultAddress];
 	}
 
-	function vaultTransferRequestById(
+	function yieldSyncV1Vault_transferRequestId_transferRequest(
 		address yieldSyncV1VaultAddress,
 		uint256 transferRequestId
 	)
@@ -158,7 +192,7 @@ contract YieldSyncV1VaultTransferRequest is
 		validTransferRequest(yieldSyncV1VaultAddress, transferRequestId)
 		returns (TransferRequest memory)
 	{
-		return _vaultTransferRequestById[yieldSyncV1VaultAddress][transferRequestId];
+		return _yieldSyncV1Vault_transferRequestId_transferRequest[yieldSyncV1VaultAddress][transferRequestId];
 	}
 
 	function deleteTransferRequest(address yieldSyncV1VaultAddress, uint256 transferRequestId)
@@ -175,16 +209,18 @@ contract YieldSyncV1VaultTransferRequest is
 	function updateTransferRequest(
 		address yieldSyncV1VaultAddress,
 		uint256 transferRequestId,
-		TransferRequest memory __transferRequest
+		TransferRequest memory transferRequest
 	)
 		public
 		override
 		onlyAdmin(yieldSyncV1VaultAddress)
 		validTransferRequest(yieldSyncV1VaultAddress, transferRequestId)
 	{
-		_vaultTransferRequestById[yieldSyncV1VaultAddress][transferRequestId] = __transferRequest;
+		_yieldSyncV1Vault_transferRequestId_transferRequest[yieldSyncV1VaultAddress][
+			transferRequestId
+		] = transferRequest;
 
-		emit UpdatedTransferRequest(__transferRequest);
+		emit UpdatedTransferRequest(transferRequest);
 	}
 
 	function updateAgainstVoteCountRequired(address yieldSyncV1VaultAddress, uint256 _againstVoteCountRequired)
@@ -241,7 +277,9 @@ contract YieldSyncV1VaultTransferRequest is
 
 		address[] memory initialVotedMembers;
 
-		_vaultTransferRequestById[yieldSyncV1VaultAddress][_transferRequestIdTracker] = TransferRequest(
+		_yieldSyncV1Vault_transferRequestId_transferRequest[yieldSyncV1VaultAddress][
+			_transferRequestIdTracker
+		] = TransferRequest(
 			{
 				forERC20: forERC20,
 				forERC721: forERC721,
@@ -270,7 +308,9 @@ contract YieldSyncV1VaultTransferRequest is
 		onlyMember(yieldSyncV1VaultAddress)
 		validTransferRequest(yieldSyncV1VaultAddress, transferRequestId)
 	{
-		TransferRequest storage transferRequest = _vaultTransferRequestById[yieldSyncV1VaultAddress][
+		TransferRequest storage transferRequest = _yieldSyncV1Vault_transferRequestId_transferRequest[
+			yieldSyncV1VaultAddress
+		][
 			transferRequestId
 		];
 
@@ -312,43 +352,10 @@ contract YieldSyncV1VaultTransferRequest is
 			transferRequest.latestRelevantForVoteTime = block.timestamp;
 		}
 
-		_vaultTransferRequestById[yieldSyncV1VaultAddress][transferRequestId] = transferRequest;
+		_yieldSyncV1Vault_transferRequestId_transferRequest[yieldSyncV1VaultAddress][
+			transferRequestId
+		] = transferRequest;
 
 		emit MemberVoted(transferRequestId, msg.sender, vote);
-	}
-
-	function transferRequestStatus(address yieldSyncV1VaultAddress, uint256 transferRequestId)
-		public
-		view
-		onlyMember(yieldSyncV1VaultAddress)
-		validTransferRequest(yieldSyncV1VaultAddress, transferRequestId)
-		returns (bool readyToBeProcessed, bool approved, string memory message)
-	{
-		TransferRequest memory transferRequest = _vaultTransferRequestById[yieldSyncV1VaultAddress][
-			transferRequestId
-		];
-
-		if (
-			transferRequest.forVoteCount >= forVoteCountRequired ||
-			transferRequest.againstVoteCount >= againstVoteCountRequired
-		)
-		{
-			if (
-				transferRequest.forVoteCount >= forVoteCountRequired &&
-				transferRequest.againstVoteCount < againstVoteCountRequired
-			)
-			{
-				if (block.timestamp - transferRequest.latestRelevantForVoteTime >= transferDelaySeconds * 1 seconds)
-				{
-					return (true, true, "Transfer request ready to be processed");
-				}
-
-				return (true, false, "Not enough time has passed");
-			}
-
-			return (true, false, "Transfer request denied");
-		}
-
-		return (false, false, "Transfer request not ready");
 	}
 }

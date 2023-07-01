@@ -14,7 +14,6 @@ interface ISignatureManager
 {
 	/**
 	* @notice YieldSyncGovernance Contract Address
-	* @dev [!restriction]
 	* @dev [view-address]
 	* @return {address}
 	*/
@@ -26,7 +25,6 @@ interface ISignatureManager
 
 	/**
 	* @notice YieldSyncV1VaultAccessControl Contract Address
-	* @dev [!restriction]
 	* @dev [view-address]
 	* @return {address}
 	*/
@@ -38,7 +36,6 @@ interface ISignatureManager
 
 	/**
 	* @notice Getter for `_vaultMessageHashes`
-	* @dev [!restriction]
 	* @dev [view][mapping]
 	* @param yieldSyncV1Vault {address}
 	* @return {bytes32[]}
@@ -51,7 +48,6 @@ interface ISignatureManager
 
 	/**
 	* @notice Getter for `_vaultMessageHashData`
-	* @dev [!restriction][public]
 	* @dev [view][mapping]
 	* @param yieldSyncV1Vault {address}
 	* @param messageHash {bytes32}
@@ -66,7 +62,6 @@ interface ISignatureManager
 
 	/**
 	* @notice Sign a Message Hash
-	* @dev [!restriction][public]
 	* @dev [create] `_vaultMessageHashData` value
 	* @param yieldSyncV1Vault {address}
 	* @param messageHash {bytes32}

@@ -45,7 +45,6 @@ interface IYieldSyncV1Vault
 
 	/**
 	* @notice YieldSyncV1Vault Contract Address
-	* @dev [!restriction]
 	* @dev [view-address]
 	* @return {address}
 	*/
@@ -57,7 +56,6 @@ interface IYieldSyncV1Vault
 
 	/**
 	* @notice signatureManager Contract Address
-	* @dev [!restriction]
 	* @dev [view-address]
 	* @return {address}
 	*/
@@ -69,7 +67,6 @@ interface IYieldSyncV1Vault
 
 	/**
 	* @notice Process TransferRequest Locked
-	* @dev [!restriction]
 	* @dev [view-bool]
 	* @return {bool}
 	*/
@@ -81,7 +78,6 @@ interface IYieldSyncV1Vault
 
 	/**
 	* @notice Against Vote Count Required
-	* @dev [!restriction]
 	* @dev [view-uint256]
 	* @return {uint256}
 	*/
@@ -93,7 +89,6 @@ interface IYieldSyncV1Vault
 
 	/**
 	* @notice For Vote Count Required
-	* @dev [!restriction]
 	* @dev [view-uint256]
 	* @return {uint256}
 	*/
@@ -105,7 +100,6 @@ interface IYieldSyncV1Vault
 
 	/**
 	* @notice Transfer Delay In Seconds
-	* @dev [!restriction]
 	* @dev [view-uint256]
 	* @return {uint256}
 	*/
@@ -118,8 +112,7 @@ interface IYieldSyncV1Vault
 
 	/**
 	* @notice Ids of Open transferRequests
-	* @dev [!restriction]
-	* @dev [view-uint256[]]
+	* @dev [view][mapping]
 	* @return {uint256[]}
 	*/
 	function idsOfOpenTransferRequests()
@@ -130,7 +123,6 @@ interface IYieldSyncV1Vault
 
 	/**
 	* @notice transferRequestId to transferRequest
-	* @dev [!restriction]
 	* @dev [view][mapping]
 	* @param transferRequestId {uint256}
 	* @return {TransferRequest}

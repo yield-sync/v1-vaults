@@ -5,8 +5,7 @@ pragma solidity ^0.8.18;
 interface IYieldSyncV1VaultAccessControl
 {
 	/**
-	* @notice
-	* @dev [!restriction]
+	* @notice Getter for `admin_yieldSyncV1Vaults`
 	* @dev [view]
 	* @param admin {address}
 	* @return {address[]}
@@ -19,7 +18,6 @@ interface IYieldSyncV1VaultAccessControl
 
 	/**
 	* @notice Getter for `_yieldSyncV1Vault_admins`
-	* @dev [!restriction]
 	* @dev [view]
 	* @param yieldSyncV1Vault {address}
 	* @return {address[]}
@@ -32,7 +30,6 @@ interface IYieldSyncV1VaultAccessControl
 
 	/**
 	* @notice Getter for `_yieldSyncV1Vault_members`
-	* @dev [!restriction]
 	* @dev [view]
 	* @param yieldSyncV1Vault {address}
 	* @return {address[]}
@@ -45,7 +42,6 @@ interface IYieldSyncV1VaultAccessControl
 
 	/**
 	* @notice Getter for `_member_yieldSyncV1Vaults`
-	* @dev [!restriction]
 	* @dev [view]
 	* @param member {address}
 	* @return {address[]}
@@ -58,7 +54,6 @@ interface IYieldSyncV1VaultAccessControl
 
 	/**
 	* @notice Getter for `_participant_yieldSyncV1Vault_access`
-	* @dev [!restriction]
 	* @dev [view]
 	* @param participant {address}
 	* @param yieldSyncV1Vault {address}
@@ -74,7 +69,6 @@ interface IYieldSyncV1VaultAccessControl
 
 	/**
 	* @notice Add Admin
-	* @dev [!restriction]
 	* @dev [update] `_admin_yieldSyncV1Vaults`
 	*      [update] `_yieldSyncV1Vault_admins`
 	*      [update] `participant_yieldSyncV1Vault_access`
@@ -87,7 +81,6 @@ interface IYieldSyncV1VaultAccessControl
 
 	/**
 	* @notice Remove Admin
-	* @dev [!restriction]
 	* @dev [update] `_admin_yieldSyncV1Vaults`
 	*      [update] `_yieldSyncV1Vault_admins`
 	*      [update] `participant_yieldSyncV1Vault_access`
@@ -101,7 +94,6 @@ interface IYieldSyncV1VaultAccessControl
 
 	/**
 	* @notice Add Member
-	* @dev [!restriction]
 	* @dev [update] `_member_yieldSyncV1Vaults`
 	*      [update] `_yieldSyncV1Vault_members`
 	*      [update] `participant_yieldSyncV1Vault_access`
@@ -114,7 +106,6 @@ interface IYieldSyncV1VaultAccessControl
 
 	/**
 	* @notice Remove Member
-	* @dev [!restriction]
 	* @dev [update] `_member_yieldSyncV1Vaults`
 	*      [update] `_yieldSyncV1Vault_members`
 	*      [update] `participant_yieldSyncV1Vault_access`
