@@ -17,8 +17,8 @@ interface IYieldSyncV1VaultTransferRequest
 {
 	event CreatedTransferRequest(address yieldSyncV1VaultAddress, uint256 transferRequestId);
 	event DeletedTransferRequest(address yieldSyncV1VaultAddress, uint256 transferRequestId);
-	event UpdatedAgainstVoteCountRequired(address yieldSyncV1VaultAddress, uint256 againstVoteCountRequired);
-	event UpdatedForVoteCountRequired(address yieldSyncV1VaultAddress, uint256 forVoteCountRequired);
+	event UpdatedAgainstVoteRequired(address yieldSyncV1VaultAddress, uint256 againstVoteRequired);
+	event UpdatedForVoteRequired(address yieldSyncV1VaultAddress, uint256 forVoteRequired);
 	event UpdatedTransferDelaySeconds(address yieldSyncV1VaultAddress, uint256 transferDelaySeconds);
 	event UpdatedTransferRequest(address yieldSyncV1VaultAddress, TransferRequest transferRequest);
 	event MemberVoted(address yieldSyncV1VaultAddress, uint256 transferRequestId, address indexed member, bool vote);
@@ -54,7 +54,7 @@ interface IYieldSyncV1VaultTransferRequest
 	* @param yieldSyncV1VaultAddress {address}
 	* @return {uint256}
 	*/
-	function yieldSyncV1Vault_againstVoteCountRequired(address yieldSyncV1VaultAddress)
+	function yieldSyncV1Vault_againstVoteRequired(address yieldSyncV1VaultAddress)
 		external
 		view
 		returns (uint256)
@@ -66,7 +66,7 @@ interface IYieldSyncV1VaultTransferRequest
 	* @param yieldSyncV1VaultAddress {address}
 	* @return {uint256}
 	*/
-	function yieldSyncV1Vault_forVoteCountRequired(address yieldSyncV1VaultAddress)
+	function yieldSyncV1Vault_forVoteRequired(address yieldSyncV1VaultAddress)
 		external
 		view
 		returns (uint256)
@@ -109,6 +109,21 @@ interface IYieldSyncV1VaultTransferRequest
 	)
 		external
 		view returns (TransferRequest memory)
+	;
+
+	/**
+	* @notice transferRequestId to transferRequestVote
+	* @dev [view][mapping]
+	* @param yieldSyncV1VaultAddress {address}
+	* @param transferRequestId {uint256}
+	* @return {TransferRequestVote}
+	*/
+	function yieldSyncV1Vault_transferRequestId_transferRequestVote(
+		address yieldSyncV1VaultAddress,
+		uint256 transferRequestId
+	)
+		external
+		view returns (TransferRequestVote memory)
 	;
 
 	/**
@@ -159,24 +174,24 @@ interface IYieldSyncV1VaultTransferRequest
 	/**
 	* @notice Update Against Vote Count Required
 	* @dev [restriction] `YieldSyncV1Record` → admin
-	* @dev [update] `againstVoteCountRequired`
+	* @dev [update] `againstVoteRequired`
 	* @param yieldSyncV1VaultAddress {address}
-	* @param _againstVoteCountRequired {uint256}
-	* Emits: `UpdatedAgainstVoteCountRequired`
+	* @param _againstVoteRequired {uint256}
+	* Emits: `UpdatedAgainstVoteRequired`
 	*/
-	function updateAgainstVoteCountRequired(address yieldSyncV1VaultAddress, uint256 _againstVoteCountRequired)
+	function updateAgainstVoteRequired(address yieldSyncV1VaultAddress, uint256 _againstVoteRequired)
 		external
 	;
 
 	/**
 	* @notice Update For Vote Count Required
 	* @dev [restriction] `YieldSyncV1Record` → admin
-	* @dev [update] `forVoteCountRequired`
+	* @dev [update] `forVoteRequired`
 	* @param yieldSyncV1VaultAddress {address}
-	* @param _forVoteCountRequired {uint256}
+	* @param _forVoteRequired {uint256}
 	* Emits: `UpdatedRequiredVoteCount`
 	*/
-	function updateForVoteCountRequired(address yieldSyncV1VaultAddress,  uint256 _forVoteCountRequired)
+	function updateForVoteRequired(address yieldSyncV1VaultAddress,  uint256 _forVoteRequired)
 		external
 	;
 

@@ -15,7 +15,6 @@ struct TransferRequest {
 
 interface IYieldSyncV1Vault
 {
-
 	event TokensTransferred(address indexed to, address indexed token, uint256 amount);
 	event UpdatedSignatureManger(address signatureManager);
 	event ProcessTransferRequestFailed(uint256 transferRequestId);

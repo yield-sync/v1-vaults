@@ -128,8 +128,8 @@ interface IYieldSyncV1VaultFactory {
 	* @param transferRequest {uint256}
 	* @param useDefaultTransferRequestProtocol {uint256}
 	* @param useDefaultSignatureManager {uint256}
-	* @param _againstVoteCountRequired {uint256}
-	* @param _forVoteCountRequired {uint256}
+	* @param _againstVoteRequired {uint256}
+	* @param _forVoteRequired {uint256}
 	* @param _transferDelaySeconds {uint256}
 	* @return {address} Deployed vault
 	*/
@@ -140,8 +140,8 @@ interface IYieldSyncV1VaultFactory {
 		address transferRequest,
 		bool useDefaultTransferRequestProtocol,
 		bool useDefaultSignatureManager,
-		uint256 _againstVoteCountRequired,
-		uint256 _forVoteCountRequired,
+		uint256 _againstVoteRequired,
+		uint256 _forVoteRequired,
 		uint256 _transferDelaySeconds
 	)
 		external
