@@ -41,22 +41,22 @@ interface IYieldSyncV1VaultFactory {
 	;
 
 	/**
-	* @notice Default Signature Manager contract address
+	* @notice Default Transfer Request protocol contract address
 	* @dev [view-address]
 	* @return {address}
 	*/
-	function defaultSignatureManager()
+	function YieldSyncV1VaultTransferRequest()
 		external
 		view
 		returns (address)
 	;
 
 	/**
-	* @notice Default Transfer Request protocol contract address
+	* @notice Default Signature Manager contract address
 	* @dev [view-address]
 	* @return {address}
 	*/
-	function defaultTransferRequestProtocol()
+	function defaultSignatureManager()
 		external
 		view
 		returns (address)
@@ -128,6 +128,9 @@ interface IYieldSyncV1VaultFactory {
 	* @param transferRequest {uint256}
 	* @param useDefaultTransferRequestProtocol {uint256}
 	* @param useDefaultSignatureManager {uint256}
+	* @param _againstVoteCountRequired {uint256}
+	* @param _forVoteCountRequired {uint256}
+	* @param _transferDelaySeconds {uint256}
 	* @return {address} Deployed vault
 	*/
 	function deployYieldSyncV1Vault(
@@ -136,7 +139,10 @@ interface IYieldSyncV1VaultFactory {
 		address signatureManager,
 		address transferRequest,
 		bool useDefaultTransferRequestProtocol,
-		bool useDefaultSignatureManager
+		bool useDefaultSignatureManager,
+		uint256 _againstVoteCountRequired,
+		uint256 _forVoteCountRequired,
+		uint256 _transferDelaySeconds
 	)
 		external
 		payable
@@ -150,16 +156,6 @@ interface IYieldSyncV1VaultFactory {
 	* @param _defaultSignatureManager {address}
 	*/
 	function updateDefaultSignatureManager(address _defaultSignatureManager)
-		external
-	;
-
-	/**
-	* @notice Updates default transfer request protocol
-	* @dev [restriction] `IYieldSyncGovernance` AccessControlEnumerable → DEFAULT_ADMIN_ROLE
-	* @dev [update] `defaultTransferRequestProtocol`
-	* @param _defaultTransferRequestProtocol {address}
-	*/
-	function updateDefaultTransferRequestProtocol(address _defaultTransferRequestProtocol)
 		external
 	;
 

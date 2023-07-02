@@ -5,6 +5,14 @@ pragma solidity ^0.8.18;
 import { TransferRequest } from "./IYieldSyncV1Vault.sol";
 
 
+struct TransferRequestVote {
+	uint256 forVoteCount;
+	uint256 againstVoteCount;
+	uint256 latestRelevantForVoteTime;
+	address[] votedMembers;
+}
+
+
 interface IYieldSyncV1VaultTransferRequest
 {
 	event CreatedTransferRequest(address yieldSyncV1VaultAddress, uint256 transferRequestId);
@@ -23,6 +31,17 @@ interface IYieldSyncV1VaultTransferRequest
 	* @return {address}
 	*/
 	function YieldSyncV1VaultAccessControl()
+		external
+		view
+		returns (address)
+	;
+
+	/**
+	* @notice YieldSyncV1VaultFactory Contract Address
+	* @dev [view-address]
+	* @return {address}
+	*/
+	function YieldSyncV1VaultFactory()
 		external
 		view
 		returns (address)

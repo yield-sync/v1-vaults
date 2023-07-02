@@ -8,7 +8,23 @@ import { IERC721 } from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 
 import { IYieldSyncV1Vault, TransferRequest } from "./interface/IYieldSyncV1Vault.sol";
 import { IYieldSyncV1VaultAccessControl } from "./interface/IYieldSyncV1VaultAccessControl.sol";
-import { IYieldSyncV1VaultTransferRequest } from "./interface/IYieldSyncV1VaultTransferRequest.sol";
+
+
+interface IYieldSyncV1VaultTransferRequest {
+	function yieldSyncV1Vault_transferRequestId_transferRequest(
+		address yieldSyncV1VaultAddress,
+		uint256 transferRequestId
+	)
+		external
+		view returns (TransferRequest memory)
+	;
+
+	function transferRequestStatus(address yieldSyncV1VaultAddress, uint256 transferRequestId)
+		external
+		view
+		returns (bool readyToBeProcessed, bool approved, string memory message)
+	;
+}
 
 
 contract YieldSyncV1Vault is

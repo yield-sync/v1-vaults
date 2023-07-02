@@ -23,13 +23,17 @@ describe("[0] YieldSyncV1VaultFactory.sol - YieldSync V1 Vault Factory Contract"
 		// Deploy
 		mockYieldSyncGovernance = await (await MockYieldSyncGovernance.deploy()).deployed();
 		yieldSyncV1VaultAccessControl = await (await YieldSyncV1VaultAccessControl.deploy()).deployed();
-		yieldSyncV1VaultTransferRequest = await (
-			await YieldSyncV1VaultTransferRequest.deploy(yieldSyncV1VaultAccessControl.address)
-		).deployed();
 
 		yieldSyncV1VaultFactory = await (
 			await YieldSyncV1VaultFactory.deploy(
 				mockYieldSyncGovernance.address,
+				yieldSyncV1VaultAccessControl.address,
+				yieldSyncV1VaultTransferRequest.address
+			)
+		).deployed();
+
+		yieldSyncV1VaultTransferRequest = await (
+			await YieldSyncV1VaultTransferRequest.deploy(
 				yieldSyncV1VaultAccessControl.address,
 				yieldSyncV1VaultTransferRequest.address
 			)
@@ -198,6 +202,9 @@ describe("[0] YieldSyncV1VaultFactory.sol - YieldSync V1 Vault Factory Contract"
 						ethers.constants.AddressZero,
 						true,
 						true,
+						1,
+						1,
+						10,
 						{ value: ethers.utils.parseEther(".5") }
 					)).to.be.rejectedWith("!msg.value");
 				}
@@ -215,6 +222,9 @@ describe("[0] YieldSyncV1VaultFactory.sol - YieldSync V1 Vault Factory Contract"
 						ethers.constants.AddressZero,
 						true,
 						true,
+						1,
+						1,
+						10,
 						{ value: 1 }
 					);
 
@@ -240,6 +250,9 @@ describe("[0] YieldSyncV1VaultFactory.sol - YieldSync V1 Vault Factory Contract"
 						ethers.constants.AddressZero,
 						false,
 						true,
+						1,
+						1,
+						10,
 						{ value: 1 }
 					);
 
@@ -267,6 +280,9 @@ describe("[0] YieldSyncV1VaultFactory.sol - YieldSync V1 Vault Factory Contract"
 							ethers.constants.AddressZero,
 							false,
 							true,
+							1,
+							1,
+							10,
 							{ value: 1 }
 						);
 

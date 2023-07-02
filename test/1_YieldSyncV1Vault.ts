@@ -10,8 +10,9 @@ const sixDaysInSeconds = 6 * 24 * 60 * 60;
 
 describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 	let yieldSyncV1Vault: Contract;
-	let yieldSyncV1VaultFactory: Contract;
 	let yieldSyncV1VaultAccessControl: Contract;
+	let yieldSyncV1VaultFactory: Contract;
+	let yieldSyncV1VaultTransferRequest: Contract;
 	let signatureManager: Contract;
 	let mockAdmin: Contract;
 	let mockERC20: Contract;
@@ -32,6 +33,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 		const YieldSyncV1VaultFactory: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultFactory");
 		const YieldSyncV1VaultAccessControl: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultAccessControl");
 		const SignatureManager: ContractFactory = await ethers.getContractFactory("SignatureManager");
+		const YieldSyncV1VaultTransferRequest: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultTransferRequest");
 
 
 		// Contract
@@ -45,11 +47,20 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 			await YieldSyncV1VaultFactory.deploy(mockYieldSyncGovernance.address, yieldSyncV1VaultAccessControl.address)
 		).deployed();
 
+		yieldSyncV1VaultTransferRequest = await (
+			await YieldSyncV1VaultTransferRequest.deploy(
+				yieldSyncV1VaultAccessControl.address,
+				yieldSyncV1VaultTransferRequest.address
+			)
+		).deployed();
+
 		// Deploy a vault
 		await yieldSyncV1VaultFactory.deployYieldSyncV1Vault(
-			[owner.address],
+			[addr1.address],
 			[addr1.address],
 			ethers.constants.AddressZero,
+			ethers.constants.AddressZero,
+			true,
 			true,
 			2,
 			2,

@@ -2,7 +2,11 @@
 pragma solidity ^0.8.18;
 
 
-import { TransferRequest, IYieldSyncV1VaultTransferRequest } from "./interface/IYieldSyncV1VaultTransferRequest.sol";
+import {
+	TransferRequest,
+	TransferRequestVote,
+	IYieldSyncV1VaultTransferRequest
+} from "./interface/IYieldSyncV1VaultTransferRequest.sol";
 import { IYieldSyncV1VaultAccessControl } from "./interface/IYieldSyncV1VaultAccessControl.sol";
 
 
@@ -12,6 +16,7 @@ contract YieldSyncV1VaultTransferRequest is
 	uint256 internal _transferRequestIdTracker;
 
 	address public override immutable YieldSyncV1VaultAccessControl;
+	address public override YieldSyncV1VaultFactory;
 
 	mapping (
 		address yieldSyncV1Vault => uint256 againstVoteCountRequired
@@ -33,10 +38,17 @@ contract YieldSyncV1VaultTransferRequest is
 		)
 	) internal _yieldSyncV1Vault_transferRequestId_transferRequest;
 
+	mapping (
+		address yieldSyncV1Vault => mapping (
+			uint256 transferRequestId => TransferRequestVote transferRequestVote
+		)
+	) internal _yieldSyncV1Vault_transferRequestId_transferRequestVote;
 
-	constructor (address _YieldSyncV1VaultAccessControl)
+
+	constructor (address _YieldSyncV1VaultAccessControl, address _YieldSyncV1VaultFactory)
 	{
 		YieldSyncV1VaultAccessControl = _YieldSyncV1VaultAccessControl;
+		YieldSyncV1VaultFactory = _YieldSyncV1VaultFactory;
 
 		_transferRequestIdTracker = 0;
 	}
@@ -52,7 +64,7 @@ contract YieldSyncV1VaultTransferRequest is
 		_;
 	}
 
-	modifier onlyAdmin(address yieldSyncV1VaultAddress)
+	modifier onlyAdminOrYieldSyncV1VaultFactory(address yieldSyncV1VaultAddress)
 	{
 		(bool admin,) = IYieldSyncV1VaultAccessControl(
 			YieldSyncV1VaultAccessControl
@@ -61,7 +73,7 @@ contract YieldSyncV1VaultTransferRequest is
 			yieldSyncV1VaultAddress
 		);
 
-		require(admin, "!admin");
+		require(admin || msg.sender == YieldSyncV1VaultFactory, "!admin && !YieldSyncV1VaultFactory");
 
 		_;
 	}
@@ -210,7 +222,7 @@ contract YieldSyncV1VaultTransferRequest is
 	function deleteTransferRequest(address yieldSyncV1VaultAddress, uint256 transferRequestId)
 		public
 		override
-		onlyAdmin(yieldSyncV1VaultAddress)
+		onlyAdminOrYieldSyncV1VaultFactory(yieldSyncV1VaultAddress)
 		validTransferRequest(yieldSyncV1VaultAddress, transferRequestId)
 	{
 		_deleteTransferRequest(yieldSyncV1VaultAddress, transferRequestId);
@@ -225,7 +237,7 @@ contract YieldSyncV1VaultTransferRequest is
 	)
 		public
 		override
-		onlyAdmin(yieldSyncV1VaultAddress)
+		onlyAdminOrYieldSyncV1VaultFactory(yieldSyncV1VaultAddress)
 		validTransferRequest(yieldSyncV1VaultAddress, transferRequestId)
 	{
 		_yieldSyncV1Vault_transferRequestId_transferRequest[yieldSyncV1VaultAddress][
@@ -238,7 +250,7 @@ contract YieldSyncV1VaultTransferRequest is
 	function updateAgainstVoteCountRequired(address yieldSyncV1VaultAddress, uint256 _againstVoteCountRequired)
 		public
 		override
-		onlyAdmin(yieldSyncV1VaultAddress)
+		onlyAdminOrYieldSyncV1VaultFactory(yieldSyncV1VaultAddress)
 	{
 		require(_againstVoteCountRequired > 0, "!_againstVoteCountRequired");
 
@@ -250,7 +262,7 @@ contract YieldSyncV1VaultTransferRequest is
 	function updateForVoteCountRequired(address yieldSyncV1VaultAddress, uint256 _forVoteCountRequired)
 		public
 		override
-		onlyAdmin(yieldSyncV1VaultAddress)
+		onlyAdminOrYieldSyncV1VaultFactory(yieldSyncV1VaultAddress)
 	{
 		require(_forVoteCountRequired > 0, "!_forVoteCountRequired");
 
@@ -262,7 +274,7 @@ contract YieldSyncV1VaultTransferRequest is
 	function updateTransferDelaySeconds(address yieldSyncV1VaultAddress, uint256 _transferDelaySeconds)
 		public
 		override
-		onlyAdmin(yieldSyncV1VaultAddress)
+		onlyAdminOrYieldSyncV1VaultFactory(yieldSyncV1VaultAddress)
 	{
 		require(_transferDelaySeconds >= 0, "!_transferDelaySeconds");
 
