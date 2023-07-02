@@ -13,6 +13,23 @@ struct TransferRequest {
 }
 
 
+interface ITransferRequestProtocol {
+	function yieldSyncV1Vault_transferRequestId_transferRequest(
+		address yieldSyncV1VaultAddress,
+		uint256 transferRequestId
+	)
+		external
+		view returns (TransferRequest memory)
+	;
+
+	function transferRequestStatus(address yieldSyncV1VaultAddress, uint256 transferRequestId)
+		external
+		view
+		returns (bool readyToBeProcessed, bool approved, string memory message)
+	;
+}
+
+
 interface IYieldSyncV1Vault
 {
 	event TokensTransferred(address indexed to, address indexed token, uint256 amount);
@@ -54,11 +71,11 @@ interface IYieldSyncV1Vault
 	;
 
 	/**
-	* @notice YieldSyncV1TransferRequest Contract Address
+	* @notice transferRequestProtocol Contract Address
 	* @dev [view-address]
 	* @return {address}
 	*/
-	function yieldSyncV1TransferRequest()
+	function transferRequestProtocol()
 		external
 		view
 		returns (address)

@@ -6,25 +6,8 @@ import { IERC1271 } from "@openzeppelin/contracts/interfaces/IERC1271.sol";
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { IERC721 } from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 
-import { IYieldSyncV1Vault, TransferRequest } from "./interface/IYieldSyncV1Vault.sol";
+import { IYieldSyncV1Vault, ITransferRequestProtocol, TransferRequest } from "./interface/IYieldSyncV1Vault.sol";
 import { IYieldSyncV1VaultAccessControl } from "./interface/IYieldSyncV1VaultAccessControl.sol";
-
-
-interface IYieldSyncV1VaultTransferRequest {
-	function yieldSyncV1Vault_transferRequestId_transferRequest(
-		address yieldSyncV1VaultAddress,
-		uint256 transferRequestId
-	)
-		external
-		view returns (TransferRequest memory)
-	;
-
-	function transferRequestStatus(address yieldSyncV1VaultAddress, uint256 transferRequestId)
-		external
-		view
-		returns (bool readyToBeProcessed, bool approved, string memory message)
-	;
-}
 
 
 contract YieldSyncV1Vault is
@@ -48,7 +31,7 @@ contract YieldSyncV1Vault is
 	address public override immutable YieldSyncV1VaultAccessControl;
 
 	address public override signatureManager;
-	address public override yieldSyncV1TransferRequest;
+	address public override transferRequestProtocol;
 
 	bool public override processTransferRequestLocked;
 
@@ -61,7 +44,7 @@ contract YieldSyncV1Vault is
 		address _YieldSyncV1VaultAccessControl,
 		address[] memory admins,
 		address[] memory members,
-		address _yieldSyncV1TransferRequest,
+		address _transferRequestProtocol,
 		address _signatureManager
 	)
 	{
@@ -78,7 +61,7 @@ contract YieldSyncV1Vault is
 		}
 
 		signatureManager = _signatureManager;
-		yieldSyncV1TransferRequest = _yieldSyncV1TransferRequest;
+		transferRequestProtocol = _transferRequestProtocol;
 
 		processTransferRequestLocked = false;
 	}
@@ -86,8 +69,8 @@ contract YieldSyncV1Vault is
 
 	modifier validTransferRequest(uint256 transferRequestId)
 	{
-		TransferRequest memory transferRequest = IYieldSyncV1VaultTransferRequest(
-			yieldSyncV1TransferRequest
+		TransferRequest memory transferRequest = ITransferRequestProtocol(
+			transferRequestProtocol
 		).yieldSyncV1Vault_transferRequestId_transferRequest(address(this), transferRequestId);
 
 		require(transferRequest.amount > 0, "No TransferRequest found");
@@ -195,7 +178,7 @@ contract YieldSyncV1Vault is
 			bool readyToBeProcessed,
 			bool approved,
 			string memory message
-		) = IYieldSyncV1VaultTransferRequest(yieldSyncV1TransferRequest).transferRequestStatus(
+		) = ITransferRequestProtocol(transferRequestProtocol).transferRequestStatus(
 			address(this),
 			transferRequestId
 		);
@@ -206,8 +189,8 @@ contract YieldSyncV1Vault is
 
 		if (approved)
 		{
-			TransferRequest memory transferRequest = IYieldSyncV1VaultTransferRequest(
-				yieldSyncV1TransferRequest
+			TransferRequest memory transferRequest = ITransferRequestProtocol(
+				transferRequestProtocol
 			).yieldSyncV1Vault_transferRequestId_transferRequest(address(this), transferRequestId);
 
 			if (transferRequest.forERC20 && !transferRequest.forERC721)
