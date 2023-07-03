@@ -2,7 +2,8 @@
 pragma solidity ^0.8.18;
 
 
-struct MessageHashData {
+struct MessageHashData
+{
 	bytes signature;
 	address signer;
 	address[] signedMembers;

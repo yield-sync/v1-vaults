@@ -5,13 +5,15 @@ pragma solidity ^0.8.18;
 import { ITransferRequestProtocol, TransferRequest } from "./ITransferRequestProtocol.sol";
 
 
-struct YieldSyncV1VaultProperty {
+struct YieldSyncV1VaultProperty
+{
 	uint256 againstVoteRequired;
 	uint256 forVoteRequired;
 	uint256 transferDelaySeconds;
 }
 
-struct TransferRequestVote {
+struct TransferRequestVote
+{
 	uint256 forVoteCount;
 	uint256 againstVoteCount;
 	uint256 latestRelevantForVoteTime;

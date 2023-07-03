@@ -7,7 +7,8 @@ import { IYieldSyncV1Vault } from "@yield-sync/v1-sdk/contracts/interface/IYield
 import { IYieldSyncV1VaultAccessControl } from "./interface/IYieldSyncV1VaultAccessControl.sol";
 
 
-struct Access {
+struct Access
+{
 	bool admin;
 	bool member;
 }

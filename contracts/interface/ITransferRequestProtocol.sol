@@ -2,7 +2,8 @@
 pragma solidity ^0.8.18;
 
 
-struct TransferRequest {
+struct TransferRequest
+{
 	bool forERC20;
 	bool forERC721;
 	address creator;
@@ -13,7 +14,8 @@ struct TransferRequest {
 }
 
 
-interface ITransferRequestProtocol {
+interface ITransferRequestProtocol
+{
 	/**
 	* @notice Getter for `_yieldSyncV1Vault_transferRequestId_transferRequest`
 	* @dev [view][mapping]
