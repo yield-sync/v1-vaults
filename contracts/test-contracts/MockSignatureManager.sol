@@ -2,11 +2,11 @@
 pragma solidity ^0.8.18;
 
 
-import { SignatureManager } from "../SignatureManager.sol";
+import { YieldSyncV1SignatureProtocol } from "../YieldSyncV1SignatureProtocol.sol";
 
 
-contract MockSignatureManager is SignatureManager {
+contract MockSignatureManager is YieldSyncV1SignatureProtocol {
 	constructor (address _yieldSyncGovernance, address _YieldSyncV1VaultAccessControl)
-		SignatureManager(_yieldSyncGovernance, _YieldSyncV1VaultAccessControl)
+		YieldSyncV1SignatureProtocol(_yieldSyncGovernance, _YieldSyncV1VaultAccessControl)
 	{}
 }

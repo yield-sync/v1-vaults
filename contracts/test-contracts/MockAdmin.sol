@@ -6,13 +6,17 @@ import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
 import { IAccessControlEnumerable } from "@openzeppelin/contracts/access/IAccessControlEnumerable.sol";
 
 import { IYieldSyncV1Vault } from "../interface/IYieldSyncV1Vault.sol";
-import { IYieldSyncV1VaultTransferRequest, TransferRequest } from "../interface/IYieldSyncV1VaultTransferRequest.sol";
+import {
+	IYieldSyncV1TransferRequestProtocol,
+	TransferRequest,
+	TransferRequestVote
+} from "../interface/IYieldSyncV1TransferRequestProtocol.sol";
 
 
 contract MockAdmin is Ownable {
 	modifier validTransferRequest(address yieldSyncV1VaultAddress, uint256 transferRequestId) {
 		require(
-			IYieldSyncV1VaultTransferRequest(
+			IYieldSyncV1TransferRequestProtocol(
 				yieldSyncV1VaultAddress
 			).yieldSyncV1Vault_transferRequestId_transferRequest(
 				yieldSyncV1VaultAddress,
@@ -25,7 +29,7 @@ contract MockAdmin is Ownable {
 	}
 
 
-	function updateTransferRequestLatestRelevantForVoteTime(
+	function updateTransferRequestVoteLatestRelevantForVoteTime(
 		address yieldSyncV1VaultAddress,
 		uint256 transferRequestId,
 		bool arithmaticSign,
@@ -34,9 +38,9 @@ contract MockAdmin is Ownable {
 		public
 		validTransferRequest(yieldSyncV1VaultAddress, transferRequestId)
 	{
-		TransferRequest memory transferRequest = IYieldSyncV1VaultTransferRequest(
+		TransferRequestVote memory transferRequestVote = IYieldSyncV1TransferRequestProtocol(
 			yieldSyncV1VaultAddress
-		).yieldSyncV1Vault_transferRequestId_transferRequest(
+		).yieldSyncV1Vault_transferRequestId_transferRequestVote(
 			yieldSyncV1VaultAddress,
 			transferRequestId
 		);
@@ -44,18 +48,18 @@ contract MockAdmin is Ownable {
 		if (arithmaticSign)
 		{
 			// [update] TransferRequest within `_transferRequest`
-			transferRequest.latestRelevantForVoteTime += (timeInSeconds * 1 seconds);
+			transferRequestVote.latestRelevantForVoteTime += (timeInSeconds * 1 seconds);
 		}
 		else
 		{
 			// [update] TransferRequest within `_transferRequest`
-			transferRequest.latestRelevantForVoteTime -= (timeInSeconds * 1 seconds);
+			transferRequestVote.latestRelevantForVoteTime -= (timeInSeconds * 1 seconds);
 		}
 
-		IYieldSyncV1VaultTransferRequest(payable(yieldSyncV1VaultAddress)).updateTransferRequest(
+		IYieldSyncV1TransferRequestProtocol(payable(yieldSyncV1VaultAddress)).updateTransferRequestVote(
 			yieldSyncV1VaultAddress,
 			transferRequestId,
-			transferRequest
+			transferRequestVote
 		);
 	}
 }

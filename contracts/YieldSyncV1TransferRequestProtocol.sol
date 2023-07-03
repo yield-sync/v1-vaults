@@ -292,7 +292,31 @@ contract YieldSyncV1TransferRequestProtocol is
 			transferRequestId
 		] = transferRequest;
 
-		emit UpdatedTransferRequest(yieldSyncV1VaultAddress, transferRequest);
+		emit UpdatedTransferRequest(
+			yieldSyncV1VaultAddress,
+			_yieldSyncV1Vault_transferRequestId_transferRequest[yieldSyncV1VaultAddress][transferRequestId]
+		);
+	}
+
+	/// @inheritdoc IYieldSyncV1TransferRequestProtocol
+	function updateTransferRequestVote(
+		address yieldSyncV1VaultAddress,
+		uint256 transferRequestId,
+		TransferRequestVote memory transferRequestVote
+	)
+		public
+		override
+		onlyAdmin(yieldSyncV1VaultAddress)
+		validTransferRequest(yieldSyncV1VaultAddress, transferRequestId)
+	{
+		_yieldSyncV1Vault_transferRequestId_transferRequestVote[yieldSyncV1VaultAddress][
+			transferRequestId
+		] = transferRequestVote;
+
+		emit UpdatedTransferRequestVote(
+			yieldSyncV1VaultAddress,
+			_yieldSyncV1Vault_transferRequestId_transferRequestVote[yieldSyncV1VaultAddress][transferRequestId]
+		);
 	}
 
 	/// @inheritdoc IYieldSyncV1TransferRequestProtocol
