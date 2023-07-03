@@ -247,8 +247,6 @@ contract YieldSyncV1VaultTransferRequest is
 		override
 	{
 		_purposer_yieldSyncV1VaultProperty[msg.sender] = yieldSyncV1VaultProperty;
-
-		emit Updated_purposer_yieldSyncV1VaultProperty(_purposer_yieldSyncV1VaultProperty[msg.sender]);
 	}
 
 
@@ -295,10 +293,6 @@ contract YieldSyncV1VaultTransferRequest is
 		require(yieldSyncV1VaultProperty.forVoteRequired > 0, "!_againstVoteRequired");
 
 		_yieldSyncV1Vault_yieldSyncV1VaultProperty[yieldSyncV1VaultAddress] = yieldSyncV1VaultProperty;
-
-		emit Updated_yieldSyncV1Vault_yieldSyncV1VaultProperty(
-			_yieldSyncV1Vault_yieldSyncV1VaultProperty[yieldSyncV1VaultAddress]
-		);
 	}
 
 

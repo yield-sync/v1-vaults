@@ -21,11 +21,9 @@ struct TransferRequestVote {
 
 interface IYieldSyncV1VaultTransferRequest
 {
-	event Updated_purposer_yieldSyncV1VaultProperty(YieldSyncV1VaultProperty yieldSyncV1VaultProperty);
 	event CreatedTransferRequest(address yieldSyncV1VaultAddress, uint256 transferRequestId);
 	event DeletedTransferRequest(address yieldSyncV1VaultAddress, uint256 transferRequestId);
 	event UpdatedTransferRequest(address yieldSyncV1VaultAddress, TransferRequest transferRequest);
-	event Updated_yieldSyncV1Vault_yieldSyncV1VaultProperty(YieldSyncV1VaultProperty yieldSyncV1VaultProperty);
 	event MemberVoted(address yieldSyncV1VaultAddress, uint256 transferRequestId, address indexed member, bool vote);
 	event TransferRequestReadyToBeProcessed(address yieldSyncV1VaultAddress, uint256 transferRequestId);
 
