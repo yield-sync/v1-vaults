@@ -9,7 +9,7 @@ describe("[0] YieldSyncV1VaultFactory.sol - YieldSync V1 Vault Factory Contract"
 	let yieldSyncV1VaultFactory: Contract;
 	let yieldSyncV1TransferRequestProtocol: Contract;
 	let mockYieldSyncGovernance: Contract;
-	let mockSignatureManager: Contract;
+	let mockSignatureProtocol: Contract;
 
 	beforeEach("[before] Set up contracts..", async () => {
 		const [, addr1] = await ethers.getSigners();
@@ -17,7 +17,7 @@ describe("[0] YieldSyncV1VaultFactory.sol - YieldSync V1 Vault Factory Contract"
 		const YieldSyncV1VaultFactory: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultFactory");
 		const YieldSyncV1VaultAccessControl: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultAccessControl");
 		const MockYieldSyncGovernance: ContractFactory = await ethers.getContractFactory("MockYieldSyncGovernance");
-		const MockSignatureManager: ContractFactory = await ethers.getContractFactory("MockSignatureManager");
+		const MockSignatureProtocol: ContractFactory = await ethers.getContractFactory("MockSignatureProtocol");
 		const YieldSyncV1TransferRequestProtocol: ContractFactory = await ethers.getContractFactory("YieldSyncV1TransferRequestProtocol");
 
 		// Deploy
@@ -41,8 +41,8 @@ describe("[0] YieldSyncV1VaultFactory.sol - YieldSync V1 Vault Factory Contract"
 		await yieldSyncV1VaultFactory.setTransferRequestProtocol(yieldSyncV1TransferRequestProtocol.address);
 
 		// Deploy Signature Protocol
-		mockSignatureManager = await (
-			await MockSignatureManager.deploy(mockYieldSyncGovernance.address, yieldSyncV1VaultAccessControl.address)
+		mockSignatureProtocol = await (
+			await MockSignatureProtocol.deploy(mockYieldSyncGovernance.address, yieldSyncV1VaultAccessControl.address)
 		).deployed();
 
 
@@ -92,7 +92,7 @@ describe("[0] YieldSyncV1VaultFactory.sol - YieldSync V1 Vault Factory Contract"
 
 
 	describe("Restriction: IYieldSyncGovernance DEFAULT_ADMIN_ROLE", async () => {
-		describe("updateDefaultSignatureManager()", async () => {
+		describe("updateDefaultSignatureProtocol()", async () => {
 			it(
 				"Should revert when unauthorized msg.sender calls..",
 				async () => {
@@ -345,7 +345,7 @@ describe("[0] YieldSyncV1VaultFactory.sol - YieldSync V1 Vault Factory Contract"
 					await yieldSyncV1VaultFactory.deployYieldSyncV1Vault(
 						[addr1.address],
 						[addr1.address],
-						mockSignatureManager.address,
+						mockSignatureProtocol.address,
 						ethers.constants.AddressZero,
 						false,
 						true,
@@ -359,7 +359,7 @@ describe("[0] YieldSyncV1VaultFactory.sol - YieldSync V1 Vault Factory Contract"
 						await yieldSyncV1VaultFactory.yieldSyncV1VaultId_yieldSyncV1VaultAddress(0)
 					);
 
-					expect(await yieldSyncV1Vault.signatureProtocol()).to.be.equal(mockSignatureManager.address);
+					expect(await yieldSyncV1Vault.signatureProtocol()).to.be.equal(mockSignatureProtocol.address);
 				}
 			);
 
@@ -376,7 +376,7 @@ describe("[0] YieldSyncV1VaultFactory.sol - YieldSync V1 Vault Factory Contract"
 						await yieldSyncV1VaultFactory.deployYieldSyncV1Vault(
 							[addr1.address],
 							[addr1.address],
-							mockSignatureManager.address,
+							mockSignatureProtocol.address,
 							ethers.constants.AddressZero,
 							false,
 							true,
@@ -415,7 +415,7 @@ describe("[0] YieldSyncV1VaultFactory.sol - YieldSync V1 Vault Factory Contract"
 						await yieldSyncV1VaultFactory.deployYieldSyncV1Vault(
 							[addr1.address],
 							[addr1.address],
-							mockSignatureManager.address,
+							mockSignatureProtocol.address,
 							ethers.constants.AddressZero,
 							false,
 							true,
