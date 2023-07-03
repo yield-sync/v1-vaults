@@ -3,15 +3,17 @@ pragma solidity ^0.8.18;
 
 
 import {
+	ITransferRequestProtocol,
+	IYieldSyncV1VaultTransferRequest,
 	TransferRequest,
 	TransferRequestVote,
-	YieldSyncV1VaultProperty,
-	IYieldSyncV1VaultTransferRequest
+	YieldSyncV1VaultProperty
 } from "./interface/IYieldSyncV1VaultTransferRequest.sol";
 import { IYieldSyncV1VaultAccessControl } from "./interface/IYieldSyncV1VaultAccessControl.sol";
 
 
 contract YieldSyncV1VaultTransferRequest is
+	ITransferRequestProtocol,
 	IYieldSyncV1VaultTransferRequest
 {
 	uint256 internal _transferRequestIdTracker;
@@ -136,37 +138,7 @@ contract YieldSyncV1VaultTransferRequest is
 	}
 
 
-	/// @inheritdoc IYieldSyncV1VaultTransferRequest
-	function yieldSyncV1Vault_idsOfOpenTransferRequests(address yieldSyncV1VaultAddress)
-		public
-		view
-		override
-		returns (uint256[] memory)
-	{
-		return _yieldSyncV1Vault_openTransferRequestIds[yieldSyncV1VaultAddress];
-	}
-
-	/// @inheritdoc IYieldSyncV1VaultTransferRequest
-	function purposer_YieldSyncV1VaultProperty(address yieldSyncV1VaultAddress)
-		public
-		view
-		override
-		returns (YieldSyncV1VaultProperty memory)
-	{
-		return _purposer_yieldSyncV1VaultProperty[yieldSyncV1VaultAddress];
-	}
-
-	/// @inheritdoc IYieldSyncV1VaultTransferRequest
-	function yieldSyncV1Vault_YieldSyncV1VaultProperty(address yieldSyncV1VaultAddress)
-		public
-		view
-		override
-		returns (YieldSyncV1VaultProperty memory)
-	{
-		return _yieldSyncV1Vault_yieldSyncV1VaultProperty[yieldSyncV1VaultAddress];
-	}
-
-	/// @inheritdoc IYieldSyncV1VaultTransferRequest
+	/// @inheritdoc ITransferRequestProtocol
 	function yieldSyncV1Vault_transferRequestId_transferRequest(
 		address yieldSyncV1VaultAddress,
 		uint256 transferRequestId
@@ -180,21 +152,7 @@ contract YieldSyncV1VaultTransferRequest is
 		return _yieldSyncV1Vault_transferRequestId_transferRequest[yieldSyncV1VaultAddress][transferRequestId];
 	}
 
-	/// @inheritdoc IYieldSyncV1VaultTransferRequest
-	function yieldSyncV1Vault_transferRequestId_transferRequestVote(
-		address yieldSyncV1VaultAddress,
-		uint256 transferRequestId
-	)
-		public
-		view
-		override
-		validTransferRequest(yieldSyncV1VaultAddress, transferRequestId)
-		returns (TransferRequestVote memory)
-	{
-		return _yieldSyncV1Vault_transferRequestId_transferRequestVote[yieldSyncV1VaultAddress][transferRequestId];
-	}
-
-	/// @inheritdoc IYieldSyncV1VaultTransferRequest
+	/// @inheritdoc ITransferRequestProtocol
 	function transferRequestStatus(address yieldSyncV1VaultAddress, uint256 transferRequestId)
 		public
 		view
@@ -238,6 +196,52 @@ contract YieldSyncV1VaultTransferRequest is
 		}
 
 		return (false, false, "Transfer request pending");
+	}
+
+
+	/// @inheritdoc IYieldSyncV1VaultTransferRequest
+	function yieldSyncV1Vault_idsOfOpenTransferRequests(address yieldSyncV1VaultAddress)
+		public
+		view
+		override
+		returns (uint256[] memory)
+	{
+		return _yieldSyncV1Vault_openTransferRequestIds[yieldSyncV1VaultAddress];
+	}
+
+	/// @inheritdoc IYieldSyncV1VaultTransferRequest
+	function purposer_YieldSyncV1VaultProperty(address yieldSyncV1VaultAddress)
+		public
+		view
+		override
+		returns (YieldSyncV1VaultProperty memory)
+	{
+		return _purposer_yieldSyncV1VaultProperty[yieldSyncV1VaultAddress];
+	}
+
+	/// @inheritdoc IYieldSyncV1VaultTransferRequest
+	function yieldSyncV1Vault_YieldSyncV1VaultProperty(address yieldSyncV1VaultAddress)
+		public
+		view
+		override
+		returns (YieldSyncV1VaultProperty memory)
+	{
+		return _yieldSyncV1Vault_yieldSyncV1VaultProperty[yieldSyncV1VaultAddress];
+	}
+
+
+	/// @inheritdoc IYieldSyncV1VaultTransferRequest
+	function yieldSyncV1Vault_transferRequestId_transferRequestVote(
+		address yieldSyncV1VaultAddress,
+		uint256 transferRequestId
+	)
+		public
+		view
+		override
+		validTransferRequest(yieldSyncV1VaultAddress, transferRequestId)
+		returns (TransferRequestVote memory)
+	{
+		return _yieldSyncV1Vault_transferRequestId_transferRequestVote[yieldSyncV1VaultAddress][transferRequestId];
 	}
 
 

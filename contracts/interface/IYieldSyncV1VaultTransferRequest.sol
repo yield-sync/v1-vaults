@@ -2,7 +2,7 @@
 pragma solidity ^0.8.18;
 
 
-import { TransferRequest } from "./IYieldSyncV1Vault.sol";
+import { ITransferRequestProtocol, TransferRequest } from "./ITransferRequestProtocol.sol";
 
 
 struct YieldSyncV1VaultProperty {
@@ -19,7 +19,8 @@ struct TransferRequestVote {
 }
 
 
-interface IYieldSyncV1VaultTransferRequest
+interface IYieldSyncV1VaultTransferRequest is
+	ITransferRequestProtocol
 {
 	event CreatedTransferRequest(address yieldSyncV1VaultAddress, uint256 transferRequestId);
 	event DeletedTransferRequest(address yieldSyncV1VaultAddress, uint256 transferRequestId);
@@ -86,21 +87,6 @@ interface IYieldSyncV1VaultTransferRequest
 	;
 
 	/**
-	* @notice Getter for `_yieldSyncV1Vault_transferRequestId_transferRequest`
-	* @dev [view][mapping]
-	* @param yieldSyncV1VaultAddress {address}
-	* @param transferRequestId {uint256}
-	* @return {TransferRequest}
-	*/
-	function yieldSyncV1Vault_transferRequestId_transferRequest(
-		address yieldSyncV1VaultAddress,
-		uint256 transferRequestId
-	)
-		external
-		view returns (TransferRequest memory)
-	;
-
-	/**
 	* @notice Getter for `_yieldSyncV1Vault_transferRequestId_transferRequestVote`
 	* @dev [view][mapping]
 	* @param yieldSyncV1VaultAddress {address}
@@ -113,21 +99,6 @@ interface IYieldSyncV1VaultTransferRequest
 	)
 		external
 		view returns (TransferRequestVote memory)
-	;
-
-	/**
-	* @notice Transfer Request Status
-	* @dev [view]
-	* @param yieldSyncV1VaultAddress {address}
-	* @param transferRequestId {uint256}
-	* @return readyToBeProcessed {bool}
-	* @return approved {bool}
-	* @return message {string}
-	*/
-	function transferRequestStatus(address yieldSyncV1VaultAddress, uint256 transferRequestId)
-		external
-		view
-		returns (bool readyToBeProcessed, bool approved, string memory message)
 	;
 
 

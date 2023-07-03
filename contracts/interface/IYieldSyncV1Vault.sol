@@ -2,32 +2,7 @@
 pragma solidity ^0.8.18;
 
 
-struct TransferRequest {
-	bool forERC20;
-	bool forERC721;
-	address creator;
-	address token;
-	uint256 tokenId;
-	uint256 amount;
-	address to;
-}
-
-
-interface ITransferRequestProtocol {
-	function yieldSyncV1Vault_transferRequestId_transferRequest(
-		address yieldSyncV1VaultAddress,
-		uint256 transferRequestId
-	)
-		external
-		view returns (TransferRequest memory)
-	;
-
-	function transferRequestStatus(address yieldSyncV1VaultAddress, uint256 transferRequestId)
-		external
-		view
-		returns (bool readyToBeProcessed, bool approved, string memory message)
-	;
-}
+import { ITransferRequestProtocol, TransferRequest } from "./ITransferRequestProtocol.sol";
 
 
 interface IYieldSyncV1Vault
