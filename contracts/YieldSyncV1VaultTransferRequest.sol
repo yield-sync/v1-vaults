@@ -198,6 +198,17 @@ contract YieldSyncV1VaultTransferRequest is
 		return (false, false, "Transfer request pending");
 	}
 
+	/// @inheritdoc ITransferRequestProtocol
+	function initializeTransferRequestProtocol(address purposer, address yieldSyncV1VaultAddress)
+		public
+		override
+		onlyYieldSyncV1VaultFactory()
+	{
+		_yieldSyncV1Vault_yieldSyncV1VaultProperty[yieldSyncV1VaultAddress] = _purposer_yieldSyncV1VaultProperty[
+			purposer
+		];
+	}
+
 
 	/// @inheritdoc IYieldSyncV1VaultTransferRequest
 	function yieldSyncV1Vault_idsOfOpenTransferRequests(address yieldSyncV1VaultAddress)
@@ -410,17 +421,5 @@ contract YieldSyncV1VaultTransferRequest is
 		] = transferRequestVote;
 
 		emit MemberVoted(yieldSyncV1VaultAddress, transferRequestId, msg.sender, vote);
-	}
-
-
-	/// @inheritdoc IYieldSyncV1VaultTransferRequest
-	function initializeYieldSyncV1VaultProperty(address purposer, address yieldSyncV1VaultAddress)
-		public
-		override
-		onlyYieldSyncV1VaultFactory()
-	{
-		_yieldSyncV1Vault_yieldSyncV1VaultProperty[yieldSyncV1VaultAddress] = _purposer_yieldSyncV1VaultProperty[
-			purposer
-		];
 	}
 }

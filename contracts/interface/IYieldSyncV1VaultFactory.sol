@@ -45,7 +45,7 @@ interface IYieldSyncV1VaultFactory {
 	* @dev [view-address]
 	* @return {address}
 	*/
-	function YieldSyncV1VaultTransferRequest()
+	function transferRequestProtocol()
 		external
 		view
 		returns (address)

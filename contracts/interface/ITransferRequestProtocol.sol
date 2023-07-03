@@ -43,4 +43,14 @@ interface ITransferRequestProtocol {
 		view
 		returns (bool readyToBeProcessed, bool approved, string memory message)
 	;
+
+	/**
+	* @notice Initialize
+	* @dev [restriction] `YieldSyncV1VaultFactory`
+	* @param purposer {address}
+	* @param yieldSyncV1VaultAddress {address}
+	*/
+	function initializeTransferRequestProtocol(address purposer, address yieldSyncV1VaultAddress)
+		external
+	;
 }

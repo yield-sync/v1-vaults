@@ -200,14 +200,4 @@ interface IYieldSyncV1VaultTransferRequest is
 	function voteOnTransferRequest(address yieldSyncV1VaultAddress, uint256 transferRequestId, bool vote)
 		external
 	;
-
-	/**
-	* @notice Initialize YieldSync V1 Vault Property
-	* @dev [restriction] `YieldSyncV1VaultFactory`
-	* @param purposer {address}
-	* @param yieldSyncV1VaultAddress {address}
-	*/
-	function initializeYieldSyncV1VaultProperty(address purposer, address yieldSyncV1VaultAddress)
-		external
-	;
 }
