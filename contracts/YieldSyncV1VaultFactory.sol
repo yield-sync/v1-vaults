@@ -75,10 +75,7 @@ contract YieldSyncV1VaultFactory is
 		address signatureManager,
 		address transferRequestProtocol,
 		bool useDefaultSignatureManager,
-		bool useDefaultTransferRequestProtocol,
-		uint256 _againstVoteRequired,
-		uint256 _forVoteRequired,
-		uint256 _transferDelaySeconds
+		bool useDefaultTransferRequestProtocol
 	)
 		public
 		payable
@@ -100,19 +97,9 @@ contract YieldSyncV1VaultFactory is
 		yieldSyncV1VaultAddress_yieldSyncV1VaultId[address(deployedContract)] = yieldSyncV1VaultIdTracker;
 		yieldSyncV1VaultId_yieldSyncV1VaultAddress[yieldSyncV1VaultIdTracker] = address(deployedContract);
 
-		IYieldSyncV1VaultTransferRequest(YieldSyncV1VaultTransferRequest).updateAgainstVoteRequired(
-			address(deployedContract),
-			_againstVoteRequired
-		);
-
-		IYieldSyncV1VaultTransferRequest(YieldSyncV1VaultTransferRequest).updateForVoteRequired(
-			address(deployedContract),
-			_forVoteRequired
-		);
-
-		IYieldSyncV1VaultTransferRequest(YieldSyncV1VaultTransferRequest).updateTransferDelaySeconds(
-			address(deployedContract),
-			_transferDelaySeconds
+		IYieldSyncV1VaultTransferRequest(YieldSyncV1VaultTransferRequest).initializeYieldSyncV1VaultProperty(
+			msg.sender,
+			address(deployedContract)
 		);
 
 		yieldSyncV1VaultIdTracker++;

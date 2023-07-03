@@ -5,6 +5,12 @@ pragma solidity ^0.8.18;
 import { TransferRequest } from "./IYieldSyncV1Vault.sol";
 
 
+struct YieldSyncV1VaultProperty {
+	uint256 againstVoteRequired;
+	uint256 forVoteRequired;
+	uint256 transferDelaySeconds;
+}
+
 struct TransferRequestVote {
 	uint256 forVoteCount;
 	uint256 againstVoteCount;
@@ -15,18 +21,17 @@ struct TransferRequestVote {
 
 interface IYieldSyncV1VaultTransferRequest
 {
+	event Updated_purposer_yieldSyncV1VaultProperty(YieldSyncV1VaultProperty yieldSyncV1VaultProperty);
 	event CreatedTransferRequest(address yieldSyncV1VaultAddress, uint256 transferRequestId);
 	event DeletedTransferRequest(address yieldSyncV1VaultAddress, uint256 transferRequestId);
-	event UpdatedAgainstVoteRequired(address yieldSyncV1VaultAddress, uint256 againstVoteRequired);
-	event UpdatedForVoteRequired(address yieldSyncV1VaultAddress, uint256 forVoteRequired);
-	event UpdatedTransferDelaySeconds(address yieldSyncV1VaultAddress, uint256 transferDelaySeconds);
 	event UpdatedTransferRequest(address yieldSyncV1VaultAddress, TransferRequest transferRequest);
+	event Updated_yieldSyncV1Vault_yieldSyncV1VaultProperty(YieldSyncV1VaultProperty yieldSyncV1VaultProperty);
 	event MemberVoted(address yieldSyncV1VaultAddress, uint256 transferRequestId, address indexed member, bool vote);
 	event TransferRequestReadyToBeProcessed(address yieldSyncV1VaultAddress, uint256 transferRequestId);
 
 
 	/**
-	* @notice YieldSyncV1Vault Contract Address
+	* @notice YieldSyncV1VaultAccessControl Contract Address
 	* @dev [view-address]
 	* @return {address}
 	*/
@@ -49,43 +54,7 @@ interface IYieldSyncV1VaultTransferRequest
 
 
 	/**
-	* @notice Against Vote Count Required
-	* @dev [view][mapping]
-	* @param yieldSyncV1VaultAddress {address}
-	* @return {uint256}
-	*/
-	function yieldSyncV1Vault_againstVoteRequired(address yieldSyncV1VaultAddress)
-		external
-		view
-		returns (uint256)
-	;
-
-	/**
-	* @notice For Vote Count Required
-	* @dev [view][mapping]
-	* @param yieldSyncV1VaultAddress {address}
-	* @return {uint256}
-	*/
-	function yieldSyncV1Vault_forVoteRequired(address yieldSyncV1VaultAddress)
-		external
-		view
-		returns (uint256)
-	;
-
-	/**
-	* @notice Transfer Delay Seconds
-	* @dev [view][mapping]
-	* @param yieldSyncV1VaultAddress {address}
-	* @return {uint256}
-	*/
-	function yieldSyncV1Vault_transferDelaySeconds(address yieldSyncV1VaultAddress)
-		external
-		view
-		returns (uint256)
-	;
-
-	/**
-	* @notice Ids of Open transferRequests
+	* @notice Getter for `_yieldSyncV1Vault_idsOfOpenTransferRequests`
 	* @dev [view][mapping]
 	* @param yieldSyncV1VaultAddress {address}
 	* @return {uint256[]}
@@ -97,7 +66,29 @@ interface IYieldSyncV1VaultTransferRequest
 	;
 
 	/**
-	* @notice transferRequestId to transferRequest
+	* @notice Getter for `_purposer_YieldSyncV1VaultProperty`
+	* @dev [view][mapping]
+	* @param yieldSyncV1VaultAddress {address}
+	* @return {YieldSyncV1VaultProperty}
+	*/
+	function purposer_YieldSyncV1VaultProperty(address yieldSyncV1VaultAddress)
+		external
+		returns (YieldSyncV1VaultProperty memory)
+	;
+
+	/**
+	* @notice Getter for `_yieldSyncV1Vault_YieldSyncV1VaultProperty`
+	* @dev [view][mapping]
+	* @param yieldSyncV1VaultAddress {address}
+	* @return {YieldSyncV1VaultProperty}
+	*/
+	function yieldSyncV1Vault_YieldSyncV1VaultProperty(address yieldSyncV1VaultAddress)
+		external
+		returns (YieldSyncV1VaultProperty memory)
+	;
+
+	/**
+	* @notice Getter for `_yieldSyncV1Vault_transferRequestId_transferRequest`
 	* @dev [view][mapping]
 	* @param yieldSyncV1VaultAddress {address}
 	* @param transferRequestId {uint256}
@@ -112,7 +103,7 @@ interface IYieldSyncV1VaultTransferRequest
 	;
 
 	/**
-	* @notice transferRequestId to transferRequestVote
+	* @notice Getter for `_yieldSyncV1Vault_transferRequestId_transferRequestVote`
 	* @dev [view][mapping]
 	* @param yieldSyncV1VaultAddress {address}
 	* @param transferRequestId {uint256}
@@ -127,7 +118,7 @@ interface IYieldSyncV1VaultTransferRequest
 	;
 
 	/**
-	* @notice Transfer Request Ready to Be Processed
+	* @notice Transfer Request Status
 	* @dev [view]
 	* @param yieldSyncV1VaultAddress {address}
 	* @param transferRequestId {uint256}
@@ -139,6 +130,18 @@ interface IYieldSyncV1VaultTransferRequest
 		external
 		view
 		returns (bool readyToBeProcessed, bool approved, string memory message)
+	;
+
+
+	/**
+	* @notice Update yieldSyncV1VaultProperty
+	* @dev [restriction] `YieldSyncV1Record` → admin
+	* @dev [update] `_purposer_yieldSyncV1VaultProperty`
+	* @param yieldSyncV1VaultProperty {YieldSyncV1VaultProperty}
+	* Emits: `UpdatedPurposerYieldSyncV1VaultProperty`
+	*/
+	function update_purposer_yieldSyncV1VaultProperty(YieldSyncV1VaultProperty memory yieldSyncV1VaultProperty)
+		external
 	;
 
 
@@ -160,50 +163,29 @@ interface IYieldSyncV1VaultTransferRequest
 	* @dev [update] `_transferRequest`
 	* @param yieldSyncV1VaultAddress {address}
 	* @param transferRequestId {uint256}
-	* @param __transferRequest {TransferRequest}
+	* @param transferRequest {TransferRequest}
 	* Emits: `UpdatedTransferRequest`
 	*/
 	function updateTransferRequest(
 		address yieldSyncV1VaultAddress,
 		uint256 transferRequestId,
-		TransferRequest memory __transferRequest
+		TransferRequest memory transferRequest
 	)
 		external
 	;
 
 	/**
-	* @notice Update Against Vote Count Required
+	* @notice Update
 	* @dev [restriction] `YieldSyncV1Record` → admin
-	* @dev [update] `againstVoteRequired`
+	* @dev [update] `_update_yieldSyncV1Vault_yieldSyncV1VaultProperty`
 	* @param yieldSyncV1VaultAddress {address}
-	* @param _againstVoteRequired {uint256}
-	* Emits: `UpdatedAgainstVoteRequired`
+	* @param yieldSyncV1VaultProperty {YieldSyncV1VaultProperty}
+	* Emits: `UpdatedYieldSyncV1VaultYieldSyncV1VaultProperty`
 	*/
-	function updateAgainstVoteRequired(address yieldSyncV1VaultAddress, uint256 _againstVoteRequired)
-		external
-	;
-
-	/**
-	* @notice Update For Vote Count Required
-	* @dev [restriction] `YieldSyncV1Record` → admin
-	* @dev [update] `forVoteRequired`
-	* @param yieldSyncV1VaultAddress {address}
-	* @param _forVoteRequired {uint256}
-	* Emits: `UpdatedRequiredVoteCount`
-	*/
-	function updateForVoteRequired(address yieldSyncV1VaultAddress,  uint256 _forVoteRequired)
-		external
-	;
-
-	/**
-	* @notice Update `transferDelaySeconds`
-	* @dev [restriction] `YieldSyncV1Record` → admin
-	* @dev [update] `transferDelaySeconds` to new value
-	* @param yieldSyncV1VaultAddress {address}
-	* @param _transferDelaySeconds {uint256}
-	* Emits: `UpdatedTransferDelaySeconds`
-	*/
-	function updateTransferDelaySeconds(address yieldSyncV1VaultAddress, uint256 _transferDelaySeconds)
+	function update_yieldSyncV1Vault_yieldSyncV1VaultProperty(
+		address yieldSyncV1VaultAddress,
+		YieldSyncV1VaultProperty memory yieldSyncV1VaultProperty
+	)
 		external
 	;
 
@@ -211,9 +193,10 @@ interface IYieldSyncV1VaultTransferRequest
 	/**
 	* @notice Create a transferRequest
 	* @dev [restriction] `YieldSyncV1Record` → member
-	* @dev [increment] `_transferRequestId`
-	*      [add] `_transferRequest` value
-	*      [push-into] `_transferRequestIds`
+	* @dev [add] `_yieldSyncV1Vault_transferRequestId_transferRequest` value
+	*      [add] `_yieldSyncV1Vault_transferRequestId_transferRequestVote` value
+	*      [push-into] `_yieldSyncV1Vault_openTransferRequestIds`
+	*      [increment] `_transferRequestIdTracker`
 	* @param yieldSyncV1VaultAddress {address}
 	* @param forERC20 {bool}
 	* @param forERC721 {bool}
@@ -246,6 +229,16 @@ interface IYieldSyncV1VaultTransferRequest
 	* Emits: `MemberVoted`
 	*/
 	function voteOnTransferRequest(address yieldSyncV1VaultAddress, uint256 transferRequestId, bool vote)
+		external
+	;
+
+	/**
+	* @notice Initialize YieldSync V1 Vault Property
+	* @dev [restriction] `YieldSyncV1VaultFactory`
+	* @param purposer {address}
+	* @param yieldSyncV1VaultAddress {address}
+	*/
+	function initializeYieldSyncV1VaultProperty(address purposer, address yieldSyncV1VaultAddress)
 		external
 	;
 }
