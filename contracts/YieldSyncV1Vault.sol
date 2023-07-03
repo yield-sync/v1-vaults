@@ -178,7 +178,7 @@ contract YieldSyncV1Vault is
 			bool readyToBeProcessed,
 			bool approved,
 			string memory message
-		) = ITransferRequestProtocol(transferRequestProtocol).transferRequestStatus(
+		) = ITransferRequestProtocol(transferRequestProtocol).status_yieldSyncV1Vault_transferRequestId_transferRequest(
 			address(this),
 			transferRequestId
 		);
@@ -239,7 +239,10 @@ contract YieldSyncV1Vault is
 			emit TokensTransferred(msg.sender, transferRequest.to, transferRequest.amount);
 		}
 
-		ITransferRequestProtocol(transferRequestProtocol).deleteTransferRequest(address(this), transferRequestId);
+		ITransferRequestProtocol(transferRequestProtocol).process_yieldSyncV1Vault_transferRequestId_transferRequest(
+			address(this),
+			transferRequestId
+		);
 
 		processTransferRequestLocked = false;
 	}

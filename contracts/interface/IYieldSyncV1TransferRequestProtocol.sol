@@ -207,4 +207,17 @@ interface IYieldSyncV1TransferRequestProtocol is
 	function voteOnTransferRequest(address yieldSyncV1VaultAddress, uint256 transferRequestId, bool vote)
 		external
 	;
+
+	/**
+	* @notice Delete transferRequest & all associated values
+	* @dev Utilized by `YieldSyncV1Vault`
+	* @param yieldSyncV1VaultAddress {address}
+	* @param transferRequestId {uint256}
+	*/
+	function deleteTransferRequest(
+		address yieldSyncV1VaultAddress,
+		uint256 transferRequestId
+	)
+		external
+	;
 }
