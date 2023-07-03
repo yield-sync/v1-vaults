@@ -90,6 +90,20 @@ contract YieldSyncV1TransferRequestProtocol is
 		_;
 	}
 
+	modifier onlyYieldSyncV1VaultOrAdmin(address yieldSyncV1VaultAddress)
+	{
+		(bool admin,) = IYieldSyncV1VaultAccessControl(
+			YieldSyncV1VaultAccessControl
+		).participant_yieldSyncV1Vault_access(
+			msg.sender,
+			yieldSyncV1VaultAddress
+		);
+
+		require(admin || msg.sender == yieldSyncV1VaultAddress, "!yieldSyncV1VaultAddress");
+
+		_;
+	}
+
 	modifier validTransferRequest(address yieldSyncV1VaultAddress, uint256 transferRequestId)
 	{
 		require(
@@ -209,6 +223,19 @@ contract YieldSyncV1TransferRequestProtocol is
 	}
 
 
+	/// @inheritdoc ITransferRequestProtocol
+	function deleteTransferRequest(address yieldSyncV1VaultAddress, uint256 transferRequestId)
+		public
+		override
+		onlyYieldSyncV1VaultOrAdmin(yieldSyncV1VaultAddress)
+		validTransferRequest(yieldSyncV1VaultAddress, transferRequestId)
+	{
+		_deleteTransferRequest(yieldSyncV1VaultAddress, transferRequestId);
+
+		emit DeletedTransferRequest(yieldSyncV1VaultAddress, transferRequestId);
+	}
+
+
 	/// @inheritdoc IYieldSyncV1TransferRequestProtocol
 	function yieldSyncV1Vault_openTransferRequestIds(address yieldSyncV1VaultAddress)
 		public
@@ -263,18 +290,6 @@ contract YieldSyncV1TransferRequestProtocol is
 		_purposer_yieldSyncV1VaultProperty[msg.sender] = yieldSyncV1VaultProperty;
 	}
 
-
-	/// @inheritdoc IYieldSyncV1TransferRequestProtocol
-	function deleteTransferRequest(address yieldSyncV1VaultAddress, uint256 transferRequestId)
-		public
-		override
-		onlyAdmin(yieldSyncV1VaultAddress)
-		validTransferRequest(yieldSyncV1VaultAddress, transferRequestId)
-	{
-		_deleteTransferRequest(yieldSyncV1VaultAddress, transferRequestId);
-
-		emit DeletedTransferRequest(yieldSyncV1VaultAddress, transferRequestId);
-	}
 
 	/// @inheritdoc IYieldSyncV1TransferRequestProtocol
 	function updateTransferRequest(

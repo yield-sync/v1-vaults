@@ -764,7 +764,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 
 							await expect(
 								yieldSyncV1Vault.connect(addr1).processTransferRequest(0)
-							).to.be.rejectedWith("Not enough time has passed");
+							).to.be.rejectedWith("Transfer request approved and waiting delay");
 						}
 					);
 
@@ -773,7 +773,14 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 						async () => {
 							const [, addr1, addr2] = await ethers.getSigners();
 
-							await yieldSyncV1Vault.updateForVoteRequired(1);
+							await yieldSyncV1TransferRequestProtocol.update_yieldSyncV1Vault_yieldSyncV1VaultProperty(
+								yieldSyncV1Vault.address,
+								[
+									2,
+									1,
+									sixDaysInSeconds
+								]
+							);
 
 							await yieldSyncV1TransferRequestProtocol.connect(addr1).createTransferRequest(
 								yieldSyncV1Vault.address,
@@ -785,7 +792,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 								0
 							);
 
-							await yieldSyncV1Vault.connect(addr1).voteOnTransferRequest(
+							await yieldSyncV1TransferRequestProtocol.connect(addr1).voteOnTransferRequest(
 								yieldSyncV1Vault.address,
 								0,
 								true
@@ -806,7 +813,11 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 
 							await expect(recieverBalanceAfter - recieverBalanceBefore).to.be.equal(.5);
 
-							expect((await yieldSyncV1Vault.idsOfOpenTransferRequests()).length).to.be.equal(0);
+							const idsOfOpenTransferRequests = await yieldSyncV1TransferRequestProtocol.yieldSyncV1Vault_openTransferRequestIds(
+								yieldSyncV1Vault.address
+							);
+
+							expect(idsOfOpenTransferRequests.length).to.be.equal(0);
 						}
 					);
 				});

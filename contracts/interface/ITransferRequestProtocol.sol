@@ -55,4 +55,17 @@ interface ITransferRequestProtocol
 	function initializeYieldSyncV1Vault(address purposer, address yieldSyncV1VaultAddress)
 		external
 	;
+
+	/**
+	* @notice Delete transferRequest & all associated values
+	* @dev [restriction] `YieldSyncV1Record` → admin
+	* @dev [call][internal] `_deleteTransferRequest`
+	* @param yieldSyncV1VaultAddress {address}
+	* @param transferRequestId {uint256}
+	* Emits: `DeletedTransferRequest`
+	*/
+	function deleteTransferRequest(address yieldSyncV1VaultAddress, uint256 transferRequestId)
+		external
+	;
+
 }

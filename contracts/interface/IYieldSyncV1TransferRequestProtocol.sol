@@ -116,19 +116,6 @@ interface IYieldSyncV1TransferRequestProtocol is
 		external
 	;
 
-
-	/**
-	* @notice Delete transferRequest & all associated values
-	* @dev [restriction] `YieldSyncV1Record` → admin
-	* @dev [call][internal] `_deleteTransferRequest`
-	* @param yieldSyncV1VaultAddress {address}
-	* @param transferRequestId {uint256}
-	* Emits: `DeletedTransferRequest`
-	*/
-	function deleteTransferRequest(address yieldSyncV1VaultAddress, uint256 transferRequestId)
-		external
-	;
-
 	/**
 	* @notice Update transferRequest
 	* @dev [restriction] `YieldSyncV1Record` → admin
