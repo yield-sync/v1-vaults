@@ -95,7 +95,7 @@ contract YieldSyncV1VaultFactory is
 		yieldSyncV1VaultAddress_yieldSyncV1VaultId[address(deployedContract)] = yieldSyncV1VaultIdTracker;
 		yieldSyncV1VaultId_yieldSyncV1VaultAddress[yieldSyncV1VaultIdTracker] = address(deployedContract);
 
-		ITransferRequestProtocol(transferRequestProtocol).initializeYieldSyncV1Vault(
+		ITransferRequestProtocol(transferRequestProtocol).create_yieldSyncV1Vault_yieldSyncV1VaultProperty(
 			msg.sender,
 			address(deployedContract)
 		);

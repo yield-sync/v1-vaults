@@ -60,7 +60,7 @@ interface ITransferRequestProtocol
 	* @param purposer {address}
 	* @param yieldSyncV1VaultAddress {address}
 	*/
-	function initializeYieldSyncV1Vault(address purposer, address yieldSyncV1VaultAddress)
+	function create_yieldSyncV1Vault_yieldSyncV1VaultProperty(address purposer, address yieldSyncV1VaultAddress)
 		external
 	;
 }

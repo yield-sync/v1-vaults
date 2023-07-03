@@ -223,7 +223,7 @@ contract YieldSyncV1TransferRequestProtocol is
 	}
 
 	/// @inheritdoc ITransferRequestProtocol
-	function initializeYieldSyncV1Vault(address purposer, address yieldSyncV1VaultAddress)
+	function create_yieldSyncV1Vault_yieldSyncV1VaultProperty(address purposer, address yieldSyncV1VaultAddress)
 		public
 		override
 		onlyYieldSyncV1VaultFactory()
