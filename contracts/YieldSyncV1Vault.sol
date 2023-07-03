@@ -183,7 +183,7 @@ contract YieldSyncV1Vault is
 			transferRequestId
 		);
 
-		require(!readyToBeProcessed, message);
+		require(readyToBeProcessed, message);
 
 		processTransferRequestLocked = true;
 

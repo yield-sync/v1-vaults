@@ -707,15 +707,6 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 						async () => {
 							const [, addr1] = await ethers.getSigners();
 
-							await yieldSyncV1TransferRequestProtocol.update_yieldSyncV1Vault_yieldSyncV1VaultProperty(
-								yieldSyncV1Vault.address,
-								[
-									2,
-									2,
-									sixDaysInSeconds
-								]
-							)
-
 							await yieldSyncV1TransferRequestProtocol.connect(addr1).createTransferRequest(
 								yieldSyncV1Vault.address,
 								false,

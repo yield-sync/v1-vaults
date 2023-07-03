@@ -156,7 +156,6 @@ contract YieldSyncV1TransferRequestProtocol is
 	function transferRequestStatus(address yieldSyncV1VaultAddress, uint256 transferRequestId)
 		public
 		view
-		onlyMember(yieldSyncV1VaultAddress)
 		validTransferRequest(yieldSyncV1VaultAddress, transferRequestId)
 		returns (bool readyToBeProcessed, bool approved, string memory message)
 	{
