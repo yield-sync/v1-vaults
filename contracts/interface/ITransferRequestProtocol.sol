@@ -17,8 +17,6 @@ struct TransferRequest
 interface ITransferRequestProtocol
 {
 	/**
-	* @notice Getter for `_yieldSyncV1Vault_transferRequestId_transferRequest`
-	* @dev [view][mapping]
 	* @param yieldSyncV1VaultAddress {address}
 	* @param transferRequestId {uint256}
 	* @return {TransferRequest}
@@ -32,8 +30,6 @@ interface ITransferRequestProtocol
 	;
 
 	/**
-	* @notice Transfer Request Status
-	* @dev [view]
 	* @param yieldSyncV1VaultAddress {address}
 	* @param transferRequestId {uint256}
 	* @return readyToBeProcessed {bool}
@@ -47,8 +43,6 @@ interface ITransferRequestProtocol
 	;
 
 	/**
-	* @notice Initialize YieldSyncV1Vault
-	* @dev [restriction] `YieldSyncV1VaultFactory`
 	* @param purposer {address}
 	* @param yieldSyncV1VaultAddress {address}
 	*/
@@ -57,15 +51,10 @@ interface ITransferRequestProtocol
 	;
 
 	/**
-	* @notice Delete transferRequest & all associated values
-	* @dev [restriction] `YieldSyncV1Record` → admin
-	* @dev [call][internal] `_deleteTransferRequest`
 	* @param yieldSyncV1VaultAddress {address}
 	* @param transferRequestId {uint256}
-	* Emits: `DeletedTransferRequest`
 	*/
 	function deleteTransferRequest(address yieldSyncV1VaultAddress, uint256 transferRequestId)
 		external
 	;
-
 }

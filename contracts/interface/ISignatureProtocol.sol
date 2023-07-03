@@ -25,8 +25,6 @@ interface ISignatureProtocol is
 
 
 	/**
-	* @notice Initialize YieldSyncV1Vault
-	* @dev [restriction] `YieldSyncV1VaultFactory`
 	* @param purposer {address}
 	* @param yieldSyncV1VaultAddress {address}
 	*/
