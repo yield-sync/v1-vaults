@@ -75,7 +75,7 @@ contract YieldSyncV1TransferRequestProtocol is
 			YieldSyncV1VaultAccessControl
 		).participant_yieldSyncV1Vault_access(
 			msg.sender,
-			address(this)
+			yieldSyncV1VaultAddress
 		);
 
 		require(member, "!member");
@@ -211,7 +211,7 @@ contract YieldSyncV1TransferRequestProtocol is
 
 
 	/// @inheritdoc IYieldSyncV1TransferRequestProtocol
-	function yieldSyncV1Vault_idsOfOpenTransferRequests(address yieldSyncV1VaultAddress)
+	function yieldSyncV1Vault_openTransferRequestIds(address yieldSyncV1VaultAddress)
 		public
 		view
 		override
@@ -371,8 +371,8 @@ contract YieldSyncV1TransferRequestProtocol is
 			_transferRequestIdTracker
 		] = TransferRequestVote(
 			{
-				forVoteCount: 0,
 				againstVoteCount: 0,
+				forVoteCount: 0,
 				latestRelevantForVoteTime: block.timestamp,
 				votedMembers: initialVotedMembers
 			}

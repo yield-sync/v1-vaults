@@ -14,8 +14,8 @@ struct YieldSyncV1VaultProperty
 
 struct TransferRequestVote
 {
-	uint256 forVoteCount;
 	uint256 againstVoteCount;
+	uint256 forVoteCount;
 	uint256 latestRelevantForVoteTime;
 	address[] votedMembers;
 }
@@ -56,12 +56,12 @@ interface IYieldSyncV1TransferRequestProtocol is
 
 
 	/**
-	* @notice Getter for `_yieldSyncV1Vault_idsOfOpenTransferRequests`
+	* @notice Getter for `_yieldSyncV1Vault_openTransferRequestIds`
 	* @dev [view][mapping]
 	* @param yieldSyncV1VaultAddress {address}
 	* @return {uint256[]}
 	*/
-	function yieldSyncV1Vault_idsOfOpenTransferRequests(address yieldSyncV1VaultAddress)
+	function yieldSyncV1Vault_openTransferRequestIds(address yieldSyncV1VaultAddress)
 		external
 		view
 		returns (uint256[] memory)
