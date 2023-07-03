@@ -406,7 +406,9 @@ describe("[0] YieldSyncV1VaultFactory.sol - YieldSync V1 Vault Factory Contract"
 					async () => {
 						const [, addr1] = await ethers.getSigners();
 
-						await yieldSyncV1TransferRequestProtocol.connect(addr1).update_purposer_yieldSyncV1VaultProperty(
+						await yieldSyncV1TransferRequestProtocol.connect(
+							addr1
+						).update_purposer_yieldSyncV1VaultProperty(
 							[1, 1, 10]
 						);
 
