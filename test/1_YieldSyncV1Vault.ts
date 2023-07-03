@@ -12,12 +12,13 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 	let yieldSyncV1Vault: Contract;
 	let yieldSyncV1VaultAccessControl: Contract;
 	let yieldSyncV1VaultFactory: Contract;
-	let yieldSyncV1VaultTransferRequest: Contract;
-	let signatureManager: Contract;
+	let yieldSyncV1TransferRequestProtocol: Contract;
+	let signatureProtocol: Contract;
 	let mockAdmin: Contract;
 	let mockERC20: Contract;
 	let mockERC721: Contract;
 	let mockYieldSyncGovernance: Contract;
+
 
 	beforeEach("[before] Set up contracts..", async () => {
 		const [owner, addr1] = await ethers.getSigners();
@@ -28,12 +29,12 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 		const MockERC20: ContractFactory = await ethers.getContractFactory("MockERC20");
 		const MockERC721: ContractFactory = await ethers.getContractFactory("MockERC721");
 
-		const MockYieldSyncGovernance: ContractFactory = await ethers.getContractFactory("MockYieldSyncGovernance");
 		const YieldSyncV1Vault: ContractFactory = await ethers.getContractFactory("YieldSyncV1Vault");
 		const YieldSyncV1VaultFactory: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultFactory");
 		const YieldSyncV1VaultAccessControl: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultAccessControl");
-		const SignatureManager: ContractFactory = await ethers.getContractFactory("SignatureManager");
-		const YieldSyncV1VaultTransferRequest: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultTransferRequest");
+		const MockYieldSyncGovernance: ContractFactory = await ethers.getContractFactory("MockYieldSyncGovernance");
+		const YieldSyncV1SignatureProtocol: ContractFactory = await ethers.getContractFactory("YieldSyncV1SignatureProtocol");
+		const YieldSyncV1TransferRequestProtocol: ContractFactory = await ethers.getContractFactory("YieldSyncV1TransferRequestProtocol");
 
 
 		// Contract
@@ -41,30 +42,47 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 		mockERC20 = await (await MockERC20.deploy()).deployed();
 		mockERC721 = await (await MockERC721.deploy()).deployed();
 
+		// Deploy
 		mockYieldSyncGovernance = await (await MockYieldSyncGovernance.deploy()).deployed();
 		yieldSyncV1VaultAccessControl = await (await YieldSyncV1VaultAccessControl.deploy()).deployed();
+
+		// Deploy Factory
 		yieldSyncV1VaultFactory = await (
 			await YieldSyncV1VaultFactory.deploy(mockYieldSyncGovernance.address, yieldSyncV1VaultAccessControl.address)
 		).deployed();
 
-		yieldSyncV1VaultTransferRequest = await (
-			await YieldSyncV1VaultTransferRequest.deploy(
+		// Deploy Transfer Request Protocol
+		yieldSyncV1TransferRequestProtocol = await (
+			await YieldSyncV1TransferRequestProtocol.deploy(
 				yieldSyncV1VaultAccessControl.address,
-				yieldSyncV1VaultTransferRequest.address
+				yieldSyncV1VaultFactory.address
 			)
 		).deployed();
 
+		// Set Factory -> Transfer Request Protocol
+		await yieldSyncV1VaultFactory.setTransferRequestProtocol(yieldSyncV1TransferRequestProtocol.address);
+
+		// Deploy Signature Protocol
+		signatureProtocol = await (
+			await YieldSyncV1SignatureProtocol.deploy(
+				mockYieldSyncGovernance.address,
+				yieldSyncV1VaultAccessControl.address
+			)
+		).deployed();
+
+		// Set YieldSyncV1Vault properties on TransferRequestProtocol.sol
+		await yieldSyncV1TransferRequestProtocol.update_purposer_yieldSyncV1VaultProperty([
+			2, 2, sixDaysInSeconds
+		]);
+
 		// Deploy a vault
 		await yieldSyncV1VaultFactory.deployYieldSyncV1Vault(
-			[addr1.address],
+			[owner.address],
 			[addr1.address],
 			ethers.constants.AddressZero,
 			ethers.constants.AddressZero,
 			true,
 			true,
-			2,
-			2,
-			sixDaysInSeconds,
 			{ value: 1 }
 		);
 
@@ -73,12 +91,11 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 			await yieldSyncV1VaultFactory.yieldSyncV1VaultId_yieldSyncV1VaultAddress(0)
 		);
 
-		signatureManager = await (
-			await SignatureManager.deploy(mockYieldSyncGovernance.address, yieldSyncV1VaultAccessControl.address)
-		).deployed();
-
 		// Send ether to YieldSyncV1Vault contract
-		await addr1.sendTransaction({ to: yieldSyncV1Vault.address, value: ethers.utils.parseEther(".5") });
+		await addr1.sendTransaction({
+			to: yieldSyncV1Vault.address,
+			value: ethers.utils.parseEther(".5")
+		});
 
 		// Send ERC20 to YieldSyncV1Vault contract
 		await mockERC20.transfer(yieldSyncV1Vault.address, 50);
@@ -86,6 +103,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 		// Send ERC721 to YieldSyncV1Vault contract
 		await mockERC721.transferFrom(owner.address, yieldSyncV1Vault.address, 1);
 	});
+
 
 	describe("Receiving tokens & ethers", async () => {
 		it(
@@ -112,25 +130,38 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 		);
 	});
 
+
 	describe("Initial Values", async () => {
 		it(
 			"Should intialize againstVoteRequired as 2..",
 			async () => {
-				expect(await yieldSyncV1Vault.againstVoteRequired()).to.equal(2);
+				const vProp = await yieldSyncV1TransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultProperty(
+					yieldSyncV1Vault.address
+				);
+
+				expect(vProp.forVoteRequired).to.equal(BigInt(2));
 			}
 		);
 
 		it(
 			"Should intialize forVoteRequired as 2..",
 			async () => {
-				expect(await yieldSyncV1Vault.forVoteRequired()).to.equal(2);
+				const vProp = await yieldSyncV1TransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultProperty(
+					yieldSyncV1Vault.address
+				);
+
+				expect(vProp.againstVoteRequired).to.equal(BigInt(2));
 			}
 		);
 
 		it(
 			"Should initialize transferDelaySeconds as sixDaysInSeconds..",
 			async () => {
-				expect(await yieldSyncV1Vault.transferDelaySeconds()).to.equal(sixDaysInSeconds);
+				const vProp = await yieldSyncV1TransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultProperty(
+					yieldSyncV1Vault.address
+				);
+
+				expect(vProp.transferDelaySeconds).to.equal(BigInt(sixDaysInSeconds));
 			}
 		);
 
@@ -140,10 +171,12 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 				const [owner] = await ethers.getSigners();
 
 				expect(
-					(await yieldSyncV1VaultAccessControl.participant_yieldSyncV1Vault_access(
-						owner.address,
-						yieldSyncV1Vault.address
-					))[0]
+					(
+						await yieldSyncV1VaultAccessControl.participant_yieldSyncV1Vault_access(
+							owner.address,
+							yieldSyncV1Vault.address
+						)
+					).admin
 				).to.be.true;
 
 				expect(
@@ -180,7 +213,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 	});
 
 
-	describe("Restriction: DEFAULT_ADMIN_ROLE", async () => {
+	describe("Restriction: admin (1/2)", async () => {
 		describe("addAdmin()", async () => {
 			it(
 				"Should allow admin to add another admin..",
@@ -312,14 +345,14 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 			);
 		});
 
-		describe("updateSignatureManager()", async () => {
+		describe("updateSignatureProtocol()", async () => {
 			it(
 				"Should revert when unauthorized msg.sender calls..",
 				async () => {
 					const [, addr1] = await ethers.getSigners();
 
 					await expect(
-						yieldSyncV1Vault.connect(addr1).updateSignatureManager(addr1.address)
+						yieldSyncV1Vault.connect(addr1).updateSignatureProtocol(addr1.address)
 					).to.be.rejected;
 				}
 			);
@@ -328,79 +361,104 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 				"Should be able to set a signature manager contract..",
 				async () => {
 
-					await yieldSyncV1Vault.updateSignatureManager(signatureManager.address);
+					await yieldSyncV1Vault.updateSignatureProtocol(signatureProtocol.address);
 
-					expect(await yieldSyncV1Vault.signatureManager()).to.be.equal(signatureManager.address);
+					expect(await yieldSyncV1Vault.signatureProtocol()).to.be.equal(signatureProtocol.address);
 				}
 			);
 		});
 
-		describe("updateAgainstVoteRequired()", async () => {
-			it(
-				"Should revert when unauthorized msg.sender calls..",
-				async () => {
-					const [, addr1] = await ethers.getSigners();
-
-					await expect(yieldSyncV1Vault.connect(addr1).updateAgainstVoteRequired(1)).to.be.rejected;
-				}
-			);
-
-			it(
-				"Should be able to update againstVoteRequired..",
-				async () => {
-					await yieldSyncV1Vault.updateAgainstVoteRequired(1)
-
-					await expect(await yieldSyncV1Vault.againstVoteRequired()).to.be.equal(1);
-				}
-			);
-		});
-
-
-		describe("updateForVoteRequired()", async () => {
-			it(
-				"Should revert when unauthorized msg.sender calls..",
-				async () => {
-					const [, addr1] = await ethers.getSigners();
-
-					await expect(yieldSyncV1Vault.connect(addr1).updateForVoteRequired(1)).to.be.rejected;
-				}
-			);
-
-			it(
-				"Should be able to update forVoteRequired..",
-				async () => {
-					await yieldSyncV1Vault.updateForVoteRequired(1)
-
-					await expect(await yieldSyncV1Vault.forVoteRequired()).to.be.equal(1);
-				}
-			);
-		});
-
-
-		describe("updateTransferDelaySeconds()", async () => {
+		describe("update_yieldSyncV1Vault_yieldSyncV1VaultProperty()", async () => {
 			it(
 				"Should revert when unauthorized msg.sender calls..",
 				async () => {
 					const [, addr1] = await ethers.getSigners();
 
 					await expect(
-						yieldSyncV1Vault.connect(addr1).updateTransferDelaySeconds(sevenDaysInSeconds)
+						yieldSyncV1TransferRequestProtocol.connect(
+							addr1
+						).update_yieldSyncV1Vault_yieldSyncV1VaultProperty(
+							yieldSyncV1Vault.address,
+							[
+								1,
+								2,
+								sixDaysInSeconds
+							]
+						)
 					).to.be.rejected;
+				}
+			);
+
+			it(
+				"Should be able to update againstVoteRequired..",
+				async () => {
+					await yieldSyncV1TransferRequestProtocol.update_yieldSyncV1Vault_yieldSyncV1VaultProperty(
+						yieldSyncV1Vault.address,
+						[
+							1,
+							2,
+							sixDaysInSeconds
+						]
+					)
+
+					const vProp = await yieldSyncV1TransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultProperty(
+						yieldSyncV1Vault.address
+					);
+
+					expect(vProp.againstVoteRequired).to.equal(BigInt(1));
+					expect(vProp.forVoteRequired).to.equal(BigInt(2));
+					expect(vProp.transferDelaySeconds).to.equal(BigInt(sixDaysInSeconds));
+				}
+			);
+
+			it(
+				"Should be able to update againstVoteRequired..",
+				async () => {
+					await yieldSyncV1TransferRequestProtocol.update_yieldSyncV1Vault_yieldSyncV1VaultProperty(
+						yieldSyncV1Vault.address,
+						[
+							2,
+							1,
+							sixDaysInSeconds
+						]
+					)
+
+					const vProp = await yieldSyncV1TransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultProperty(
+						yieldSyncV1Vault.address
+					);
+
+					expect(vProp.againstVoteRequired).to.equal(BigInt(2));
+					expect(vProp.forVoteRequired).to.equal(BigInt(1));
+					expect(vProp.transferDelaySeconds).to.equal(BigInt(sixDaysInSeconds));
 				}
 			);
 
 			it(
 				"Should be able to update transferDelaySeconds..",
 				async () => {
-					await yieldSyncV1Vault.updateTransferDelaySeconds(sevenDaysInSeconds)
+					await yieldSyncV1TransferRequestProtocol.update_yieldSyncV1Vault_yieldSyncV1VaultProperty(
+						yieldSyncV1Vault.address,
+						[
+							2,
+							2,
+							10
+						]
+					)
 
-					await expect(await yieldSyncV1Vault.transferDelaySeconds()).to.be.equal(sevenDaysInSeconds);
+					const vProp = await yieldSyncV1TransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultProperty(
+						yieldSyncV1Vault.address
+					);
+
+					expect(vProp.againstVoteRequired).to.equal(BigInt(2));
+					expect(vProp.forVoteRequired).to.equal(BigInt(2));
+					expect(vProp.transferDelaySeconds).to.equal(BigInt(10));
 				}
 			);
 		});
 	});
 
-	describe("Restriction: MEMBER", async () => {
+
+	describe("Restriction: member (1/1)", async () => {
 		describe("addMember()", async () => {
 			it(
 				"Should NOT allow member to add another member..",
@@ -1185,7 +1243,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 	});
 
 
-	describe("Restriction: DEFAULT_ADMIN_ROLE", async () => {
+	describe("Restriction: admin (2/2)", async () => {
 		describe("updateTransferRequest()", async () => {
 			it(
 				"Should be able to update TransferRequest.forVoteCount..",

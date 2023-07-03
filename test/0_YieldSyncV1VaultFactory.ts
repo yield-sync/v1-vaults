@@ -14,11 +14,14 @@ describe("[0] YieldSyncV1VaultFactory.sol - YieldSync V1 Vault Factory Contract"
 	beforeEach("[before] Set up contracts..", async () => {
 		const [, addr1] = await ethers.getSigners();
 
+
+		// Contract Factory
 		const YieldSyncV1VaultFactory: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultFactory");
 		const YieldSyncV1VaultAccessControl: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultAccessControl");
 		const MockYieldSyncGovernance: ContractFactory = await ethers.getContractFactory("MockYieldSyncGovernance");
 		const MockSignatureProtocol: ContractFactory = await ethers.getContractFactory("MockSignatureProtocol");
 		const YieldSyncV1TransferRequestProtocol: ContractFactory = await ethers.getContractFactory("YieldSyncV1TransferRequestProtocol");
+
 
 		// Deploy
 		mockYieldSyncGovernance = await (await MockYieldSyncGovernance.deploy()).deployed();
