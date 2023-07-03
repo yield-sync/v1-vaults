@@ -221,17 +221,17 @@ contract YieldSyncV1TransferRequestProtocol is
 	}
 
 	/// @inheritdoc IYieldSyncV1TransferRequestProtocol
-	function purposer_YieldSyncV1VaultProperty(address yieldSyncV1VaultAddress)
+	function purposer_yieldSyncV1VaultProperty(address purposer)
 		public
 		view
 		override
 		returns (YieldSyncV1VaultProperty memory)
 	{
-		return _purposer_yieldSyncV1VaultProperty[yieldSyncV1VaultAddress];
+		return _purposer_yieldSyncV1VaultProperty[purposer];
 	}
 
 	/// @inheritdoc IYieldSyncV1TransferRequestProtocol
-	function yieldSyncV1Vault_YieldSyncV1VaultProperty(address yieldSyncV1VaultAddress)
+	function yieldSyncV1Vault_yieldSyncV1VaultProperty(address yieldSyncV1VaultAddress)
 		public
 		view
 		override

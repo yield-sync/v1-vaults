@@ -68,23 +68,23 @@ interface IYieldSyncV1TransferRequestProtocol is
 	;
 
 	/**
-	* @notice Getter for `_purposer_YieldSyncV1VaultProperty`
+	* @notice Getter for `_purposer_yieldSyncV1VaultProperty`
 	* @dev [view][mapping]
-	* @param yieldSyncV1VaultAddress {address}
+	* @param purposer {address}
 	* @return {YieldSyncV1VaultProperty}
 	*/
-	function purposer_YieldSyncV1VaultProperty(address yieldSyncV1VaultAddress)
+	function purposer_yieldSyncV1VaultProperty(address purposer)
 		external
 		returns (YieldSyncV1VaultProperty memory)
 	;
 
 	/**
-	* @notice Getter for `_yieldSyncV1Vault_YieldSyncV1VaultProperty`
+	* @notice Getter for `_yieldSyncV1Vault_yieldSyncV1VaultProperty`
 	* @dev [view][mapping]
 	* @param yieldSyncV1VaultAddress {address}
 	* @return {YieldSyncV1VaultProperty}
 	*/
-	function yieldSyncV1Vault_YieldSyncV1VaultProperty(address yieldSyncV1VaultAddress)
+	function yieldSyncV1Vault_yieldSyncV1VaultProperty(address yieldSyncV1VaultAddress)
 		external
 		returns (YieldSyncV1VaultProperty memory)
 	;
