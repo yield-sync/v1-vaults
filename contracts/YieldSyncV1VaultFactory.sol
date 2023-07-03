@@ -4,6 +4,7 @@ pragma solidity ^0.8.18;
 
 import { IAccessControlEnumerable } from "@openzeppelin/contracts/access/IAccessControlEnumerable.sol";
 
+import { ISignatureProtocol } from "./interface/ISignatureProtocol.sol";
 import { ITransferRequestProtocol } from "./interface/ITransferRequestProtocol.sol";
 import { IYieldSyncV1VaultFactory } from "./interface/IYieldSyncV1VaultFactory.sol";
 import { YieldSyncV1Vault } from "./YieldSyncV1Vault.sol";
@@ -98,6 +99,14 @@ contract YieldSyncV1VaultFactory is
 			msg.sender,
 			address(deployedContract)
 		);
+
+		if (defaultSignatureProtocol != address(0))
+		{
+			ISignatureProtocol(defaultSignatureProtocol).initializeYieldSyncV1Vault(
+				msg.sender,
+				address(deployedContract)
+			);
+		}
 
 		yieldSyncV1VaultIdTracker++;
 
