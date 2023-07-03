@@ -53,11 +53,11 @@ interface IYieldSyncV1VaultFactory
 	;
 
 	/**
-	* @notice Default Signature Manager contract address
+	* @notice Default Signature Protocol contract address
 	* @dev [view-address]
 	* @return {address}
 	*/
-	function defaultSignatureManager()
+	function defaultSignatureProtocol()
 		external
 		view
 		returns (address)
@@ -125,19 +125,19 @@ interface IYieldSyncV1VaultFactory
 	* @dev [create]
 	* @param admins {address[]}
 	* @param members {address[]}
-	* @param signatureManager {address}
+	* @param signatureProtocol {address}
 	* @param transferRequest {uint256}
 	* @param useDefaultTransferRequestProtocol {uint256}
-	* @param useDefaultSignatureManager {uint256}
+	* @param useDefaultSignatureProtocol {uint256}
 	* @return {address} Deployed vault
 	*/
 	function deployYieldSyncV1Vault(
 		address[] memory admins,
 		address[] memory members,
-		address signatureManager,
+		address signatureProtocol,
 		address transferRequest,
 		bool useDefaultTransferRequestProtocol,
-		bool useDefaultSignatureManager
+		bool useDefaultSignatureProtocol
 	)
 		external
 		payable
@@ -145,12 +145,12 @@ interface IYieldSyncV1VaultFactory
 	;
 
 	/**
-	* @notice Updates default signature manager
+	* @notice Updates Default Signature Protocol
 	* @dev [restriction] `IYieldSyncGovernance` AccessControlEnumerable → DEFAULT_ADMIN_ROLE
-	* @dev [update] `defaultSignatureManager`
-	* @param _defaultSignatureManager {address}
+	* @dev [update] `defaultSignatureProtocol`
+	* @param _defaultSignatureProtocol {address}
 	*/
-	function updateDefaultSignatureManager(address _defaultSignatureManager)
+	function updateDefaultSignatureProtocol(address _defaultSignatureProtocol)
 		external
 	;
 

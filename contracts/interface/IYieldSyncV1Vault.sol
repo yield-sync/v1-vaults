@@ -8,7 +8,7 @@ import { ITransferRequestProtocol, TransferRequest } from "./ITransferRequestPro
 interface IYieldSyncV1Vault
 {
 	event TokensTransferred(address indexed to, address indexed token, uint256 amount);
-	event UpdatedSignatureManger(address signatureManager);
+	event UpdatedSignatureProtocol(address signatureProtocol);
 	event ProcessTransferRequestFailed(uint256 transferRequestId);
 
 
@@ -35,11 +35,11 @@ interface IYieldSyncV1Vault
 	;
 
 	/**
-	* @notice SignatureManager Contract Address
+	* @notice SignatureProtocol Contract Address
 	* @dev [view-address]
 	* @return {address}
 	*/
-	function signatureManager()
+	function signatureProtocol()
 		external
 		view
 		returns (address)
@@ -109,12 +109,12 @@ interface IYieldSyncV1Vault
 	;
 
 	/**
-	* @notice Update Signature Manager Contract
+	* @notice Update Signature Protocol Contract
 	* @dev [restriction] `YieldSyncV1Record` → admin
-	* @dev [update] `signatureManager`
-	* @param _signatureManager {address}
+	* @dev [update] `_signatureProtocol`
+	* @param _signatureProtocol {address}
 	*/
-	function updateSignatureManager(address _signatureManager)
+	function updateSignatureProtocol(address _signatureProtocol)
 		external
 	;
 

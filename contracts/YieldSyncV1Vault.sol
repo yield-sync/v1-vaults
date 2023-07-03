@@ -30,7 +30,7 @@ contract YieldSyncV1Vault is
 
 	address public override immutable YieldSyncV1VaultAccessControl;
 
-	address public override signatureManager;
+	address public override signatureProtocol;
 	address public override transferRequestProtocol;
 
 	bool public override processTransferRequestLocked;
@@ -45,7 +45,7 @@ contract YieldSyncV1Vault is
 		address[] memory admins,
 		address[] memory members,
 		address _transferRequestProtocol,
-		address _signatureManager
+		address _signatureProtocol
 	)
 	{
 		YieldSyncV1VaultAccessControl = _YieldSyncV1VaultAccessControl;
@@ -60,7 +60,7 @@ contract YieldSyncV1Vault is
 			IYieldSyncV1VaultAccessControl(YieldSyncV1VaultAccessControl).addMember(address(this), members[i]);
 		}
 
-		signatureManager = _signatureManager;
+		signatureProtocol = _signatureProtocol;
 		transferRequestProtocol = _transferRequestProtocol;
 
 		processTransferRequestLocked = false;
@@ -114,7 +114,7 @@ contract YieldSyncV1Vault is
 		override
 		returns (bytes4 magicValue)
 	{
-		return IERC1271(signatureManager).isValidSignature(_messageHash, _signature);
+		return IERC1271(signatureProtocol).isValidSignature(_messageHash, _signature);
 	}
 
 
@@ -156,14 +156,14 @@ contract YieldSyncV1Vault is
 
 
 	/// @inheritdoc IYieldSyncV1Vault
-	function updateSignatureManager(address _signatureManager)
+	function updateSignatureProtocol(address _signatureProtocol)
 		public
 		override
 		onlyAdmin()
 	{
-		signatureManager = _signatureManager;
+		signatureProtocol = _signatureProtocol;
 
-		emit UpdatedSignatureManger(signatureManager);
+		emit UpdatedSignatureProtocol(signatureProtocol);
 	}
 
 

@@ -47,12 +47,12 @@ interface ITransferRequestProtocol
 	;
 
 	/**
-	* @notice Initialize
+	* @notice Initialize YieldSyncV1Vault
 	* @dev [restriction] `YieldSyncV1VaultFactory`
 	* @param purposer {address}
 	* @param yieldSyncV1VaultAddress {address}
 	*/
-	function initializeTransferRequestProtocol(address purposer, address yieldSyncV1VaultAddress)
+	function initializeYieldSyncV1Vault(address purposer, address yieldSyncV1VaultAddress)
 		external
 	;
 }
