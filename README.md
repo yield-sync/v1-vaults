@@ -8,11 +8,13 @@ npx hardhat test
 
 ## `.env` example
 
-```
+```shell
 PRIVATE_KEY=
 INFURA_API_KEY=
 ETHERSCAN_API_KEY=
 OPTIMISTIC_ETHERSCAN_API_KEY=
+YIELD_SYNC_GOVERNANCE_ADDRESS=
+YIELD_SYNC_V1_VAULT_FACTORY=
 ```
 
 ## Variables, Mappings, & Functions Ordering
