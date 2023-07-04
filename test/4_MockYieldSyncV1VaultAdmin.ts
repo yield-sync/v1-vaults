@@ -4,91 +4,107 @@ import { Contract, ContractFactory } from "ethers";
 const { ethers } = require("hardhat");
 
 
-const stageContracts = async () => {
-	const [owner, addr1, addr2] = await ethers.getSigners();
-
-	const YieldSyncV1Vault: ContractFactory = await ethers.getContractFactory("YieldSyncV1Vault");
-	const YieldSyncV1VaultFactory: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultFactory");
-	const YieldSyncV1VaultAccessControl: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultAccessControl");
-	const MockYieldSyncGovernance: ContractFactory = await ethers.getContractFactory("MockYieldSyncGovernance");
-	const MockAdmin: ContractFactory = await ethers.getContractFactory("MockAdmin");
-	const SignatureManager: ContractFactory = await ethers.getContractFactory("SignatureManager");
-
-	// Deploy
-	const mockYieldSyncGovernance: Contract = await (await MockYieldSyncGovernance.deploy()).deployed();
-	const yieldSyncV1VaultAccessControl: Contract = await (await YieldSyncV1VaultAccessControl.deploy()).deployed();
-	const yieldSyncV1VaultFactory: Contract = await (
-		await YieldSyncV1VaultFactory.deploy(mockYieldSyncGovernance.address, yieldSyncV1VaultAccessControl.address)
-	).deployed();
-
-	// Deploy a vault
-	await yieldSyncV1VaultFactory.deployYieldSyncV1Vault(
-		[owner.address],
-		[addr1.address, addr2.address],
-		ethers.constants.AddressZero,
-		true,
-		2,
-		2,
-		5,
-		{ value: 1 }
-	);
-
-	// Attach the deployed vault's address
-	const yieldSyncV1Vault: Contract = await YieldSyncV1Vault.attach(yieldSyncV1VaultFactory.yieldSyncV1VaultId_yieldSyncV1VaultAddress(0));
-
-	const mockAdmin: Contract = await (await MockAdmin.deploy()).deployed();
-	const signatureManager: Contract = await (
-		await SignatureManager.deploy(mockYieldSyncGovernance.address, yieldSyncV1VaultAccessControl.address)
-	).deployed();
-
-	return {
-		yieldSyncV1Vault,
-		yieldSyncV1VaultFactory,
-		yieldSyncV1VaultAccessControl,
-		mockYieldSyncGovernance,
-		mockAdmin,
-		signatureManager
-	};
-};
-
-
 describe("[4] MockAdmin.sol - Mock Admin Contract", async () => {
 	let yieldSyncV1Vault: Contract;
-	let yieldSyncV1VaultFactory: Contract;
 	let yieldSyncV1VaultAccessControl: Contract;
-	let mockYieldSyncGovernance: Contract;
+	let yieldSyncV1VaultFactory: Contract;
+	let yieldSyncV1TransferRequestProtocol: Contract;
+	let signatureProtocol: Contract;
 	let mockAdmin: Contract;
-	let signatureManager: Contract;
+	let mockDapp: Contract;
+	let mockERC20: Contract;
+	let mockERC721: Contract;
+	let mockYieldSyncGovernance: Contract;
 
 
-	before("[before] Set up contracts..", async () => {
-		const [, addr1, addr2] = await ethers.getSigners();
+	beforeEach("[before] Set up contracts..", async () => {
+		const [owner, addr1, addr2] = await ethers.getSigners();
 
-		const stagedContracts = await stageContracts();
+		// Contract Factory
+		const MockAdmin: ContractFactory = await ethers.getContractFactory("MockAdmin");
+		const MockERC20: ContractFactory = await ethers.getContractFactory("MockERC20");
+		const MockERC721: ContractFactory = await ethers.getContractFactory("MockERC721");
+		const MockDapp: ContractFactory = await ethers.getContractFactory("MockDapp");
 
-		yieldSyncV1Vault = stagedContracts.yieldSyncV1Vault;
-		yieldSyncV1VaultFactory = stagedContracts.yieldSyncV1VaultFactory;
-		yieldSyncV1VaultAccessControl = stagedContracts.yieldSyncV1VaultAccessControl;
-		mockYieldSyncGovernance = stagedContracts.mockYieldSyncGovernance;
-		mockAdmin = stagedContracts.mockAdmin;
-		signatureManager = stagedContracts.signatureManager;
+		const YieldSyncV1Vault: ContractFactory = await ethers.getContractFactory("YieldSyncV1Vault");
+		const YieldSyncV1VaultFactory: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultFactory");
+		const YieldSyncV1VaultAccessControl: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultAccessControl");
+		const MockYieldSyncGovernance: ContractFactory = await ethers.getContractFactory("MockYieldSyncGovernance");
+		const YieldSyncV1SignatureProtocol: ContractFactory = await ethers.getContractFactory("YieldSyncV1SignatureProtocol");
+		const YieldSyncV1TransferRequestProtocol: ContractFactory = await ethers.getContractFactory("YieldSyncV1TransferRequestProtocol");
 
-		await yieldSyncV1Vault.updateSignatureManager(signatureManager.address);
+
+		// Contract
+		mockDapp = await (await MockDapp.deploy()).deployed();
+		mockAdmin = await (await MockAdmin.deploy()).deployed();
+		mockERC20 = await (await MockERC20.deploy()).deployed();
+		mockERC721 = await (await MockERC721.deploy()).deployed();
+
+		// Deploy
+		mockYieldSyncGovernance = await (await MockYieldSyncGovernance.deploy()).deployed();
+		yieldSyncV1VaultAccessControl = await (await YieldSyncV1VaultAccessControl.deploy()).deployed();
+
+		// Deploy Factory
+		yieldSyncV1VaultFactory = await (
+			await YieldSyncV1VaultFactory.deploy(mockYieldSyncGovernance.address, yieldSyncV1VaultAccessControl.address)
+		).deployed();
+
+		// Deploy Transfer Request Protocol
+		yieldSyncV1TransferRequestProtocol = await (
+			await YieldSyncV1TransferRequestProtocol.deploy(
+				yieldSyncV1VaultAccessControl.address,
+				yieldSyncV1VaultFactory.address
+			)
+		).deployed();
+
+		// Deploy Signature Protocol
+		signatureProtocol = await (
+			await YieldSyncV1SignatureProtocol.deploy(
+				mockYieldSyncGovernance.address,
+				yieldSyncV1VaultAccessControl.address
+			)
+		).deployed();
+
+		await signatureProtocol.update_purposer_signaturesRequired(2);
+
+		// Set Factory -> Transfer Request Protocol
+		await yieldSyncV1VaultFactory.updateTransferRequestProtocol(yieldSyncV1TransferRequestProtocol.address);
+
+		// Set Factory -> Transfer Request Protocol
+		await yieldSyncV1VaultFactory.updateDefaultSignatureProtocol(signatureProtocol.address);
+
+		// Set YieldSyncV1Vault properties on TransferRequestProtocol.sol
+		await yieldSyncV1TransferRequestProtocol.update_purposer_yieldSyncV1VaultProperty([
+			2, 2, 5
+		]);
+
+		// Deploy a vault
+		await yieldSyncV1VaultFactory.deployYieldSyncV1Vault(
+			[owner.address],
+			[addr1.address, addr2.address],
+			ethers.constants.AddressZero,
+			ethers.constants.AddressZero,
+			true,
+			true,
+			{ value: 1 }
+		);
+
+		// Attach the deployed vault's address
+		yieldSyncV1Vault = await YieldSyncV1Vault.attach(
+			await yieldSyncV1VaultFactory.yieldSyncV1VaultId_yieldSyncV1VaultAddress(0)
+		);
 
 		// Send ether to YieldSyncV1Vault contract
 		await addr1.sendTransaction({
 			to: yieldSyncV1Vault.address,
-			value: ethers.utils.parseEther("1")
+			value: ethers.utils.parseEther(".5")
 		});
 
-		await yieldSyncV1Vault.connect(addr1).createTransferRequest(
-			false,
-			false,
-			addr2.address,
-			ethers.constants.AddressZero,
-			ethers.utils.parseEther(".5"),
-			0
-		);
+		// Send ERC20 to YieldSyncV1Vault contract
+		await mockERC20.transfer(yieldSyncV1Vault.address, 50);
+
+		// Send ERC721 to YieldSyncV1Vault contract
+		await mockERC721.transferFrom(owner.address, yieldSyncV1Vault.address, 1);
 	});
 
 	/**
@@ -108,16 +124,41 @@ describe("[4] MockAdmin.sol - Mock Admin Contract", async () => {
 			it(
 				"Should update the latestRelevantForVoteTime to ADD seconds..",
 				async () => {
-					const beforeBlockTimestamp = BigInt((await yieldSyncV1Vault.transferRequestId_transferRequest(0))[9]);
+					const [, addr1, addr2] = await ethers.getSigners();
 
-					await mockAdmin.updateTransferRequestLatestRelevantForVoteTime(
+					await yieldSyncV1Vault.addAdmin(mockAdmin.address);
+
+					await yieldSyncV1TransferRequestProtocol.connect(addr1).createTransferRequest(
+						yieldSyncV1Vault.address,
+						false,
+						false,
+						addr2.address,
+						ethers.constants.AddressZero,
+						ethers.utils.parseEther(".5"),
+						0
+					);
+
+					const beforeBlockTimestamp = BigInt((
+						await yieldSyncV1TransferRequestProtocol.yieldSyncV1Vault_transferRequestId_transferRequestVote(
+							yieldSyncV1Vault.address,
+							0
+						)
+					).latestRelevantForVoteTime);
+
+					await mockAdmin.updateTransferRequestVoteLatestRelevantForVoteTime(
+						yieldSyncV1TransferRequestProtocol.address,
 						yieldSyncV1Vault.address,
 						0,
 						true,
 						4000
 					);
 
-					const afterBlockTimestamp = BigInt((await yieldSyncV1Vault.transferRequestId_transferRequest(0))[9]);
+					const afterBlockTimestamp = BigInt((
+						await yieldSyncV1TransferRequestProtocol.yieldSyncV1Vault_transferRequestId_transferRequestVote(
+							yieldSyncV1Vault.address,
+							0
+						)
+					).latestRelevantForVoteTime);
 
 					expect(BigInt(beforeBlockTimestamp + BigInt(4000))).to.be.equal(afterBlockTimestamp);
 				}

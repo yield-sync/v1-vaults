@@ -14,10 +14,14 @@ import {
 
 
 contract MockAdmin is Ownable {
-	modifier validTransferRequest(address yieldSyncV1VaultAddress, uint256 transferRequestId) {
+	modifier validTransferRequest(
+		address yieldSyncV1TransferRequestProtocol,
+		address yieldSyncV1VaultAddress,
+		uint256 transferRequestId
+	) {
 		require(
 			IYieldSyncV1TransferRequestProtocol(
-				yieldSyncV1VaultAddress
+				yieldSyncV1TransferRequestProtocol
 			).yieldSyncV1Vault_transferRequestId_transferRequest(
 				yieldSyncV1VaultAddress,
 				transferRequestId
@@ -30,16 +34,17 @@ contract MockAdmin is Ownable {
 
 
 	function updateTransferRequestVoteLatestRelevantForVoteTime(
+		address yieldSyncV1TransferRequestProtocol,
 		address yieldSyncV1VaultAddress,
 		uint256 transferRequestId,
 		bool arithmaticSign,
 		uint256 timeInSeconds
 	)
 		public
-		validTransferRequest(yieldSyncV1VaultAddress, transferRequestId)
+		validTransferRequest(yieldSyncV1TransferRequestProtocol, yieldSyncV1VaultAddress, transferRequestId)
 	{
 		TransferRequestVote memory transferRequestVote = IYieldSyncV1TransferRequestProtocol(
-			yieldSyncV1VaultAddress
+			yieldSyncV1TransferRequestProtocol
 		).yieldSyncV1Vault_transferRequestId_transferRequestVote(
 			yieldSyncV1VaultAddress,
 			transferRequestId
@@ -56,7 +61,7 @@ contract MockAdmin is Ownable {
 			transferRequestVote.latestRelevantForVoteTime -= (timeInSeconds * 1 seconds);
 		}
 
-		IYieldSyncV1TransferRequestProtocol(payable(yieldSyncV1VaultAddress)).updateTransferRequestVote(
+		IYieldSyncV1TransferRequestProtocol(yieldSyncV1TransferRequestProtocol).updateTransferRequestVote(
 			yieldSyncV1VaultAddress,
 			transferRequestId,
 			transferRequestVote
