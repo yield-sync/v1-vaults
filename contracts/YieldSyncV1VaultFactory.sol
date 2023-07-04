@@ -81,7 +81,7 @@ contract YieldSyncV1VaultFactory is
 		returns (address)
 	{
 		require(
-			defaultTransferRequestProtocol != address(0) || useDefaultTransferRequestProtocol,
+			defaultTransferRequestProtocol != address(0) || !useDefaultTransferRequestProtocol,
 			"!transferRequestProtocol && !useDefaultTransferRequestProtocol"
 		);
 
