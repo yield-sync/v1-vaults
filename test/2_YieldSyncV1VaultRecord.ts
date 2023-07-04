@@ -39,7 +39,7 @@ describe("[2] YieldSyncV1VaultAccessControl.sol - YieldSync V1 Vault Record Cont
 		).deployed();
 
 		// Set Factory -> Transfer Request Protocol
-		await yieldSyncV1VaultFactory.setTransferRequestProtocol(yieldSyncV1TransferRequestProtocol.address);
+		await yieldSyncV1VaultFactory.updateTransferRequestProtocol(yieldSyncV1TransferRequestProtocol.address);
 
 		// Set YieldSyncV1Vault properties on TransferRequestProtocol.sol
 		await yieldSyncV1TransferRequestProtocol.update_purposer_yieldSyncV1VaultProperty([

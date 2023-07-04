@@ -21,7 +21,7 @@ describe("[3] signatureProtocol.sol - Signature Manager Contract", async () => {
 
 
 	beforeEach("[before] Set up contracts..", async () => {
-		const [owner, addr1] = await ethers.getSigners();
+		const [owner, addr1, addr2] = await ethers.getSigners();
 
 		// Contract Factory
 		const MockAdmin: ContractFactory = await ethers.getContractFactory("MockAdmin");
@@ -60,9 +60,6 @@ describe("[3] signatureProtocol.sol - Signature Manager Contract", async () => {
 			)
 		).deployed();
 
-		// Set Factory -> Transfer Request Protocol
-		await yieldSyncV1VaultFactory.setTransferRequestProtocol(yieldSyncV1TransferRequestProtocol.address);
-
 		// Deploy Signature Protocol
 		signatureProtocol = await (
 			await YieldSyncV1SignatureProtocol.deploy(
@@ -70,6 +67,14 @@ describe("[3] signatureProtocol.sol - Signature Manager Contract", async () => {
 				yieldSyncV1VaultAccessControl.address
 			)
 		).deployed();
+
+		await signatureProtocol.update_purposer_signaturesRequired(2);
+
+		// Set Factory -> Transfer Request Protocol
+		await yieldSyncV1VaultFactory.updateTransferRequestProtocol(yieldSyncV1TransferRequestProtocol.address);
+
+		// Set Factory -> Transfer Request Protocol
+		await yieldSyncV1VaultFactory.updateDefaultSignatureProtocol(signatureProtocol.address);
 
 		// Set YieldSyncV1Vault properties on TransferRequestProtocol.sol
 		await yieldSyncV1TransferRequestProtocol.update_purposer_yieldSyncV1VaultProperty([
@@ -79,10 +84,10 @@ describe("[3] signatureProtocol.sol - Signature Manager Contract", async () => {
 		// Deploy a vault
 		await yieldSyncV1VaultFactory.deployYieldSyncV1Vault(
 			[owner.address],
-			[addr1.address],
+			[addr1.address, addr2.address],
+			signatureProtocol.address,
 			ethers.constants.AddressZero,
-			ethers.constants.AddressZero,
-			true,
+			false,
 			true,
 			{ value: 1 }
 		);
@@ -245,40 +250,58 @@ describe("[3] signatureProtocol.sol - Signature Manager Contract", async () => {
 			).to.be.rejectedWith("Already signed");
 		});
 
-		it("Should fail yieldSyncV1Vault.isValidSignature() due to not enough votes..", async () => {
+		it(
+			"Should fail yieldSyncV1Vault.isValidSignature() due to not enough votes..",
+			async () => {
+				await signatureProtocol.updatePause(false);
+
+				const [, addr1] = await ethers.getSigners();
+
+				const messageHash: Bytes = ethers.utils.id("Hello, world!");
+
+				const signature: Signature = await addr1.signMessage(ethers.utils.arrayify(messageHash));
+
+				// [contract] Sign message hash
+				await signatureProtocol.connect(addr1).signMessageHash(
+					yieldSyncV1Vault.address,
+					messageHash,
+					signature
+				);
+
+				// [contract]
+				const retrievedBytes32 = await signatureProtocol.vaultMessageHashes(yieldSyncV1Vault.address);
+
+				const messageHashData = await signatureProtocol.yieldSyncV1VaultAddress_messageHash_messageHashData(
+					yieldSyncV1Vault.address,
+					retrievedBytes32[0]
+				);
+
+				expect(
+					await yieldSyncV1Vault.isValidSignature(retrievedBytes32[0], messageHashData.signature)
+				).to.be.equal("0x00000000");
+			}
+		);
+
+		it("Should pass yieldSyncV1Vault.isValidSignature() due to enough votes..", async () => {
 			await signatureProtocol.updatePause(false);
 
-			const [, addr1] = await ethers.getSigners();
+			const [, addr1, addr2] = await ethers.getSigners();
 
 			const messageHash: Bytes = ethers.utils.id("Hello, world!");
 
 			const signature: Signature = await addr1.signMessage(ethers.utils.arrayify(messageHash));
 
 			// [contract] Sign message hash
-			await signatureProtocol.connect(addr1).signMessageHash(yieldSyncV1Vault.address, messageHash, signature);
-
-			// [contract]
-			const retrievedBytes32 = await signatureProtocol.vaultMessageHashes(yieldSyncV1Vault.address);
-
-			const messageHashData = await signatureProtocol.yieldSyncV1VaultAddress_messageHash_messageHashData(
+			await signatureProtocol.connect(addr1).signMessageHash(
 				yieldSyncV1Vault.address,
-				retrievedBytes32[0]
+				messageHash,
+				signature
 			);
 
-			expect(
-				await yieldSyncV1Vault.isValidSignature(retrievedBytes32[0], messageHashData.signature)
-			).to.be.equal("0x00000000");
-		});
-
-		it("Should pass yieldSyncV1Vault.isValidSignature() due to enough votes..", async () => {
-			await signatureProtocol.updatePause(false);
-
-			const [, , addr2] = await ethers.getSigners();
-
 			// [contract]
 			const retrievedBytes32 = await signatureProtocol.vaultMessageHashes(yieldSyncV1Vault.address);
 
-			const messageHashData: Bytes = await signatureProtocol.yieldSyncV1VaultAddress_messageHash_messageHashData(
+			const messageHashData: any = await signatureProtocol.yieldSyncV1VaultAddress_messageHash_messageHashData(
 				yieldSyncV1Vault.address,
 				retrievedBytes32[0]
 			);
@@ -287,7 +310,7 @@ describe("[3] signatureProtocol.sol - Signature Manager Contract", async () => {
 			await signatureProtocol.connect(addr2).signMessageHash(
 				yieldSyncV1Vault.address,
 				retrievedBytes32[0],
-				messageHashData[0]
+				messageHashData.signature
 			);
 
 			expect(
@@ -353,23 +376,41 @@ describe("[3] signatureProtocol.sol - Signature Manager Contract", async () => {
 			await signatureProtocol.connect(addr1).signMessageHash(yieldSyncV1Vault.address, messageHash, signature);
 
 			// [contract]
-			const retrievedBytes32: Bytes = await signatureProtocol.vaultMessageHashes(yieldSyncV1Vault.address);
+			const retrievedBytes32: any = await signatureProtocol.vaultMessageHashes(yieldSyncV1Vault.address);
 
-			expect(retrievedBytes32[1]).to.be.equal(messageHash);
+			expect(retrievedBytes32[0]).to.be.equal(messageHash);
 
 			const messageHashData: any = await signatureProtocol.yieldSyncV1VaultAddress_messageHash_messageHashData(
 				yieldSyncV1Vault.address,
-				retrievedBytes32[1]
+				retrievedBytes32[0]
 			);
 
-			expect(messageHashData[0]).to.be.equal(signature);
-			expect(messageHashData[1]).to.be.equal(addr1.address);
-			expect(messageHashData[2][0]).to.be.equal(addr1.address);
-			expect(messageHashData[3]).to.be.equal(1);
+			const messageHashVote: any = await signatureProtocol.yieldSyncV1VaultAddress_messageHash_messageHashVote(
+				yieldSyncV1Vault.address,
+				retrievedBytes32[0]
+			);
+
+			expect(messageHashData.signature).to.be.equal(signature);
+			expect(messageHashData.signer).to.be.equal(addr1.address);
+			expect(messageHashVote.signedMembers[0]).to.be.equal(addr1.address);
+			expect(messageHashVote.signatureCount).to.be.equal(1);
 		});
 
 		it("Should fail yieldSyncV1Vault.isValidSignature() due to not being latest signature..", async () => {
 			await signatureProtocol.updatePause(false);
+
+			const [, addr1] = await ethers.getSigners();
+
+			const messageHash: Bytes = ethers.utils.id("Hello, world!");
+
+			const signature: Signature = await addr1.signMessage(ethers.utils.arrayify(messageHash));
+
+			// [contract] Sign message hash
+			await signatureProtocol.connect(addr1).signMessageHash(
+				yieldSyncV1Vault.address,
+				messageHash,
+				signature
+			);
 
 			// [contract]
 			const retrievedBytes32 = await signatureProtocol.vaultMessageHashes(yieldSyncV1Vault.address);

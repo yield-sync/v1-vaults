@@ -133,11 +133,11 @@ contract YieldSyncV1SignatureProtocol is
 
 
 	/// @inheritdoc IYieldSyncV1SignatureProtocol
-	function update_purposer_signaturesRequired(address purposer, uint256 signatureRequired)
+	function update_purposer_signaturesRequired(uint256 signatureRequired)
 		public
 		override
 	{
-		_purposer_signaturesRequired[purposer] = signatureRequired;
+		_purposer_signaturesRequired[msg.sender] = signatureRequired;
 	}
 
 	/// @inheritdoc IYieldSyncV1SignatureProtocol

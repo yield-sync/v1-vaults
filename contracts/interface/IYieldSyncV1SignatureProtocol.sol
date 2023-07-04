@@ -91,11 +91,10 @@ interface IYieldSyncV1SignatureProtocol is
 	* @notice Update signaturesRequired
 	* @dev [restriction] `YieldSyncV1Record` → admin
 	* @dev [update] `update_purposer_signaturesRequired`
-	* @param purposer {YieldSyncV1VaultProperty}
 	* @param signatureRequired {YieldSyncV1VaultProperty}
 	* Emits: `UpdatedPurposerYieldSyncV1VaultProperty`
 	*/
-	function update_purposer_signaturesRequired(address purposer, uint256 signatureRequired)
+	function update_purposer_signaturesRequired(uint256 signatureRequired)
 		external
 	;
 

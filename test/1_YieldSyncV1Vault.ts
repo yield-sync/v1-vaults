@@ -60,7 +60,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 		).deployed();
 
 		// Set Factory -> Transfer Request Protocol
-		await yieldSyncV1VaultFactory.setTransferRequestProtocol(yieldSyncV1TransferRequestProtocol.address);
+		await yieldSyncV1VaultFactory.updateTransferRequestProtocol(yieldSyncV1TransferRequestProtocol.address);
 
 		// Deploy Signature Protocol
 		signatureProtocol = await (

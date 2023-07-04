@@ -116,7 +116,7 @@ contract YieldSyncV1VaultFactory is
 	}
 
 
-	function setTransferRequestProtocol(address _transferRequestProtocol)
+	function updateTransferRequestProtocol(address _transferRequestProtocol)
 		public
 		only_YieldSyncGovernance_DEFAULT_ADMIN_ROLE()
 	{
