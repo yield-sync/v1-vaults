@@ -18,9 +18,10 @@ contract YieldSyncV1VaultAccessControl is
 	IYieldSyncV1VaultAccessControl
 {
 	mapping (address admin => address[] yieldSyncV1Vaults) internal _admin_yieldSyncV1Vaults;
+	mapping (address member => address[] yieldSyncV1Vaults) internal _member_yieldSyncV1Vaults;
 	mapping (address yieldSyncV1Vault  => address[] admins) internal _yieldSyncV1Vault_admins;
 	mapping (address yieldSyncV1Vault => address[] members) internal _yieldSyncV1Vault_members;
-	mapping (address member => address[] yieldSyncV1Vaults) internal _member_yieldSyncV1Vaults;
+	
 	mapping (
 		address yieldSyncV1Vault => mapping (address participant => Access access)
 	) internal _yieldSyncV1Vault_participant_access;
