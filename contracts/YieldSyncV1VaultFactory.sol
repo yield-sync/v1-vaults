@@ -82,7 +82,7 @@ contract YieldSyncV1VaultFactory is
 	{
 		require(
 			defaultTransferRequestProtocol != address(0) || !useDefaultTransferRequestProtocol,
-			"!transferRequestProtocol && !useDefaultTransferRequestProtocol"
+			"!transferRequestProtocol && useDefaultTransferRequestProtocol"
 		);
 
 		require(msg.value >= fee, "!msg.value");
