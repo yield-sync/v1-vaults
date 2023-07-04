@@ -264,7 +264,6 @@ contract YieldSyncV1TransferRequestProtocol is
 		return _yieldSyncV1Vault_yieldSyncV1VaultProperty[yieldSyncV1VaultAddress];
 	}
 
-
 	/// @inheritdoc IYieldSyncV1TransferRequestProtocol
 	function yieldSyncV1Vault_transferRequestId_transferRequestVote(
 		address yieldSyncV1VaultAddress,
@@ -281,7 +280,7 @@ contract YieldSyncV1TransferRequestProtocol is
 
 
 	/// @inheritdoc IYieldSyncV1TransferRequestProtocol
-	function update_purposer_yieldSyncV1VaultProperty(YieldSyncV1VaultProperty memory yieldSyncV1VaultProperty)
+	function purposeYieldSyncV1VaultProperty(YieldSyncV1VaultProperty memory yieldSyncV1VaultProperty)
 		public
 		override
 	{
@@ -332,7 +331,7 @@ contract YieldSyncV1TransferRequestProtocol is
 	}
 
 	/// @inheritdoc IYieldSyncV1TransferRequestProtocol
-	function update_yieldSyncV1Vault_yieldSyncV1VaultProperty(
+	function updateYieldSyncV1VaultProperty(
 		address yieldSyncV1VaultAddress,
 		YieldSyncV1VaultProperty memory yieldSyncV1VaultProperty
 	)

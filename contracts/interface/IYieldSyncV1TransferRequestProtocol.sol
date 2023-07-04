@@ -112,7 +112,7 @@ interface IYieldSyncV1TransferRequestProtocol is
 	* @param yieldSyncV1VaultProperty {YieldSyncV1VaultProperty}
 	* Emits: `UpdatedPurposerYieldSyncV1VaultProperty`
 	*/
-	function update_purposer_yieldSyncV1VaultProperty(YieldSyncV1VaultProperty memory yieldSyncV1VaultProperty)
+	function purposeYieldSyncV1VaultProperty(YieldSyncV1VaultProperty memory yieldSyncV1VaultProperty)
 		external
 	;
 
@@ -153,12 +153,12 @@ interface IYieldSyncV1TransferRequestProtocol is
 	/**
 	* @notice Update
 	* @dev [restriction] `YieldSyncV1Record` → admin
-	* @dev [update] `_update_yieldSyncV1Vault_yieldSyncV1VaultProperty`
+	* @dev [update] `_updateYieldSyncV1VaultProperty`
 	* @param yieldSyncV1VaultAddress {address}
 	* @param yieldSyncV1VaultProperty {YieldSyncV1VaultProperty}
 	* Emits: `UpdatedYieldSyncV1VaultYieldSyncV1VaultProperty`
 	*/
-	function update_yieldSyncV1Vault_yieldSyncV1VaultProperty(
+	function updateYieldSyncV1VaultProperty(
 		address yieldSyncV1VaultAddress,
 		YieldSyncV1VaultProperty memory yieldSyncV1VaultProperty
 	)
