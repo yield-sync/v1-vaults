@@ -68,10 +68,10 @@ contract YieldSyncV1VaultFactory is
 
 	/// @inheritdoc IYieldSyncV1VaultFactory
 	function deployYieldSyncV1Vault(
-		address[] memory admins,
-		address[] memory members,
 		address signatureProtocol,
 		address transferRequestProtocol,
+		address[] memory admins,
+		address[] memory members,
 		bool useDefaultSignatureProtocol,
 		bool useDefaultTransferRequestProtocol
 	)
@@ -89,10 +89,10 @@ contract YieldSyncV1VaultFactory is
 
 		YieldSyncV1Vault deployedContract = new YieldSyncV1Vault(
 			YieldSyncV1VaultAccessControl,
-			admins,
-			members,
 			useDefaultTransferRequestProtocol ? defaultTransferRequestProtocol : transferRequestProtocol,
-			useDefaultSignatureProtocol ? defaultSignatureProtocol : signatureProtocol
+			useDefaultSignatureProtocol ? defaultSignatureProtocol : signatureProtocol,
+			admins,
+			members
 		);
 
 		yieldSyncV1VaultAddress_yieldSyncV1VaultId[address(deployedContract)] = yieldSyncV1VaultIdTracker;

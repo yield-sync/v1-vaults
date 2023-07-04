@@ -48,10 +48,10 @@ describe("[2] YieldSyncV1VaultAccessControl.sol - YieldSync V1 Vault Record Cont
 
 		// Deploy a vault
 		await yieldSyncV1VaultFactory.deployYieldSyncV1Vault(
+			ethers.constants.AddressZero,
+			ethers.constants.AddressZero,
 			[owner.address],
 			[addr1.address, addr2.address, addr3.address],
-			ethers.constants.AddressZero,
-			ethers.constants.AddressZero,
 			true,
 			true,
 			{ value: 1 }

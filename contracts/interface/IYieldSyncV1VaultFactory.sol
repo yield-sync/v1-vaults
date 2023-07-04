@@ -123,19 +123,19 @@ interface IYieldSyncV1VaultFactory
 	/**
 	* @notice Deploy a YieldSyncV1Vault contract
 	* @dev [create]
-	* @param admins {address[]}
-	* @param members {address[]}
 	* @param signatureProtocol {address}
 	* @param transferRequestProtocol {uint256}
+	* @param admins {address[]}
+	* @param members {address[]}
 	* @param useDefaultSignatureProtocol {uint256}
 	* @param useDefaultTransferRequestProtocol {uint256}
 	* @return {address} Deployed vault
 	*/
 	function deployYieldSyncV1Vault(
-		address[] memory admins,
-		address[] memory members,
 		address signatureProtocol,
 		address transferRequestProtocol,
+		address[] memory admins,
+		address[] memory members,
 		bool useDefaultSignatureProtocol,
 		bool useDefaultTransferRequestProtocol
 	)

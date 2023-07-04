@@ -80,10 +80,10 @@ describe("[4] MockAdmin.sol - Mock Admin Contract", async () => {
 
 		// Deploy a vault
 		await yieldSyncV1VaultFactory.deployYieldSyncV1Vault(
+			ethers.constants.AddressZero,
+			ethers.constants.AddressZero,
 			[owner.address],
 			[addr1.address, addr2.address],
-			ethers.constants.AddressZero,
-			ethers.constants.AddressZero,
 			true,
 			true,
 			{ value: 1 }

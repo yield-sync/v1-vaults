@@ -224,10 +224,10 @@ describe("[0] YieldSyncV1VaultFactory.sol - YieldSync V1 Vault Factory Contract"
 					await yieldSyncV1VaultFactory.updateFee(ethers.utils.parseEther("1"));
 
 					await expect(yieldSyncV1VaultFactory.deployYieldSyncV1Vault(
-						[addr1.address],
-						[addr1.address],
 						ethers.constants.AddressZero,
 						ethers.constants.AddressZero,
+						[addr1.address],
+						[addr1.address],
 						true,
 						true,
 						{ value: ethers.utils.parseEther(".5") }
@@ -245,10 +245,10 @@ describe("[0] YieldSyncV1VaultFactory.sol - YieldSync V1 Vault Factory Contract"
 					);
 
 					const deployedObj = await yieldSyncV1VaultFactory.connect(addr1).deployYieldSyncV1Vault(
-						[addr1.address],
-						[addr1.address],
 						ethers.constants.AddressZero,
 						ethers.constants.AddressZero,
+						[addr1.address],
+						[addr1.address],
 						true,
 						true,
 						{ value: 1 }
@@ -270,10 +270,10 @@ describe("[0] YieldSyncV1VaultFactory.sol - YieldSync V1 Vault Factory Contract"
 					);
 
 					await yieldSyncV1VaultFactory.connect(addr1).deployYieldSyncV1Vault(
-						[addr1.address],
-						[addr1.address],
 						ethers.constants.AddressZero,
 						ethers.constants.AddressZero,
+						[addr1.address],
+						[addr1.address],
 						true,
 						true,
 						{ value: 1 }
@@ -315,10 +315,10 @@ describe("[0] YieldSyncV1VaultFactory.sol - YieldSync V1 Vault Factory Contract"
 					);
 
 					await yieldSyncV1VaultFactory.connect(addr1).deployYieldSyncV1Vault(
-						[addr1.address],
-						[addr1.address],
 						ethers.constants.AddressZero,
 						ethers.constants.AddressZero,
+						[addr1.address],
+						[addr1.address],
 						true,
 						true,
 						{ value: 1 }
@@ -346,10 +346,10 @@ describe("[0] YieldSyncV1VaultFactory.sol - YieldSync V1 Vault Factory Contract"
 					);
 
 					await yieldSyncV1VaultFactory.deployYieldSyncV1Vault(
-						[addr1.address],
-						[addr1.address],
 						mockSignatureProtocol.address,
 						ethers.constants.AddressZero,
+						[addr1.address],
+						[addr1.address],
 						false,
 						true,
 						{ value: 1 }
@@ -377,10 +377,10 @@ describe("[0] YieldSyncV1VaultFactory.sol - YieldSync V1 Vault Factory Contract"
 						);
 
 						await yieldSyncV1VaultFactory.deployYieldSyncV1Vault(
-							[addr1.address],
-							[addr1.address],
 							mockSignatureProtocol.address,
 							ethers.constants.AddressZero,
+							[addr1.address],
+							[addr1.address],
 							false,
 							true,
 							{ value: 1 }
@@ -416,10 +416,10 @@ describe("[0] YieldSyncV1VaultFactory.sol - YieldSync V1 Vault Factory Contract"
 						);
 
 						await yieldSyncV1VaultFactory.deployYieldSyncV1Vault(
-							[addr1.address],
-							[addr1.address],
 							mockSignatureProtocol.address,
 							ethers.constants.AddressZero,
+							[addr1.address],
+							[addr1.address],
 							false,
 							true,
 							{ value: 1 }

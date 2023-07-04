@@ -42,13 +42,16 @@ contract YieldSyncV1Vault is
 
 	constructor (
 		address _YieldSyncV1VaultAccessControl,
-		address[] memory admins,
-		address[] memory members,
 		address _transferRequestProtocol,
-		address _signatureProtocol
+		address _signatureProtocol,
+		address[] memory admins,
+		address[] memory members
 	)
 	{
 		YieldSyncV1VaultAccessControl = _YieldSyncV1VaultAccessControl;
+
+		signatureProtocol = _signatureProtocol;
+		transferRequestProtocol = _transferRequestProtocol;
 
 		for (uint i = 0; i < admins.length; i++)
 		{
@@ -59,9 +62,6 @@ contract YieldSyncV1Vault is
 		{
 			IYieldSyncV1VaultAccessControl(YieldSyncV1VaultAccessControl).addMember(address(this), members[i]);
 		}
-
-		signatureProtocol = _signatureProtocol;
-		transferRequestProtocol = _transferRequestProtocol;
 
 		processTransferRequestLocked = false;
 	}
