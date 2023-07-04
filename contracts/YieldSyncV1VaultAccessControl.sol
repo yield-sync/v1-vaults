@@ -21,7 +21,7 @@ contract YieldSyncV1VaultAccessControl is
 	mapping (address member => address[] yieldSyncV1Vaults) internal _member_yieldSyncV1Vaults;
 	mapping (address yieldSyncV1Vault  => address[] admins) internal _yieldSyncV1Vault_admins;
 	mapping (address yieldSyncV1Vault => address[] members) internal _yieldSyncV1Vault_members;
-	
+
 	mapping (
 		address yieldSyncV1Vault => mapping (address participant => Access access)
 	) internal _yieldSyncV1Vault_participant_access;
@@ -35,6 +35,16 @@ contract YieldSyncV1VaultAccessControl is
 		returns (address[] memory)
 	{
 		return _admin_yieldSyncV1Vaults[admin];
+	}
+
+		/// @inheritdoc IYieldSyncV1VaultAccessControl
+	function member_yieldSyncV1Vaults(address member)
+		public
+		view
+		override
+		returns (address[] memory)
+	{
+		return _member_yieldSyncV1Vaults[member];
 	}
 
 	/// @inheritdoc IYieldSyncV1VaultAccessControl
@@ -55,16 +65,6 @@ contract YieldSyncV1VaultAccessControl is
 		returns (address[] memory)
 	{
 		return _yieldSyncV1Vault_members[yieldSyncV1Vault];
-	}
-
-	/// @inheritdoc IYieldSyncV1VaultAccessControl
-	function member_yieldSyncV1Vaults(address member)
-		public
-		view
-		override
-		returns (address[] memory)
-	{
-		return _member_yieldSyncV1Vaults[member];
 	}
 
 	/// @inheritdoc IYieldSyncV1VaultAccessControl

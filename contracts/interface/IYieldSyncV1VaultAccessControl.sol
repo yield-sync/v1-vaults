@@ -17,6 +17,18 @@ interface IYieldSyncV1VaultAccessControl
 	;
 
 	/**
+	* @notice Getter for `_member_yieldSyncV1Vaults`
+	* @dev [view]
+	* @param member {address}
+	* @return {address[]}
+	*/
+	function member_yieldSyncV1Vaults(address member)
+		external
+		view
+		returns (address[] memory)
+	;
+
+	/**
 	* @notice Getter for `_yieldSyncV1Vault_admins`
 	* @dev [view]
 	* @param yieldSyncV1Vault {address}
@@ -35,18 +47,6 @@ interface IYieldSyncV1VaultAccessControl
 	* @return {address[]}
 	*/
 	function yieldSyncV1Vault_members(address yieldSyncV1Vault)
-		external
-		view
-		returns (address[] memory)
-	;
-
-	/**
-	* @notice Getter for `_member_yieldSyncV1Vaults`
-	* @dev [view]
-	* @param member {address}
-	* @return {address[]}
-	*/
-	function member_yieldSyncV1Vaults(address member)
 		external
 		view
 		returns (address[] memory)
