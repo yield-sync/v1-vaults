@@ -87,7 +87,7 @@ contract YieldSyncV1VaultFactory is
 
 		require(msg.value >= fee, "!msg.value");
 
-		YieldSyncV1Vault deployedContract = new YieldSyncV1Vault(
+		YieldSyncV1Vault deployedYieldSyncV1Vault = new YieldSyncV1Vault(
 			YieldSyncV1VaultAccessControl,
 			useDefaultTransferRequestProtocol ? defaultTransferRequestProtocol : transferRequestProtocol,
 			useDefaultSignatureProtocol ? defaultSignatureProtocol : signatureProtocol,
@@ -95,27 +95,27 @@ contract YieldSyncV1VaultFactory is
 			members
 		);
 
-		yieldSyncV1VaultAddress_yieldSyncV1VaultId[address(deployedContract)] = yieldSyncV1VaultIdTracker;
-		yieldSyncV1VaultId_yieldSyncV1VaultAddress[yieldSyncV1VaultIdTracker] = address(deployedContract);
+		yieldSyncV1VaultAddress_yieldSyncV1VaultId[address(deployedYieldSyncV1Vault)] = yieldSyncV1VaultIdTracker;
+		yieldSyncV1VaultId_yieldSyncV1VaultAddress[yieldSyncV1VaultIdTracker] = address(deployedYieldSyncV1Vault);
 
 		ITransferRequestProtocol(defaultTransferRequestProtocol).create_yieldSyncV1Vault_yieldSyncV1VaultProperty(
 			msg.sender,
-			address(deployedContract)
+			address(deployedYieldSyncV1Vault)
 		);
 
 		if (defaultSignatureProtocol != address(0))
 		{
 			ISignatureProtocol(defaultSignatureProtocol).initializeYieldSyncV1Vault(
 				msg.sender,
-				address(deployedContract)
+				address(deployedYieldSyncV1Vault)
 			);
 		}
 
 		yieldSyncV1VaultIdTracker++;
 
-		emit DeployedYieldSyncV1Vault(address(deployedContract));
+		emit DeployedYieldSyncV1Vault(address(deployedYieldSyncV1Vault));
 
-		return address(deployedContract);
+		return address(deployedYieldSyncV1Vault);
 	}
 
 
