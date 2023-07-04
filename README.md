@@ -19,6 +19,10 @@ YIELD_SYNC_V1_VAULT_FACTORY=
 
 ## Variables, Mappings, & Functions Ordering
 
+### Put Functions that belongs to an Implimenting Interface First
+
+The functions should follow the ordering below
+
 ### Variables
 
 #### Standard
