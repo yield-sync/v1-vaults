@@ -4,8 +4,10 @@ pragma solidity ^0.8.18;
 
 import { IAccessControlEnumerable } from "@openzeppelin/contracts/access/IAccessControlEnumerable.sol";
 
-import { YieldSyncV1Vault } from "./YieldSyncV1Vault.sol";
+import { ISignatureProtocol } from "./interface/ISignatureProtocol.sol";
+import { ITransferRequestProtocol } from "./interface/ITransferRequestProtocol.sol";
 import { IYieldSyncV1VaultFactory } from "./interface/IYieldSyncV1VaultFactory.sol";
+import { YieldSyncV1Vault } from "./YieldSyncV1Vault.sol";
 
 
 contract YieldSyncV1VaultFactory is
@@ -27,7 +29,9 @@ contract YieldSyncV1VaultFactory is
 
 	address public override immutable YieldSyncGovernance;
 	address public override immutable YieldSyncV1VaultAccessControl;
-	address public override defaultSignatureManager;
+
+	address public override defaultSignatureProtocol;
+	address public override defaultTransferRequestProtocol;
 
 	bool public override transferEtherLocked;
 
@@ -44,13 +48,13 @@ contract YieldSyncV1VaultFactory is
 
 	constructor (address _YieldSyncGovernance, address _YieldSyncV1VaultAccessControl)
 	{
-		YieldSyncGovernance = _YieldSyncGovernance;
-		YieldSyncV1VaultAccessControl = _YieldSyncV1VaultAccessControl;
-
 		transferEtherLocked = false;
 
 		fee = 0;
 		yieldSyncV1VaultIdTracker = 0;
+
+		YieldSyncGovernance = _YieldSyncGovernance;
+		YieldSyncV1VaultAccessControl = _YieldSyncV1VaultAccessControl;
 	}
 
 
@@ -66,31 +70,46 @@ contract YieldSyncV1VaultFactory is
 	function deployYieldSyncV1Vault(
 		address[] memory admins,
 		address[] memory members,
-		address signatureManager,
-		bool useDefaultSignatureManager,
-		uint256 againstVoteCountRequired,
-		uint256 forVoteCountRequired,
-		uint256 transferDelaySeconds
+		address signatureProtocol,
+		address transferRequestProtocol,
+		bool useDefaultSignatureProtocol,
+		bool useDefaultTransferRequestProtocol
 	)
 		public
 		payable
 		override
 		returns (address)
 	{
+		require(
+			defaultTransferRequestProtocol != address(0) || useDefaultTransferRequestProtocol,
+			"!transferRequestProtocol && !useDefaultTransferRequestProtocol"
+		);
+
 		require(msg.value >= fee, "!msg.value");
 
 		YieldSyncV1Vault deployedContract = new YieldSyncV1Vault(
 			YieldSyncV1VaultAccessControl,
 			admins,
 			members,
-			useDefaultSignatureManager ? defaultSignatureManager : signatureManager,
-			againstVoteCountRequired,
-			forVoteCountRequired,
-			transferDelaySeconds
+			useDefaultTransferRequestProtocol ? defaultTransferRequestProtocol : transferRequestProtocol,
+			useDefaultSignatureProtocol ? defaultSignatureProtocol : signatureProtocol
 		);
 
 		yieldSyncV1VaultAddress_yieldSyncV1VaultId[address(deployedContract)] = yieldSyncV1VaultIdTracker;
 		yieldSyncV1VaultId_yieldSyncV1VaultAddress[yieldSyncV1VaultIdTracker] = address(deployedContract);
+
+		ITransferRequestProtocol(defaultTransferRequestProtocol).create_yieldSyncV1Vault_yieldSyncV1VaultProperty(
+			msg.sender,
+			address(deployedContract)
+		);
+
+		if (defaultSignatureProtocol != address(0))
+		{
+			ISignatureProtocol(defaultSignatureProtocol).initializeYieldSyncV1Vault(
+				msg.sender,
+				address(deployedContract)
+			);
+		}
 
 		yieldSyncV1VaultIdTracker++;
 
@@ -101,12 +120,22 @@ contract YieldSyncV1VaultFactory is
 
 
 	/// @inheritdoc IYieldSyncV1VaultFactory
-	function updateDefaultSignatureManager(address _defaultSignatureManager)
+	function updateTransferRequestProtocol(address _defaultTransferRequestProtocol)
 		public
 		override
 		only_YieldSyncGovernance_DEFAULT_ADMIN_ROLE()
 	{
-		defaultSignatureManager = _defaultSignatureManager;
+		defaultTransferRequestProtocol = _defaultTransferRequestProtocol;
+	}
+
+
+	/// @inheritdoc IYieldSyncV1VaultFactory
+	function updateDefaultSignatureProtocol(address _defaultSignatureProtocol)
+		public
+		override
+		only_YieldSyncGovernance_DEFAULT_ADMIN_ROLE()
+	{
+		defaultSignatureProtocol = _defaultSignatureProtocol;
 	}
 
 	/// @inheritdoc IYieldSyncV1VaultFactory

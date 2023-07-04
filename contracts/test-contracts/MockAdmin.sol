@@ -5,13 +5,25 @@ pragma solidity ^0.8.18;
 import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
 import { IAccessControlEnumerable } from "@openzeppelin/contracts/access/IAccessControlEnumerable.sol";
 
-import { IYieldSyncV1Vault, TransferRequest } from "../interface/IYieldSyncV1Vault.sol";
+import { IYieldSyncV1Vault } from "../interface/IYieldSyncV1Vault.sol";
+import {
+	IYieldSyncV1TransferRequestProtocol,
+	TransferRequest,
+	TransferRequestVote
+} from "../interface/IYieldSyncV1TransferRequestProtocol.sol";
 
 
 contract MockAdmin is Ownable {
-	modifier validTransferRequest(address yieldSyncV1VaultAddress, uint256 transferRequestId) {
+	modifier validTransferRequest(
+		address yieldSyncV1TransferRequestProtocol,
+		address yieldSyncV1VaultAddress,
+		uint256 transferRequestId
+	) {
 		require(
-			IYieldSyncV1Vault(payable(yieldSyncV1VaultAddress)).transferRequestId_transferRequest(
+			IYieldSyncV1TransferRequestProtocol(
+				yieldSyncV1TransferRequestProtocol
+			).yieldSyncV1Vault_transferRequestId_transferRequest(
+				yieldSyncV1VaultAddress,
 				transferRequestId
 			).creator != address(0),
 			"No TransferRequest found"
@@ -21,30 +33,38 @@ contract MockAdmin is Ownable {
 	}
 
 
-	function updateTransferRequestLatestRelevantForVoteTime(
+	function updateTransferRequestVoteLatestRelevantForVoteTime(
+		address yieldSyncV1TransferRequestProtocol,
 		address yieldSyncV1VaultAddress,
 		uint256 transferRequestId,
 		bool arithmaticSign,
 		uint256 timeInSeconds
 	)
 		public
-		validTransferRequest(yieldSyncV1VaultAddress, transferRequestId)
+		validTransferRequest(yieldSyncV1TransferRequestProtocol, yieldSyncV1VaultAddress, transferRequestId)
 	{
-		TransferRequest memory wR = IYieldSyncV1Vault(payable(yieldSyncV1VaultAddress)).transferRequestId_transferRequest(
+		TransferRequestVote memory transferRequestVote = IYieldSyncV1TransferRequestProtocol(
+			yieldSyncV1TransferRequestProtocol
+		).yieldSyncV1Vault_transferRequestId_transferRequestVote(
+			yieldSyncV1VaultAddress,
 			transferRequestId
 		);
 
 		if (arithmaticSign)
 		{
 			// [update] TransferRequest within `_transferRequest`
-			wR.latestRelevantForVoteTime += (timeInSeconds * 1 seconds);
+			transferRequestVote.latestRelevantForVoteTime += (timeInSeconds * 1 seconds);
 		}
 		else
 		{
 			// [update] TransferRequest within `_transferRequest`
-			wR.latestRelevantForVoteTime -= (timeInSeconds * 1 seconds);
+			transferRequestVote.latestRelevantForVoteTime -= (timeInSeconds * 1 seconds);
 		}
 
-		IYieldSyncV1Vault(payable(yieldSyncV1VaultAddress)).updateTransferRequest(transferRequestId, wR);
+		IYieldSyncV1TransferRequestProtocol(yieldSyncV1TransferRequestProtocol).updateTransferRequestVote(
+			yieldSyncV1VaultAddress,
+			transferRequestId,
+			transferRequestVote
+		);
 	}
 }

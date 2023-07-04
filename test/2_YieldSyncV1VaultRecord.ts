@@ -7,35 +7,53 @@ const { ethers } = require("hardhat");
 describe("[2] YieldSyncV1VaultAccessControl.sol - YieldSync V1 Vault Record Contract", async () => {
 	let yieldSyncV1Vault: Contract;
 	let yieldSyncV1VaultFactory: Contract;
+	let yieldSyncV1TransferRequestProtocol: Contract;
 	let yieldSyncV1VaultAccessControl: Contract;
-	let signatureManager: Contract;
 	let mockYieldSyncGovernance: Contract;
 
 
 	beforeEach("[before] Set up contracts..", async () => {
 		const [owner, addr1, addr2, addr3] = await ethers.getSigners();
 
+		// Contract Factory
 		const YieldSyncV1Vault: ContractFactory = await ethers.getContractFactory("YieldSyncV1Vault");
 		const YieldSyncV1VaultFactory: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultFactory");
 		const YieldSyncV1VaultAccessControl: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultAccessControl");
 		const MockYieldSyncGovernance: ContractFactory = await ethers.getContractFactory("MockYieldSyncGovernance");
-		const SignatureManager: ContractFactory = await ethers.getContractFactory("SignatureManager");
+		const YieldSyncV1TransferRequestProtocol: ContractFactory = await ethers.getContractFactory("YieldSyncV1TransferRequestProtocol");
 
+
+		// Contract
 		mockYieldSyncGovernance = await (await MockYieldSyncGovernance.deploy()).deployed();
 		yieldSyncV1VaultAccessControl = await (await YieldSyncV1VaultAccessControl.deploy()).deployed();
 		yieldSyncV1VaultFactory = await (
 			await YieldSyncV1VaultFactory.deploy(mockYieldSyncGovernance.address, yieldSyncV1VaultAccessControl.address)
 		).deployed();
 
+		// Deploy Transfer Request Protocol
+		yieldSyncV1TransferRequestProtocol = await (
+			await YieldSyncV1TransferRequestProtocol.deploy(
+				yieldSyncV1VaultAccessControl.address,
+				yieldSyncV1VaultFactory.address
+			)
+		).deployed();
+
+		// Set Factory -> Transfer Request Protocol
+		await yieldSyncV1VaultFactory.updateTransferRequestProtocol(yieldSyncV1TransferRequestProtocol.address);
+
+		// Set YieldSyncV1Vault properties on TransferRequestProtocol.sol
+		await yieldSyncV1TransferRequestProtocol.update_purposer_yieldSyncV1VaultProperty([
+			2, 2, 5
+		]);
+
 		// Deploy a vault
 		await yieldSyncV1VaultFactory.deployYieldSyncV1Vault(
 			[owner.address],
 			[addr1.address, addr2.address, addr3.address],
 			ethers.constants.AddressZero,
+			ethers.constants.AddressZero,
 			true,
-			2,
-			2,
-			5,
+			true,
 			{ value: 1 }
 		);
 
@@ -43,10 +61,6 @@ describe("[2] YieldSyncV1VaultAccessControl.sol - YieldSync V1 Vault Record Cont
 		yieldSyncV1Vault = await YieldSyncV1Vault.attach(
 			await yieldSyncV1VaultFactory.yieldSyncV1VaultId_yieldSyncV1VaultAddress(0)
 		);
-
-		signatureManager = await (
-			await SignatureManager.deploy(mockYieldSyncGovernance.address, yieldSyncV1VaultAccessControl.address)
-		).deployed();
 	});
 
 	describe("admin_yieldSyncV1Vaults()", async () => {
@@ -105,48 +119,72 @@ describe("[2] YieldSyncV1VaultAccessControl.sol - YieldSync V1 Vault Record Cont
 		});
 	});
 
-	describe("participant_yieldSyncV1Vault_access()", async () => {
+	describe("yieldSyncV1Vault_participant_access()", async () => {
 		it("Should have values set properly..", async () => {
 			const [owner, addr1, addr2, addr3] = await ethers.getSigners();
 
 			// owner admin
 			expect(
-				(await yieldSyncV1VaultAccessControl.participant_yieldSyncV1Vault_access(owner.address, yieldSyncV1Vault.address))[0]
+				(await yieldSyncV1VaultAccessControl.yieldSyncV1Vault_participant_access(
+					yieldSyncV1Vault.address,
+					owner.address,
+				))[0]
 			).to.be.true
 
 			// owner member
 			expect(
-				(await yieldSyncV1VaultAccessControl.participant_yieldSyncV1Vault_access(owner.address, yieldSyncV1Vault.address))[1]
+				(await yieldSyncV1VaultAccessControl.yieldSyncV1Vault_participant_access(
+					yieldSyncV1Vault.address,
+					owner.address,
+				))[1]
 			).to.be.false
 
 			// addr1 admin
 			expect(
-				(await yieldSyncV1VaultAccessControl.participant_yieldSyncV1Vault_access(addr1.address, yieldSyncV1Vault.address))[0]
+				(await yieldSyncV1VaultAccessControl.yieldSyncV1Vault_participant_access(
+					yieldSyncV1Vault.address,
+					addr1.address,
+				))[0]
 			).to.be.false
 
 			// addr1 member
 			expect(
-				(await yieldSyncV1VaultAccessControl.participant_yieldSyncV1Vault_access(addr1.address, yieldSyncV1Vault.address))[1]
+				(await yieldSyncV1VaultAccessControl.yieldSyncV1Vault_participant_access(
+					yieldSyncV1Vault.address,
+					addr1.address,
+				))[1]
 			).to.be.true
 
 			// addr2 admin
 			expect(
-				(await yieldSyncV1VaultAccessControl.participant_yieldSyncV1Vault_access(addr2.address, yieldSyncV1Vault.address))[0]
+				(await yieldSyncV1VaultAccessControl.yieldSyncV1Vault_participant_access(
+					yieldSyncV1Vault.address,
+					addr2.address,
+				))[0]
 			).to.be.false
 
 			// addr2 member
 			expect(
-				(await yieldSyncV1VaultAccessControl.participant_yieldSyncV1Vault_access(addr2.address, yieldSyncV1Vault.address))[1]
+				(await yieldSyncV1VaultAccessControl.yieldSyncV1Vault_participant_access(
+					yieldSyncV1Vault.address,
+					addr2.address,
+				))[1]
 			).to.be.true
 
 			// addr3 admin
 			expect(
-				(await yieldSyncV1VaultAccessControl.participant_yieldSyncV1Vault_access(addr3.address, yieldSyncV1Vault.address))[0]
+				(await yieldSyncV1VaultAccessControl.yieldSyncV1Vault_participant_access(
+					yieldSyncV1Vault.address,
+					addr3.address,
+				))[0]
 			).to.be.false
 
 			// addr3 member
 			expect(
-				(await yieldSyncV1VaultAccessControl.participant_yieldSyncV1Vault_access(addr3.address, yieldSyncV1Vault.address))[1]
+				(await yieldSyncV1VaultAccessControl.yieldSyncV1Vault_participant_access(
+					yieldSyncV1Vault.address,
+					addr3.address,
+				))[1]
 			).to.be.true
 		});
 	});

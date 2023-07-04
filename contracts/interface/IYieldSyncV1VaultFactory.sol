@@ -2,7 +2,8 @@
 pragma solidity ^0.8.18;
 
 
-interface IYieldSyncV1VaultFactory {
+interface IYieldSyncV1VaultFactory
+{
 	event DeployedYieldSyncV1Vault(address indexed vaultAddress);
 
 
@@ -19,7 +20,7 @@ interface IYieldSyncV1VaultFactory {
 
 
 	/**
-	* @notice YieldSyncGovernance Contract Address
+	* @notice YieldSyncGovernance contract address
 	* @dev [view-address]
 	* @return {address}
 	*/
@@ -30,7 +31,7 @@ interface IYieldSyncV1VaultFactory {
 	;
 
 	/**
-	* @notice YieldSyncV1VaultAccessControl Contract Address
+	* @notice YieldSyncV1VaultAccessControl contract address
 	* @dev [view-address]
 	* @return {address}
 	*/
@@ -41,11 +42,22 @@ interface IYieldSyncV1VaultFactory {
 	;
 
 	/**
-	* @notice Default SignatureManager Contract Address
+	* @notice Default Signature Protocol contract address
 	* @dev [view-address]
 	* @return {address}
 	*/
-	function defaultSignatureManager()
+	function defaultSignatureProtocol()
+		external
+		view
+		returns (address)
+	;
+
+	/**
+	* @notice Default Transfer Request protocol contract address
+	* @dev [view-address]
+	* @return {address}
+	*/
+	function defaultTransferRequestProtocol()
 		external
 		view
 		returns (address)
@@ -109,24 +121,23 @@ interface IYieldSyncV1VaultFactory {
 	;
 
 	/**
-	* @notice Creates a Vault
+	* @notice Deploy a YieldSyncV1Vault contract
 	* @dev [create]
 	* @param admins {address[]}
 	* @param members {address[]}
-	* @param signatureManager {address}
-	* @param againstVoteCountRequired {uint256}
-	* @param forVoteCountRequired {uint256}
-	* @param transferDelaySeconds {uint256}
+	* @param signatureProtocol {address}
+	* @param transferRequestProtocol {uint256}
+	* @param useDefaultSignatureProtocol {uint256}
+	* @param useDefaultTransferRequestProtocol {uint256}
 	* @return {address} Deployed vault
 	*/
 	function deployYieldSyncV1Vault(
 		address[] memory admins,
 		address[] memory members,
-		address signatureManager,
-		bool useDefaultSignatureManager,
-		uint256 againstVoteCountRequired,
-		uint256 forVoteCountRequired,
-		uint256 transferDelaySeconds
+		address signatureProtocol,
+		address transferRequestProtocol,
+		bool useDefaultSignatureProtocol,
+		bool useDefaultTransferRequestProtocol
 	)
 		external
 		payable
@@ -134,12 +145,22 @@ interface IYieldSyncV1VaultFactory {
 	;
 
 	/**
-	* @notice Updates default signature manager
+	* @notice Updates Default Transfer Request Protocol
 	* @dev [restriction] `IYieldSyncGovernance` AccessControlEnumerable → DEFAULT_ADMIN_ROLE
-	* @dev [update] `defaultSignatureManager`
-	* @param _defaultSignatureManager {address}
+	* @dev [update] `defaultSignatureProtocol`
+	* @param _defaultTransferRequestProtocol {address}
 	*/
-	function updateDefaultSignatureManager(address _defaultSignatureManager)
+	function updateTransferRequestProtocol(address _defaultTransferRequestProtocol)
+		external
+	;
+
+	/**
+	* @notice Updates Default Signature Protocol
+	* @dev [restriction] `IYieldSyncGovernance` AccessControlEnumerable → DEFAULT_ADMIN_ROLE
+	* @dev [update] `defaultSignatureProtocol`
+	* @param _defaultSignatureProtocol {address}
+	*/
+	function updateDefaultSignatureProtocol(address _defaultSignatureProtocol)
 		external
 	;
 
