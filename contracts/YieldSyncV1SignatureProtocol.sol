@@ -146,10 +146,9 @@ contract YieldSyncV1SignatureProtocol is
 		override
 		whenNotPaused()
 	{
-		(
-			,
-			bool member
-		) = IYieldSyncV1VaultAccessControl(YieldSyncV1VaultAccessControl).participant_yieldSyncV1Vault_access(
+		(, bool member) = IYieldSyncV1VaultAccessControl(
+			YieldSyncV1VaultAccessControl
+		).participant_yieldSyncV1Vault_access(
 			msg.sender,
 			yieldSyncV1VaultAddress
 		);
