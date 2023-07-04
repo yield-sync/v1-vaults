@@ -119,48 +119,72 @@ describe("[2] YieldSyncV1VaultAccessControl.sol - YieldSync V1 Vault Record Cont
 		});
 	});
 
-	describe("participant_yieldSyncV1Vault_access()", async () => {
+	describe("yieldSyncV1Vault_participant_access()", async () => {
 		it("Should have values set properly..", async () => {
 			const [owner, addr1, addr2, addr3] = await ethers.getSigners();
 
 			// owner admin
 			expect(
-				(await yieldSyncV1VaultAccessControl.participant_yieldSyncV1Vault_access(owner.address, yieldSyncV1Vault.address))[0]
+				(await yieldSyncV1VaultAccessControl.yieldSyncV1Vault_participant_access(
+					yieldSyncV1Vault.address,
+					owner.address,
+				))[0]
 			).to.be.true
 
 			// owner member
 			expect(
-				(await yieldSyncV1VaultAccessControl.participant_yieldSyncV1Vault_access(owner.address, yieldSyncV1Vault.address))[1]
+				(await yieldSyncV1VaultAccessControl.yieldSyncV1Vault_participant_access(
+					yieldSyncV1Vault.address,
+					owner.address,
+				))[1]
 			).to.be.false
 
 			// addr1 admin
 			expect(
-				(await yieldSyncV1VaultAccessControl.participant_yieldSyncV1Vault_access(addr1.address, yieldSyncV1Vault.address))[0]
+				(await yieldSyncV1VaultAccessControl.yieldSyncV1Vault_participant_access(
+					yieldSyncV1Vault.address,
+					addr1.address,
+				))[0]
 			).to.be.false
 
 			// addr1 member
 			expect(
-				(await yieldSyncV1VaultAccessControl.participant_yieldSyncV1Vault_access(addr1.address, yieldSyncV1Vault.address))[1]
+				(await yieldSyncV1VaultAccessControl.yieldSyncV1Vault_participant_access(
+					yieldSyncV1Vault.address,
+					addr1.address,
+				))[1]
 			).to.be.true
 
 			// addr2 admin
 			expect(
-				(await yieldSyncV1VaultAccessControl.participant_yieldSyncV1Vault_access(addr2.address, yieldSyncV1Vault.address))[0]
+				(await yieldSyncV1VaultAccessControl.yieldSyncV1Vault_participant_access(
+					yieldSyncV1Vault.address,
+					addr2.address,
+				))[0]
 			).to.be.false
 
 			// addr2 member
 			expect(
-				(await yieldSyncV1VaultAccessControl.participant_yieldSyncV1Vault_access(addr2.address, yieldSyncV1Vault.address))[1]
+				(await yieldSyncV1VaultAccessControl.yieldSyncV1Vault_participant_access(
+					yieldSyncV1Vault.address,
+					addr2.address,
+				))[1]
 			).to.be.true
 
 			// addr3 admin
 			expect(
-				(await yieldSyncV1VaultAccessControl.participant_yieldSyncV1Vault_access(addr3.address, yieldSyncV1Vault.address))[0]
+				(await yieldSyncV1VaultAccessControl.yieldSyncV1Vault_participant_access(
+					yieldSyncV1Vault.address,
+					addr3.address,
+				))[0]
 			).to.be.false
 
 			// addr3 member
 			expect(
-				(await yieldSyncV1VaultAccessControl.participant_yieldSyncV1Vault_access(addr3.address, yieldSyncV1Vault.address))[1]
+				(await yieldSyncV1VaultAccessControl.yieldSyncV1Vault_participant_access(
+					yieldSyncV1Vault.address,
+					addr3.address,
+				))[1]
 			).to.be.true
 		});
 	});

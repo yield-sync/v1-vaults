@@ -395,9 +395,9 @@ describe("[0] YieldSyncV1VaultFactory.sol - YieldSync V1 Vault Factory Contract"
 
 						expect(
 							(
-								await yieldSyncV1VaultAccessControl.participant_yieldSyncV1Vault_access(
+								await yieldSyncV1VaultAccessControl.yieldSyncV1Vault_participant_access(
+									yieldSyncV1Vault.address,
 									addr1.address,
-									yieldSyncV1Vault.address
 								)
 							).admin
 						).to.be.true;
@@ -434,9 +434,9 @@ describe("[0] YieldSyncV1VaultFactory.sol - YieldSync V1 Vault Factory Contract"
 
 						expect(
 							(
-								await yieldSyncV1VaultAccessControl.participant_yieldSyncV1Vault_access(
+								await yieldSyncV1VaultAccessControl.yieldSyncV1Vault_participant_access(
+									yieldSyncV1Vault.address,
 									addr1.address,
-									yieldSyncV1Vault.address
 								)
 							).member
 						).to.be.true;

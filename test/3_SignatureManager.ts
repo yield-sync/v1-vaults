@@ -85,9 +85,9 @@ describe("[3] signatureProtocol.sol - Signature Manager Contract", async () => {
 		await yieldSyncV1VaultFactory.deployYieldSyncV1Vault(
 			[owner.address],
 			[addr1.address, addr2.address],
-			signatureProtocol.address,
 			ethers.constants.AddressZero,
-			false,
+			ethers.constants.AddressZero,
+			true,
 			true,
 			{ value: 1 }
 		);
@@ -181,38 +181,41 @@ describe("[3] signatureProtocol.sol - Signature Manager Contract", async () => {
 			expect(await mockDapp.recoverSigner(messageHash, v, r, s)).to.equal(addr3.address);
 		});
 
-		it("Should allow a MEMBER to sign a bytes32 messageHash and create a yieldSyncV1VaultAddress_messageHash_messageHashData value..", async () => {
-			await signatureProtocol.updatePause(false);
+		it(
+			"Should allow a MEMBER to sign a bytes32 messageHash and create a yieldSyncV1VaultAddress_messageHash_messageHashData value..",
+			async () => {
+				await signatureProtocol.updatePause(false);
 
-			const [, addr1] = await ethers.getSigners();
+				const [, addr1] = await ethers.getSigners();
 
-			const messageHash: Bytes = ethers.utils.id("Hello, world!");
+				const messageHash: Bytes = ethers.utils.id("Hello, world!");
 
-			const signature: Signature = await addr1.signMessage(ethers.utils.arrayify(messageHash));
+				const signature: Signature = await addr1.signMessage(ethers.utils.arrayify(messageHash));
 
-			// [contract] Sign message hash
-			await signatureProtocol.connect(addr1).signMessageHash(yieldSyncV1Vault.address, messageHash, signature);
+				// [contract] Sign message hash
+				await signatureProtocol.connect(addr1).signMessageHash(yieldSyncV1Vault.address, messageHash, signature);
 
-			// [contract]
-			const retrievedBytes32 = await signatureProtocol.vaultMessageHashes(yieldSyncV1Vault.address);
+				// [contract]
+				const retrievedBytes32 = await signatureProtocol.vaultMessageHashes(yieldSyncV1Vault.address);
 
-			expect(retrievedBytes32[0]).to.be.equal(messageHash);
+				expect(retrievedBytes32[0]).to.be.equal(messageHash);
 
-			const messageHashData: any = await signatureProtocol.yieldSyncV1VaultAddress_messageHash_messageHashData(
-				yieldSyncV1Vault.address,
-				retrievedBytes32[0]
-			);
+				const messageHashData: any = await signatureProtocol.yieldSyncV1VaultAddress_messageHash_messageHashData(
+					yieldSyncV1Vault.address,
+					retrievedBytes32[0]
+				);
 
-			const messageHashVote: any = await signatureProtocol.yieldSyncV1VaultAddress_messageHash_messageHashVote(
-				yieldSyncV1Vault.address,
-				retrievedBytes32[0]
-			);
+				const messageHashVote: any = await signatureProtocol.yieldSyncV1VaultAddress_messageHash_messageHashVote(
+					yieldSyncV1Vault.address,
+					retrievedBytes32[0]
+				);
 
-			expect(messageHashData.signature).to.be.equal(signature);
-			expect(messageHashData.signer).to.be.equal(addr1.address);
-			expect(messageHashVote.signedMembers[0]).to.be.equal(addr1.address);
-			expect(messageHashVote.signatureCount).to.be.equal(1);
-		});
+				expect(messageHashData.signature).to.be.equal(signature);
+				expect(messageHashData.signer).to.be.equal(addr1.address);
+				expect(messageHashVote.signedMembers[0]).to.be.equal(addr1.address);
+				expect(messageHashVote.signatureCount).to.be.equal(1);
+			}
+		);
 
 		it("Should not allow double signing..", async () => {
 			await signatureProtocol.updatePause(false);

@@ -148,9 +148,9 @@ contract YieldSyncV1SignatureProtocol is
 	{
 		(, bool member) = IYieldSyncV1VaultAccessControl(
 			YieldSyncV1VaultAccessControl
-		).participant_yieldSyncV1Vault_access(
-			msg.sender,
-			yieldSyncV1VaultAddress
+		).yieldSyncV1Vault_participant_access(
+			yieldSyncV1VaultAddress,
+			msg.sender
 		);
 
 		require(member, "!member");
@@ -181,9 +181,9 @@ contract YieldSyncV1SignatureProtocol is
 			(
 				,
 				bool recoveredIsMember
-			) = IYieldSyncV1VaultAccessControl(YieldSyncV1VaultAccessControl).participant_yieldSyncV1Vault_access(
-				recovered,
-				yieldSyncV1VaultAddress
+			) = IYieldSyncV1VaultAccessControl(YieldSyncV1VaultAccessControl).yieldSyncV1Vault_participant_access(
+				yieldSyncV1VaultAddress,
+				recovered
 			);
 
 			require(recoveredIsMember, "!member");

@@ -6,7 +6,7 @@ import { YieldSyncV1SignatureProtocol } from "../YieldSyncV1SignatureProtocol.so
 
 
 contract MockSignatureProtocol is YieldSyncV1SignatureProtocol {
-	constructor (address _yieldSyncGovernance, address _YieldSyncV1VaultAccessControl)
-		YieldSyncV1SignatureProtocol(_yieldSyncGovernance, _YieldSyncV1VaultAccessControl)
+	constructor (address yieldSyncGovernance, address YieldSyncV1VaultAccessControl)
+		YieldSyncV1SignatureProtocol(yieldSyncGovernance, YieldSyncV1VaultAccessControl)
 	{}
 }

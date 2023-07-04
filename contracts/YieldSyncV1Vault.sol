@@ -82,9 +82,9 @@ contract YieldSyncV1Vault is
 	{
 		(bool admin,) = IYieldSyncV1VaultAccessControl(
 			YieldSyncV1VaultAccessControl
-		).participant_yieldSyncV1Vault_access(
-			msg.sender,
-			address(this)
+		).yieldSyncV1Vault_participant_access(
+			address(this),
+			msg.sender
 		);
 
 		require(admin, "!admin");
@@ -96,9 +96,9 @@ contract YieldSyncV1Vault is
 	{
 		(, bool member) = IYieldSyncV1VaultAccessControl(
 			YieldSyncV1VaultAccessControl
-		).participant_yieldSyncV1Vault_access(
-			msg.sender,
-			address(this)
+		).yieldSyncV1Vault_participant_access(
+			address(this),
+			msg.sender
 		);
 
 		require(member, "!member");

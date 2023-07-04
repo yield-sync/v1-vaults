@@ -42,22 +42,22 @@ interface IYieldSyncV1VaultFactory
 	;
 
 	/**
-	* @notice Default Transfer Request protocol contract address
+	* @notice Default Signature Protocol contract address
 	* @dev [view-address]
 	* @return {address}
 	*/
-	function transferRequestProtocol()
+	function defaultSignatureProtocol()
 		external
 		view
 		returns (address)
 	;
 
 	/**
-	* @notice Default Signature Protocol contract address
+	* @notice Default Transfer Request protocol contract address
 	* @dev [view-address]
 	* @return {address}
 	*/
-	function defaultSignatureProtocol()
+	function defaultTransferRequestProtocol()
 		external
 		view
 		returns (address)
@@ -126,22 +126,32 @@ interface IYieldSyncV1VaultFactory
 	* @param admins {address[]}
 	* @param members {address[]}
 	* @param signatureProtocol {address}
-	* @param transferRequest {uint256}
-	* @param useDefaultTransferRequestProtocol {uint256}
+	* @param transferRequestProtocol {uint256}
 	* @param useDefaultSignatureProtocol {uint256}
+	* @param useDefaultTransferRequestProtocol {uint256}
 	* @return {address} Deployed vault
 	*/
 	function deployYieldSyncV1Vault(
 		address[] memory admins,
 		address[] memory members,
 		address signatureProtocol,
-		address transferRequest,
-		bool useDefaultTransferRequestProtocol,
-		bool useDefaultSignatureProtocol
+		address transferRequestProtocol,
+		bool useDefaultSignatureProtocol,
+		bool useDefaultTransferRequestProtocol
 	)
 		external
 		payable
 		returns (address)
+	;
+
+	/**
+	* @notice Updates Default Transfer Request Protocol
+	* @dev [restriction] `IYieldSyncGovernance` AccessControlEnumerable → DEFAULT_ADMIN_ROLE
+	* @dev [update] `defaultSignatureProtocol`
+	* @param _defaultTransferRequestProtocol {address}
+	*/
+	function updateTransferRequestProtocol(address _defaultTransferRequestProtocol)
+		external
 	;
 
 	/**

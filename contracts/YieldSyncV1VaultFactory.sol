@@ -31,7 +31,7 @@ contract YieldSyncV1VaultFactory is
 	address public override immutable YieldSyncV1VaultAccessControl;
 
 	address public override defaultSignatureProtocol;
-	address public override transferRequestProtocol;
+	address public override defaultTransferRequestProtocol;
 
 	bool public override transferEtherLocked;
 
@@ -71,7 +71,7 @@ contract YieldSyncV1VaultFactory is
 		address[] memory admins,
 		address[] memory members,
 		address signatureProtocol,
-		address _transferRequestProtocol,
+		address transferRequestProtocol,
 		bool useDefaultSignatureProtocol,
 		bool useDefaultTransferRequestProtocol
 	)
@@ -80,7 +80,10 @@ contract YieldSyncV1VaultFactory is
 		override
 		returns (address)
 	{
-		require(transferRequestProtocol != address(0), "!transferRequestProtocol");
+		require(
+			defaultTransferRequestProtocol != address(0) || useDefaultTransferRequestProtocol,
+			"!transferRequestProtocol && !useDefaultTransferRequestProtocol"
+		);
 
 		require(msg.value >= fee, "!msg.value");
 
@@ -88,14 +91,14 @@ contract YieldSyncV1VaultFactory is
 			YieldSyncV1VaultAccessControl,
 			admins,
 			members,
-			useDefaultTransferRequestProtocol ? transferRequestProtocol : _transferRequestProtocol,
+			useDefaultTransferRequestProtocol ? defaultTransferRequestProtocol : transferRequestProtocol,
 			useDefaultSignatureProtocol ? defaultSignatureProtocol : signatureProtocol
 		);
 
 		yieldSyncV1VaultAddress_yieldSyncV1VaultId[address(deployedContract)] = yieldSyncV1VaultIdTracker;
 		yieldSyncV1VaultId_yieldSyncV1VaultAddress[yieldSyncV1VaultIdTracker] = address(deployedContract);
 
-		ITransferRequestProtocol(transferRequestProtocol).create_yieldSyncV1Vault_yieldSyncV1VaultProperty(
+		ITransferRequestProtocol(defaultTransferRequestProtocol).create_yieldSyncV1Vault_yieldSyncV1VaultProperty(
 			msg.sender,
 			address(deployedContract)
 		);
@@ -116,11 +119,13 @@ contract YieldSyncV1VaultFactory is
 	}
 
 
-	function updateTransferRequestProtocol(address _transferRequestProtocol)
+	/// @inheritdoc IYieldSyncV1VaultFactory
+	function updateTransferRequestProtocol(address _defaultTransferRequestProtocol)
 		public
+		override
 		only_YieldSyncGovernance_DEFAULT_ADMIN_ROLE()
 	{
-		transferRequestProtocol = _transferRequestProtocol;
+		defaultTransferRequestProtocol = _defaultTransferRequestProtocol;
 	}
 
 

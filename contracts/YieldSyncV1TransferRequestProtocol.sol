@@ -59,9 +59,9 @@ contract YieldSyncV1TransferRequestProtocol is
 	{
 		(bool admin,) = IYieldSyncV1VaultAccessControl(
 			YieldSyncV1VaultAccessControl
-		).participant_yieldSyncV1Vault_access(
-			msg.sender,
-			yieldSyncV1VaultAddress
+		).yieldSyncV1Vault_participant_access(
+			yieldSyncV1VaultAddress,
+			msg.sender
 		);
 
 		require(admin, "!admin");
@@ -73,9 +73,9 @@ contract YieldSyncV1TransferRequestProtocol is
 	{
 		(, bool member) = IYieldSyncV1VaultAccessControl(
 			YieldSyncV1VaultAccessControl
-		).participant_yieldSyncV1Vault_access(
-			msg.sender,
-			yieldSyncV1VaultAddress
+		).yieldSyncV1Vault_participant_access(
+			yieldSyncV1VaultAddress,
+			msg.sender
 		);
 
 		require(member, "!member");
