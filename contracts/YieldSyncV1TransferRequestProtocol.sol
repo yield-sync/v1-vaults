@@ -28,7 +28,6 @@ contract YieldSyncV1TransferRequestProtocol is
 	mapping (
 		address purposer => YieldSyncV1VaultProperty yieldSyncV1VaultProperty
 	) internal _purposer_yieldSyncV1VaultProperty;
-
 	mapping (
 		address yieldSyncV1Vault => YieldSyncV1VaultProperty yieldSyncV1VaultProperty
 	) internal _yieldSyncV1Vault_yieldSyncV1VaultProperty;
