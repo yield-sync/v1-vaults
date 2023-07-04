@@ -38,3 +38,9 @@ OPTIMISTIC_ETHERSCAN_API_KEY=
 3. Restriction (`Access Control` etc. DEFAULT_ADMIN_ROLE first)
 4. Complexity (Calls to inherited functions, external functions, change state)
 5. Alphabetical
+
+### Verifying
+
+```shell
+npx hardhat verify --network <network-here> --constructor-args location/to/arguments.ts <contract-address-here>
+```
