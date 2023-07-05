@@ -58,9 +58,9 @@ contract YieldSyncV1VaultFactory is
 	}
 
 
-	modifier only_YieldSyncGovernance_DEFAULT_ADMIN_ROLE()
+	modifier contract_YieldSyncGovernance(bytes32 role)
 	{
-		require(IAccessControlEnumerable(YieldSyncGovernance).hasRole(bytes32(0), msg.sender), "!auth");
+		require(IAccessControlEnumerable(YieldSyncGovernance).hasRole(role, msg.sender), "!auth");
 
 		_;
 	}
@@ -98,7 +98,7 @@ contract YieldSyncV1VaultFactory is
 		yieldSyncV1VaultAddress_yieldSyncV1VaultId[address(deployedYieldSyncV1Vault)] = yieldSyncV1VaultIdTracker;
 		yieldSyncV1VaultId_yieldSyncV1VaultAddress[yieldSyncV1VaultIdTracker] = address(deployedYieldSyncV1Vault);
 
-		ITransferRequestProtocol(defaultTransferRequestProtocol).create_yieldSyncV1Vault_yieldSyncV1VaultProperty(
+		ITransferRequestProtocol(defaultTransferRequestProtocol).yieldSyncV1Vault_yieldSyncV1VaultProperty__update(
 			msg.sender,
 			address(deployedYieldSyncV1Vault)
 		);
@@ -120,29 +120,29 @@ contract YieldSyncV1VaultFactory is
 
 
 	/// @inheritdoc IYieldSyncV1VaultFactory
-	function updateTransferRequestProtocol(address _defaultTransferRequestProtocol)
+	function defaultTransferRequestProtocol__update(address _defaultTransferRequestProtocol)
 		public
 		override
-		only_YieldSyncGovernance_DEFAULT_ADMIN_ROLE()
+		contract_YieldSyncGovernance(bytes32(0))
 	{
 		defaultTransferRequestProtocol = _defaultTransferRequestProtocol;
 	}
 
 
 	/// @inheritdoc IYieldSyncV1VaultFactory
-	function updateDefaultSignatureProtocol(address _defaultSignatureProtocol)
+	function defaultSignatureProtocol__update(address _defaultSignatureProtocol)
 		public
 		override
-		only_YieldSyncGovernance_DEFAULT_ADMIN_ROLE()
+		contract_YieldSyncGovernance(bytes32(0))
 	{
 		defaultSignatureProtocol = _defaultSignatureProtocol;
 	}
 
 	/// @inheritdoc IYieldSyncV1VaultFactory
-	function updateFee(uint256 _fee)
+	function fee__update(uint256 _fee)
 		public
 		override
-		only_YieldSyncGovernance_DEFAULT_ADMIN_ROLE()
+		contract_YieldSyncGovernance(bytes32(0))
 	{
 		fee = _fee;
 	}
@@ -151,7 +151,7 @@ contract YieldSyncV1VaultFactory is
 	function transferEther(address to)
 		public
 		override
-		only_YieldSyncGovernance_DEFAULT_ADMIN_ROLE()
+		contract_YieldSyncGovernance(bytes32(0))
 	{
 		require(!transferEtherLocked, "transferEtherLocked");
 

@@ -67,7 +67,7 @@ contract YieldSyncV1Vault is
 	}
 
 
-	modifier validTransferRequest(uint256 transferRequestId)
+	modifier yieldSyncV1Vault_transferRequestId_transferRequest__valid(uint256 transferRequestId)
 	{
 		TransferRequest memory transferRequest = ITransferRequestProtocol(
 			transferRequestProtocol
@@ -78,7 +78,7 @@ contract YieldSyncV1Vault is
 		_;
 	}
 
-	modifier onlyAdmin()
+	modifier access_admin()
 	{
 		(bool admin,) = IYieldSyncV1VaultAccessControl(
 			YieldSyncV1VaultAccessControl
@@ -92,7 +92,7 @@ contract YieldSyncV1Vault is
 		_;
 	}
 
-	modifier onlyMember()
+	modifier access_member()
 	{
 		(, bool member) = IYieldSyncV1VaultAccessControl(
 			YieldSyncV1VaultAccessControl
@@ -122,7 +122,7 @@ contract YieldSyncV1Vault is
 	function addAdmin(address targetAddress)
 		public
 		override
-		onlyAdmin()
+		access_admin()
 	{
 		IYieldSyncV1VaultAccessControl(YieldSyncV1VaultAccessControl).addAdmin(address(this), targetAddress);
 	}
@@ -131,7 +131,7 @@ contract YieldSyncV1Vault is
 	function removeAdmin(address admin)
 		public
 		override
-		onlyAdmin()
+		access_admin()
 	{
 		IYieldSyncV1VaultAccessControl(YieldSyncV1VaultAccessControl).removeAdmin(address(this), admin);
 	}
@@ -140,7 +140,7 @@ contract YieldSyncV1Vault is
 	function addMember(address targetAddress)
 		public
 		override
-		onlyAdmin()
+		access_admin()
 	{
 		IYieldSyncV1VaultAccessControl(YieldSyncV1VaultAccessControl).addMember(address(this), targetAddress);
 	}
@@ -149,36 +149,44 @@ contract YieldSyncV1Vault is
 	function removeMember(address member)
 		public
 		override
-		onlyAdmin()
+		access_admin()
 	{
 		IYieldSyncV1VaultAccessControl(YieldSyncV1VaultAccessControl).removeMember(address(this), member);
 	}
 
-
 	/// @inheritdoc IYieldSyncV1Vault
-	function updateSignatureProtocol(address _signatureProtocol)
+	function signatureProtocol__update(address _signatureProtocol)
 		public
 		override
-		onlyAdmin()
+		access_admin()
 	{
 		signatureProtocol = _signatureProtocol;
 
 		emit UpdatedSignatureProtocol(signatureProtocol);
 	}
 
-
 	/// @inheritdoc IYieldSyncV1Vault
-	function processTransferRequest(uint256 transferRequestId)
+	function transferRequestProtocol__update(address _transferRequestProtocol)
 		public
 		override
-		onlyMember()
-		validTransferRequest(transferRequestId)
+		access_admin()
 	{
-		(
-			bool readyToBeProcessed,
-			bool approved,
-			string memory message
-		) = ITransferRequestProtocol(transferRequestProtocol).status_yieldSyncV1Vault_transferRequestId_transferRequest(
+		transferRequestProtocol = _transferRequestProtocol;
+
+		emit UpdatedSignatureProtocol(transferRequestProtocol);
+	}
+
+
+	/// @inheritdoc IYieldSyncV1Vault
+	function yieldSyncV1Vault_transferRequestId_transferRequest__process(uint256 transferRequestId)
+		public
+		override
+		access_member()
+		yieldSyncV1Vault_transferRequestId_transferRequest__valid(transferRequestId)
+	{
+		(bool readyToBeProcessed, bool approved, string memory message) = ITransferRequestProtocol(
+			transferRequestProtocol
+		).yieldSyncV1Vault_transferRequestId_transferRequest__status(
 			address(this),
 			transferRequestId
 		);
@@ -239,7 +247,7 @@ contract YieldSyncV1Vault is
 			emit TokensTransferred(msg.sender, transferRequest.to, transferRequest.amount);
 		}
 
-		ITransferRequestProtocol(transferRequestProtocol).process_yieldSyncV1Vault_transferRequestId_transferRequest(
+		ITransferRequestProtocol(transferRequestProtocol).yieldSyncV1Vault_transferRequestId_transferRequest__process(
 			address(this),
 			transferRequestId
 		);
@@ -251,7 +259,7 @@ contract YieldSyncV1Vault is
 	function renounceMembership()
 		public
 		override
-		onlyMember()
+		access_member()
 	{
 		IYieldSyncV1VaultAccessControl(YieldSyncV1VaultAccessControl).removeMember(address(this), msg.sender);
 	}

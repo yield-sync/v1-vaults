@@ -150,7 +150,7 @@ interface IYieldSyncV1VaultFactory
 	* @dev [update] `defaultSignatureProtocol`
 	* @param _defaultTransferRequestProtocol {address}
 	*/
-	function updateTransferRequestProtocol(address _defaultTransferRequestProtocol)
+	function defaultTransferRequestProtocol__update(address _defaultTransferRequestProtocol)
 		external
 	;
 
@@ -160,7 +160,7 @@ interface IYieldSyncV1VaultFactory
 	* @dev [update] `defaultSignatureProtocol`
 	* @param _defaultSignatureProtocol {address}
 	*/
-	function updateDefaultSignatureProtocol(address _defaultSignatureProtocol)
+	function defaultSignatureProtocol__update(address _defaultSignatureProtocol)
 		external
 	;
 
@@ -170,7 +170,7 @@ interface IYieldSyncV1VaultFactory
 	* @dev [update] `fee`
 	* @param _fee {uint256}
 	*/
-	function updateFee(uint256 _fee)
+	function fee__update(uint256 _fee)
 		external
 	;
 

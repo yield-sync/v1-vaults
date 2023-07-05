@@ -111,12 +111,23 @@ interface IYieldSyncV1Vault
 	/**
 	* @notice Update Signature Protocol Contract
 	* @dev [restriction] `YieldSyncV1Record` → admin
-	* @dev [update] `_signatureProtocol`
+	* @dev [update] `signatureProtocol`
 	* @param _signatureProtocol {address}
 	*/
-	function updateSignatureProtocol(address _signatureProtocol)
+	function signatureProtocol__update(address _signatureProtocol)
 		external
 	;
+
+	/**
+	* @notice Update TransferRequest Protocol Contract
+	* @dev [restriction] `YieldSyncV1Record` → admin
+	* @dev [update] `transferRequestProtocol`
+	* @param _transferRequestProtocol {address}
+	*/
+	function transferRequestProtocol__update(address _transferRequestProtocol)
+		external
+	;
+
 
 	/**
 	* @notice Process transferRequest with given `transferRequestId`
@@ -127,7 +138,7 @@ interface IYieldSyncV1Vault
 	* @param transferRequestId {uint256} Id of the TransferRequest
 	* Emits: `TokensTransferred`
 	*/
-	function processTransferRequest(uint256 transferRequestId)
+	function yieldSyncV1Vault_transferRequestId_transferRequest__process(uint256 transferRequestId)
 		external
 	;
 

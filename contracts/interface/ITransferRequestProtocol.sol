@@ -32,11 +32,22 @@ interface ITransferRequestProtocol
 	/**
 	* @param yieldSyncV1VaultAddress {address}
 	* @param transferRequestId {uint256}
+	*/
+	function yieldSyncV1Vault_transferRequestId_transferRequest__process(
+		address yieldSyncV1VaultAddress,
+		uint256 transferRequestId
+	)
+		external
+	;
+
+	/**
+	* @param yieldSyncV1VaultAddress {address}
+	* @param transferRequestId {uint256}
 	* @return readyToBeProcessed {bool}
 	* @return approved {bool}
 	* @return message {string}
 	*/
-	function status_yieldSyncV1Vault_transferRequestId_transferRequest(
+	function yieldSyncV1Vault_transferRequestId_transferRequest__status(
 		address yieldSyncV1VaultAddress,
 		uint256 transferRequestId
 	)
@@ -45,22 +56,15 @@ interface ITransferRequestProtocol
 		returns (bool readyToBeProcessed, bool approved, string memory message)
 	;
 
-	/**
-	* @param yieldSyncV1VaultAddress {address}
-	* @param transferRequestId {uint256}
-	*/
-	function process_yieldSyncV1Vault_transferRequestId_transferRequest(
-		address yieldSyncV1VaultAddress,
-		uint256 transferRequestId
-	)
-		external
-	;
 
 	/**
 	* @param purposer {address}
 	* @param yieldSyncV1VaultAddress {address}
 	*/
-	function create_yieldSyncV1Vault_yieldSyncV1VaultProperty(address purposer, address yieldSyncV1VaultAddress)
+	function yieldSyncV1Vault_yieldSyncV1VaultProperty__update(
+		address purposer,
+		address yieldSyncV1VaultAddress
+	)
 		external
 	;
 }

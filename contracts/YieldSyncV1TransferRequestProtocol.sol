@@ -54,7 +54,7 @@ contract YieldSyncV1TransferRequestProtocol is
 	}
 
 
-	modifier onlyAdmin(address yieldSyncV1VaultAddress)
+	modifier access_admin(address yieldSyncV1VaultAddress)
 	{
 		(bool admin,) = IYieldSyncV1VaultAccessControl(
 			YieldSyncV1VaultAccessControl
@@ -68,7 +68,7 @@ contract YieldSyncV1TransferRequestProtocol is
 		_;
 	}
 
-	modifier onlyMember(address yieldSyncV1VaultAddress)
+	modifier access_member(address yieldSyncV1VaultAddress)
 	{
 		(, bool member) = IYieldSyncV1VaultAccessControl(
 			YieldSyncV1VaultAccessControl
@@ -82,14 +82,14 @@ contract YieldSyncV1TransferRequestProtocol is
 		_;
 	}
 
-	modifier onlyYieldSyncV1VaultFactory()
+	modifier contract_YieldSyncV1VaultFactory()
 	{
 		require(msg.sender == YieldSyncV1VaultFactory, "!YieldSyncV1VaultFactory");
 
 		_;
 	}
 
-	modifier onlyYieldSyncV1Vault(address yieldSyncV1VaultAddress)
+	modifier contract_YieldSyncV1Vault(address yieldSyncV1VaultAddress)
 	{
 		require(msg.sender == yieldSyncV1VaultAddress, "!yieldSyncV1VaultAddress");
 
@@ -158,7 +158,7 @@ contract YieldSyncV1TransferRequestProtocol is
 	}
 
 	/// @inheritdoc ITransferRequestProtocol
-	function status_yieldSyncV1Vault_transferRequestId_transferRequest(
+	function yieldSyncV1Vault_transferRequestId_transferRequest__status(
 		address yieldSyncV1VaultAddress,
 		uint256 transferRequestId
 	)
@@ -207,29 +207,32 @@ contract YieldSyncV1TransferRequestProtocol is
 
 
 	/// @inheritdoc ITransferRequestProtocol
-	function process_yieldSyncV1Vault_transferRequestId_transferRequest(
+	function yieldSyncV1Vault_yieldSyncV1VaultProperty__update(
+		address purposer,
+		address yieldSyncV1VaultAddress
+	)
+		public
+		override
+		contract_YieldSyncV1VaultFactory()
+	{
+		_yieldSyncV1Vault_yieldSyncV1VaultProperty[yieldSyncV1VaultAddress] = _purposer_yieldSyncV1VaultProperty[
+			purposer
+		];
+	}
+
+	/// @inheritdoc ITransferRequestProtocol
+	function yieldSyncV1Vault_transferRequestId_transferRequest__process(
 		address yieldSyncV1VaultAddress,
 		uint256 transferRequestId
 	)
 		public
 		override
-		onlyYieldSyncV1Vault(yieldSyncV1VaultAddress)
+		contract_YieldSyncV1Vault(yieldSyncV1VaultAddress)
 		validTransferRequest(yieldSyncV1VaultAddress, transferRequestId)
 	{
 		_deleteTransferRequest(yieldSyncV1VaultAddress, transferRequestId);
 
 		emit DeletedTransferRequest(yieldSyncV1VaultAddress, transferRequestId);
-	}
-
-	/// @inheritdoc ITransferRequestProtocol
-	function create_yieldSyncV1Vault_yieldSyncV1VaultProperty(address purposer, address yieldSyncV1VaultAddress)
-		public
-		override
-		onlyYieldSyncV1VaultFactory()
-	{
-		_yieldSyncV1Vault_yieldSyncV1VaultProperty[yieldSyncV1VaultAddress] = _purposer_yieldSyncV1VaultProperty[
-			purposer
-		];
 	}
 
 
@@ -295,7 +298,7 @@ contract YieldSyncV1TransferRequestProtocol is
 	)
 		public
 		override
-		onlyAdmin(yieldSyncV1VaultAddress)
+		access_admin(yieldSyncV1VaultAddress)
 		validTransferRequest(yieldSyncV1VaultAddress, transferRequestId)
 	{
 		_yieldSyncV1Vault_transferRequestId_transferRequest[yieldSyncV1VaultAddress][
@@ -316,7 +319,7 @@ contract YieldSyncV1TransferRequestProtocol is
 	)
 		public
 		override
-		onlyAdmin(yieldSyncV1VaultAddress)
+		access_admin(yieldSyncV1VaultAddress)
 		validTransferRequest(yieldSyncV1VaultAddress, transferRequestId)
 	{
 		_yieldSyncV1Vault_transferRequestId_transferRequestVote[yieldSyncV1VaultAddress][
@@ -336,7 +339,7 @@ contract YieldSyncV1TransferRequestProtocol is
 	)
 		public
 		override
-		onlyAdmin(yieldSyncV1VaultAddress)
+		access_admin(yieldSyncV1VaultAddress)
 	{
 		require(yieldSyncV1VaultProperty.againstVoteRequired > 0, "!_againstVoteRequired");
 		require(yieldSyncV1VaultProperty.forVoteRequired > 0, "!_againstVoteRequired");
@@ -357,7 +360,7 @@ contract YieldSyncV1TransferRequestProtocol is
 	)
 		public
 		override
-		onlyMember(yieldSyncV1VaultAddress)
+		access_member(yieldSyncV1VaultAddress)
 	{
 		require(amount > 0, "!amount");
 
@@ -399,7 +402,7 @@ contract YieldSyncV1TransferRequestProtocol is
 	function voteOnTransferRequest(address yieldSyncV1VaultAddress, uint256 transferRequestId, bool vote)
 		public
 		override
-		onlyMember(yieldSyncV1VaultAddress)
+		access_member(yieldSyncV1VaultAddress)
 		validTransferRequest(yieldSyncV1VaultAddress, transferRequestId)
 	{
 		TransferRequestVote storage transferRequestVote = _yieldSyncV1Vault_transferRequestId_transferRequestVote[
@@ -461,7 +464,7 @@ contract YieldSyncV1TransferRequestProtocol is
 	function deleteTransferRequest(address yieldSyncV1VaultAddress, uint256 transferRequestId)
 		public
 		override
-		onlyAdmin(yieldSyncV1VaultAddress)
+		access_admin(yieldSyncV1VaultAddress)
 		validTransferRequest(yieldSyncV1VaultAddress, transferRequestId)
 	{
 		_deleteTransferRequest(yieldSyncV1VaultAddress, transferRequestId);

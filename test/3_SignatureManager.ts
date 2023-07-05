@@ -71,10 +71,10 @@ describe("[3] signatureProtocol.sol - Signature Manager Contract", async () => {
 		await signatureProtocol.update_purposer_signaturesRequired(2);
 
 		// Set Factory -> Transfer Request Protocol
-		await yieldSyncV1VaultFactory.updateTransferRequestProtocol(yieldSyncV1TransferRequestProtocol.address);
+		await yieldSyncV1VaultFactory.defaultTransferRequestProtocol__update(yieldSyncV1TransferRequestProtocol.address);
 
 		// Set Factory -> Transfer Request Protocol
-		await yieldSyncV1VaultFactory.updateDefaultSignatureProtocol(signatureProtocol.address);
+		await yieldSyncV1VaultFactory.defaultSignatureProtocol__update(signatureProtocol.address);
 
 		// Set YieldSyncV1Vault properties on TransferRequestProtocol.sol
 		await yieldSyncV1TransferRequestProtocol.purposeYieldSyncV1VaultProperty([

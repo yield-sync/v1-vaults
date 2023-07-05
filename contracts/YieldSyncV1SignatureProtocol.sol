@@ -47,9 +47,9 @@ contract YieldSyncV1SignatureProtocol is
 	}
 
 
-	modifier only_YieldSyncGovernance_DEFAULT_ADMIN_ROLE()
+	modifier contract_YieldSyncGovernance(bytes32 role)
 	{
-		require(IAccessControlEnumerable(YieldSyncGovernance).hasRole(bytes32(0), msg.sender), "!auth");
+		require(IAccessControlEnumerable(YieldSyncGovernance).hasRole(role, msg.sender), "!auth");
 
 		_;
 	}
@@ -217,7 +217,7 @@ contract YieldSyncV1SignatureProtocol is
 	function updatePause(bool pause)
 		public
 		override
-		only_YieldSyncGovernance_DEFAULT_ADMIN_ROLE()
+		contract_YieldSyncGovernance(bytes32(0))
 	{
 		if (pause)
 		{
