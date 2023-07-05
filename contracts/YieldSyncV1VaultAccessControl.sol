@@ -80,7 +80,7 @@ contract YieldSyncV1VaultAccessControl is
 
 
 	/// @inheritdoc IYieldSyncV1VaultAccessControl
-	function addAdmin(address yieldSyncV1VaultAddress, address admin)
+	function adminAdd(address yieldSyncV1VaultAddress, address admin)
 		public
 		override
 	{
@@ -99,7 +99,7 @@ contract YieldSyncV1VaultAccessControl is
 	}
 
 	/// @inheritdoc IYieldSyncV1VaultAccessControl
-	function removeAdmin(address yieldSyncV1VaultAddress, address admin)
+	function adminRemove(address yieldSyncV1VaultAddress, address admin)
 		public
 		override
 	{
@@ -145,7 +145,7 @@ contract YieldSyncV1VaultAccessControl is
 
 
 	/// @inheritdoc IYieldSyncV1VaultAccessControl
-	function addMember(address yieldSyncV1VaultAddress, address member)
+	function memberAdd(address yieldSyncV1VaultAddress, address member)
 		public
 		override
 	{
@@ -164,7 +164,7 @@ contract YieldSyncV1VaultAccessControl is
 	}
 
 	/// @inheritdoc IYieldSyncV1VaultAccessControl
-	function removeMember(address yieldSyncV1VaultAddress, address member)
+	function memberRemove(address yieldSyncV1VaultAddress, address member)
 		public
 		override
 	{

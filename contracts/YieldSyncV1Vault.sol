@@ -55,12 +55,12 @@ contract YieldSyncV1Vault is
 
 		for (uint i = 0; i < admins.length; i++)
 		{
-			IYieldSyncV1VaultAccessControl(YieldSyncV1VaultAccessControl).addAdmin(address(this), admins[i]);
+			IYieldSyncV1VaultAccessControl(YieldSyncV1VaultAccessControl).adminAdd(address(this), admins[i]);
 		}
 
 		for (uint i = 0; i < members.length; i++)
 		{
-			IYieldSyncV1VaultAccessControl(YieldSyncV1VaultAccessControl).addMember(address(this), members[i]);
+			IYieldSyncV1VaultAccessControl(YieldSyncV1VaultAccessControl).memberAdd(address(this), members[i]);
 		}
 
 		processTransferRequestLocked = false;
@@ -119,39 +119,39 @@ contract YieldSyncV1Vault is
 
 
 	/// @inheritdoc IYieldSyncV1Vault
-	function addAdmin(address targetAddress)
+	function adminAdd(address targetAddress)
 		public
 		override
 		access_admin()
 	{
-		IYieldSyncV1VaultAccessControl(YieldSyncV1VaultAccessControl).addAdmin(address(this), targetAddress);
+		IYieldSyncV1VaultAccessControl(YieldSyncV1VaultAccessControl).adminAdd(address(this), targetAddress);
 	}
 
 	/// @inheritdoc IYieldSyncV1Vault
-	function removeAdmin(address admin)
+	function adminRemove(address admin)
 		public
 		override
 		access_admin()
 	{
-		IYieldSyncV1VaultAccessControl(YieldSyncV1VaultAccessControl).removeAdmin(address(this), admin);
+		IYieldSyncV1VaultAccessControl(YieldSyncV1VaultAccessControl).adminRemove(address(this), admin);
 	}
 
 	/// @inheritdoc IYieldSyncV1Vault
-	function addMember(address targetAddress)
+	function memberAdd(address targetAddress)
 		public
 		override
 		access_admin()
 	{
-		IYieldSyncV1VaultAccessControl(YieldSyncV1VaultAccessControl).addMember(address(this), targetAddress);
+		IYieldSyncV1VaultAccessControl(YieldSyncV1VaultAccessControl).memberAdd(address(this), targetAddress);
 	}
 
 	/// @inheritdoc IYieldSyncV1Vault
-	function removeMember(address member)
+	function memberRemove(address member)
 		public
 		override
 		access_admin()
 	{
-		IYieldSyncV1VaultAccessControl(YieldSyncV1VaultAccessControl).removeMember(address(this), member);
+		IYieldSyncV1VaultAccessControl(YieldSyncV1VaultAccessControl).memberRemove(address(this), member);
 	}
 
 	/// @inheritdoc IYieldSyncV1Vault
@@ -261,6 +261,6 @@ contract YieldSyncV1Vault is
 		override
 		access_member()
 	{
-		IYieldSyncV1VaultAccessControl(YieldSyncV1VaultAccessControl).removeMember(address(this), msg.sender);
+		IYieldSyncV1VaultAccessControl(YieldSyncV1VaultAccessControl).memberRemove(address(this), msg.sender);
 	}
 }

@@ -74,7 +74,7 @@ interface IYieldSyncV1Vault
 	* @dev [add] admin on `YieldSyncV1Record`
 	* @param targetAddress {address}
 	*/
-	function addAdmin(address targetAddress)
+	function adminAdd(address targetAddress)
 		external
 	;
 
@@ -84,7 +84,7 @@ interface IYieldSyncV1Vault
 	* @dev [remove] admin on `YieldSyncV1Record`
 	* @param admin {address}
 	*/
-	function removeAdmin(address admin)
+	function adminRemove(address admin)
 		external
 	;
 
@@ -94,7 +94,7 @@ interface IYieldSyncV1Vault
 	* @dev [add] member `YieldSyncV1Record`
 	* @param targetAddress {address}
 	*/
-	function addMember(address targetAddress)
+	function memberAdd(address targetAddress)
 		external
 	;
 
@@ -104,7 +104,7 @@ interface IYieldSyncV1Vault
 	* @dev [remove] member on `YieldSyncV1Record`
 	* @param member {address}
 	*/
-	function removeMember(address member)
+	function memberRemove(address member)
 		external
 	;
 

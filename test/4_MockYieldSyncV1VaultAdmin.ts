@@ -111,9 +111,9 @@ describe("[4] MockAdmin.sol - Mock Admin Contract", async () => {
 	 * @dev Restriction: DEFAULT_ADMIN_ROLE
 	*/
 	describe("Restriction: DEFAULT_ADMIN_ROLE", async () => {
-		describe("addAdmin()", async () => {
+		describe("adminAdd()", async () => {
 			it("Should allow admin to add a contract-based admin..", async () => {
-				await yieldSyncV1Vault.addAdmin(mockAdmin.address);
+				await yieldSyncV1Vault.adminAdd(mockAdmin.address);
 			});
 		});
 
@@ -126,7 +126,7 @@ describe("[4] MockAdmin.sol - Mock Admin Contract", async () => {
 				async () => {
 					const [, addr1, addr2] = await ethers.getSigners();
 
-					await yieldSyncV1Vault.addAdmin(mockAdmin.address);
+					await yieldSyncV1Vault.adminAdd(mockAdmin.address);
 
 					await yieldSyncV1TransferRequestProtocol.connect(addr1).createTransferRequest(
 						yieldSyncV1Vault.address,

@@ -214,13 +214,13 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 
 
 	describe("Restriction: admin (1/2)", async () => {
-		describe("addAdmin()", async () => {
+		describe("adminAdd()", async () => {
 			it(
 				"Should allow admin to add another admin..",
 				async () => {
 					const [, , , , addr4] = await ethers.getSigners();
 
-					await yieldSyncV1Vault.addAdmin(addr4.address);
+					await yieldSyncV1Vault.adminAdd(addr4.address);
 
 					expect(
 						(await yieldSyncV1VaultAccessControl.yieldSyncV1Vault_participant_access(
@@ -243,7 +243,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 			it(
 				"Should allow admin to add a contract-based admin..",
 				async () => {
-					await yieldSyncV1Vault.addAdmin(mockAdmin.address);
+					await yieldSyncV1Vault.adminAdd(mockAdmin.address);
 
 					expect(
 						(await yieldSyncV1VaultAccessControl.yieldSyncV1Vault_participant_access(
@@ -264,13 +264,13 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 			);
 		});
 
-		describe("addMember()", async () => {
+		describe("memberAdd()", async () => {
 			it(
 				"Should revert when unauthorized msg.sender calls..",
 				async () => {
 					const [, addr1, addr2] = await ethers.getSigners();
 
-					await expect(yieldSyncV1Vault.connect(addr1).addMember(addr2.address)).to.be.rejected;
+					await expect(yieldSyncV1Vault.connect(addr1).memberAdd(addr2.address)).to.be.rejected;
 				}
 			);
 
@@ -279,7 +279,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 				async () => {
 					const [, addr1] = await ethers.getSigners();
 
-					await expect(yieldSyncV1Vault.addMember(addr1.address)).to.be.rejectedWith("Already member");
+					await expect(yieldSyncV1Vault.memberAdd(addr1.address)).to.be.rejectedWith("Already member");
 				}
 			);
 
@@ -288,7 +288,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 				async () => {
 					const [, , addr2] = await ethers.getSigners();
 
-					await yieldSyncV1Vault.addMember(addr2.address);
+					await yieldSyncV1Vault.memberAdd(addr2.address);
 
 					expect(
 						(await yieldSyncV1VaultAccessControl.yieldSyncV1Vault_participant_access(
@@ -309,13 +309,13 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 			);
 		});
 
-		describe("removeMember()", async () => {
+		describe("memberRemove()", async () => {
 			it(
 				"Should revert when unauthorized msg.sender calls..",
 				async () => {
 					const [, addr1] = await ethers.getSigners();
 
-					await expect(yieldSyncV1Vault.connect(addr1).removeMember(addr1.address)).to.be.rejected;
+					await expect(yieldSyncV1Vault.connect(addr1).memberRemove(addr1.address)).to.be.rejected;
 				}
 			);
 
@@ -324,7 +324,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 				async () => {
 					const [, , , , addr5] = await ethers.getSigners();
 
-					await yieldSyncV1Vault.addMember(addr5.address)
+					await yieldSyncV1Vault.memberAdd(addr5.address)
 
 					expect(
 						(await yieldSyncV1VaultAccessControl.yieldSyncV1Vault_participant_access(
@@ -333,7 +333,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 						))[1]
 					).to.be.true;
 
-					await yieldSyncV1Vault.removeMember(addr5.address)
+					await yieldSyncV1Vault.memberRemove(addr5.address)
 
 					expect(
 						(await yieldSyncV1VaultAccessControl.yieldSyncV1Vault_participant_access(
@@ -459,14 +459,14 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 
 
 	describe("Restriction: member (1/1)", async () => {
-		describe("addMember()", async () => {
+		describe("memberAdd()", async () => {
 			it(
 				"Should NOT allow member to add another member..",
 				async () => {
 					const [, addr1, , , addr4] = await ethers.getSigners();
 
 					await expect(
-						yieldSyncV1Vault.connect(addr1).addMember(addr4.address)
+						yieldSyncV1Vault.connect(addr1).memberAdd(addr4.address)
 					).to.be.rejected;
 				}
 			);
@@ -1439,7 +1439,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 				async () => {
 					const [, , , , , , addr6] = await ethers.getSigners();
 
-					await yieldSyncV1Vault.addMember(addr6.address);
+					await yieldSyncV1Vault.memberAdd(addr6.address);
 
 					const vaultsBefore = await yieldSyncV1VaultAccessControl.member_yieldSyncV1Vaults(addr6.address)
 

@@ -31,10 +31,10 @@ interface IYieldSyncV1VaultAccessControl
 	/**
 	* @notice Getter for `_yieldSyncV1Vault_admins`
 	* @dev [view]
-	* @param yieldSyncV1Vault {address}
+	* @param yieldSyncV1VaultAddress {address}
 	* @return {address[]}
 	*/
-	function yieldSyncV1Vault_admins(address yieldSyncV1Vault)
+	function yieldSyncV1Vault_admins(address yieldSyncV1VaultAddress)
 		external
 		view
 		returns (address[] memory)
@@ -43,10 +43,10 @@ interface IYieldSyncV1VaultAccessControl
 	/**
 	* @notice Getter for `_yieldSyncV1Vault_members`
 	* @dev [view]
-	* @param yieldSyncV1Vault {address}
+	* @param yieldSyncV1VaultAddress {address}
 	* @return {address[]}
 	*/
-	function yieldSyncV1Vault_members(address yieldSyncV1Vault)
+	function yieldSyncV1Vault_members(address yieldSyncV1VaultAddress)
 		external
 		view
 		returns (address[] memory)
@@ -56,11 +56,11 @@ interface IYieldSyncV1VaultAccessControl
 	* @notice Getter for `_yieldSyncV1Vault_participant_access`
 	* @dev [view]
 	* @param participant {address}
-	* @param yieldSyncV1Vault {address}
+	* @param yieldSyncV1VaultAddress {address}
 	* @return admin {bool}
 	* @return member {bool}
 	*/
-	function yieldSyncV1Vault_participant_access(address yieldSyncV1Vault, address participant)
+	function yieldSyncV1Vault_participant_access(address yieldSyncV1VaultAddress, address participant)
 		external
 		view
 		returns (bool admin, bool member)
@@ -72,10 +72,10 @@ interface IYieldSyncV1VaultAccessControl
 	* @dev [update] `_admin_yieldSyncV1Vaults`
 	*      [update] `_yieldSyncV1Vault_admins`
 	*      [update] `yieldSyncV1Vault_participant_access`
-	* @param yieldSyncV1Vault {address}
+	* @param yieldSyncV1VaultAddress {address}
 	* @param admin {address}
 	*/
-	function addAdmin(address yieldSyncV1Vault, address admin)
+	function adminAdd(address yieldSyncV1VaultAddress, address admin)
 		external
 	;
 
@@ -84,10 +84,10 @@ interface IYieldSyncV1VaultAccessControl
 	* @dev [update] `_admin_yieldSyncV1Vaults`
 	*      [update] `_yieldSyncV1Vault_admins`
 	*      [update] `yieldSyncV1Vault_participant_access`
-	* @param yieldSyncV1Vault {address}
+	* @param yieldSyncV1VaultAddress {address}
 	* @param admin {address}
 	*/
-	function removeAdmin(address yieldSyncV1Vault, address admin)
+	function adminRemove(address yieldSyncV1VaultAddress, address admin)
 		external
 	;
 
@@ -97,10 +97,10 @@ interface IYieldSyncV1VaultAccessControl
 	* @dev [update] `_member_yieldSyncV1Vaults`
 	*      [update] `_yieldSyncV1Vault_members`
 	*      [update] `yieldSyncV1Vault_participant_access`
-	* @param yieldSyncV1Vault {address}
+	* @param yieldSyncV1VaultAddress {address}
 	* @param member {address}
 	*/
-	function addMember(address yieldSyncV1Vault, address member)
+	function memberAdd(address yieldSyncV1VaultAddress, address member)
 		external
 	;
 
@@ -109,10 +109,10 @@ interface IYieldSyncV1VaultAccessControl
 	* @dev [update] `_member_yieldSyncV1Vaults`
 	*      [update] `_yieldSyncV1Vault_members`
 	*      [update] `yieldSyncV1Vault_participant_access`
-	* @param yieldSyncV1Vault {address}
+	* @param yieldSyncV1VaultAddress {address}
 	* @param member {address}
 	*/
-	function removeMember(address yieldSyncV1Vault, address member)
+	function memberRemove(address yieldSyncV1VaultAddress, address member)
 		external
 	;
 }

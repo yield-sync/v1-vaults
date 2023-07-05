@@ -189,14 +189,14 @@ describe("[2] YieldSyncV1VaultAccessControl.sol - YieldSync V1 Vault Record Cont
 		});
 	});
 
-	describe("addAdmin()", async () => {
+	describe("adminAdd()", async () => {
 		it(
 			"Should revert when unauthorized msg.sender calls..",
 			async () => {
 				const [, addr1] = await ethers.getSigners();
 
 				await expect(
-					yieldSyncV1Vault.connect(addr1).addAdmin(ethers.constants.AddressZero)
+					yieldSyncV1Vault.connect(addr1).adminAdd(ethers.constants.AddressZero)
 				).to.be.rejectedWith("!admin");
 			}
 		);
@@ -204,7 +204,7 @@ describe("[2] YieldSyncV1VaultAccessControl.sol - YieldSync V1 Vault Record Cont
 		it("Should be able to add Admin properly..", async () => {
 			const [, , , , addr4] = await ethers.getSigners();
 
-			await yieldSyncV1Vault.addAdmin(addr4.address);
+			await yieldSyncV1Vault.adminAdd(addr4.address);
 
 			const yieldSyncV1Vault_admins = await yieldSyncV1VaultAccessControl.yieldSyncV1Vault_admins(yieldSyncV1Vault.address);
 
@@ -216,20 +216,20 @@ describe("[2] YieldSyncV1VaultAccessControl.sol - YieldSync V1 Vault Record Cont
 			const [, , , , addr4] = await ethers.getSigners();
 
 
-			await yieldSyncV1Vault.addAdmin(addr4.address)
+			await yieldSyncV1Vault.adminAdd(addr4.address)
 
-			await expect(yieldSyncV1Vault.addAdmin(addr4.address)).to.be.rejectedWith("Already admin");
+			await expect(yieldSyncV1Vault.adminAdd(addr4.address)).to.be.rejectedWith("Already admin");
 		});
 	});
 
-	describe("removeAdmin()", async () => {
+	describe("adminRemove()", async () => {
 		it(
 			"Should revert when unauthorized msg.sender calls..",
 			async () => {
 				const [, addr1] = await ethers.getSigners();
 
 				await expect(
-					yieldSyncV1Vault.connect(addr1).removeAdmin(ethers.constants.AddressZero)
+					yieldSyncV1Vault.connect(addr1).adminRemove(ethers.constants.AddressZero)
 				).to.be.rejectedWith("!admin");
 			}
 		);
@@ -237,7 +237,7 @@ describe("[2] YieldSyncV1VaultAccessControl.sol - YieldSync V1 Vault Record Cont
 		it("Should be able to remove Admin properly..", async () => {
 			const [, , , , addr4] = await ethers.getSigners();
 
-			await yieldSyncV1Vault.removeAdmin(addr4.address);
+			await yieldSyncV1Vault.adminRemove(addr4.address);
 
 			// admin_yieldSyncV1Vaults
 			const admin_yieldSyncV1Vaults = await yieldSyncV1VaultAccessControl.admin_yieldSyncV1Vaults(addr4.address);
@@ -263,14 +263,14 @@ describe("[2] YieldSyncV1VaultAccessControl.sol - YieldSync V1 Vault Record Cont
 		});
 	});
 
-	describe("addMember()", async () => {
+	describe("memberAdd()", async () => {
 		it(
 			"Should revert when unauthorized msg.sender calls..",
 			async () => {
 				const [, addr1] = await ethers.getSigners();
 
 				await expect(
-					yieldSyncV1Vault.connect(addr1).addMember(ethers.constants.AddressZero)
+					yieldSyncV1Vault.connect(addr1).memberAdd(ethers.constants.AddressZero)
 				).to.be.rejectedWith("!admin");
 			}
 		);
@@ -278,7 +278,7 @@ describe("[2] YieldSyncV1VaultAccessControl.sol - YieldSync V1 Vault Record Cont
 		it("Should be able to add Admin properly..", async () => {
 			const [, , , , addr4] = await ethers.getSigners();
 
-			await yieldSyncV1Vault.addMember(addr4.address);
+			await yieldSyncV1Vault.memberAdd(addr4.address);
 
 			const yieldSyncV1Vault_members = await yieldSyncV1VaultAccessControl.yieldSyncV1Vault_members(yieldSyncV1Vault.address);
 
@@ -288,20 +288,20 @@ describe("[2] YieldSyncV1VaultAccessControl.sol - YieldSync V1 Vault Record Cont
 		it("Should not be able to double add..", async () => {
 			const [, , , , addr4] = await ethers.getSigners();
 
-			await yieldSyncV1Vault.addMember(addr4.address)
+			await yieldSyncV1Vault.memberAdd(addr4.address)
 
-			await expect(yieldSyncV1Vault.addMember(addr4.address)).to.be.rejectedWith("Already member");
+			await expect(yieldSyncV1Vault.memberAdd(addr4.address)).to.be.rejectedWith("Already member");
 		});
 	});
 
-	describe("removeMember()", async () => {
+	describe("memberRemove()", async () => {
 		it(
 			"Should revert when unauthorized msg.sender calls..",
 			async () => {
 				const [, addr1] = await ethers.getSigners();
 
 				await expect(
-					yieldSyncV1Vault.connect(addr1).removeMember(ethers.constants.AddressZero)
+					yieldSyncV1Vault.connect(addr1).memberRemove(ethers.constants.AddressZero)
 				).to.be.rejectedWith("!admin");
 			}
 		);
@@ -309,7 +309,7 @@ describe("[2] YieldSyncV1VaultAccessControl.sol - YieldSync V1 Vault Record Cont
 		it("Should be able to remove Admin properly..", async () => {
 			const [, , addr2] = await ethers.getSigners();
 
-			await yieldSyncV1Vault.removeMember(addr2.address);
+			await yieldSyncV1Vault.memberRemove(addr2.address);
 
 			// member_yieldSyncV1Vaults
 			const member_yieldSyncV1Vaults = await yieldSyncV1VaultAccessControl.member_yieldSyncV1Vaults(addr2.address);
