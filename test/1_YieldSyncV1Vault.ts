@@ -31,22 +31,23 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 		const MockERC20: ContractFactory = await ethers.getContractFactory("MockERC20");
 		const MockERC721: ContractFactory = await ethers.getContractFactory("MockERC721");
 		const MockTransferRequestProtocol: ContractFactory = await ethers.getContractFactory("MockTransferRequestProtocol");
+		const MockYieldSyncGovernance: ContractFactory = await ethers.getContractFactory("MockYieldSyncGovernance");
 
 		const YieldSyncV1Vault: ContractFactory = await ethers.getContractFactory("YieldSyncV1Vault");
 		const YieldSyncV1VaultFactory: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultFactory");
 		const YieldSyncV1VaultAccessControl: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultAccessControl");
-		const MockYieldSyncGovernance: ContractFactory = await ethers.getContractFactory("MockYieldSyncGovernance");
 		const YieldSyncV1SignatureProtocol: ContractFactory = await ethers.getContractFactory("YieldSyncV1SignatureProtocol");
 		const YieldSyncV1TransferRequestProtocol: ContractFactory = await ethers.getContractFactory("YieldSyncV1TransferRequestProtocol");
 
 
-		// Contract
+		/// Deploy
+		// Mock
 		mockAdmin = await (await MockAdmin.deploy()).deployed();
 		mockERC20 = await (await MockERC20.deploy()).deployed();
 		mockERC721 = await (await MockERC721.deploy()).deployed();
-
-		// Deploy
 		mockYieldSyncGovernance = await (await MockYieldSyncGovernance.deploy()).deployed();
+
+		// Expected
 		yieldSyncV1VaultAccessControl = await (await YieldSyncV1VaultAccessControl.deploy()).deployed();
 
 		// Deploy Factory
