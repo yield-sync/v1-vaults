@@ -114,7 +114,7 @@ interface IYieldSyncV1Vault
 	* @dev [update] `signatureProtocol`
 	* @param _signatureProtocol {address}
 	*/
-	function signatureProtocol__update(address _signatureProtocol)
+	function signatureProtocolUpdate(address _signatureProtocol)
 		external
 	;
 
@@ -124,7 +124,7 @@ interface IYieldSyncV1Vault
 	* @dev [update] `transferRequestProtocol`
 	* @param _transferRequestProtocol {address}
 	*/
-	function transferRequestProtocol__update(address _transferRequestProtocol)
+	function transferRequestProtocolUpdate(address _transferRequestProtocol)
 		external
 	;
 

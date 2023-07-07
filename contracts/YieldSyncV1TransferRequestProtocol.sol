@@ -60,7 +60,7 @@ contract YieldSyncV1TransferRequestProtocol is
 			msg.sender
 		);
 
-		require(admin || msg.sender == yieldSyncV1VaultAddress, "!admin");
+		require(admin || msg.sender == yieldSyncV1VaultAddress, "!admin && msg.sender != yieldSyncV1VaultAddress");
 
 		_;
 	}
@@ -74,7 +74,7 @@ contract YieldSyncV1TransferRequestProtocol is
 			msg.sender
 		);
 
-		require(member || msg.sender == yieldSyncV1VaultAddress, "!member");
+		require(member || msg.sender == yieldSyncV1VaultAddress, "!member && msg.sender != yieldSyncV1VaultAddress");
 
 		_;
 	}

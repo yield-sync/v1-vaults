@@ -358,14 +358,14 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 			);
 		});
 
-		describe("signatureProtocol__update()", async () => {
+		describe("signatureProtocolUpdate()", async () => {
 			it(
 				"Should revert when unauthorized msg.sender calls..",
 				async () => {
 					const [, addr1] = await ethers.getSigners();
 
 					await expect(
-						yieldSyncV1Vault.connect(addr1).signatureProtocol__update(addr1.address)
+						yieldSyncV1Vault.connect(addr1).signatureProtocolUpdate(addr1.address)
 					).to.be.rejected;
 				}
 			);
@@ -374,14 +374,14 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 				"Should be able to set a signature manager contract..",
 				async () => {
 
-					await yieldSyncV1Vault.signatureProtocol__update(signatureProtocol.address);
+					await yieldSyncV1Vault.signatureProtocolUpdate(signatureProtocol.address);
 
 					expect(await yieldSyncV1Vault.signatureProtocol()).to.be.equal(signatureProtocol.address);
 				}
 			);
 		});
 
-		describe("transferRequestProtocol__update()", async () => {
+		describe("transferRequestProtocolUpdate()", async () => {
 			it(
 				"Should revert when unauthorized msg.sender calls..",
 				async () => {
@@ -396,7 +396,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 					);
 
 					await expect(
-						yieldSyncV1Vault.connect(addr1).transferRequestProtocol__update(addr1.address)
+						yieldSyncV1Vault.connect(addr1).transferRequestProtocolUpdate(addr1.address)
 					).to.be.rejected;
 				}
 			);
@@ -412,7 +412,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 						[2, 2, sixDaysInSeconds]
 					);
 
-					await yieldSyncV1Vault.transferRequestProtocol__update(mockTransferRequestProtocol.address);
+					await yieldSyncV1Vault.transferRequestProtocolUpdate(mockTransferRequestProtocol.address);
 
 					expect(await yieldSyncV1Vault.transferRequestProtocol()).to.be.equal(
 						mockTransferRequestProtocol.address

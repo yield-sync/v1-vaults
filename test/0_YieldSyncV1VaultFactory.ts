@@ -195,7 +195,21 @@ describe("[0] YieldSyncV1VaultFactory.sol - YieldSync V1 Vault Factory Contract"
 	describe("!Restriction", async () => {
 		describe("YieldSyncV1TransferRequestProtocol.yieldSyncV1VaultPropertyUpdate()", async () => {
 			it(
-				"Should be able to set _purposer_yieldSyncV1VaultProperty..",
+				"Should revert when unauthorized msg.sender calls..",
+				async () => {
+					const [, addr1] = await ethers.getSigners();
+
+					await expect(
+						yieldSyncV1TransferRequestProtocol.yieldSyncV1VaultPropertyUpdate(
+							addr1.address,
+							[1, 1, 10]
+						)
+					).to.be.rejectedWith("!admin && msg.sender != yieldSyncV1VaultAddress");
+				}
+			);
+
+			it(
+				"Should be able to set _yieldSyncV1Vault_yieldSyncV1VaultProperty..",
 				async () => {
 					const [, addr1] = await ethers.getSigners();
 

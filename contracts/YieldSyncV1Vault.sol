@@ -155,7 +155,7 @@ contract YieldSyncV1Vault is
 	}
 
 	/// @inheritdoc IYieldSyncV1Vault
-	function signatureProtocol__update(address _signatureProtocol)
+	function signatureProtocolUpdate(address _signatureProtocol)
 		public
 		override
 		accessAdmin()
@@ -166,7 +166,7 @@ contract YieldSyncV1Vault is
 	}
 
 	/// @inheritdoc IYieldSyncV1Vault
-	function transferRequestProtocol__update(address _transferRequestProtocol)
+	function transferRequestProtocolUpdate(address _transferRequestProtocol)
 		public
 		override
 		accessAdmin()
