@@ -202,6 +202,20 @@ contract YieldSyncV1TransferRequestProtocol is
 		return (false, false, "Transfer request pending");
 	}
 
+	/// @inheritdoc ITransferRequestProtocol
+	function yieldSyncV1Vault_transferRequestId_transferRequestProcess(
+		address yieldSyncV1VaultAddress,
+		uint256 transferRequestId
+	)
+		public
+		override
+		contractYieldSyncV1Vault(yieldSyncV1VaultAddress)
+		validTransferRequest(yieldSyncV1VaultAddress, transferRequestId)
+	{
+		_deleteTransferRequest(yieldSyncV1VaultAddress, transferRequestId);
+
+		emit DeletedTransferRequest(yieldSyncV1VaultAddress, transferRequestId);
+	}
 
 	/// @inheritdoc ITransferRequestProtocol
 	function yieldSyncV1VaultInitialize(address initiator, address yieldSyncV1VaultAddress)
@@ -217,21 +231,6 @@ contract YieldSyncV1TransferRequestProtocol is
 		] = _yieldSyncV1Vault_yieldSyncV1VaultProperty[
 			initiator
 		];
-	}
-
-	/// @inheritdoc ITransferRequestProtocol
-	function yieldSyncV1Vault_transferRequestId_transferRequestProcess(
-		address yieldSyncV1VaultAddress,
-		uint256 transferRequestId
-	)
-		public
-		override
-		contractYieldSyncV1Vault(yieldSyncV1VaultAddress)
-		validTransferRequest(yieldSyncV1VaultAddress, transferRequestId)
-	{
-		_deleteTransferRequest(yieldSyncV1VaultAddress, transferRequestId);
-
-		emit DeletedTransferRequest(yieldSyncV1VaultAddress, transferRequestId);
 	}
 
 
@@ -255,6 +254,7 @@ contract YieldSyncV1TransferRequestProtocol is
 		return _yieldSyncV1Vault_yieldSyncV1VaultProperty[yieldSyncV1VaultAddress];
 	}
 
+
 	/// @inheritdoc IYieldSyncV1TransferRequestProtocol
 	function yieldSyncV1Vault_transferRequestId_transferRequestVote(
 		address yieldSyncV1VaultAddress,
@@ -270,7 +270,7 @@ contract YieldSyncV1TransferRequestProtocol is
 	}
 
 	/// @inheritdoc IYieldSyncV1TransferRequestProtocol
-	function updateTransferRequest(
+	function transferRequestUpdate(
 		address yieldSyncV1VaultAddress,
 		uint256 transferRequestId,
 		TransferRequest memory transferRequest
@@ -291,7 +291,7 @@ contract YieldSyncV1TransferRequestProtocol is
 	}
 
 	/// @inheritdoc IYieldSyncV1TransferRequestProtocol
-	function updateTransferRequestVote(
+	function transferRequestVoteUpdate(
 		address yieldSyncV1VaultAddress,
 		uint256 transferRequestId,
 		TransferRequestVote memory transferRequestVote

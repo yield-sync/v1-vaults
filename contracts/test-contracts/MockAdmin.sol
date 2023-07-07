@@ -33,7 +33,7 @@ contract MockAdmin is Ownable {
 	}
 
 
-	function updateTransferRequestVoteLatestRelevantForVoteTime(
+	function transferRequestVoteUpdateLatestRelevantForVoteTime(
 		address yieldSyncV1TransferRequestProtocol,
 		address yieldSyncV1VaultAddress,
 		uint256 transferRequestId,
@@ -61,7 +61,7 @@ contract MockAdmin is Ownable {
 			transferRequestVote.latestRelevantForVoteTime -= (timeInSeconds * 1 seconds);
 		}
 
-		IYieldSyncV1TransferRequestProtocol(yieldSyncV1TransferRequestProtocol).updateTransferRequestVote(
+		IYieldSyncV1TransferRequestProtocol(yieldSyncV1TransferRequestProtocol).transferRequestVoteUpdate(
 			yieldSyncV1VaultAddress,
 			transferRequestId,
 			transferRequestVote

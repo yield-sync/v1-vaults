@@ -103,7 +103,7 @@ interface IYieldSyncV1TransferRequestProtocol is
 	* @param transferRequest {TransferRequest}
 	* Emits: `UpdatedTransferRequest`
 	*/
-	function updateTransferRequest(
+	function transferRequestUpdate(
 		address yieldSyncV1VaultAddress,
 		uint256 transferRequestId,
 		TransferRequest memory transferRequest
@@ -120,7 +120,7 @@ interface IYieldSyncV1TransferRequestProtocol is
 	* @param transferRequestVote {TransferRequestVote}
 	* Emits: `UpdatedTransferRequestVote`
 	*/
-	function updateTransferRequestVote(
+	function transferRequestVoteUpdate(
 		address yieldSyncV1VaultAddress,
 		uint256 transferRequestId,
 		TransferRequestVote memory transferRequestVote

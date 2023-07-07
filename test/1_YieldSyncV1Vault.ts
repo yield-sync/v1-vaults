@@ -1538,7 +1538,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 
 
 	describe("Restriction: admin (2/2)", async () => {
-		describe("updateTransferRequest()", async () => {
+		describe("transferRequestUpdate()", async () => {
 			it(
 				"Should be able to update TransferRequest.forVoteCount..",
 				async () => {
@@ -1569,7 +1569,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 					);
 
 
-					await yieldSyncV1TransferRequestProtocol.updateTransferRequestVote(
+					await yieldSyncV1TransferRequestProtocol.transferRequestVoteUpdate(
 						yieldSyncV1Vault.address,
 						idsOfOpenTransferRequests[idsOfOpenTransferRequests.length - 1],
 						[
@@ -1613,7 +1613,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 						idsOfOpenTransferRequests[idsOfOpenTransferRequests.length - 1]
 					);
 
-					await yieldSyncV1TransferRequestProtocol.updateTransferRequestVote(
+					await yieldSyncV1TransferRequestProtocol.transferRequestVoteUpdate(
 						yieldSyncV1Vault.address,
 						idsOfOpenTransferRequests[idsOfOpenTransferRequests.length - 1],
 						[
