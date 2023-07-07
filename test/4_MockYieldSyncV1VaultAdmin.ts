@@ -75,9 +75,10 @@ describe("[4] MockAdmin.sol - Mock Admin Contract", async () => {
 		await yieldSyncV1VaultFactory.defaultSignatureProtocolUpdate(signatureProtocol.address);
 
 		// Set YieldSyncV1Vault properties on TransferRequestProtocol.sol
-		await yieldSyncV1TransferRequestProtocol.purposeYieldSyncV1VaultProperty([
-			2, 2, 5
-		]);
+		await yieldSyncV1TransferRequestProtocol.yieldSyncV1VaultPropertyUpdate(
+			owner.address,
+			[2, 2, 5]
+		);
 
 		// Deploy a vault
 		await yieldSyncV1VaultFactory.deployYieldSyncV1Vault(
