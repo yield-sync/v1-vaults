@@ -68,7 +68,7 @@ interface IYieldSyncV1VaultFactory
 	* @dev [view-bool]
 	* @return {bool}
 	*/
-	function transferEtherLocked()
+	function etherTransferLocked()
 		external
 		view
 		returns (bool)
@@ -180,7 +180,7 @@ interface IYieldSyncV1VaultFactory
 	* @dev [transfer]
 	* @param to {uint256}
 	*/
-	function transferEther(address to)
+	function etherTransfer(address to)
 		external
 	;
 }

@@ -33,7 +33,7 @@ contract YieldSyncV1VaultFactory is
 	address public override defaultSignatureProtocol;
 	address public override defaultTransferRequestProtocol;
 
-	bool public override transferEtherLocked;
+	bool public override etherTransferLocked;
 
 	uint256 public override fee;
 	uint256 public override yieldSyncV1VaultIdTracker;
@@ -48,7 +48,7 @@ contract YieldSyncV1VaultFactory is
 
 	constructor (address _YieldSyncGovernance, address _YieldSyncV1VaultAccessControl)
 	{
-		transferEtherLocked = false;
+		etherTransferLocked = false;
 
 		fee = 0;
 		yieldSyncV1VaultIdTracker = 0;
@@ -148,19 +148,19 @@ contract YieldSyncV1VaultFactory is
 	}
 
 	/// @inheritdoc IYieldSyncV1VaultFactory
-	function transferEther(address to)
+	function etherTransfer(address to)
 		public
 		override
 		contractYieldSyncGovernance(bytes32(0))
 	{
-		require(!transferEtherLocked, "transferEtherLocked");
+		require(!etherTransferLocked, "etherTransferLocked");
 
-		transferEtherLocked = true;
+		etherTransferLocked = true;
 
 		// [transfer]
 		(bool success, ) = to.call{value: address(this).balance}("");
 
-		transferEtherLocked = false;
+		etherTransferLocked = false;
 
 		require(success, "Failed");
 	}
