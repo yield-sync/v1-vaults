@@ -28,7 +28,7 @@ interface ISignatureProtocol is
 	* @param purposer {address}
 	* @param yieldSyncV1VaultAddress {address}
 	*/
-	function initializeYieldSyncV1Vault(address purposer, address yieldSyncV1VaultAddress)
+	function yieldSyncV1VaultInitialize(address purposer, address yieldSyncV1VaultAddress)
 		external
 	;
 }

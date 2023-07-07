@@ -58,7 +58,7 @@ contract YieldSyncV1VaultFactory is
 	}
 
 
-	modifier contract_YieldSyncGovernance(bytes32 role)
+	modifier contractYieldSyncGovernance(bytes32 role)
 	{
 		require(IAccessControlEnumerable(YieldSyncGovernance).hasRole(role, msg.sender), "!auth");
 
@@ -105,7 +105,7 @@ contract YieldSyncV1VaultFactory is
 
 		if (defaultSignatureProtocol != address(0))
 		{
-			ISignatureProtocol(defaultSignatureProtocol).initializeYieldSyncV1Vault(
+			ISignatureProtocol(defaultSignatureProtocol).yieldSyncV1VaultInitialize(
 				msg.sender,
 				address(deployedYieldSyncV1Vault)
 			);
@@ -120,29 +120,29 @@ contract YieldSyncV1VaultFactory is
 
 
 	/// @inheritdoc IYieldSyncV1VaultFactory
-	function defaultTransferRequestProtocol__update(address _defaultTransferRequestProtocol)
+	function defaultTransferRequestProtocolUpdate(address _defaultTransferRequestProtocol)
 		public
 		override
-		contract_YieldSyncGovernance(bytes32(0))
+		contractYieldSyncGovernance(bytes32(0))
 	{
 		defaultTransferRequestProtocol = _defaultTransferRequestProtocol;
 	}
 
 
 	/// @inheritdoc IYieldSyncV1VaultFactory
-	function defaultSignatureProtocol__update(address _defaultSignatureProtocol)
+	function defaultSignatureProtocolUpdate(address _defaultSignatureProtocol)
 		public
 		override
-		contract_YieldSyncGovernance(bytes32(0))
+		contractYieldSyncGovernance(bytes32(0))
 	{
 		defaultSignatureProtocol = _defaultSignatureProtocol;
 	}
 
 	/// @inheritdoc IYieldSyncV1VaultFactory
-	function fee__update(uint256 _fee)
+	function feeUpdate(uint256 _fee)
 		public
 		override
-		contract_YieldSyncGovernance(bytes32(0))
+		contractYieldSyncGovernance(bytes32(0))
 	{
 		fee = _fee;
 	}
@@ -151,7 +151,7 @@ contract YieldSyncV1VaultFactory is
 	function transferEther(address to)
 		public
 		override
-		contract_YieldSyncGovernance(bytes32(0))
+		contractYieldSyncGovernance(bytes32(0))
 	{
 		require(!transferEtherLocked, "transferEtherLocked");
 

@@ -47,7 +47,7 @@ contract YieldSyncV1SignatureProtocol is
 	}
 
 
-	modifier contract_YieldSyncGovernance(bytes32 role)
+	modifier contractYieldSyncGovernance(bytes32 role)
 	{
 		require(IAccessControlEnumerable(YieldSyncGovernance).hasRole(role, msg.sender), "!auth");
 
@@ -81,7 +81,7 @@ contract YieldSyncV1SignatureProtocol is
 
 
 	/// @inheritdoc ISignatureProtocol
-	function initializeYieldSyncV1Vault(address purposer, address yieldSyncV1VaultAddress)
+	function yieldSyncV1VaultInitialize(address purposer, address yieldSyncV1VaultAddress)
 		public
 		override
 	{
@@ -217,7 +217,7 @@ contract YieldSyncV1SignatureProtocol is
 	function updatePause(bool pause)
 		public
 		override
-		contract_YieldSyncGovernance(bytes32(0))
+		contractYieldSyncGovernance(bytes32(0))
 	{
 		if (pause)
 		{
