@@ -68,17 +68,6 @@ interface IYieldSyncV1TransferRequestProtocol is
 	;
 
 	/**
-	* @notice Getter for `_purposer_yieldSyncV1VaultProperty`
-	* @dev [view][mapping]
-	* @param purposer {address}
-	* @return {YieldSyncV1VaultProperty}
-	*/
-	function purposer_yieldSyncV1VaultProperty(address purposer)
-		external
-		returns (YieldSyncV1VaultProperty memory)
-	;
-
-	/**
 	* @notice Getter for `_yieldSyncV1Vault_yieldSyncV1VaultProperty`
 	* @dev [view][mapping]
 	* @param yieldSyncV1VaultAddress {address}
@@ -104,17 +93,6 @@ interface IYieldSyncV1TransferRequestProtocol is
 		view returns (TransferRequestVote memory)
 	;
 
-
-	/**
-	* @notice Update yieldSyncV1VaultProperty
-	* @dev [restriction] `YieldSyncV1Record` → admin
-	* @dev [update] `_purposer_yieldSyncV1VaultProperty`
-	* @param yieldSyncV1VaultProperty {YieldSyncV1VaultProperty}
-	* Emits: `UpdatedPurposerYieldSyncV1VaultProperty`
-	*/
-	function purposeYieldSyncV1VaultProperty(YieldSyncV1VaultProperty memory yieldSyncV1VaultProperty)
-		external
-	;
 
 	/**
 	* @notice Update transferRequest
@@ -158,7 +136,7 @@ interface IYieldSyncV1TransferRequestProtocol is
 	* @param yieldSyncV1VaultProperty {YieldSyncV1VaultProperty}
 	* Emits: `UpdatedYieldSyncV1VaultYieldSyncV1VaultProperty`
 	*/
-	function updateYieldSyncV1VaultProperty(
+	function yieldSyncV1VaultPropertyUpdate(
 		address yieldSyncV1VaultAddress,
 		YieldSyncV1VaultProperty memory yieldSyncV1VaultProperty
 	)

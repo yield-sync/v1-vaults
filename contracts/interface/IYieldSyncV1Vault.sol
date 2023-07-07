@@ -138,7 +138,7 @@ interface IYieldSyncV1Vault
 	* @param transferRequestId {uint256} Id of the TransferRequest
 	* Emits: `TokensTransferred`
 	*/
-	function yieldSyncV1Vault_transferRequestId_transferRequest__process(uint256 transferRequestId)
+	function yieldSyncV1Vault_transferRequestId_transferRequestProcess(uint256 transferRequestId)
 		external
 	;
 
