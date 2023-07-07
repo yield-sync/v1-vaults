@@ -45,7 +45,7 @@ async function main() {
 	}
 
 	// Set Factory -> Transfer Request Protocol
-	await yieldSyncV1VaultFactory.defaultTransferRequestProtocol__update(yieldSyncV1TransferRequestProtocol.address);
+	await yieldSyncV1VaultFactory.defaultTransferRequestProtocolUpdate(yieldSyncV1TransferRequestProtocol.address);
 
 	console.log("Waiting 30 seconds before verifying..");
 
