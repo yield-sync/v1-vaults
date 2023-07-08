@@ -267,22 +267,6 @@ contract YieldSyncV1TransferRequestProtocol is
 
 
 	/// @inheritdoc IYieldSyncV1TransferRequestProtocol
-	function yieldSyncV1VaultPropertyUpdate(
-		address yieldSyncV1VaultAddress,
-		YieldSyncV1VaultProperty memory yieldSyncV1VaultProperty
-	)
-		public
-		override
-		accessAdmin(yieldSyncV1VaultAddress)
-	{
-		require(yieldSyncV1VaultProperty.againstVoteRequired > 0, "!_againstVoteRequired");
-		require(yieldSyncV1VaultProperty.forVoteRequired > 0, "!_againstVoteRequired");
-
-		_yieldSyncV1Vault_yieldSyncV1VaultProperty[yieldSyncV1VaultAddress] = yieldSyncV1VaultProperty;
-	}
-
-
-	/// @inheritdoc IYieldSyncV1TransferRequestProtocol
 	function createTransferRequest(
 		address yieldSyncV1VaultAddress,
 		bool forERC20,
@@ -450,5 +434,20 @@ contract YieldSyncV1TransferRequestProtocol is
 			yieldSyncV1VaultAddress,
 			_yieldSyncV1Vault_transferRequestId_transferRequestVote[yieldSyncV1VaultAddress][transferRequestId]
 		);
+	}
+
+	/// @inheritdoc IYieldSyncV1TransferRequestProtocol
+	function yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+		address yieldSyncV1VaultAddress,
+		YieldSyncV1VaultProperty memory yieldSyncV1VaultProperty
+	)
+		public
+		override
+		accessAdmin(yieldSyncV1VaultAddress)
+	{
+		require(yieldSyncV1VaultProperty.againstVoteRequired > 0, "!_againstVoteRequired");
+		require(yieldSyncV1VaultProperty.forVoteRequired > 0, "!_againstVoteRequired");
+
+		_yieldSyncV1Vault_yieldSyncV1VaultProperty[yieldSyncV1VaultAddress] = yieldSyncV1VaultProperty;
 	}
 }
