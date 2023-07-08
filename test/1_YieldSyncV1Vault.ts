@@ -639,9 +639,9 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 
 
 				/**
-				 * @dev voteOnTransferRequest
+				 * @dev yieldSyncV1Vault_transferRequestId_transferRequestVoteVote
 				*/
-				describe("voteOnTransferRequest()", async () => {
+				describe("yieldSyncV1Vault_transferRequestId_transferRequestVoteVote()", async () => {
 					it(
 						"Should revert when unauthorized msg.sender calls..",
 						async () => {
@@ -658,7 +658,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 							);
 
 							await expect(
-								yieldSyncV1TransferRequestProtocol.connect(addr4).voteOnTransferRequest(
+								yieldSyncV1TransferRequestProtocol.connect(addr4).yieldSyncV1Vault_transferRequestId_transferRequestVoteVote(
 									yieldSyncV1Vault.address,
 									0,
 									true
@@ -683,7 +683,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 							);
 
 							// Vote
-							await yieldSyncV1TransferRequestProtocol.connect(addr1).voteOnTransferRequest(
+							await yieldSyncV1TransferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestVoteVote(
 								yieldSyncV1Vault.address,
 								0,
 								true
@@ -717,7 +717,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 							);
 
 							// 1st vote
-							await yieldSyncV1TransferRequestProtocol.connect(addr1).voteOnTransferRequest(
+							await yieldSyncV1TransferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestVoteVote(
 								yieldSyncV1Vault.address,
 								0,
 								true
@@ -725,7 +725,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 
 							// Attempt 2nd vote
 							await expect(
-								yieldSyncV1TransferRequestProtocol.connect(addr1).voteOnTransferRequest(
+								yieldSyncV1TransferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestVoteVote(
 									yieldSyncV1Vault.address,
 									0,
 									true
@@ -751,7 +751,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 								0
 							);
 
-							await yieldSyncV1TransferRequestProtocol.connect(addr1).voteOnTransferRequest(
+							await yieldSyncV1TransferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestVoteVote(
 								yieldSyncV1Vault.address,
 								0,
 								true
@@ -780,7 +780,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 								0
 							);
 
-							await yieldSyncV1TransferRequestProtocol.connect(addr1).voteOnTransferRequest(
+							await yieldSyncV1TransferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestVoteVote(
 								yieldSyncV1Vault.address,
 								0,
 								true
@@ -818,7 +818,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 								0
 							);
 
-							await yieldSyncV1TransferRequestProtocol.connect(addr1).voteOnTransferRequest(
+							await yieldSyncV1TransferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestVoteVote(
 								yieldSyncV1Vault.address,
 								0,
 								true
@@ -859,7 +859,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 								0
 							);
 
-							await yieldSyncV1TransferRequestProtocol.connect(addr1).voteOnTransferRequest(
+							await yieldSyncV1TransferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestVoteVote(
 								yieldSyncV1Vault.address,
 								0,
 								true
@@ -924,7 +924,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 								).length
 							).to.be.equal(1);
 
-							await yieldSyncV1TransferRequestProtocol.connect(addr1).voteOnTransferRequest(
+							await yieldSyncV1TransferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestVoteVote(
 								yieldSyncV1Vault.address,
 								0,
 								true
@@ -1052,7 +1052,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 					);
 				});
 
-				describe("voteOnTransferRequest()", async () => {
+				describe("yieldSyncV1Vault_transferRequestId_transferRequestVoteVote()", async () => {
 					it(
 						"Should be able vote on TransferRequest and add member to _transferRequest[].votedMembers..",
 						async () => {
@@ -1077,7 +1077,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 								0
 							);
 
-							await yieldSyncV1TransferRequestProtocol.connect(addr1).voteOnTransferRequest(
+							await yieldSyncV1TransferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestVoteVote(
 								yieldSyncV1Vault.address,
 								0,
 								true
@@ -1119,7 +1119,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 								0
 							);
 
-							await yieldSyncV1TransferRequestProtocol.connect(addr1).voteOnTransferRequest(
+							await yieldSyncV1TransferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestVoteVote(
 								yieldSyncV1Vault.address,
 								0,
 								true
@@ -1164,7 +1164,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 								0
 							);
 
-							await yieldSyncV1TransferRequestProtocol.connect(addr1).voteOnTransferRequest(
+							await yieldSyncV1TransferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestVoteVote(
 								yieldSyncV1Vault.address,
 								0,
 								true
@@ -1256,7 +1256,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 				});
 
 
-				describe("voteOnTransferRequest", async () => {
+				describe("yieldSyncV1Vault_transferRequestId_transferRequestVoteVote", async () => {
 					it(
 						"Should be able vote on TransferRequest and add member to _transferRequest[].votedMembers..",
 						async () => {
@@ -1272,7 +1272,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 								1
 							);
 
-							await yieldSyncV1TransferRequestProtocol.connect(addr1).voteOnTransferRequest(
+							await yieldSyncV1TransferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestVoteVote(
 								yieldSyncV1Vault.address,
 								0,
 								true
@@ -1315,7 +1315,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 								1
 							);
 
-							await yieldSyncV1TransferRequestProtocol.connect(addr1).voteOnTransferRequest(
+							await yieldSyncV1TransferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestVoteVote(
 								yieldSyncV1Vault.address,
 								0,
 								true
@@ -1360,7 +1360,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 								2
 							);
 
-							await yieldSyncV1TransferRequestProtocol.connect(addr1).voteOnTransferRequest(
+							await yieldSyncV1TransferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestVoteVote(
 								yieldSyncV1Vault.address,
 								0,
 								true
@@ -1385,7 +1385,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 		});
 
 		describe("transferRequest Against", async () => {
-			describe("voteOnTransferRequest()", async () => {
+			describe("yieldSyncV1Vault_transferRequestId_transferRequestVoteVote()", async () => {
 				it(
 					"Should be able vote on TransferRequest and add member to _transferRequest[].votedMembers..",
 					async () => {
@@ -1401,7 +1401,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 							0
 						)
 
-						await yieldSyncV1TransferRequestProtocol.connect(addr1).voteOnTransferRequest(
+						await yieldSyncV1TransferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestVoteVote(
 							yieldSyncV1Vault.address,
 							0,
 							false
@@ -1443,7 +1443,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 							0
 						)
 
-						await yieldSyncV1TransferRequestProtocol.connect(addr1).voteOnTransferRequest(
+						await yieldSyncV1TransferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestVoteVote(
 							yieldSyncV1Vault.address,
 							0,
 							false
@@ -1538,7 +1538,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 
 
 	describe("Restriction: admin (2/2)", async () => {
-		describe("transferRequestUpdate()", async () => {
+		describe("yieldSyncV1Vault_transferRequestId_transferRequestUpdate()", async () => {
 			it(
 				"Should be able to update TransferRequest.forVoteCount..",
 				async () => {
@@ -1569,7 +1569,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 					);
 
 
-					await yieldSyncV1TransferRequestProtocol.transferRequestVoteUpdate(
+					await yieldSyncV1TransferRequestProtocol.yieldSyncV1Vault_transferRequestId_transferRequestVoteUpdate(
 						yieldSyncV1Vault.address,
 						idsOfOpenTransferRequests[idsOfOpenTransferRequests.length - 1],
 						[
@@ -1613,7 +1613,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 						idsOfOpenTransferRequests[idsOfOpenTransferRequests.length - 1]
 					);
 
-					await yieldSyncV1TransferRequestProtocol.transferRequestVoteUpdate(
+					await yieldSyncV1TransferRequestProtocol.yieldSyncV1Vault_transferRequestId_transferRequestVoteUpdate(
 						yieldSyncV1Vault.address,
 						idsOfOpenTransferRequests[idsOfOpenTransferRequests.length - 1],
 						[

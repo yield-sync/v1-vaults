@@ -122,7 +122,7 @@ describe("[4] MockAdmin.sol - Mock Admin Contract", async () => {
 		/**
 		 * @dev deleteTransferRequest
 		*/
-		describe("transferRequestUpdateLatestRelevantForVoteTime()", async () => {
+		describe("yieldSyncV1Vault_transferRequestId_transferRequestUpdateLatestRelevantForVoteTime()", async () => {
 			it(
 				"Should update the latestRelevantForVoteTime to ADD seconds..",
 				async () => {
@@ -147,7 +147,7 @@ describe("[4] MockAdmin.sol - Mock Admin Contract", async () => {
 						)
 					).latestRelevantForVoteTime);
 
-					await mockAdmin.transferRequestVoteUpdateLatestRelevantForVoteTime(
+					await mockAdmin.yieldSyncV1Vault_transferRequestId_transferRequestVoteUpdateLatestRelevantForVoteTime(
 						yieldSyncV1TransferRequestProtocol.address,
 						yieldSyncV1Vault.address,
 						0,

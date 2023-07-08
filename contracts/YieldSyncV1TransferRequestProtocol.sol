@@ -30,15 +30,11 @@ contract YieldSyncV1TransferRequestProtocol is
 	) internal _yieldSyncV1Vault_yieldSyncV1VaultProperty;
 
 	mapping (
-		address yieldSyncV1Vault => mapping (
-			uint256 transferRequestId => TransferRequest transferRequest
-		)
+		address yieldSyncV1Vault => mapping (uint256 transferRequestId => TransferRequest transferRequest)
 	) internal _yieldSyncV1Vault_transferRequestId_transferRequest;
 
 	mapping (
-		address yieldSyncV1Vault => mapping (
-			uint256 transferRequestId => TransferRequestVote transferRequestVote
-		)
+		address yieldSyncV1Vault => mapping (uint256 transferRequestId => TransferRequestVote transferRequestVote)
 	) internal _yieldSyncV1Vault_transferRequestId_transferRequestVote;
 
 
@@ -269,47 +265,6 @@ contract YieldSyncV1TransferRequestProtocol is
 		return _yieldSyncV1Vault_transferRequestId_transferRequestVote[yieldSyncV1VaultAddress][transferRequestId];
 	}
 
-	/// @inheritdoc IYieldSyncV1TransferRequestProtocol
-	function transferRequestUpdate(
-		address yieldSyncV1VaultAddress,
-		uint256 transferRequestId,
-		TransferRequest memory transferRequest
-	)
-		public
-		override
-		accessAdmin(yieldSyncV1VaultAddress)
-		validTransferRequest(yieldSyncV1VaultAddress, transferRequestId)
-	{
-		_yieldSyncV1Vault_transferRequestId_transferRequest[yieldSyncV1VaultAddress][
-			transferRequestId
-		] = transferRequest;
-
-		emit UpdatedTransferRequest(
-			yieldSyncV1VaultAddress,
-			_yieldSyncV1Vault_transferRequestId_transferRequest[yieldSyncV1VaultAddress][transferRequestId]
-		);
-	}
-
-	/// @inheritdoc IYieldSyncV1TransferRequestProtocol
-	function transferRequestVoteUpdate(
-		address yieldSyncV1VaultAddress,
-		uint256 transferRequestId,
-		TransferRequestVote memory transferRequestVote
-	)
-		public
-		override
-		accessAdmin(yieldSyncV1VaultAddress)
-		validTransferRequest(yieldSyncV1VaultAddress, transferRequestId)
-	{
-		_yieldSyncV1Vault_transferRequestId_transferRequestVote[yieldSyncV1VaultAddress][
-			transferRequestId
-		] = transferRequestVote;
-
-		emit UpdatedTransferRequestVote(
-			yieldSyncV1VaultAddress,
-			_yieldSyncV1Vault_transferRequestId_transferRequestVote[yieldSyncV1VaultAddress][transferRequestId]
-		);
-	}
 
 	/// @inheritdoc IYieldSyncV1TransferRequestProtocol
 	function yieldSyncV1VaultPropertyUpdate(
@@ -378,7 +333,44 @@ contract YieldSyncV1TransferRequestProtocol is
 	}
 
 	/// @inheritdoc IYieldSyncV1TransferRequestProtocol
-	function voteOnTransferRequest(address yieldSyncV1VaultAddress, uint256 transferRequestId, bool vote)
+	function deleteTransferRequest(address yieldSyncV1VaultAddress, uint256 transferRequestId)
+		public
+		override
+		accessAdmin(yieldSyncV1VaultAddress)
+		validTransferRequest(yieldSyncV1VaultAddress, transferRequestId)
+	{
+		_deleteTransferRequest(yieldSyncV1VaultAddress, transferRequestId);
+
+		emit DeletedTransferRequest(yieldSyncV1VaultAddress, transferRequestId);
+	}
+
+	/// @inheritdoc IYieldSyncV1TransferRequestProtocol
+	function yieldSyncV1Vault_transferRequestId_transferRequestUpdate(
+		address yieldSyncV1VaultAddress,
+		uint256 transferRequestId,
+		TransferRequest memory transferRequest
+	)
+		public
+		override
+		accessAdmin(yieldSyncV1VaultAddress)
+		validTransferRequest(yieldSyncV1VaultAddress, transferRequestId)
+	{
+		_yieldSyncV1Vault_transferRequestId_transferRequest[yieldSyncV1VaultAddress][
+			transferRequestId
+		] = transferRequest;
+
+		emit UpdatedTransferRequest(
+			yieldSyncV1VaultAddress,
+			_yieldSyncV1Vault_transferRequestId_transferRequest[yieldSyncV1VaultAddress][transferRequestId]
+		);
+	}
+
+	/// @inheritdoc IYieldSyncV1TransferRequestProtocol
+	function yieldSyncV1Vault_transferRequestId_transferRequestVoteVote(
+		address yieldSyncV1VaultAddress,
+		uint256 transferRequestId,
+		bool vote
+	)
 		public
 		override
 		accessMember(yieldSyncV1VaultAddress)
@@ -440,14 +432,23 @@ contract YieldSyncV1TransferRequestProtocol is
 	}
 
 	/// @inheritdoc IYieldSyncV1TransferRequestProtocol
-	function deleteTransferRequest(address yieldSyncV1VaultAddress, uint256 transferRequestId)
+	function yieldSyncV1Vault_transferRequestId_transferRequestVoteUpdate(
+		address yieldSyncV1VaultAddress,
+		uint256 transferRequestId,
+		TransferRequestVote memory transferRequestVote
+	)
 		public
 		override
 		accessAdmin(yieldSyncV1VaultAddress)
 		validTransferRequest(yieldSyncV1VaultAddress, transferRequestId)
 	{
-		_deleteTransferRequest(yieldSyncV1VaultAddress, transferRequestId);
+		_yieldSyncV1Vault_transferRequestId_transferRequestVote[yieldSyncV1VaultAddress][
+			transferRequestId
+		] = transferRequestVote;
 
-		emit DeletedTransferRequest(yieldSyncV1VaultAddress, transferRequestId);
+		emit UpdatedTransferRequestVote(
+			yieldSyncV1VaultAddress,
+			_yieldSyncV1Vault_transferRequestId_transferRequestVote[yieldSyncV1VaultAddress][transferRequestId]
+		);
 	}
 }

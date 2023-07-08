@@ -81,13 +81,13 @@ contract YieldSyncV1SignatureProtocol is
 
 
 	/// @inheritdoc ISignatureProtocol
-	function yieldSyncV1VaultInitialize(address purposer, address yieldSyncV1VaultAddress)
+	function yieldSyncV1VaultInitialize(address initiator, address yieldSyncV1VaultAddress)
 		public
 		override
 	{
-		_yieldSyncV1VaultAddress_signaturesRequired[yieldSyncV1VaultAddress] = _purposer_signaturesRequired[
-			purposer
-		];
+		require(_purposer_signaturesRequired[initiator] > 0, "!_purposer_signaturesRequired[initiator]");
+
+		_yieldSyncV1VaultAddress_signaturesRequired[yieldSyncV1VaultAddress] = _purposer_signaturesRequired[initiator];
 	}
 
 

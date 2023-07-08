@@ -54,7 +54,6 @@ interface IYieldSyncV1TransferRequestProtocol is
 		returns (address)
 	;
 
-
 	/**
 	* @notice Getter for `_yieldSyncV1Vault_openTransferRequestIds`
 	* @dev [view][mapping]
@@ -103,7 +102,7 @@ interface IYieldSyncV1TransferRequestProtocol is
 	* @param transferRequest {TransferRequest}
 	* Emits: `UpdatedTransferRequest`
 	*/
-	function transferRequestUpdate(
+	function yieldSyncV1Vault_transferRequestId_transferRequestUpdate(
 		address yieldSyncV1VaultAddress,
 		uint256 transferRequestId,
 		TransferRequest memory transferRequest
@@ -120,7 +119,7 @@ interface IYieldSyncV1TransferRequestProtocol is
 	* @param transferRequestVote {TransferRequestVote}
 	* Emits: `UpdatedTransferRequestVote`
 	*/
-	function transferRequestVoteUpdate(
+	function yieldSyncV1Vault_transferRequestId_transferRequestVoteUpdate(
 		address yieldSyncV1VaultAddress,
 		uint256 transferRequestId,
 		TransferRequestVote memory transferRequestVote
@@ -182,7 +181,11 @@ interface IYieldSyncV1TransferRequestProtocol is
 	* Emits: `TransferRequestReadyToBeProcessed`
 	* Emits: `MemberVoted`
 	*/
-	function voteOnTransferRequest(address yieldSyncV1VaultAddress, uint256 transferRequestId, bool vote)
+	function yieldSyncV1Vault_transferRequestId_transferRequestVoteVote(
+		address yieldSyncV1VaultAddress,
+		uint256 transferRequestId,
+		bool vote
+	)
 		external
 	;
 
