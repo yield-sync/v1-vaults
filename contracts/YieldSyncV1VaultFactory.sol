@@ -98,10 +98,13 @@ contract YieldSyncV1VaultFactory is
 		yieldSyncV1VaultAddress_yieldSyncV1VaultId[address(deployedYieldSyncV1Vault)] = yieldSyncV1VaultIdTracker;
 		yieldSyncV1VaultId_yieldSyncV1VaultAddress[yieldSyncV1VaultIdTracker] = address(deployedYieldSyncV1Vault);
 
-		ITransferRequestProtocol(defaultTransferRequestProtocol).yieldSyncV1VaultInitialize(
-			msg.sender,
-			address(deployedYieldSyncV1Vault)
-		);
+		if (defaultTransferRequestProtocol != address(0))
+		{
+			ITransferRequestProtocol(defaultTransferRequestProtocol).yieldSyncV1VaultInitialize(
+				msg.sender,
+				address(deployedYieldSyncV1Vault)
+			);
+		}
 
 		if (defaultSignatureProtocol != address(0))
 		{
