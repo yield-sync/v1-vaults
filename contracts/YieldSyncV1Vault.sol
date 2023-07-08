@@ -71,7 +71,10 @@ contract YieldSyncV1Vault is
 	{
 		TransferRequest memory transferRequest = ITransferRequestProtocol(
 			transferRequestProtocol
-		).yieldSyncV1Vault_transferRequestId_transferRequest(address(this), transferRequestId);
+		).yieldSyncV1Vault_transferRequestId_transferRequest(
+			address(this),
+			transferRequestId
+		);
 
 		require(transferRequest.amount > 0, "No TransferRequest found");
 
@@ -199,7 +202,10 @@ contract YieldSyncV1Vault is
 		{
 			TransferRequest memory transferRequest = ITransferRequestProtocol(
 				transferRequestProtocol
-			).yieldSyncV1Vault_transferRequestId_transferRequest(address(this), transferRequestId);
+			).yieldSyncV1Vault_transferRequestId_transferRequest(
+				address(this),
+				transferRequestId
+			);
 
 			if (transferRequest.forERC20 && !transferRequest.forERC721)
 			{
