@@ -216,7 +216,6 @@ describe("[2] YieldSyncV1VaultAccessControl.sol - YieldSync V1 Vault Record Cont
 		it("Should not be able to double add..", async () => {
 			const [, , , , addr4] = await ethers.getSigners();
 
-
 			await yieldSyncV1Vault.adminAdd(addr4.address)
 
 			await expect(yieldSyncV1Vault.adminAdd(addr4.address)).to.be.rejectedWith("Already admin");
@@ -237,6 +236,8 @@ describe("[2] YieldSyncV1VaultAccessControl.sol - YieldSync V1 Vault Record Cont
 
 		it("Should be able to remove Admin properly..", async () => {
 			const [, , , , addr4] = await ethers.getSigners();
+
+			await yieldSyncV1Vault.adminAdd(addr4.address)
 
 			await yieldSyncV1Vault.adminRemove(addr4.address);
 

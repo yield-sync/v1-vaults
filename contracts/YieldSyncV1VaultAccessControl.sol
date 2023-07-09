@@ -27,6 +27,14 @@ contract YieldSyncV1VaultAccessControl is
 	) internal _yieldSyncV1Vault_participant_access;
 
 
+	modifier contractYieldSyncV1Vault(address yieldSyncV1VaultAddress)
+	{
+		require(yieldSyncV1VaultAddress == msg.sender, "!yieldSyncV1VaultAddress");
+
+		_;
+	}
+
+
 	/// @inheritdoc IYieldSyncV1VaultAccessControl
 	function admin_yieldSyncV1Vaults(address admin)
 		public
@@ -80,20 +88,19 @@ contract YieldSyncV1VaultAccessControl is
 
 
 	/// @inheritdoc IYieldSyncV1VaultAccessControl
-	function adminAdd(address yieldSyncV1VaultAddress, address admin)
+	function adminAdd(address yieldSyncV1VaultAddress, address target)
 		public
 		override
+		contractYieldSyncV1Vault(yieldSyncV1VaultAddress)
 	{
-		require(yieldSyncV1VaultAddress == msg.sender, "!yieldSyncV1Vault");
+		require(!_yieldSyncV1Vault_participant_access[yieldSyncV1VaultAddress][target].admin, "Already admin");
 
-		require(!_yieldSyncV1Vault_participant_access[yieldSyncV1VaultAddress][admin].admin, "Already admin");
+		_admin_yieldSyncV1Vaults[target].push(yieldSyncV1VaultAddress);
 
-		_admin_yieldSyncV1Vaults[admin].push(yieldSyncV1VaultAddress);
+		_yieldSyncV1Vault_admins[yieldSyncV1VaultAddress].push(target);
 
-		_yieldSyncV1Vault_admins[yieldSyncV1VaultAddress].push(admin);
-
-		_yieldSyncV1Vault_participant_access[yieldSyncV1VaultAddress][admin] = Access({
-			member: _yieldSyncV1Vault_participant_access[yieldSyncV1VaultAddress][admin].member,
+		_yieldSyncV1Vault_participant_access[yieldSyncV1VaultAddress][target] = Access({
+			member: _yieldSyncV1Vault_participant_access[yieldSyncV1VaultAddress][target].member,
 			admin: true
 		});
 	}
@@ -102,8 +109,9 @@ contract YieldSyncV1VaultAccessControl is
 	function adminRemove(address yieldSyncV1VaultAddress, address admin)
 		public
 		override
+		contractYieldSyncV1Vault(yieldSyncV1VaultAddress)
 	{
-		require(yieldSyncV1VaultAddress == msg.sender, "!_yieldSyncV1VaultAddress");
+		require(_yieldSyncV1Vault_participant_access[yieldSyncV1VaultAddress][admin].admin, "Not admin");
 
 		// [update] _admin_yieldSyncV1Vaults
 		for (uint256 i = 0; i < _admin_yieldSyncV1Vaults[admin].length; i++)
@@ -143,22 +151,20 @@ contract YieldSyncV1VaultAccessControl is
 		});
 	}
 
-
 	/// @inheritdoc IYieldSyncV1VaultAccessControl
-	function memberAdd(address yieldSyncV1VaultAddress, address member)
+	function memberAdd(address yieldSyncV1VaultAddress, address target)
 		public
 		override
+		contractYieldSyncV1Vault(yieldSyncV1VaultAddress)
 	{
-		require(yieldSyncV1VaultAddress == msg.sender, "!yieldSyncV1Vault");
+		require(!_yieldSyncV1Vault_participant_access[yieldSyncV1VaultAddress][target].member, "Already member");
 
-		require(!_yieldSyncV1Vault_participant_access[yieldSyncV1VaultAddress][member].member, "Already member");
+		_member_yieldSyncV1Vaults[target].push(yieldSyncV1VaultAddress);
 
-		_member_yieldSyncV1Vaults[member].push(yieldSyncV1VaultAddress);
+		_yieldSyncV1Vault_members[yieldSyncV1VaultAddress].push(target);
 
-		_yieldSyncV1Vault_members[yieldSyncV1VaultAddress].push(member);
-
-		_yieldSyncV1Vault_participant_access[yieldSyncV1VaultAddress][member] = Access({
-			admin:  _yieldSyncV1Vault_participant_access[yieldSyncV1VaultAddress][member].admin,
+		_yieldSyncV1Vault_participant_access[yieldSyncV1VaultAddress][target] = Access({
+			admin:  _yieldSyncV1Vault_participant_access[yieldSyncV1VaultAddress][target].admin,
 			member: true
 		});
 	}
@@ -167,8 +173,9 @@ contract YieldSyncV1VaultAccessControl is
 	function memberRemove(address yieldSyncV1VaultAddress, address member)
 		public
 		override
+		contractYieldSyncV1Vault(yieldSyncV1VaultAddress)
 	{
-		require(yieldSyncV1VaultAddress == msg.sender, "!_yieldSyncV1VaultAddress");
+		require(_yieldSyncV1Vault_participant_access[yieldSyncV1VaultAddress][member].member, "Not member");
 
 		// [update] _member_yieldSyncV1Vaults
 		for (uint256 i = 0; i < _member_yieldSyncV1Vaults[member].length; i++)
