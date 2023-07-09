@@ -134,7 +134,7 @@ interface IYieldSyncV1Vault
 	* @dev [restriction] `YieldSyncV1Record` → member
 	* @dev [erc20-transfer]
 	*      [decrement] `_tokenBalance`
-	*      [call][internal] `_deleteTransferRequest`
+	*      [call][internal] `_yieldSyncV1Vault_transferRequestId_transferRequestDelete`
 	* @param transferRequestId {uint256} Id of the TransferRequest
 	* Emits: `TokensTransferred`
 	*/

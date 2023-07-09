@@ -6,7 +6,7 @@ import {
 	ITransferRequestProtocol,
 	IYieldSyncV1TransferRequestProtocol,
 	TransferRequest,
-	TransferRequestVote,
+	TransferRequestPoll,
 	YieldSyncV1VaultProperty
 } from "./interface/IYieldSyncV1TransferRequestProtocol.sol";
 import { IYieldSyncV1VaultAccessControl } from "./interface/IYieldSyncV1VaultAccessControl.sol";
@@ -34,8 +34,8 @@ contract YieldSyncV1TransferRequestProtocol is
 	) internal _yieldSyncV1Vault_transferRequestId_transferRequest;
 
 	mapping (
-		address yieldSyncV1Vault => mapping (uint256 transferRequestId => TransferRequestVote transferRequestVote)
-	) internal _yieldSyncV1Vault_transferRequestId_transferRequestVote;
+		address yieldSyncV1Vault => mapping (uint256 transferRequestId => TransferRequestPoll transferRequestPoll)
+	) internal _yieldSyncV1Vault_transferRequestId_transferRequestPoll;
 
 
 	constructor (address _YieldSyncV1VaultAccessControl, address _YieldSyncV1VaultFactory)
@@ -104,17 +104,20 @@ contract YieldSyncV1TransferRequestProtocol is
 	* @notice Delete TransferRequest
 	* @dev [restriction][internal]
 	* @dev [delete] `_yieldSyncV1Vault_transferRequestId_transferRequest[yieldSyncV1VaultAddress]` value
-	* @dev [delete] `_yieldSyncV1Vault_transferRequestId_transferRequestVote[yieldSyncV1VaultAddress]` value
+	* @dev [delete] `_yieldSyncV1Vault_transferRequestId_transferRequestPoll[yieldSyncV1VaultAddress]` value
 	*      [delete] `_yieldSyncV1VaultAddress_idsOfOpenTransferRequests` value
 	* @param yieldSyncV1VaultAddress {address}
 	* @param transferRequestId {uint256}
 	*/
-	function _deleteTransferRequest(address yieldSyncV1VaultAddress, uint256 transferRequestId)
+	function _yieldSyncV1Vault_transferRequestId_transferRequestDelete(
+		address yieldSyncV1VaultAddress,
+		uint256 transferRequestId
+	)
 		internal
 	{
 		delete _yieldSyncV1Vault_transferRequestId_transferRequest[yieldSyncV1VaultAddress][transferRequestId];
 
-		delete _yieldSyncV1Vault_transferRequestId_transferRequestVote[yieldSyncV1VaultAddress][transferRequestId];
+		delete _yieldSyncV1Vault_transferRequestId_transferRequestPoll[yieldSyncV1VaultAddress][transferRequestId];
 
 		for (uint256 i = 0; i < _yieldSyncV1Vault_openTransferRequestIds[yieldSyncV1VaultAddress].length; i++)
 		{
@@ -160,7 +163,7 @@ contract YieldSyncV1TransferRequestProtocol is
 		validTransferRequest(yieldSyncV1VaultAddress, transferRequestId)
 		returns (bool readyToBeProcessed, bool approved, string memory message)
 	{
-		TransferRequestVote memory transferRequestVote = _yieldSyncV1Vault_transferRequestId_transferRequestVote[
+		TransferRequestPoll memory transferRequestPoll = _yieldSyncV1Vault_transferRequestId_transferRequestPoll[
 			yieldSyncV1VaultAddress
 		][
 			transferRequestId
@@ -171,17 +174,17 @@ contract YieldSyncV1TransferRequestProtocol is
 		];
 
 		if (
-			transferRequestVote.forVoteCount >= yieldSyncV1VaultProperty.forVoteRequired ||
-			transferRequestVote.againstVoteCount >= yieldSyncV1VaultProperty.againstVoteRequired
+			transferRequestPoll.forVoteCount >= yieldSyncV1VaultProperty.forVoteRequired ||
+			transferRequestPoll.againstVoteCount >= yieldSyncV1VaultProperty.againstVoteRequired
 		)
 		{
 			if (
-				transferRequestVote.forVoteCount >= yieldSyncV1VaultProperty.forVoteRequired &&
-				transferRequestVote.againstVoteCount < yieldSyncV1VaultProperty.againstVoteRequired
+				transferRequestPoll.forVoteCount >= yieldSyncV1VaultProperty.forVoteRequired &&
+				transferRequestPoll.againstVoteCount < yieldSyncV1VaultProperty.againstVoteRequired
 			)
 			{
 				if (
-					block.timestamp - transferRequestVote.latestRelevantForVoteTime >= (
+					block.timestamp - transferRequestPoll.latestRelevantForVoteTime >= (
 						yieldSyncV1VaultProperty.transferDelaySeconds * 1 seconds
 					)
 				)
@@ -208,7 +211,7 @@ contract YieldSyncV1TransferRequestProtocol is
 		contractYieldSyncV1Vault(yieldSyncV1VaultAddress)
 		validTransferRequest(yieldSyncV1VaultAddress, transferRequestId)
 	{
-		_deleteTransferRequest(yieldSyncV1VaultAddress, transferRequestId);
+		_yieldSyncV1Vault_transferRequestId_transferRequestDelete(yieldSyncV1VaultAddress, transferRequestId);
 
 		emit DeletedTransferRequest(yieldSyncV1VaultAddress, transferRequestId);
 	}
@@ -252,7 +255,7 @@ contract YieldSyncV1TransferRequestProtocol is
 
 
 	/// @inheritdoc IYieldSyncV1TransferRequestProtocol
-	function yieldSyncV1Vault_transferRequestId_transferRequestVote(
+	function yieldSyncV1Vault_transferRequestId_transferRequestPoll(
 		address yieldSyncV1VaultAddress,
 		uint256 transferRequestId
 	)
@@ -260,14 +263,14 @@ contract YieldSyncV1TransferRequestProtocol is
 		view
 		override
 		validTransferRequest(yieldSyncV1VaultAddress, transferRequestId)
-		returns (TransferRequestVote memory)
+		returns (TransferRequestPoll memory)
 	{
-		return _yieldSyncV1Vault_transferRequestId_transferRequestVote[yieldSyncV1VaultAddress][transferRequestId];
+		return _yieldSyncV1Vault_transferRequestId_transferRequestPoll[yieldSyncV1VaultAddress][transferRequestId];
 	}
 
 
 	/// @inheritdoc IYieldSyncV1TransferRequestProtocol
-	function createTransferRequest(
+	function yieldSyncV1Vault_transferRequestId_transferRequestCreate(
 		address yieldSyncV1VaultAddress,
 		bool forERC20,
 		bool forERC721,
@@ -298,9 +301,9 @@ contract YieldSyncV1TransferRequestProtocol is
 			}
 		);
 
-		_yieldSyncV1Vault_transferRequestId_transferRequestVote[yieldSyncV1VaultAddress][
+		_yieldSyncV1Vault_transferRequestId_transferRequestPoll[yieldSyncV1VaultAddress][
 			_transferRequestIdTracker
-		] = TransferRequestVote(
+		] = TransferRequestPoll(
 			{
 				againstVoteCount: 0,
 				forVoteCount: 0,
@@ -317,13 +320,16 @@ contract YieldSyncV1TransferRequestProtocol is
 	}
 
 	/// @inheritdoc IYieldSyncV1TransferRequestProtocol
-	function deleteTransferRequest(address yieldSyncV1VaultAddress, uint256 transferRequestId)
+	function yieldSyncV1Vault_transferRequestId_transferRequestDelete(
+		address yieldSyncV1VaultAddress,
+		uint256 transferRequestId
+	)
 		public
 		override
 		accessAdmin(yieldSyncV1VaultAddress)
 		validTransferRequest(yieldSyncV1VaultAddress, transferRequestId)
 	{
-		_deleteTransferRequest(yieldSyncV1VaultAddress, transferRequestId);
+		_yieldSyncV1Vault_transferRequestId_transferRequestDelete(yieldSyncV1VaultAddress, transferRequestId);
 
 		emit DeletedTransferRequest(yieldSyncV1VaultAddress, transferRequestId);
 	}
@@ -350,7 +356,7 @@ contract YieldSyncV1TransferRequestProtocol is
 	}
 
 	/// @inheritdoc IYieldSyncV1TransferRequestProtocol
-	function yieldSyncV1Vault_transferRequestId_transferRequestVoteVote(
+	function yieldSyncV1Vault_transferRequestId_transferRequestPollVote(
 		address yieldSyncV1VaultAddress,
 		uint256 transferRequestId,
 		bool vote
@@ -360,7 +366,7 @@ contract YieldSyncV1TransferRequestProtocol is
 		accessMember(yieldSyncV1VaultAddress)
 		validTransferRequest(yieldSyncV1VaultAddress, transferRequestId)
 	{
-		TransferRequestVote storage transferRequestVote = _yieldSyncV1Vault_transferRequestId_transferRequestVote[
+		TransferRequestPoll storage transferRequestPoll = _yieldSyncV1Vault_transferRequestId_transferRequestPoll[
 			yieldSyncV1VaultAddress
 		][
 			transferRequestId
@@ -371,68 +377,68 @@ contract YieldSyncV1TransferRequestProtocol is
 		];
 
 		require(
-			transferRequestVote.forVoteCount < yieldSyncV1VaultProperty.forVoteRequired &&
-			transferRequestVote.againstVoteCount < yieldSyncV1VaultProperty.againstVoteRequired,
+			transferRequestPoll.forVoteCount < yieldSyncV1VaultProperty.forVoteRequired &&
+			transferRequestPoll.againstVoteCount < yieldSyncV1VaultProperty.againstVoteRequired,
 			"Voting closed"
 		);
 
-		for (uint256 i = 0; i < transferRequestVote.votedMembers.length; i++)
+		for (uint256 i = 0; i < transferRequestPoll.votedMembers.length; i++)
 		{
 			require(
-				transferRequestVote.votedMembers[i] != msg.sender,
+				transferRequestPoll.votedMembers[i] != msg.sender,
 				"Already voted"
 			);
 		}
 
 		if (vote)
 		{
-			transferRequestVote.forVoteCount++;
+			transferRequestPoll.forVoteCount++;
 		}
 		else
 		{
-			transferRequestVote.againstVoteCount++;
+			transferRequestPoll.againstVoteCount++;
 		}
 
 		if (
-			transferRequestVote.forVoteCount >= yieldSyncV1VaultProperty.forVoteRequired ||
-			transferRequestVote.againstVoteCount >= yieldSyncV1VaultProperty.againstVoteRequired
+			transferRequestPoll.forVoteCount >= yieldSyncV1VaultProperty.forVoteRequired ||
+			transferRequestPoll.againstVoteCount >= yieldSyncV1VaultProperty.againstVoteRequired
 		)
 		{
 			emit TransferRequestReadyToBeProcessed(yieldSyncV1VaultAddress, transferRequestId);
 		}
 
-		transferRequestVote.votedMembers.push(msg.sender);
+		transferRequestPoll.votedMembers.push(msg.sender);
 
-		if (transferRequestVote.forVoteCount < yieldSyncV1VaultProperty.forVoteRequired)
+		if (transferRequestPoll.forVoteCount < yieldSyncV1VaultProperty.forVoteRequired)
 		{
-			transferRequestVote.latestRelevantForVoteTime = block.timestamp;
+			transferRequestPoll.latestRelevantForVoteTime = block.timestamp;
 		}
 
-		_yieldSyncV1Vault_transferRequestId_transferRequestVote[yieldSyncV1VaultAddress][
+		_yieldSyncV1Vault_transferRequestId_transferRequestPoll[yieldSyncV1VaultAddress][
 			transferRequestId
-		] = transferRequestVote;
+		] = transferRequestPoll;
 
 		emit MemberVoted(yieldSyncV1VaultAddress, transferRequestId, msg.sender, vote);
 	}
 
 	/// @inheritdoc IYieldSyncV1TransferRequestProtocol
-	function yieldSyncV1Vault_transferRequestId_transferRequestVoteUpdate(
+	function yieldSyncV1Vault_transferRequestId_transferRequestPollUpdate(
 		address yieldSyncV1VaultAddress,
 		uint256 transferRequestId,
-		TransferRequestVote memory transferRequestVote
+		TransferRequestPoll memory transferRequestPoll
 	)
 		public
 		override
 		accessAdmin(yieldSyncV1VaultAddress)
 		validTransferRequest(yieldSyncV1VaultAddress, transferRequestId)
 	{
-		_yieldSyncV1Vault_transferRequestId_transferRequestVote[yieldSyncV1VaultAddress][
+		_yieldSyncV1Vault_transferRequestId_transferRequestPoll[yieldSyncV1VaultAddress][
 			transferRequestId
-		] = transferRequestVote;
+		] = transferRequestPoll;
 
-		emit UpdatedTransferRequestVote(
+		emit UpdatedTransferRequestPoll(
 			yieldSyncV1VaultAddress,
-			_yieldSyncV1Vault_transferRequestId_transferRequestVote[yieldSyncV1VaultAddress][transferRequestId]
+			_yieldSyncV1Vault_transferRequestId_transferRequestPoll[yieldSyncV1VaultAddress][transferRequestId]
 		);
 	}
 

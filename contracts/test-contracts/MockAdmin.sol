@@ -9,7 +9,7 @@ import { IYieldSyncV1Vault } from "../interface/IYieldSyncV1Vault.sol";
 import {
 	IYieldSyncV1TransferRequestProtocol,
 	TransferRequest,
-	TransferRequestVote
+	TransferRequestPoll
 } from "../interface/IYieldSyncV1TransferRequestProtocol.sol";
 
 
@@ -33,7 +33,7 @@ contract MockAdmin is Ownable {
 	}
 
 
-	function yieldSyncV1Vault_transferRequestId_transferRequestVoteUpdateLatestRelevantForVoteTime(
+	function yieldSyncV1Vault_transferRequestId_transferRequestPollUpdateLatestRelevantForVoteTime(
 		address yieldSyncV1TransferRequestProtocol,
 		address yieldSyncV1VaultAddress,
 		uint256 transferRequestId,
@@ -43,9 +43,9 @@ contract MockAdmin is Ownable {
 		public
 		validTransferRequest(yieldSyncV1TransferRequestProtocol, yieldSyncV1VaultAddress, transferRequestId)
 	{
-		TransferRequestVote memory transferRequestVote = IYieldSyncV1TransferRequestProtocol(
+		TransferRequestPoll memory transferRequestPoll = IYieldSyncV1TransferRequestProtocol(
 			yieldSyncV1TransferRequestProtocol
-		).yieldSyncV1Vault_transferRequestId_transferRequestVote(
+		).yieldSyncV1Vault_transferRequestId_transferRequestPoll(
 			yieldSyncV1VaultAddress,
 			transferRequestId
 		);
@@ -53,20 +53,20 @@ contract MockAdmin is Ownable {
 		if (arithmaticSign)
 		{
 			// [update] TransferRequest within `_transferRequest`
-			transferRequestVote.latestRelevantForVoteTime += (timeInSeconds * 1 seconds);
+			transferRequestPoll.latestRelevantForVoteTime += (timeInSeconds * 1 seconds);
 		}
 		else
 		{
 			// [update] TransferRequest within `_transferRequest`
-			transferRequestVote.latestRelevantForVoteTime -= (timeInSeconds * 1 seconds);
+			transferRequestPoll.latestRelevantForVoteTime -= (timeInSeconds * 1 seconds);
 		}
 
 		IYieldSyncV1TransferRequestProtocol(
 			yieldSyncV1TransferRequestProtocol
-		).yieldSyncV1Vault_transferRequestId_transferRequestVoteUpdate(
+		).yieldSyncV1Vault_transferRequestId_transferRequestPollUpdate(
 			yieldSyncV1VaultAddress,
 			transferRequestId,
-			transferRequestVote
+			transferRequestPoll
 		);
 	}
 }

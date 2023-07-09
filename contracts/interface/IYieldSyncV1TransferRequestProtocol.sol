@@ -12,7 +12,7 @@ struct YieldSyncV1VaultProperty
 	uint256 transferDelaySeconds;
 }
 
-struct TransferRequestVote
+struct TransferRequestPoll
 {
 	uint256 againstVoteCount;
 	uint256 forVoteCount;
@@ -27,7 +27,7 @@ interface IYieldSyncV1TransferRequestProtocol is
 	event CreatedTransferRequest(address yieldSyncV1VaultAddress, uint256 transferRequestId);
 	event DeletedTransferRequest(address yieldSyncV1VaultAddress, uint256 transferRequestId);
 	event UpdatedTransferRequest(address yieldSyncV1VaultAddress, TransferRequest transferRequest);
-	event UpdatedTransferRequestVote(address yieldSyncV1VaultAddress, TransferRequestVote transferRequestVote);
+	event UpdatedTransferRequestPoll(address yieldSyncV1VaultAddress, TransferRequestPoll transferRequestPoll);
 	event MemberVoted(address yieldSyncV1VaultAddress, uint256 transferRequestId, address indexed member, bool vote);
 	event TransferRequestReadyToBeProcessed(address yieldSyncV1VaultAddress, uint256 transferRequestId);
 
@@ -78,18 +78,18 @@ interface IYieldSyncV1TransferRequestProtocol is
 	;
 
 	/**
-	* @notice Getter for `_yieldSyncV1Vault_transferRequestId_transferRequestVote`
+	* @notice Getter for `_yieldSyncV1Vault_transferRequestId_transferRequestPoll`
 	* @dev [view][mapping]
 	* @param yieldSyncV1VaultAddress {address}
 	* @param transferRequestId {uint256}
-	* @return {TransferRequestVote}
+	* @return {TransferRequestPoll}
 	*/
-	function yieldSyncV1Vault_transferRequestId_transferRequestVote(
+	function yieldSyncV1Vault_transferRequestId_transferRequestPoll(
 		address yieldSyncV1VaultAddress,
 		uint256 transferRequestId
 	)
 		external
-		view returns (TransferRequestVote memory)
+		view returns (TransferRequestPoll memory)
 	;
 
 
@@ -97,7 +97,7 @@ interface IYieldSyncV1TransferRequestProtocol is
 	* @notice Create a transferRequest
 	* @dev [restriction] `YieldSyncV1Record` → member
 	* @dev [add] `_yieldSyncV1Vault_transferRequestId_transferRequest` value
-	*      [add] `_yieldSyncV1Vault_transferRequestId_transferRequestVote` value
+	*      [add] `_yieldSyncV1Vault_transferRequestId_transferRequestPoll` value
 	*      [push-into] `_yieldSyncV1Vault_openTransferRequestIds`
 	*      [increment] `_transferRequestIdTracker`
 	* @param yieldSyncV1VaultAddress {address}
@@ -109,7 +109,7 @@ interface IYieldSyncV1TransferRequestProtocol is
 	* @param tokenId {uint256} ERC721 token id
 	* Emits: `CreatedTransferRequest`
 	*/
-	function createTransferRequest(
+	function yieldSyncV1Vault_transferRequestId_transferRequestCreate(
 		address yieldSyncV1VaultAddress,
 		bool forERC20,
 		bool forERC721,
@@ -127,7 +127,7 @@ interface IYieldSyncV1TransferRequestProtocol is
 	* @param yieldSyncV1VaultAddress {address}
 	* @param transferRequestId {uint256}
 	*/
-	function deleteTransferRequest(
+	function yieldSyncV1Vault_transferRequestId_transferRequestDelete(
 		address yieldSyncV1VaultAddress,
 		uint256 transferRequestId
 	)
@@ -161,7 +161,7 @@ interface IYieldSyncV1TransferRequestProtocol is
 	* Emits: `TransferRequestReadyToBeProcessed`
 	* Emits: `MemberVoted`
 	*/
-	function yieldSyncV1Vault_transferRequestId_transferRequestVoteVote(
+	function yieldSyncV1Vault_transferRequestId_transferRequestPollVote(
 		address yieldSyncV1VaultAddress,
 		uint256 transferRequestId,
 		bool vote
@@ -170,18 +170,18 @@ interface IYieldSyncV1TransferRequestProtocol is
 	;
 
 	/**
-	* @notice Update a TransferRequestVote
+	* @notice Update a TransferRequestPoll
 	* @dev [restriction] `YieldSyncV1Record` → admin
 	* @dev [update] `_transferRequest`
 	* @param yieldSyncV1VaultAddress {address}
 	* @param transferRequestId {uint256}
-	* @param transferRequestVote {TransferRequestVote}
-	* Emits: `UpdatedTransferRequestVote`
+	* @param transferRequestPoll {TransferRequestPoll}
+	* Emits: `UpdatedTransferRequestPoll`
 	*/
-	function yieldSyncV1Vault_transferRequestId_transferRequestVoteUpdate(
+	function yieldSyncV1Vault_transferRequestId_transferRequestPollUpdate(
 		address yieldSyncV1VaultAddress,
 		uint256 transferRequestId,
-		TransferRequestVote memory transferRequestVote
+		TransferRequestPoll memory transferRequestPoll
 	)
 		external
 	;

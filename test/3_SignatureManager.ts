@@ -77,7 +77,7 @@ describe("[3] signatureProtocol.sol - Signature Manager Contract", async () => {
 		await yieldSyncV1VaultFactory.defaultSignatureProtocolUpdate(signatureProtocol.address);
 
 		// Set YieldSyncV1Vault properties on TransferRequestProtocol.sol
-		await yieldSyncV1TransferRequestProtocol.yieldSyncV1VaultPropertyUpdate(
+		await yieldSyncV1TransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 			owner.address,
 			[2, 2, 5]
 		);
