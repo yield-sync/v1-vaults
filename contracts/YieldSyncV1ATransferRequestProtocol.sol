@@ -22,19 +22,19 @@ contract YieldSyncV1ATransferRequestProtocol is
 	address public override immutable YieldSyncV1VaultFactory;
 
 	mapping (
-		address yieldSyncV1Vault => uint256[] openTransferRequestsIds
+		address yieldSyncV1VaultAddress => uint256[] openTransferRequestsIds
 	) internal _yieldSyncV1VaultAddress_openTransferRequestIds;
 
 	mapping (
-		address yieldSyncV1Vault => YieldSyncV1VaultProperty yieldSyncV1VaultProperty
+		address yieldSyncV1VaultAddress => YieldSyncV1VaultProperty yieldSyncV1VaultProperty
 	) internal _yieldSyncV1VaultAddress_yieldSyncV1VaultProperty;
 
 	mapping (
-		address yieldSyncV1Vault => mapping (uint256 transferRequestId => TransferRequest transferRequest)
+		address yieldSyncV1VaultAddress => mapping (uint256 transferRequestId => TransferRequest transferRequest)
 	) internal _yieldSyncV1VaultAddress_transferRequestId_transferRequest;
 
 	mapping (
-		address yieldSyncV1Vault => mapping (uint256 transferRequestId => TransferRequestPoll transferRequestPoll)
+		address yieldSyncV1VaultAddress => mapping (uint256 transferRequestId => TransferRequestPoll transferRequestPoll)
 	) internal _yieldSyncV1VaultAddress_transferRequestId_transferRequestPoll;
 
 
@@ -222,8 +222,14 @@ contract YieldSyncV1ATransferRequestProtocol is
 		override
 		contractYieldSyncV1VaultFactory()
 	{
-		require(_yieldSyncV1VaultAddress_yieldSyncV1VaultProperty[initiator].againstVoteRequired > 0, "!_againstVoteRequired");
-		require(_yieldSyncV1VaultAddress_yieldSyncV1VaultProperty[initiator].forVoteRequired > 0, "!_againstVoteRequired");
+		require(
+			_yieldSyncV1VaultAddress_yieldSyncV1VaultProperty[initiator].againstVoteRequired > 0,
+			"!_againstVoteRequired"
+		);
+		require(
+			_yieldSyncV1VaultAddress_yieldSyncV1VaultProperty[initiator].forVoteRequired > 0,
+			"!_againstVoteRequired"
+		);
 
 		_yieldSyncV1VaultAddress_yieldSyncV1VaultProperty[
 			yieldSyncV1VaultAddress
