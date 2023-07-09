@@ -8,7 +8,7 @@ describe("[4] MockAdmin.sol - Mock Admin Contract", async () => {
 	let yieldSyncV1Vault: Contract;
 	let yieldSyncV1VaultAccessControl: Contract;
 	let yieldSyncV1VaultFactory: Contract;
-	let yieldSyncV1TransferRequestProtocol: Contract;
+	let yieldSyncV1ATransferRequestProtocol: Contract;
 	let signatureProtocol: Contract;
 	let mockAdmin: Contract;
 	let mockDapp: Contract;
@@ -31,7 +31,7 @@ describe("[4] MockAdmin.sol - Mock Admin Contract", async () => {
 		const YieldSyncV1VaultFactory: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultFactory");
 		const YieldSyncV1VaultAccessControl: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultAccessControl");
 		const YieldSyncV1SignatureProtocol: ContractFactory = await ethers.getContractFactory("YieldSyncV1SignatureProtocol");
-		const YieldSyncV1TransferRequestProtocol: ContractFactory = await ethers.getContractFactory("YieldSyncV1TransferRequestProtocol");
+		const YieldSyncV1ATransferRequestProtocol: ContractFactory = await ethers.getContractFactory("YieldSyncV1ATransferRequestProtocol");
 
 
 		/// Deploy
@@ -51,8 +51,8 @@ describe("[4] MockAdmin.sol - Mock Admin Contract", async () => {
 		).deployed();
 
 		// Deploy Transfer Request Protocol
-		yieldSyncV1TransferRequestProtocol = await (
-			await YieldSyncV1TransferRequestProtocol.deploy(
+		yieldSyncV1ATransferRequestProtocol = await (
+			await YieldSyncV1ATransferRequestProtocol.deploy(
 				yieldSyncV1VaultAccessControl.address,
 				yieldSyncV1VaultFactory.address
 			)
@@ -69,13 +69,13 @@ describe("[4] MockAdmin.sol - Mock Admin Contract", async () => {
 		await signatureProtocol.update_purposer_signaturesRequired(2);
 
 		// Set Factory -> Transfer Request Protocol
-		await yieldSyncV1VaultFactory.defaultTransferRequestProtocolUpdate(yieldSyncV1TransferRequestProtocol.address);
+		await yieldSyncV1VaultFactory.defaultTransferRequestProtocolUpdate(yieldSyncV1ATransferRequestProtocol.address);
 
 		// Set Factory -> Transfer Request Protocol
 		await yieldSyncV1VaultFactory.defaultSignatureProtocolUpdate(signatureProtocol.address);
 
 		// Set YieldSyncV1Vault properties on TransferRequestProtocol.sol
-		await yieldSyncV1TransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+		await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 			owner.address,
 			[2, 2, 5]
 		);
@@ -130,7 +130,7 @@ describe("[4] MockAdmin.sol - Mock Admin Contract", async () => {
 
 					await yieldSyncV1Vault.adminAdd(mockAdmin.address);
 
-					await yieldSyncV1TransferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestCreate(
+					await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestCreate(
 						yieldSyncV1Vault.address,
 						false,
 						false,
@@ -141,14 +141,14 @@ describe("[4] MockAdmin.sol - Mock Admin Contract", async () => {
 					);
 
 					const beforeBlockTimestamp = BigInt((
-						await yieldSyncV1TransferRequestProtocol.yieldSyncV1Vault_transferRequestId_transferRequestPoll(
+						await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_transferRequestId_transferRequestPoll(
 							yieldSyncV1Vault.address,
 							0
 						)
 					).latestRelevantForVoteTime);
 
 					await mockAdmin.yieldSyncV1Vault_transferRequestId_transferRequestPollUpdateLatestRelevantForVoteTime(
-						yieldSyncV1TransferRequestProtocol.address,
+						yieldSyncV1ATransferRequestProtocol.address,
 						yieldSyncV1Vault.address,
 						0,
 						true,
@@ -156,7 +156,7 @@ describe("[4] MockAdmin.sol - Mock Admin Contract", async () => {
 					);
 
 					const afterBlockTimestamp = BigInt((
-						await yieldSyncV1TransferRequestProtocol.yieldSyncV1Vault_transferRequestId_transferRequestPoll(
+						await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_transferRequestId_transferRequestPoll(
 							yieldSyncV1Vault.address,
 							0
 						)

@@ -2,11 +2,11 @@
 pragma solidity ^0.8.18;
 
 
-import { YieldSyncV1TransferRequestProtocol } from "../YieldSyncV1TransferRequestProtocol.sol";
+import { YieldSyncV1ATransferRequestProtocol } from "../YieldSyncV1ATransferRequestProtocol.sol";
 
 
-contract MockTransferRequestProtocol is YieldSyncV1TransferRequestProtocol {
+contract MockTransferRequestProtocol is YieldSyncV1ATransferRequestProtocol {
 	constructor (address _YieldSyncV1VaultAccessControl, address _YieldSyncV1VaultFactory)
-		YieldSyncV1TransferRequestProtocol(_YieldSyncV1VaultAccessControl, _YieldSyncV1VaultFactory)
+		YieldSyncV1ATransferRequestProtocol(_YieldSyncV1VaultAccessControl, _YieldSyncV1VaultFactory)
 	{}
 }

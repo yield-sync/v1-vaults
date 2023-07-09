@@ -7,7 +7,7 @@ const { ethers } = require("hardhat");
 describe("[0] YieldSyncV1VaultFactory.sol - YieldSync V1 Vault Factory Contract", async () => {
 	let yieldSyncV1VaultAccessControl: Contract;
 	let yieldSyncV1VaultFactory: Contract;
-	let yieldSyncV1TransferRequestProtocol: Contract;
+	let yieldSyncV1ATransferRequestProtocol: Contract;
 	let mockYieldSyncGovernance: Contract;
 	let mockSignatureProtocol: Contract;
 
@@ -19,7 +19,7 @@ describe("[0] YieldSyncV1VaultFactory.sol - YieldSync V1 Vault Factory Contract"
 		const YieldSyncV1VaultAccessControl: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultAccessControl");
 		const MockYieldSyncGovernance: ContractFactory = await ethers.getContractFactory("MockYieldSyncGovernance");
 		const MockSignatureProtocol: ContractFactory = await ethers.getContractFactory("MockSignatureProtocol");
-		const YieldSyncV1TransferRequestProtocol: ContractFactory = await ethers.getContractFactory("YieldSyncV1TransferRequestProtocol");
+		const YieldSyncV1ATransferRequestProtocol: ContractFactory = await ethers.getContractFactory("YieldSyncV1ATransferRequestProtocol");
 
 		/// Deploy
 		// Mock
@@ -32,15 +32,15 @@ describe("[0] YieldSyncV1VaultFactory.sol - YieldSync V1 Vault Factory Contract"
 		).deployed();
 
 		// Deploy Transfer Request Protocol
-		yieldSyncV1TransferRequestProtocol = await (
-			await YieldSyncV1TransferRequestProtocol.deploy(
+		yieldSyncV1ATransferRequestProtocol = await (
+			await YieldSyncV1ATransferRequestProtocol.deploy(
 				yieldSyncV1VaultAccessControl.address,
 				yieldSyncV1VaultFactory.address
 			)
 		).deployed();
 
 		// Set Factory -> Transfer Request Protocol
-		await yieldSyncV1VaultFactory.defaultTransferRequestProtocolUpdate(yieldSyncV1TransferRequestProtocol.address);
+		await yieldSyncV1VaultFactory.defaultTransferRequestProtocolUpdate(yieldSyncV1ATransferRequestProtocol.address);
 
 		// Deploy Signature Protocol
 		mockSignatureProtocol = await (
@@ -193,14 +193,14 @@ describe("[0] YieldSyncV1VaultFactory.sol - YieldSync V1 Vault Factory Contract"
 
 
 	describe("!Restriction", async () => {
-		describe("YieldSyncV1TransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate()", async () => {
+		describe("YieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate()", async () => {
 			it(
 				"Should revert when unauthorized msg.sender calls..",
 				async () => {
 					const [, addr1] = await ethers.getSigners();
 
 					await expect(
-						yieldSyncV1TransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+						yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 							addr1.address,
 							[1, 1, 10]
 						)
@@ -213,12 +213,12 @@ describe("[0] YieldSyncV1VaultFactory.sol - YieldSync V1 Vault Factory Contract"
 				async () => {
 					const [, addr1] = await ethers.getSigners();
 
-					await yieldSyncV1TransferRequestProtocol.connect(addr1).yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+					await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 						addr1.address,
 						[1, 1, 10]
 					);
 
-					const vaultProperties = await yieldSyncV1TransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultProperty(
+					const vaultProperties = await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultProperty(
 						addr1.address
 					);
 
@@ -254,7 +254,7 @@ describe("[0] YieldSyncV1VaultFactory.sol - YieldSync V1 Vault Factory Contract"
 				async () => {
 					const [, addr1] = await ethers.getSigners();
 
-					await yieldSyncV1TransferRequestProtocol.connect(addr1).yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+					await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 						addr1.address,
 						[1, 1, 10]
 					);
@@ -280,7 +280,7 @@ describe("[0] YieldSyncV1VaultFactory.sol - YieldSync V1 Vault Factory Contract"
 				async () => {
 					const [, addr1] = await ethers.getSigners();
 
-					await yieldSyncV1TransferRequestProtocol.connect(addr1).yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+					await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 						addr1.address,
 						[1, 1, 10]
 					);
@@ -322,11 +322,11 @@ describe("[0] YieldSyncV1VaultFactory.sol - YieldSync V1 Vault Factory Contract"
 			);
 
 			it(
-				"Should have correct vault properties on YieldSyncV1TransferRequestProtocol.sol..",
+				"Should have correct vault properties on YieldSyncV1ATransferRequestProtocol.sol..",
 				async () => {
 					const [, addr1] = await ethers.getSigners();
 
-					await yieldSyncV1TransferRequestProtocol.connect(addr1).yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+					await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 						addr1.address,
 						[1, 1, 10]
 					);
@@ -341,7 +341,7 @@ describe("[0] YieldSyncV1VaultFactory.sol - YieldSync V1 Vault Factory Contract"
 						{ value: 1 }
 					);
 
-					const vProp = await yieldSyncV1TransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultProperty(
+					const vProp = await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultProperty(
 						await yieldSyncV1VaultFactory.yieldSyncV1VaultId_yieldSyncV1VaultAddress(0)
 					);
 
@@ -358,7 +358,7 @@ describe("[0] YieldSyncV1VaultFactory.sol - YieldSync V1 Vault Factory Contract"
 
 					await yieldSyncV1VaultFactory.defaultSignatureProtocolUpdate(ethers.constants.AddressZero);
 
-					await yieldSyncV1TransferRequestProtocol.connect(addr1).yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+					await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 						addr1.address,
 						[1, 1, 10]
 					);
@@ -390,7 +390,7 @@ describe("[0] YieldSyncV1VaultFactory.sol - YieldSync V1 Vault Factory Contract"
 					async () => {
 						const [, addr1] = await ethers.getSigners();
 
-						await yieldSyncV1TransferRequestProtocol.connect(addr1).yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+						await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 							addr1.address,
 							[1, 1, 10]
 						);
@@ -428,7 +428,7 @@ describe("[0] YieldSyncV1VaultFactory.sol - YieldSync V1 Vault Factory Contract"
 					async () => {
 						const [, addr1] = await ethers.getSigners();
 
-						await yieldSyncV1TransferRequestProtocol.connect(addr1).yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+						await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 							addr1.address,
 							[1, 1, 10]
 						);

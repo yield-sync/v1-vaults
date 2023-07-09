@@ -21,7 +21,7 @@ struct TransferRequestPoll
 }
 
 
-interface IYieldSyncV1TransferRequestProtocol is
+interface IYieldSyncV1ATransferRequestProtocol is
 	ITransferRequestProtocol
 {
 	event CreatedTransferRequest(address yieldSyncV1VaultAddress, uint256 transferRequestId);

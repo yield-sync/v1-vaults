@@ -11,7 +11,7 @@ describe("[3] signatureProtocol.sol - Signature Manager Contract", async () => {
 	let yieldSyncV1Vault: Contract;
 	let yieldSyncV1VaultAccessControl: Contract;
 	let yieldSyncV1VaultFactory: Contract;
-	let yieldSyncV1TransferRequestProtocol: Contract;
+	let yieldSyncV1ATransferRequestProtocol: Contract;
 	let signatureProtocol: Contract;
 	let mockAdmin: Contract;
 	let mockDapp: Contract;
@@ -34,7 +34,7 @@ describe("[3] signatureProtocol.sol - Signature Manager Contract", async () => {
 		const YieldSyncV1VaultFactory: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultFactory");
 		const YieldSyncV1VaultAccessControl: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultAccessControl");
 		const YieldSyncV1SignatureProtocol: ContractFactory = await ethers.getContractFactory("YieldSyncV1SignatureProtocol");
-		const YieldSyncV1TransferRequestProtocol: ContractFactory = await ethers.getContractFactory("YieldSyncV1TransferRequestProtocol");
+		const YieldSyncV1ATransferRequestProtocol: ContractFactory = await ethers.getContractFactory("YieldSyncV1ATransferRequestProtocol");
 
 		/// Deploy
 		// Mock
@@ -53,8 +53,8 @@ describe("[3] signatureProtocol.sol - Signature Manager Contract", async () => {
 		).deployed();
 
 		// Deploy Transfer Request Protocol
-		yieldSyncV1TransferRequestProtocol = await (
-			await YieldSyncV1TransferRequestProtocol.deploy(
+		yieldSyncV1ATransferRequestProtocol = await (
+			await YieldSyncV1ATransferRequestProtocol.deploy(
 				yieldSyncV1VaultAccessControl.address,
 				yieldSyncV1VaultFactory.address
 			)
@@ -71,13 +71,13 @@ describe("[3] signatureProtocol.sol - Signature Manager Contract", async () => {
 		await signatureProtocol.update_purposer_signaturesRequired(2);
 
 		// Set Factory -> Transfer Request Protocol
-		await yieldSyncV1VaultFactory.defaultTransferRequestProtocolUpdate(yieldSyncV1TransferRequestProtocol.address);
+		await yieldSyncV1VaultFactory.defaultTransferRequestProtocolUpdate(yieldSyncV1ATransferRequestProtocol.address);
 
 		// Set Factory -> Transfer Request Protocol
 		await yieldSyncV1VaultFactory.defaultSignatureProtocolUpdate(signatureProtocol.address);
 
 		// Set YieldSyncV1Vault properties on TransferRequestProtocol.sol
-		await yieldSyncV1TransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+		await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 			owner.address,
 			[2, 2, 5]
 		);

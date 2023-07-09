@@ -13,7 +13,7 @@ async function main() {
 	const YieldSyncV1VaultFactory: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultFactory");
 	const YieldSyncV1VaultAccessControl: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultAccessControl");
 	const YieldSyncV1SignatureProtocol: ContractFactory = await ethers.getContractFactory("YieldSyncV1SignatureProtocol");
-	const YieldSyncV1TransferRequestProtocol: ContractFactory = await ethers.getContractFactory("YieldSyncV1TransferRequestProtocol");
+	const YieldSyncV1ATransferRequestProtocol: ContractFactory = await ethers.getContractFactory("YieldSyncV1ATransferRequestProtocol");
 
 
 	// deploy
@@ -26,8 +26,8 @@ async function main() {
 	).deployed();
 
 	// Deploy Transfer Request Protocol
-	const yieldSyncV1TransferRequestProtocol = await (
-		await YieldSyncV1TransferRequestProtocol.deploy(
+	const yieldSyncV1ATransferRequestProtocol = await (
+		await YieldSyncV1ATransferRequestProtocol.deploy(
 			yieldSyncV1VaultAccessControl.address,
 			yieldSyncV1VaultFactory.address
 		)
@@ -45,7 +45,7 @@ async function main() {
 	}
 
 	// Set Factory -> Transfer Request Protocol
-	await yieldSyncV1VaultFactory.defaultTransferRequestProtocolUpdate(yieldSyncV1TransferRequestProtocol.address);
+	await yieldSyncV1VaultFactory.defaultTransferRequestProtocolUpdate(yieldSyncV1ATransferRequestProtocol.address);
 
 	console.log("Waiting 30 seconds before verifying..");
 
@@ -79,11 +79,11 @@ async function main() {
 			}
 		);
 
-		// yieldSyncV1TransferRequestProtocol
+		// yieldSyncV1ATransferRequestProtocol
 		await run(
 			"verify:verify",
 			{
-				address: yieldSyncV1TransferRequestProtocol.address,
+				address: yieldSyncV1ATransferRequestProtocol.address,
 				constructorArguments: [
 					yieldSyncV1VaultAccessControl.address,
 					yieldSyncV1VaultFactory.address

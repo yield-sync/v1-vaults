@@ -4,17 +4,17 @@ pragma solidity ^0.8.18;
 
 import {
 	ITransferRequestProtocol,
-	IYieldSyncV1TransferRequestProtocol,
+	IYieldSyncV1ATransferRequestProtocol,
 	TransferRequest,
 	TransferRequestPoll,
 	YieldSyncV1VaultProperty
-} from "./interface/IYieldSyncV1TransferRequestProtocol.sol";
+} from "./interface/IYieldSyncV1ATransferRequestProtocol.sol";
 import { IYieldSyncV1VaultAccessControl } from "./interface/IYieldSyncV1VaultAccessControl.sol";
 
 
-contract YieldSyncV1TransferRequestProtocol is
+contract YieldSyncV1ATransferRequestProtocol is
 	ITransferRequestProtocol,
-	IYieldSyncV1TransferRequestProtocol
+	IYieldSyncV1ATransferRequestProtocol
 {
 	uint256 internal _transferRequestIdTracker;
 
@@ -233,7 +233,7 @@ contract YieldSyncV1TransferRequestProtocol is
 	}
 
 
-	/// @inheritdoc IYieldSyncV1TransferRequestProtocol
+	/// @inheritdoc IYieldSyncV1ATransferRequestProtocol
 	function yieldSyncV1Vault_openTransferRequestIds(address yieldSyncV1VaultAddress)
 		public
 		view
@@ -243,7 +243,7 @@ contract YieldSyncV1TransferRequestProtocol is
 		return _yieldSyncV1Vault_openTransferRequestIds[yieldSyncV1VaultAddress];
 	}
 
-	/// @inheritdoc IYieldSyncV1TransferRequestProtocol
+	/// @inheritdoc IYieldSyncV1ATransferRequestProtocol
 	function yieldSyncV1Vault_yieldSyncV1VaultProperty(address yieldSyncV1VaultAddress)
 		public
 		view
@@ -254,7 +254,7 @@ contract YieldSyncV1TransferRequestProtocol is
 	}
 
 
-	/// @inheritdoc IYieldSyncV1TransferRequestProtocol
+	/// @inheritdoc IYieldSyncV1ATransferRequestProtocol
 	function yieldSyncV1Vault_transferRequestId_transferRequestPoll(
 		address yieldSyncV1VaultAddress,
 		uint256 transferRequestId
@@ -269,7 +269,7 @@ contract YieldSyncV1TransferRequestProtocol is
 	}
 
 
-	/// @inheritdoc IYieldSyncV1TransferRequestProtocol
+	/// @inheritdoc IYieldSyncV1ATransferRequestProtocol
 	function yieldSyncV1Vault_transferRequestId_transferRequestCreate(
 		address yieldSyncV1VaultAddress,
 		bool forERC20,
@@ -319,7 +319,7 @@ contract YieldSyncV1TransferRequestProtocol is
 		emit CreatedTransferRequest(yieldSyncV1VaultAddress, _transferRequestIdTracker - 1);
 	}
 
-	/// @inheritdoc IYieldSyncV1TransferRequestProtocol
+	/// @inheritdoc IYieldSyncV1ATransferRequestProtocol
 	function yieldSyncV1Vault_transferRequestId_transferRequestDelete(
 		address yieldSyncV1VaultAddress,
 		uint256 transferRequestId
@@ -334,7 +334,7 @@ contract YieldSyncV1TransferRequestProtocol is
 		emit DeletedTransferRequest(yieldSyncV1VaultAddress, transferRequestId);
 	}
 
-	/// @inheritdoc IYieldSyncV1TransferRequestProtocol
+	/// @inheritdoc IYieldSyncV1ATransferRequestProtocol
 	function yieldSyncV1Vault_transferRequestId_transferRequestUpdate(
 		address yieldSyncV1VaultAddress,
 		uint256 transferRequestId,
@@ -355,7 +355,7 @@ contract YieldSyncV1TransferRequestProtocol is
 		);
 	}
 
-	/// @inheritdoc IYieldSyncV1TransferRequestProtocol
+	/// @inheritdoc IYieldSyncV1ATransferRequestProtocol
 	function yieldSyncV1Vault_transferRequestId_transferRequestPollVote(
 		address yieldSyncV1VaultAddress,
 		uint256 transferRequestId,
@@ -421,7 +421,7 @@ contract YieldSyncV1TransferRequestProtocol is
 		emit MemberVoted(yieldSyncV1VaultAddress, transferRequestId, msg.sender, vote);
 	}
 
-	/// @inheritdoc IYieldSyncV1TransferRequestProtocol
+	/// @inheritdoc IYieldSyncV1ATransferRequestProtocol
 	function yieldSyncV1Vault_transferRequestId_transferRequestPollUpdate(
 		address yieldSyncV1VaultAddress,
 		uint256 transferRequestId,
@@ -442,7 +442,7 @@ contract YieldSyncV1TransferRequestProtocol is
 		);
 	}
 
-	/// @inheritdoc IYieldSyncV1TransferRequestProtocol
+	/// @inheritdoc IYieldSyncV1ATransferRequestProtocol
 	function yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 		address yieldSyncV1VaultAddress,
 		YieldSyncV1VaultProperty memory yieldSyncV1VaultProperty
