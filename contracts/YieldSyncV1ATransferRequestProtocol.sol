@@ -34,7 +34,9 @@ contract YieldSyncV1ATransferRequestProtocol is
 	) internal _yieldSyncV1VaultAddress_transferRequestId_transferRequest;
 
 	mapping (
-		address yieldSyncV1VaultAddress => mapping (uint256 transferRequestId => TransferRequestPoll transferRequestPoll)
+		address yieldSyncV1VaultAddress => mapping (
+			uint256 transferRequestId => TransferRequestPoll transferRequestPoll
+		)
 	) internal _yieldSyncV1VaultAddress_transferRequestId_transferRequestPoll;
 
 
@@ -92,7 +94,9 @@ contract YieldSyncV1ATransferRequestProtocol is
 	modifier validTransferRequest(address yieldSyncV1VaultAddress, uint256 transferRequestId)
 	{
 		require(
-			_yieldSyncV1VaultAddress_transferRequestId_transferRequest[yieldSyncV1VaultAddress][transferRequestId].amount > 0,
+			_yieldSyncV1VaultAddress_transferRequestId_transferRequest[yieldSyncV1VaultAddress][
+				transferRequestId
+			].amount > 0,
 			"No TransferRequest found"
 		);
 
@@ -117,7 +121,9 @@ contract YieldSyncV1ATransferRequestProtocol is
 	{
 		delete _yieldSyncV1VaultAddress_transferRequestId_transferRequest[yieldSyncV1VaultAddress][transferRequestId];
 
-		delete _yieldSyncV1VaultAddress_transferRequestId_transferRequestPoll[yieldSyncV1VaultAddress][transferRequestId];
+		delete _yieldSyncV1VaultAddress_transferRequestId_transferRequestPoll[yieldSyncV1VaultAddress][
+			transferRequestId
+		];
 
 		for (uint256 i = 0; i < _yieldSyncV1VaultAddress_openTransferRequestIds[yieldSyncV1VaultAddress].length; i++)
 		{
@@ -271,7 +277,9 @@ contract YieldSyncV1ATransferRequestProtocol is
 		validTransferRequest(yieldSyncV1VaultAddress, transferRequestId)
 		returns (TransferRequestPoll memory)
 	{
-		return _yieldSyncV1VaultAddress_transferRequestId_transferRequestPoll[yieldSyncV1VaultAddress][transferRequestId];
+		return _yieldSyncV1VaultAddress_transferRequestId_transferRequestPoll[yieldSyncV1VaultAddress][
+			transferRequestId
+		];
 	}
 
 

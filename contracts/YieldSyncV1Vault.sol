@@ -253,7 +253,9 @@ contract YieldSyncV1Vault is
 			emit TokensTransferred(msg.sender, transferRequest.to, transferRequest.amount);
 		}
 
-		ITransferRequestProtocol(transferRequestProtocol).yieldSyncV1VaultAddress_transferRequestId_transferRequestProcess(
+		ITransferRequestProtocol(
+			transferRequestProtocol
+		).yieldSyncV1VaultAddress_transferRequestId_transferRequestProcess(
 			address(this),
 			transferRequestId
 		);
