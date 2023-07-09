@@ -71,7 +71,7 @@ contract YieldSyncV1Vault is
 	{
 		TransferRequest memory transferRequest = ITransferRequestProtocol(
 			transferRequestProtocol
-		).yieldSyncV1Vault_transferRequestId_transferRequest(
+		).yieldSyncV1VaultAddress_transferRequestId_transferRequest(
 			address(this),
 			transferRequestId
 		);
@@ -85,7 +85,7 @@ contract YieldSyncV1Vault is
 	{
 		(bool admin,) = IYieldSyncV1VaultAccessControl(
 			YieldSyncV1VaultAccessControl
-		).yieldSyncV1Vault_participant_access(
+		).yieldSyncV1VaultAddress_participant_access(
 			address(this),
 			msg.sender
 		);
@@ -99,7 +99,7 @@ contract YieldSyncV1Vault is
 	{
 		(, bool member) = IYieldSyncV1VaultAccessControl(
 			YieldSyncV1VaultAccessControl
-		).yieldSyncV1Vault_participant_access(
+		).yieldSyncV1VaultAddress_participant_access(
 			address(this),
 			msg.sender
 		);
@@ -181,7 +181,7 @@ contract YieldSyncV1Vault is
 
 
 	/// @inheritdoc IYieldSyncV1Vault
-	function yieldSyncV1Vault_transferRequestId_transferRequestProcess(uint256 transferRequestId)
+	function yieldSyncV1VaultAddress_transferRequestId_transferRequestProcess(uint256 transferRequestId)
 		public
 		override
 		accessMember()
@@ -189,7 +189,7 @@ contract YieldSyncV1Vault is
 	{
 		(bool readyToBeProcessed, bool approved, string memory message) = ITransferRequestProtocol(
 			transferRequestProtocol
-		).yieldSyncV1Vault_transferRequestId_transferRequestStatus(
+		).yieldSyncV1VaultAddress_transferRequestId_transferRequestStatus(
 			address(this),
 			transferRequestId
 		);
@@ -202,7 +202,7 @@ contract YieldSyncV1Vault is
 		{
 			TransferRequest memory transferRequest = ITransferRequestProtocol(
 				transferRequestProtocol
-			).yieldSyncV1Vault_transferRequestId_transferRequest(
+			).yieldSyncV1VaultAddress_transferRequestId_transferRequest(
 				address(this),
 				transferRequestId
 			);
@@ -253,7 +253,7 @@ contract YieldSyncV1Vault is
 			emit TokensTransferred(msg.sender, transferRequest.to, transferRequest.amount);
 		}
 
-		ITransferRequestProtocol(transferRequestProtocol).yieldSyncV1Vault_transferRequestId_transferRequestProcess(
+		ITransferRequestProtocol(transferRequestProtocol).yieldSyncV1VaultAddress_transferRequestId_transferRequestProcess(
 			address(this),
 			transferRequestId
 		);

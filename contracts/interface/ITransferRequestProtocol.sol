@@ -21,7 +21,7 @@ interface ITransferRequestProtocol
 	* @param transferRequestId {uint256}
 	* @return {TransferRequest}
 	*/
-	function yieldSyncV1Vault_transferRequestId_transferRequest(
+	function yieldSyncV1VaultAddress_transferRequestId_transferRequest(
 		address yieldSyncV1VaultAddress,
 		uint256 transferRequestId
 	)
@@ -33,7 +33,7 @@ interface ITransferRequestProtocol
 	* @param yieldSyncV1VaultAddress {address}
 	* @param transferRequestId {uint256}
 	*/
-	function yieldSyncV1Vault_transferRequestId_transferRequestProcess(
+	function yieldSyncV1VaultAddress_transferRequestId_transferRequestProcess(
 		address yieldSyncV1VaultAddress,
 		uint256 transferRequestId
 	)
@@ -47,7 +47,7 @@ interface ITransferRequestProtocol
 	* @return approved {bool}
 	* @return message {string}
 	*/
-	function yieldSyncV1Vault_transferRequestId_transferRequestStatus(
+	function yieldSyncV1VaultAddress_transferRequestId_transferRequestStatus(
 		address yieldSyncV1VaultAddress,
 		uint256 transferRequestId
 	)

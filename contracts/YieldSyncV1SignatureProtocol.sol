@@ -148,7 +148,7 @@ contract YieldSyncV1SignatureProtocol is
 	{
 		(, bool member) = IYieldSyncV1VaultAccessControl(
 			YieldSyncV1VaultAccessControl
-		).yieldSyncV1Vault_participant_access(
+		).yieldSyncV1VaultAddress_participant_access(
 			yieldSyncV1VaultAddress,
 			msg.sender
 		);
@@ -181,7 +181,7 @@ contract YieldSyncV1SignatureProtocol is
 			(
 				,
 				bool recoveredIsMember
-			) = IYieldSyncV1VaultAccessControl(YieldSyncV1VaultAccessControl).yieldSyncV1Vault_participant_access(
+			) = IYieldSyncV1VaultAccessControl(YieldSyncV1VaultAccessControl).yieldSyncV1VaultAddress_participant_access(
 				yieldSyncV1VaultAddress,
 				recovered
 			);

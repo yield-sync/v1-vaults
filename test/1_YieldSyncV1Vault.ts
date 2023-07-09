@@ -83,7 +83,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 		).deployed();
 
 		// Set YieldSyncV1Vault properties on TransferRequestProtocol.sol
-		await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+		await yieldSyncV1ATransferRequestProtocol.yieldSyncV1VaultAddress_yieldSyncV1VaultPropertyUpdate(
 			owner.address,
 			[2, 2, sixDaysInSeconds]
 		);
@@ -148,7 +148,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 		it(
 			"Should intialize againstVoteRequired as 2..",
 			async () => {
-				const vProp = await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultProperty(
+				const vProp = await yieldSyncV1ATransferRequestProtocol.yieldSyncV1VaultAddress_yieldSyncV1VaultProperty(
 					yieldSyncV1Vault.address
 				);
 
@@ -159,7 +159,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 		it(
 			"Should intialize forVoteRequired as 2..",
 			async () => {
-				const vProp = await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultProperty(
+				const vProp = await yieldSyncV1ATransferRequestProtocol.yieldSyncV1VaultAddress_yieldSyncV1VaultProperty(
 					yieldSyncV1Vault.address
 				);
 
@@ -170,7 +170,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 		it(
 			"Should initialize transferDelaySeconds as sixDaysInSeconds..",
 			async () => {
-				const vProp = await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultProperty(
+				const vProp = await yieldSyncV1ATransferRequestProtocol.yieldSyncV1VaultAddress_yieldSyncV1VaultProperty(
 					yieldSyncV1Vault.address
 				);
 
@@ -185,7 +185,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 
 				expect(
 					(
-						await yieldSyncV1VaultAccessControl.yieldSyncV1Vault_participant_access(
+						await yieldSyncV1VaultAccessControl.yieldSyncV1VaultAddress_participant_access(
 							yieldSyncV1Vault.address,
 							owner.address,
 						)
@@ -193,7 +193,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 				).to.be.true;
 
 				expect(
-					(await yieldSyncV1VaultAccessControl.yieldSyncV1Vault_admins(yieldSyncV1Vault.address))[0]
+					(await yieldSyncV1VaultAccessControl.yieldSyncV1VaultAddress_admins(yieldSyncV1Vault.address))[0]
 				).to.be.equal(owner.address);
 
 				expect(
@@ -208,14 +208,14 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 				const [, addr1] = await ethers.getSigners();
 
 				expect(
-					(await yieldSyncV1VaultAccessControl.yieldSyncV1Vault_participant_access(
+					(await yieldSyncV1VaultAccessControl.yieldSyncV1VaultAddress_participant_access(
 						yieldSyncV1Vault.address,
 						addr1.address,
 					))[1]
 				).to.be.true;
 
 				expect(
-					(await yieldSyncV1VaultAccessControl.yieldSyncV1Vault_members(yieldSyncV1Vault.address))[0]
+					(await yieldSyncV1VaultAccessControl.yieldSyncV1VaultAddress_members(yieldSyncV1Vault.address))[0]
 				).to.be.equal(addr1.address);
 
 				expect(
@@ -236,7 +236,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 					await yieldSyncV1Vault.adminAdd(addr4.address);
 
 					expect(
-						(await yieldSyncV1VaultAccessControl.yieldSyncV1Vault_participant_access(
+						(await yieldSyncV1VaultAccessControl.yieldSyncV1VaultAddress_participant_access(
 							yieldSyncV1Vault.address,
 							addr4.address,
 						))[0]
@@ -248,7 +248,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 
 
 					expect(
-						(await yieldSyncV1VaultAccessControl.yieldSyncV1Vault_admins(yieldSyncV1Vault.address))[1]
+						(await yieldSyncV1VaultAccessControl.yieldSyncV1VaultAddress_admins(yieldSyncV1Vault.address))[1]
 					).to.be.equal(addr4.address);
 				}
 			);
@@ -259,7 +259,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 					await yieldSyncV1Vault.adminAdd(mockAdmin.address);
 
 					expect(
-						(await yieldSyncV1VaultAccessControl.yieldSyncV1Vault_participant_access(
+						(await yieldSyncV1VaultAccessControl.yieldSyncV1VaultAddress_participant_access(
 							yieldSyncV1Vault.address,
 							mockAdmin.address,
 						))[0]
@@ -271,7 +271,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 
 
 					expect(
-						(await yieldSyncV1VaultAccessControl.yieldSyncV1Vault_admins(yieldSyncV1Vault.address))[1]
+						(await yieldSyncV1VaultAccessControl.yieldSyncV1VaultAddress_admins(yieldSyncV1Vault.address))[1]
 					).to.be.equal(mockAdmin.address);
 				}
 			);
@@ -304,7 +304,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 					await yieldSyncV1Vault.memberAdd(addr2.address);
 
 					expect(
-						(await yieldSyncV1VaultAccessControl.yieldSyncV1Vault_participant_access(
+						(await yieldSyncV1VaultAccessControl.yieldSyncV1VaultAddress_participant_access(
 							yieldSyncV1Vault.address,
 							addr2.address,
 						))[1]
@@ -316,7 +316,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 
 
 					expect(
-						(await yieldSyncV1VaultAccessControl.yieldSyncV1Vault_members(yieldSyncV1Vault.address))[1]
+						(await yieldSyncV1VaultAccessControl.yieldSyncV1VaultAddress_members(yieldSyncV1Vault.address))[1]
 					).to.be.equal(addr2.address);
 				}
 			);
@@ -340,7 +340,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 					await yieldSyncV1Vault.memberAdd(addr5.address)
 
 					expect(
-						(await yieldSyncV1VaultAccessControl.yieldSyncV1Vault_participant_access(
+						(await yieldSyncV1VaultAccessControl.yieldSyncV1VaultAddress_participant_access(
 							yieldSyncV1Vault.address,
 							addr5.address,
 						))[1]
@@ -349,7 +349,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 					await yieldSyncV1Vault.memberRemove(addr5.address)
 
 					expect(
-						(await yieldSyncV1VaultAccessControl.yieldSyncV1Vault_participant_access(
+						(await yieldSyncV1VaultAccessControl.yieldSyncV1VaultAddress_participant_access(
 							yieldSyncV1Vault.address,
 							addr5.address,
 						))[1]
@@ -388,7 +388,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 					const [, addr1] = await ethers.getSigners();
 
 					// Set YieldSyncV1Vault properties on TransferRequestProtocol.sol
-					await mockTransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+					await mockTransferRequestProtocol.yieldSyncV1VaultAddress_yieldSyncV1VaultPropertyUpdate(
 						yieldSyncV1Vault.address,
 						[
 							2, 2, sixDaysInSeconds
@@ -407,7 +407,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 					const [owner] = await ethers.getSigners();
 
 					// Set YieldSyncV1Vault properties on TransferRequestProtocol.sol
-					await mockTransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+					await mockTransferRequestProtocol.yieldSyncV1VaultAddress_yieldSyncV1VaultPropertyUpdate(
 						yieldSyncV1Vault.address,
 						[2, 2, sixDaysInSeconds]
 					);
@@ -418,7 +418,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 						mockTransferRequestProtocol.address
 					);
 
-					const vaultProperties = await mockTransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultProperty(
+					const vaultProperties = await mockTransferRequestProtocol.yieldSyncV1VaultAddress_yieldSyncV1VaultProperty(
 						yieldSyncV1Vault.address
 					);
 
@@ -429,7 +429,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 			);
 		});
 
-		describe("YieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate()", async () => {
+		describe("YieldSyncV1ATransferRequestProtocol.yieldSyncV1VaultAddress_yieldSyncV1VaultPropertyUpdate()", async () => {
 			it(
 				"Should revert when unauthorized msg.sender calls..",
 				async () => {
@@ -438,7 +438,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 					await expect(
 						yieldSyncV1ATransferRequestProtocol.connect(
 							addr1
-						).yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+						).yieldSyncV1VaultAddress_yieldSyncV1VaultPropertyUpdate(
 							yieldSyncV1Vault.address,
 							[
 								1,
@@ -453,7 +453,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 			it(
 				"Should be able to update againstVoteRequired..",
 				async () => {
-					await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+					await yieldSyncV1ATransferRequestProtocol.yieldSyncV1VaultAddress_yieldSyncV1VaultPropertyUpdate(
 						yieldSyncV1Vault.address,
 						[
 							1,
@@ -462,7 +462,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 						]
 					)
 
-					const vProp = await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultProperty(
+					const vProp = await yieldSyncV1ATransferRequestProtocol.yieldSyncV1VaultAddress_yieldSyncV1VaultProperty(
 						yieldSyncV1Vault.address
 					);
 
@@ -475,7 +475,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 			it(
 				"Should be able to update againstVoteRequired..",
 				async () => {
-					await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+					await yieldSyncV1ATransferRequestProtocol.yieldSyncV1VaultAddress_yieldSyncV1VaultPropertyUpdate(
 						yieldSyncV1Vault.address,
 						[
 							2,
@@ -484,7 +484,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 						]
 					)
 
-					const vProp = await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultProperty(
+					const vProp = await yieldSyncV1ATransferRequestProtocol.yieldSyncV1VaultAddress_yieldSyncV1VaultProperty(
 						yieldSyncV1Vault.address
 					);
 
@@ -497,7 +497,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 			it(
 				"Should be able to update transferDelaySeconds..",
 				async () => {
-					await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+					await yieldSyncV1ATransferRequestProtocol.yieldSyncV1VaultAddress_yieldSyncV1VaultPropertyUpdate(
 						yieldSyncV1Vault.address,
 						[
 							2,
@@ -506,7 +506,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 						]
 					)
 
-					const vProp = await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultProperty(
+					const vProp = await yieldSyncV1ATransferRequestProtocol.yieldSyncV1VaultAddress_yieldSyncV1VaultProperty(
 						yieldSyncV1Vault.address
 					);
 
@@ -535,14 +535,14 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 
 		describe("transferRequests", async () => {
 			describe("Requesting Ether", async () => {
-				describe("yieldSyncV1Vault_transferRequestId_transferRequestCreate()", async () => {
+				describe("yieldSyncV1VaultAddress_transferRequestId_transferRequestCreate()", async () => {
 					it(
 						"Should revert when unauthorized msg.sender calls..",
 						async () => {
 							const [, , , , addr4] = await ethers.getSigners();
 
 							await expect(
-								yieldSyncV1ATransferRequestProtocol.connect(addr4).yieldSyncV1Vault_transferRequestId_transferRequestCreate(
+								yieldSyncV1ATransferRequestProtocol.connect(addr4).yieldSyncV1VaultAddress_transferRequestId_transferRequestCreate(
 									yieldSyncV1Vault.address,
 									false,
 									false,
@@ -561,7 +561,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 							const [, addr1] = await ethers.getSigners();
 
 							await expect(
-								yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestCreate(
+								yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1VaultAddress_transferRequestId_transferRequestCreate(
 									yieldSyncV1Vault.address,
 									false,
 									false,
@@ -579,7 +579,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 						async () => {
 							const [, addr1, addr2] = await ethers.getSigners();
 
-							await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestCreate(
+							await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1VaultAddress_transferRequestId_transferRequestCreate(
 								yieldSyncV1Vault.address,
 								false,
 								false,
@@ -589,12 +589,12 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 								0
 							);
 
-							const createdTransferRequest = await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_transferRequestId_transferRequest(
+							const createdTransferRequest = await yieldSyncV1ATransferRequestProtocol.yieldSyncV1VaultAddress_transferRequestId_transferRequest(
 								yieldSyncV1Vault.address,
 								0
 							);
 
-							const createdTransferRequestPoll = await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_transferRequestId_transferRequestPoll(
+							const createdTransferRequestPoll = await yieldSyncV1ATransferRequestProtocol.yieldSyncV1VaultAddress_transferRequestId_transferRequestPoll(
 								yieldSyncV1Vault.address,
 								0
 							);
@@ -617,7 +617,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 						async () => {
 							const [, addr1] = await ethers.getSigners();
 
-							await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestCreate(
+							await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1VaultAddress_transferRequestId_transferRequestCreate(
 								yieldSyncV1Vault.address,
 								false,
 								false,
@@ -627,7 +627,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 								0
 							);
 
-							const idsOfOpenTransferRequests = await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_openTransferRequestIds(
+							const idsOfOpenTransferRequests = await yieldSyncV1ATransferRequestProtocol.yieldSyncV1VaultAddress_openTransferRequestIds(
 								yieldSyncV1Vault.address
 							);
 
@@ -639,15 +639,15 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 
 
 				/**
-				 * @dev yieldSyncV1Vault_transferRequestId_transferRequestPollVote
+				 * @dev yieldSyncV1VaultAddress_transferRequestId_transferRequestPollVote
 				*/
-				describe("yieldSyncV1Vault_transferRequestId_transferRequestPollVote()", async () => {
+				describe("yieldSyncV1VaultAddress_transferRequestId_transferRequestPollVote()", async () => {
 					it(
 						"Should revert when unauthorized msg.sender calls..",
 						async () => {
 							const [, addr1, , , addr4] = await ethers.getSigners();
 
-							await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestCreate(
+							await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1VaultAddress_transferRequestId_transferRequestCreate(
 								yieldSyncV1Vault.address,
 								false,
 								false,
@@ -658,7 +658,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 							);
 
 							await expect(
-								yieldSyncV1ATransferRequestProtocol.connect(addr4).yieldSyncV1Vault_transferRequestId_transferRequestPollVote(
+								yieldSyncV1ATransferRequestProtocol.connect(addr4).yieldSyncV1VaultAddress_transferRequestId_transferRequestPollVote(
 									yieldSyncV1Vault.address,
 									0,
 									true
@@ -672,7 +672,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 						async () => {
 							const [, addr1] = await ethers.getSigners();
 
-							await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestCreate(
+							await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1VaultAddress_transferRequestId_transferRequestCreate(
 								yieldSyncV1Vault.address,
 								false,
 								false,
@@ -683,13 +683,13 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 							);
 
 							// Vote
-							await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestPollVote(
+							await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1VaultAddress_transferRequestId_transferRequestPollVote(
 								yieldSyncV1Vault.address,
 								0,
 								true
 							)
 
-							const createdTransferRequestPoll = await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_transferRequestId_transferRequestPoll(
+							const createdTransferRequestPoll = await yieldSyncV1ATransferRequestProtocol.yieldSyncV1VaultAddress_transferRequestId_transferRequestPoll(
 								yieldSyncV1Vault.address,
 								0
 							);
@@ -706,7 +706,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 						async () => {
 							const [, addr1] = await ethers.getSigners();
 
-							await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestCreate(
+							await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1VaultAddress_transferRequestId_transferRequestCreate(
 								yieldSyncV1Vault.address,
 								false,
 								false,
@@ -717,7 +717,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 							);
 
 							// 1st vote
-							await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestPollVote(
+							await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1VaultAddress_transferRequestId_transferRequestPollVote(
 								yieldSyncV1Vault.address,
 								0,
 								true
@@ -725,7 +725,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 
 							// Attempt 2nd vote
 							await expect(
-								yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestPollVote(
+								yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1VaultAddress_transferRequestId_transferRequestPollVote(
 									yieldSyncV1Vault.address,
 									0,
 									true
@@ -735,13 +735,13 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 					);
 				});
 
-				describe("yieldSyncV1Vault_transferRequestId_transferRequestProcess()", async () => {
+				describe("yieldSyncV1VaultAddress_transferRequestId_transferRequestProcess()", async () => {
 					it(
 						"Should revert when unauthorized msg.sender calls..",
 						async () => {
 							const [, addr1, addr2] = await ethers.getSigners();
 
-							await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestCreate(
+							await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1VaultAddress_transferRequestId_transferRequestCreate(
 								yieldSyncV1Vault.address,
 								false,
 								false,
@@ -751,7 +751,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 								0
 							);
 
-							await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestPollVote(
+							await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1VaultAddress_transferRequestId_transferRequestPollVote(
 								yieldSyncV1Vault.address,
 								0,
 								true
@@ -760,7 +760,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 							await expect(
 								yieldSyncV1Vault.connect(
 									addr2
-								).yieldSyncV1Vault_transferRequestId_transferRequestProcess(0)
+								).yieldSyncV1VaultAddress_transferRequestId_transferRequestProcess(0)
 							).to.be.rejected;
 						}
 					);
@@ -770,7 +770,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 						async () => {
 							const [, addr1] = await ethers.getSigners();
 
-							await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestCreate(
+							await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1VaultAddress_transferRequestId_transferRequestCreate(
 								yieldSyncV1Vault.address,
 								false,
 								false,
@@ -780,7 +780,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 								0
 							);
 
-							await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestPollVote(
+							await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1VaultAddress_transferRequestId_transferRequestPollVote(
 								yieldSyncV1Vault.address,
 								0,
 								true
@@ -789,7 +789,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 							await expect(
 								yieldSyncV1Vault.connect(
 									addr1
-								).yieldSyncV1Vault_transferRequestId_transferRequestProcess(0)
+								).yieldSyncV1VaultAddress_transferRequestId_transferRequestProcess(0)
 							).to.be.rejectedWith("Transfer request pending");
 						}
 					);
@@ -799,7 +799,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 						async () => {
 							const [, addr1] = await ethers.getSigners();
 
-							await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+							await yieldSyncV1ATransferRequestProtocol.yieldSyncV1VaultAddress_yieldSyncV1VaultPropertyUpdate(
 								yieldSyncV1Vault.address,
 								[
 									2,
@@ -808,7 +808,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 								]
 							);
 
-							await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestCreate(
+							await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1VaultAddress_transferRequestId_transferRequestCreate(
 								yieldSyncV1Vault.address,
 								false,
 								false,
@@ -818,7 +818,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 								0
 							);
 
-							await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestPollVote(
+							await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1VaultAddress_transferRequestId_transferRequestPollVote(
 								yieldSyncV1Vault.address,
 								0,
 								true
@@ -830,7 +830,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 							await expect(
 								yieldSyncV1Vault.connect(
 									addr1
-								).yieldSyncV1Vault_transferRequestId_transferRequestProcess(0)
+								).yieldSyncV1VaultAddress_transferRequestId_transferRequestProcess(0)
 							).to.be.rejectedWith("Transfer request approved and waiting delay");
 						}
 					);
@@ -840,7 +840,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 						async () => {
 							const [, addr1, addr2] = await ethers.getSigners();
 
-							await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+							await yieldSyncV1ATransferRequestProtocol.yieldSyncV1VaultAddress_yieldSyncV1VaultPropertyUpdate(
 								yieldSyncV1Vault.address,
 								[
 									2,
@@ -849,7 +849,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 								]
 							);
 
-							await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestCreate(
+							await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1VaultAddress_transferRequestId_transferRequestCreate(
 								yieldSyncV1Vault.address,
 								false,
 								false,
@@ -859,7 +859,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 								0
 							);
 
-							await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestPollVote(
+							await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1VaultAddress_transferRequestId_transferRequestPollVote(
 								yieldSyncV1Vault.address,
 								0,
 								true
@@ -874,7 +874,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 
 							await yieldSyncV1Vault.connect(
 								addr1
-							).yieldSyncV1Vault_transferRequestId_transferRequestProcess(0);
+							).yieldSyncV1VaultAddress_transferRequestId_transferRequestProcess(0);
 
 							const recieverBalanceAfter = ethers.utils.formatUnits(
 								await ethers.provider.getBalance(addr2.address)
@@ -882,7 +882,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 
 							await expect(recieverBalanceAfter - recieverBalanceBefore).to.be.equal(.5);
 
-							const idsOfOpenTransferRequests = await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_openTransferRequestIds(
+							const idsOfOpenTransferRequests = await yieldSyncV1ATransferRequestProtocol.yieldSyncV1VaultAddress_openTransferRequestIds(
 								yieldSyncV1Vault.address
 							);
 
@@ -897,7 +897,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 						async () => {
 							const [, addr1, addr2] = await ethers.getSigners();
 
-							await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+							await yieldSyncV1ATransferRequestProtocol.yieldSyncV1VaultAddress_yieldSyncV1VaultPropertyUpdate(
 								yieldSyncV1Vault.address,
 								[
 									2,
@@ -906,7 +906,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 								]
 							);
 
-							await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestCreate(
+							await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1VaultAddress_transferRequestId_transferRequestCreate(
 								yieldSyncV1Vault.address,
 								false,
 								false,
@@ -918,13 +918,13 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 
 							expect(
 								(
-									await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_openTransferRequestIds(
+									await yieldSyncV1ATransferRequestProtocol.yieldSyncV1VaultAddress_openTransferRequestIds(
 										yieldSyncV1Vault.address
 									)
 								).length
 							).to.be.equal(1);
 
-							await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestPollVote(
+							await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1VaultAddress_transferRequestId_transferRequestPollVote(
 								yieldSyncV1Vault.address,
 								0,
 								true
@@ -937,7 +937,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 
 							await yieldSyncV1Vault.connect(
 								addr1
-							).yieldSyncV1Vault_transferRequestId_transferRequestProcess(0);
+							).yieldSyncV1VaultAddress_transferRequestId_transferRequestProcess(0);
 
 							const recieverBalanceAfter = await ethers.provider.getBalance(addr2.address);
 
@@ -947,7 +947,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 
 							expect(
 								(
-									await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_openTransferRequestIds(
+									await yieldSyncV1ATransferRequestProtocol.yieldSyncV1VaultAddress_openTransferRequestIds(
 										yieldSyncV1Vault.address
 									)
 								).length
@@ -962,13 +962,13 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 			 * @dev Process for Transferring ERC20
 			*/
 			describe("Requesting ERC20 tokens", async () => {
-				describe("yieldSyncV1Vault_transferRequestId_transferRequestCreate()", async () => {
+				describe("yieldSyncV1VaultAddress_transferRequestId_transferRequestCreate()", async () => {
 					it(
 						"Should be able to create a TransferRequest for ERC20 token..",
 						async () => {
 							const [, addr1, addr2] = await ethers.getSigners();
 
-							await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestCreate(
+							await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1VaultAddress_transferRequestId_transferRequestCreate(
 								yieldSyncV1Vault.address,
 								true,
 								false,
@@ -978,12 +978,12 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 								0
 							);
 
-							const createdTransferRequest = await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_transferRequestId_transferRequest(
+							const createdTransferRequest = await yieldSyncV1ATransferRequestProtocol.yieldSyncV1VaultAddress_transferRequestId_transferRequest(
 								yieldSyncV1Vault.address,
 								0
 							);
 
-							const createdTransferRequestPoll = await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_transferRequestId_transferRequestPoll(
+							const createdTransferRequestPoll = await yieldSyncV1ATransferRequestProtocol.yieldSyncV1VaultAddress_transferRequestId_transferRequestPoll(
 								yieldSyncV1Vault.address,
 								0
 							);
@@ -1006,7 +1006,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 						async () => {
 							const [, addr1, addr2] = await ethers.getSigners();
 
-							await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestCreate(
+							await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1VaultAddress_transferRequestId_transferRequestCreate(
 								yieldSyncV1Vault.address,
 								true,
 								false,
@@ -1018,7 +1018,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 
 							expect(
 								(
-									await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_openTransferRequestIds(
+									await yieldSyncV1ATransferRequestProtocol.yieldSyncV1VaultAddress_openTransferRequestIds(
 										yieldSyncV1Vault.address
 									)
 								)[0]
@@ -1031,7 +1031,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 						async () => {
 							const [, addr1, addr2] = await ethers.getSigners();
 
-							await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestCreate(
+							await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1VaultAddress_transferRequestId_transferRequestCreate(
 								yieldSyncV1Vault.address,
 								true,
 								false,
@@ -1043,7 +1043,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 
 							expect(
 								(
-									await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_openTransferRequestIds(
+									await yieldSyncV1ATransferRequestProtocol.yieldSyncV1VaultAddress_openTransferRequestIds(
 										yieldSyncV1Vault.address
 									)
 								).length
@@ -1052,13 +1052,13 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 					);
 				});
 
-				describe("yieldSyncV1Vault_transferRequestId_transferRequestPollVote()", async () => {
+				describe("yieldSyncV1VaultAddress_transferRequestId_transferRequestPollVote()", async () => {
 					it(
 						"Should be able vote on TransferRequest and add member to _transferRequest[].votedMembers..",
 						async () => {
 							const [, addr1, addr2] = await ethers.getSigners();
 
-							await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+							await yieldSyncV1ATransferRequestProtocol.yieldSyncV1VaultAddress_yieldSyncV1VaultPropertyUpdate(
 								yieldSyncV1Vault.address,
 								[
 									2,
@@ -1067,7 +1067,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 								]
 							);
 
-							await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestCreate(
+							await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1VaultAddress_transferRequestId_transferRequestCreate(
 								yieldSyncV1Vault.address,
 								true,
 								false,
@@ -1077,13 +1077,13 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 								0
 							);
 
-							await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestPollVote(
+							await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1VaultAddress_transferRequestId_transferRequestPollVote(
 								yieldSyncV1Vault.address,
 								0,
 								true
 							);
 
-							const createdTransferRequestPoll = await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_transferRequestId_transferRequestPoll(
+							const createdTransferRequestPoll = await yieldSyncV1ATransferRequestProtocol.yieldSyncV1VaultAddress_transferRequestId_transferRequestPoll(
 								yieldSyncV1Vault.address,
 								0
 							);
@@ -1100,7 +1100,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 						async () => {
 							const [, addr1, addr2] = await ethers.getSigners();
 
-							await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+							await yieldSyncV1ATransferRequestProtocol.yieldSyncV1VaultAddress_yieldSyncV1VaultPropertyUpdate(
 								yieldSyncV1Vault.address,
 								[
 									2,
@@ -1109,7 +1109,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 								]
 							);
 
-							await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestCreate(
+							await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1VaultAddress_transferRequestId_transferRequestCreate(
 								yieldSyncV1Vault.address,
 								true,
 								false,
@@ -1119,7 +1119,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 								0
 							);
 
-							await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestPollVote(
+							await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1VaultAddress_transferRequestId_transferRequestPollVote(
 								yieldSyncV1Vault.address,
 								0,
 								true
@@ -1130,7 +1130,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 							// Fast-forward 6 days
 							await ethers.provider.send('evm_increaseTime', [sixDaysInSeconds]);
 
-							await yieldSyncV1Vault.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestProcess(0);
+							await yieldSyncV1Vault.connect(addr1).yieldSyncV1VaultAddress_transferRequestId_transferRequestProcess(0);
 
 							const recieverBalanceAfter = await mockERC20.balanceOf(addr2.address);
 
@@ -1145,7 +1145,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 						async () => {
 							const [, addr1, addr2] = await ethers.getSigners();
 
-							await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+							await yieldSyncV1ATransferRequestProtocol.yieldSyncV1VaultAddress_yieldSyncV1VaultPropertyUpdate(
 								yieldSyncV1Vault.address,
 								[
 									2,
@@ -1154,7 +1154,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 								]
 							);
 
-							await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestCreate(
+							await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1VaultAddress_transferRequestId_transferRequestCreate(
 								yieldSyncV1Vault.address,
 								true,
 								false,
@@ -1164,7 +1164,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 								0
 							);
 
-							await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestPollVote(
+							await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1VaultAddress_transferRequestId_transferRequestPollVote(
 								yieldSyncV1Vault.address,
 								0,
 								true
@@ -1177,7 +1177,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 							// Fast-forward 7 days
 							await ethers.provider.send('evm_increaseTime', [sevenDaysInSeconds]);
 
-							await yieldSyncV1Vault.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestProcess(0);
+							await yieldSyncV1Vault.connect(addr1).yieldSyncV1VaultAddress_transferRequestId_transferRequestProcess(0);
 
 							const recieverBalanceAfter = ethers.utils.formatUnits(
 								await mockERC20.balanceOf(addr2.address)
@@ -1191,13 +1191,13 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 
 
 			describe("Requesting ERC721 tokens", async () => {
-				describe("yieldSyncV1Vault_transferRequestId_transferRequestCreate", async () => {
+				describe("yieldSyncV1VaultAddress_transferRequestId_transferRequestCreate", async () => {
 					it(
 						"Should be able to create a TransferRequest for ERC721 token..",
 						async () => {
 							const [, addr1, addr2] = await ethers.getSigners();
 
-							await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestCreate(
+							await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1VaultAddress_transferRequestId_transferRequestCreate(
 								yieldSyncV1Vault.address,
 								false,
 								true,
@@ -1207,12 +1207,12 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 								1
 							);
 
-							const createdTransferRequest = await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_transferRequestId_transferRequest(
+							const createdTransferRequest = await yieldSyncV1ATransferRequestProtocol.yieldSyncV1VaultAddress_transferRequestId_transferRequest(
 								yieldSyncV1Vault.address,
 								0
 							);
 
-							const createdTransferRequestPoll = await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_transferRequestId_transferRequestPoll(
+							const createdTransferRequestPoll = await yieldSyncV1ATransferRequestProtocol.yieldSyncV1VaultAddress_transferRequestId_transferRequestPoll(
 								yieldSyncV1Vault.address,
 								0
 							);
@@ -1235,7 +1235,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 						async () => {
 							const [, addr1, addr2] = await ethers.getSigners();
 
-							await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestCreate(
+							await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1VaultAddress_transferRequestId_transferRequestCreate(
 								yieldSyncV1Vault.address,
 								false,
 								true,
@@ -1245,7 +1245,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 								1
 							);
 
-							const idsOfOpenTransferRequests = await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_openTransferRequestIds(
+							const idsOfOpenTransferRequests = await yieldSyncV1ATransferRequestProtocol.yieldSyncV1VaultAddress_openTransferRequestIds(
 								yieldSyncV1Vault.address
 							);
 
@@ -1256,13 +1256,13 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 				});
 
 
-				describe("yieldSyncV1Vault_transferRequestId_transferRequestPollVote", async () => {
+				describe("yieldSyncV1VaultAddress_transferRequestId_transferRequestPollVote", async () => {
 					it(
 						"Should be able vote on TransferRequest and add member to _transferRequest[].votedMembers..",
 						async () => {
 							const [, addr1, addr2] = await ethers.getSigners();
 
-							await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestCreate(
+							await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1VaultAddress_transferRequestId_transferRequestCreate(
 								yieldSyncV1Vault.address,
 								false,
 								true,
@@ -1272,13 +1272,13 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 								1
 							);
 
-							await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestPollVote(
+							await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1VaultAddress_transferRequestId_transferRequestPollVote(
 								yieldSyncV1Vault.address,
 								0,
 								true
 							);
 
-							const createdTransferRequestPoll = await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_transferRequestId_transferRequestPoll(
+							const createdTransferRequestPoll = await yieldSyncV1ATransferRequestProtocol.yieldSyncV1VaultAddress_transferRequestId_transferRequestPoll(
 								yieldSyncV1Vault.address,
 								0
 							);
@@ -1296,7 +1296,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 						async () => {
 							const [, addr1, addr2] = await ethers.getSigners();
 
-							await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+							await yieldSyncV1ATransferRequestProtocol.yieldSyncV1VaultAddress_yieldSyncV1VaultPropertyUpdate(
 								yieldSyncV1Vault.address,
 								[
 									2,
@@ -1305,7 +1305,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 								]
 							);
 
-							await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestCreate(
+							await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1VaultAddress_transferRequestId_transferRequestCreate(
 								yieldSyncV1Vault.address,
 								false,
 								true,
@@ -1315,7 +1315,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 								1
 							);
 
-							await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestPollVote(
+							await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1VaultAddress_transferRequestId_transferRequestPollVote(
 								yieldSyncV1Vault.address,
 								0,
 								true
@@ -1326,7 +1326,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 
 							const recieverBalanceBefore = await mockERC721.balanceOf(addr2.address);
 
-							await yieldSyncV1Vault.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestProcess(0);
+							await yieldSyncV1Vault.connect(addr1).yieldSyncV1VaultAddress_transferRequestId_transferRequestProcess(0);
 
 							const recieverBalanceAfter = await mockERC721.balanceOf(addr2.address);
 
@@ -1341,7 +1341,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 						async () => {
 							const [, addr1, addr2] = await ethers.getSigners();
 
-							await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+							await yieldSyncV1ATransferRequestProtocol.yieldSyncV1VaultAddress_yieldSyncV1VaultPropertyUpdate(
 								yieldSyncV1Vault.address,
 								[
 									2,
@@ -1350,7 +1350,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 								]
 							);
 
-							await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestCreate(
+							await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1VaultAddress_transferRequestId_transferRequestCreate(
 								yieldSyncV1Vault.address,
 								false,
 								true,
@@ -1360,7 +1360,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 								2
 							);
 
-							await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestPollVote(
+							await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1VaultAddress_transferRequestId_transferRequestPollVote(
 								yieldSyncV1Vault.address,
 								0,
 								true
@@ -1371,7 +1371,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 
 							const recieverBalanceBefore = await mockERC721.balanceOf(addr2.address);
 
-							await yieldSyncV1Vault.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestProcess(0);
+							await yieldSyncV1Vault.connect(addr1).yieldSyncV1VaultAddress_transferRequestId_transferRequestProcess(0);
 
 							const recieverBalanceAfter = await mockERC721.balanceOf(addr2.address);
 
@@ -1385,13 +1385,13 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 		});
 
 		describe("transferRequest Against", async () => {
-			describe("yieldSyncV1Vault_transferRequestId_transferRequestPollVote()", async () => {
+			describe("yieldSyncV1VaultAddress_transferRequestId_transferRequestPollVote()", async () => {
 				it(
 					"Should be able vote on TransferRequest and add member to _transferRequest[].votedMembers..",
 					async () => {
 						const [, addr1, addr2] = await ethers.getSigners();
 
-						await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestCreate(
+						await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1VaultAddress_transferRequestId_transferRequestCreate(
 							yieldSyncV1Vault.address,
 							false,
 							false,
@@ -1401,13 +1401,13 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 							0
 						)
 
-						await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestPollVote(
+						await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1VaultAddress_transferRequestId_transferRequestPollVote(
 							yieldSyncV1Vault.address,
 							0,
 							false
 						);
 
-						const createdTransferRequestPoll = await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_transferRequestId_transferRequestPoll(
+						const createdTransferRequestPoll = await yieldSyncV1ATransferRequestProtocol.yieldSyncV1VaultAddress_transferRequestId_transferRequestPoll(
 							yieldSyncV1Vault.address,
 							0
 						);
@@ -1424,7 +1424,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 					async () => {
 						const [, addr1, addr2] = await ethers.getSigners();
 
-						await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+						await yieldSyncV1ATransferRequestProtocol.yieldSyncV1VaultAddress_yieldSyncV1VaultPropertyUpdate(
 							yieldSyncV1Vault.address,
 							[
 								1,
@@ -1433,7 +1433,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 							]
 						);
 
-						await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestCreate(
+						await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1VaultAddress_transferRequestId_transferRequestCreate(
 							yieldSyncV1Vault.address,
 							false,
 							false,
@@ -1443,22 +1443,22 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 							0
 						)
 
-						await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestPollVote(
+						await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1VaultAddress_transferRequestId_transferRequestPollVote(
 							yieldSyncV1Vault.address,
 							0,
 							false
 						);
 
-						await yieldSyncV1Vault.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestProcess(0);
+						await yieldSyncV1Vault.connect(addr1).yieldSyncV1VaultAddress_transferRequestId_transferRequestProcess(0);
 
-						const idsOfOpenTransferRequests = await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_openTransferRequestIds(
+						const idsOfOpenTransferRequests = await yieldSyncV1ATransferRequestProtocol.yieldSyncV1VaultAddress_openTransferRequestIds(
 							yieldSyncV1Vault.address
 						);
 
 						expect(idsOfOpenTransferRequests.length).to.be.equal(0);
 
 						await expect(
-							yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_transferRequestId_transferRequestPoll(
+							yieldSyncV1ATransferRequestProtocol.yieldSyncV1VaultAddress_transferRequestId_transferRequestPoll(
 								yieldSyncV1Vault.address,
 								0
 							)
@@ -1474,7 +1474,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 				async () => {
 					const [, addr1, addr2] = await ethers.getSigners();
 
-					await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestCreate(
+					await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1VaultAddress_transferRequestId_transferRequestCreate(
 								yieldSyncV1Vault.address,
 						true,
 						false,
@@ -1484,7 +1484,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 						0
 					);
 
-					await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestCreate(
+					await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1VaultAddress_transferRequestId_transferRequestCreate(
 								yieldSyncV1Vault.address,
 						true,
 						false,
@@ -1494,7 +1494,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 						0
 					);
 
-					const idsOfOpenTransferRequests = await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_openTransferRequestIds(
+					const idsOfOpenTransferRequests = await yieldSyncV1ATransferRequestProtocol.yieldSyncV1VaultAddress_openTransferRequestIds(
 						yieldSyncV1Vault.address
 					);
 
@@ -1538,13 +1538,13 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 
 
 	describe("Restriction: admin (2/2)", async () => {
-		describe("yieldSyncV1Vault_transferRequestId_transferRequestUpdate()", async () => {
+		describe("yieldSyncV1VaultAddress_transferRequestId_transferRequestUpdate()", async () => {
 			it(
 				"Should be able to update TransferRequest.forVoteCount..",
 				async () => {
 					const [, addr1, addr2] = await ethers.getSigners();
 
-					await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestCreate(
+					await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1VaultAddress_transferRequestId_transferRequestCreate(
 						yieldSyncV1Vault.address,
 						true,
 						false,
@@ -1554,22 +1554,22 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 						0
 					);
 
-					const idsOfOpenTransferRequests = await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_openTransferRequestIds(
+					const idsOfOpenTransferRequests = await yieldSyncV1ATransferRequestProtocol.yieldSyncV1VaultAddress_openTransferRequestIds(
 						yieldSyncV1Vault.address
 					);
 
-					const transferRequest: any = await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_transferRequestId_transferRequest(
+					const transferRequest: any = await yieldSyncV1ATransferRequestProtocol.yieldSyncV1VaultAddress_transferRequestId_transferRequest(
 						yieldSyncV1Vault.address,
 						idsOfOpenTransferRequests[idsOfOpenTransferRequests.length - 1]
 					);
 
-					const transferRequestPoll: any = await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_transferRequestId_transferRequestPoll(
+					const transferRequestPoll: any = await yieldSyncV1ATransferRequestProtocol.yieldSyncV1VaultAddress_transferRequestId_transferRequestPoll(
 						yieldSyncV1Vault.address,
 						idsOfOpenTransferRequests[idsOfOpenTransferRequests.length - 1]
 					);
 
 
-					await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_transferRequestId_transferRequestPollUpdate(
+					await yieldSyncV1ATransferRequestProtocol.yieldSyncV1VaultAddress_transferRequestId_transferRequestPollUpdate(
 						yieldSyncV1Vault.address,
 						idsOfOpenTransferRequests[idsOfOpenTransferRequests.length - 1],
 						[
@@ -1580,7 +1580,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 						]
 					);
 
-					const updatedTransferRequest: any = await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_transferRequestId_transferRequestPoll(
+					const updatedTransferRequest: any = await yieldSyncV1ATransferRequestProtocol.yieldSyncV1VaultAddress_transferRequestId_transferRequestPoll(
 						yieldSyncV1Vault.address,
 						idsOfOpenTransferRequests[idsOfOpenTransferRequests.length - 1]
 					);
@@ -1594,7 +1594,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 				async () => {
 					const [, addr1, addr2] = await ethers.getSigners();
 
-					await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestCreate(
+					await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1VaultAddress_transferRequestId_transferRequestCreate(
 						yieldSyncV1Vault.address,
 						true,
 						false,
@@ -1604,16 +1604,16 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 						0
 					);
 
-					const idsOfOpenTransferRequests = await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_openTransferRequestIds(
+					const idsOfOpenTransferRequests = await yieldSyncV1ATransferRequestProtocol.yieldSyncV1VaultAddress_openTransferRequestIds(
 						yieldSyncV1Vault.address
 					);
 
-					const transferRequestPoll: any = await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_transferRequestId_transferRequestPoll(
+					const transferRequestPoll: any = await yieldSyncV1ATransferRequestProtocol.yieldSyncV1VaultAddress_transferRequestId_transferRequestPoll(
 						yieldSyncV1Vault.address,
 						idsOfOpenTransferRequests[idsOfOpenTransferRequests.length - 1]
 					);
 
-					await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_transferRequestId_transferRequestPollUpdate(
+					await yieldSyncV1ATransferRequestProtocol.yieldSyncV1VaultAddress_transferRequestId_transferRequestPollUpdate(
 						yieldSyncV1Vault.address,
 						idsOfOpenTransferRequests[idsOfOpenTransferRequests.length - 1],
 						[
@@ -1629,7 +1629,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 					).to.be.greaterThanOrEqual(
 						BigInt(
 							(
-								await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_transferRequestId_transferRequestPoll(
+								await yieldSyncV1ATransferRequestProtocol.yieldSyncV1VaultAddress_transferRequestId_transferRequestPoll(
 									yieldSyncV1Vault.address,
 									idsOfOpenTransferRequests[idsOfOpenTransferRequests.length - 1]
 								)
@@ -1641,14 +1641,14 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 		});
 
 
-		describe("yieldSyncV1Vault_transferRequestId_transferRequestDelete()", async () => {
+		describe("yieldSyncV1VaultAddress_transferRequestId_transferRequestDelete()", async () => {
 			it(
 				"Should revert when unauthorized msg.sender calls..",
 				async () => {
 					const [, addr1] = await ethers.getSigners();
 
 					await expect(
-						yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestDelete(2)
+						yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1VaultAddress_transferRequestId_transferRequestDelete(2)
 					).to.be.rejected;
 				}
 			);
@@ -1658,7 +1658,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 				async () => {
 					const [, addr1, addr2] = await ethers.getSigners();
 
-					await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestCreate(
+					await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1VaultAddress_transferRequestId_transferRequestCreate(
 						yieldSyncV1Vault.address,
 						true,
 						false,
@@ -1668,26 +1668,26 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 						0
 					);
 
-					const beforeTransferRequests = await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_openTransferRequestIds(
+					const beforeTransferRequests = await yieldSyncV1ATransferRequestProtocol.yieldSyncV1VaultAddress_openTransferRequestIds(
 						yieldSyncV1Vault.address
 					);
 
 
-					await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_transferRequestId_transferRequestDelete(
+					await yieldSyncV1ATransferRequestProtocol.yieldSyncV1VaultAddress_transferRequestId_transferRequestDelete(
 						yieldSyncV1Vault.address,
 						beforeTransferRequests[beforeTransferRequests.length - 1]
 					);
 
 					expect(beforeTransferRequests.length - 1).to.be.equal(
 						(
-							await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_openTransferRequestIds(
+							await yieldSyncV1ATransferRequestProtocol.yieldSyncV1VaultAddress_openTransferRequestIds(
 								yieldSyncV1Vault.address
 							)
 						).length
 					);
 
 					await expect(
-						yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_transferRequestId_transferRequestPoll(
+						yieldSyncV1ATransferRequestProtocol.yieldSyncV1VaultAddress_transferRequestId_transferRequestPoll(
 							yieldSyncV1Vault.address,
 							beforeTransferRequests[beforeTransferRequests.length - 1]
 						)

@@ -55,36 +55,36 @@ interface IYieldSyncV1ATransferRequestProtocol is
 	;
 
 	/**
-	* @notice Getter for `_yieldSyncV1Vault_openTransferRequestIds`
+	* @notice Getter for `_yieldSyncV1VaultAddress_openTransferRequestIds`
 	* @dev [view][mapping]
 	* @param yieldSyncV1VaultAddress {address}
 	* @return {uint256[]}
 	*/
-	function yieldSyncV1Vault_openTransferRequestIds(address yieldSyncV1VaultAddress)
+	function yieldSyncV1VaultAddress_openTransferRequestIds(address yieldSyncV1VaultAddress)
 		external
 		view
 		returns (uint256[] memory)
 	;
 
 	/**
-	* @notice Getter for `_yieldSyncV1Vault_yieldSyncV1VaultProperty`
+	* @notice Getter for `_yieldSyncV1VaultAddress_yieldSyncV1VaultProperty`
 	* @dev [view][mapping]
 	* @param yieldSyncV1VaultAddress {address}
 	* @return {YieldSyncV1VaultProperty}
 	*/
-	function yieldSyncV1Vault_yieldSyncV1VaultProperty(address yieldSyncV1VaultAddress)
+	function yieldSyncV1VaultAddress_yieldSyncV1VaultProperty(address yieldSyncV1VaultAddress)
 		external
 		returns (YieldSyncV1VaultProperty memory)
 	;
 
 	/**
-	* @notice Getter for `_yieldSyncV1Vault_transferRequestId_transferRequestPoll`
+	* @notice Getter for `_yieldSyncV1VaultAddress_transferRequestId_transferRequestPoll`
 	* @dev [view][mapping]
 	* @param yieldSyncV1VaultAddress {address}
 	* @param transferRequestId {uint256}
 	* @return {TransferRequestPoll}
 	*/
-	function yieldSyncV1Vault_transferRequestId_transferRequestPoll(
+	function yieldSyncV1VaultAddress_transferRequestId_transferRequestPoll(
 		address yieldSyncV1VaultAddress,
 		uint256 transferRequestId
 	)
@@ -96,9 +96,9 @@ interface IYieldSyncV1ATransferRequestProtocol is
 	/**
 	* @notice Create a transferRequest
 	* @dev [restriction] `YieldSyncV1Record` → member
-	* @dev [add] `_yieldSyncV1Vault_transferRequestId_transferRequest` value
-	*      [add] `_yieldSyncV1Vault_transferRequestId_transferRequestPoll` value
-	*      [push-into] `_yieldSyncV1Vault_openTransferRequestIds`
+	* @dev [add] `_yieldSyncV1VaultAddress_transferRequestId_transferRequest` value
+	*      [add] `_yieldSyncV1VaultAddress_transferRequestId_transferRequestPoll` value
+	*      [push-into] `_yieldSyncV1VaultAddress_openTransferRequestIds`
 	*      [increment] `_transferRequestIdTracker`
 	* @param yieldSyncV1VaultAddress {address}
 	* @param forERC20 {bool}
@@ -109,7 +109,7 @@ interface IYieldSyncV1ATransferRequestProtocol is
 	* @param tokenId {uint256} ERC721 token id
 	* Emits: `CreatedTransferRequest`
 	*/
-	function yieldSyncV1Vault_transferRequestId_transferRequestCreate(
+	function yieldSyncV1VaultAddress_transferRequestId_transferRequestCreate(
 		address yieldSyncV1VaultAddress,
 		bool forERC20,
 		bool forERC721,
@@ -127,7 +127,7 @@ interface IYieldSyncV1ATransferRequestProtocol is
 	* @param yieldSyncV1VaultAddress {address}
 	* @param transferRequestId {uint256}
 	*/
-	function yieldSyncV1Vault_transferRequestId_transferRequestDelete(
+	function yieldSyncV1VaultAddress_transferRequestId_transferRequestDelete(
 		address yieldSyncV1VaultAddress,
 		uint256 transferRequestId
 	)
@@ -143,7 +143,7 @@ interface IYieldSyncV1ATransferRequestProtocol is
 	* @param transferRequest {TransferRequest}
 	* Emits: `UpdatedTransferRequest`
 	*/
-	function yieldSyncV1Vault_transferRequestId_transferRequestUpdate(
+	function yieldSyncV1VaultAddress_transferRequestId_transferRequestUpdate(
 		address yieldSyncV1VaultAddress,
 		uint256 transferRequestId,
 		TransferRequest memory transferRequest
@@ -161,7 +161,7 @@ interface IYieldSyncV1ATransferRequestProtocol is
 	* Emits: `TransferRequestReadyToBeProcessed`
 	* Emits: `MemberVoted`
 	*/
-	function yieldSyncV1Vault_transferRequestId_transferRequestPollVote(
+	function yieldSyncV1VaultAddress_transferRequestId_transferRequestPollVote(
 		address yieldSyncV1VaultAddress,
 		uint256 transferRequestId,
 		bool vote
@@ -178,7 +178,7 @@ interface IYieldSyncV1ATransferRequestProtocol is
 	* @param transferRequestPoll {TransferRequestPoll}
 	* Emits: `UpdatedTransferRequestPoll`
 	*/
-	function yieldSyncV1Vault_transferRequestId_transferRequestPollUpdate(
+	function yieldSyncV1VaultAddress_transferRequestId_transferRequestPollUpdate(
 		address yieldSyncV1VaultAddress,
 		uint256 transferRequestId,
 		TransferRequestPoll memory transferRequestPoll
@@ -194,7 +194,7 @@ interface IYieldSyncV1ATransferRequestProtocol is
 	* @param yieldSyncV1VaultProperty {YieldSyncV1VaultProperty}
 	* Emits: `UpdatedYieldSyncV1VaultYieldSyncV1VaultProperty`
 	*/
-	function yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+	function yieldSyncV1VaultAddress_yieldSyncV1VaultPropertyUpdate(
 		address yieldSyncV1VaultAddress,
 		YieldSyncV1VaultProperty memory yieldSyncV1VaultProperty
 	)

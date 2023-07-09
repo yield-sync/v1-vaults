@@ -75,7 +75,7 @@ describe("[4] MockAdmin.sol - Mock Admin Contract", async () => {
 		await yieldSyncV1VaultFactory.defaultSignatureProtocolUpdate(signatureProtocol.address);
 
 		// Set YieldSyncV1Vault properties on TransferRequestProtocol.sol
-		await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+		await yieldSyncV1ATransferRequestProtocol.yieldSyncV1VaultAddress_yieldSyncV1VaultPropertyUpdate(
 			owner.address,
 			[2, 2, 5]
 		);
@@ -120,9 +120,9 @@ describe("[4] MockAdmin.sol - Mock Admin Contract", async () => {
 		});
 
 		/**
-		 * @dev yieldSyncV1Vault_transferRequestId_transferRequestDelete
+		 * @dev yieldSyncV1VaultAddress_transferRequestId_transferRequestDelete
 		*/
-		describe("yieldSyncV1Vault_transferRequestId_transferRequestUpdateLatestRelevantForVoteTime()", async () => {
+		describe("yieldSyncV1VaultAddress_transferRequestId_transferRequestUpdateLatestRelevantForVoteTime()", async () => {
 			it(
 				"Should update the latestRelevantForVoteTime to ADD seconds..",
 				async () => {
@@ -130,7 +130,7 @@ describe("[4] MockAdmin.sol - Mock Admin Contract", async () => {
 
 					await yieldSyncV1Vault.adminAdd(mockAdmin.address);
 
-					await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestCreate(
+					await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1VaultAddress_transferRequestId_transferRequestCreate(
 						yieldSyncV1Vault.address,
 						false,
 						false,
@@ -141,13 +141,13 @@ describe("[4] MockAdmin.sol - Mock Admin Contract", async () => {
 					);
 
 					const beforeBlockTimestamp = BigInt((
-						await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_transferRequestId_transferRequestPoll(
+						await yieldSyncV1ATransferRequestProtocol.yieldSyncV1VaultAddress_transferRequestId_transferRequestPoll(
 							yieldSyncV1Vault.address,
 							0
 						)
 					).latestRelevantForVoteTime);
 
-					await mockAdmin.yieldSyncV1Vault_transferRequestId_transferRequestPollUpdateLatestRelevantForVoteTime(
+					await mockAdmin.yieldSyncV1VaultAddress_transferRequestId_transferRequestPollUpdateLatestRelevantForVoteTime(
 						yieldSyncV1ATransferRequestProtocol.address,
 						yieldSyncV1Vault.address,
 						0,
@@ -156,7 +156,7 @@ describe("[4] MockAdmin.sol - Mock Admin Contract", async () => {
 					);
 
 					const afterBlockTimestamp = BigInt((
-						await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_transferRequestId_transferRequestPoll(
+						await yieldSyncV1ATransferRequestProtocol.yieldSyncV1VaultAddress_transferRequestId_transferRequestPoll(
 							yieldSyncV1Vault.address,
 							0
 						)
