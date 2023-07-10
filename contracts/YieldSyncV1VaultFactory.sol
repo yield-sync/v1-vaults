@@ -41,6 +41,7 @@ contract YieldSyncV1VaultFactory is
 	mapping (
 		address yieldSyncV1VaultAddress => uint256 yieldSyncV1VaultId
 	) public override yieldSyncV1VaultAddress_yieldSyncV1VaultId;
+
 	mapping (
 		uint256 yieldSyncV1VaultId => address yieldSyncV1VaultAddress
 	) public override yieldSyncV1VaultId_yieldSyncV1VaultAddress;
