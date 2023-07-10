@@ -129,7 +129,7 @@ interface IYieldSyncV1VaultFactory
 	* @param members {address[]}
 	* @param useDefaultSignatureProtocol {uint256}
 	* @param useDefaultTransferRequestProtocol {uint256}
-	* @return {address} Deployed vault
+	* @return deployedYieldSyncV1VaultAddress {address} Deployed vault
 	*/
 	function deployYieldSyncV1Vault(
 		address signatureProtocol,
@@ -141,7 +141,7 @@ interface IYieldSyncV1VaultFactory
 	)
 		external
 		payable
-		returns (address)
+		returns (address deployedYieldSyncV1VaultAddress)
 	;
 
 	/**

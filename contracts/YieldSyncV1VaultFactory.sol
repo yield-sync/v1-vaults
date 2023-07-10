@@ -79,7 +79,7 @@ contract YieldSyncV1VaultFactory is
 		public
 		payable
 		override
-		returns (address)
+		returns (address deployedYieldSyncV1VaultAddress)
 	{
 		require(
 			defaultTransferRequestProtocol != address(0) || !useDefaultTransferRequestProtocol,
