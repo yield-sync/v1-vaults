@@ -250,6 +250,27 @@ describe("[0] YieldSyncV1VaultFactory.sol - YieldSync V1 Vault Factory Contract"
 			);
 
 			it(
+				"Should fail to deploy YieldSyncV1Vault.sol due to not enough msg.value..",
+				async () => {
+					const [, addr1] = await ethers.getSigners();
+
+					await yieldSyncV1VaultFactory.feeUpdate(ethers.utils.parseEther("1"));
+
+					await expect(yieldSyncV1VaultFactory.deployYieldSyncV1Vault(
+						ethers.constants.AddressZero,
+						ethers.constants.AddressZero,
+						[addr1.address],
+						[addr1.address],
+						true,
+						true,
+						{
+							value: ethers.utils.parseEther("1")
+						}
+					)).to.be.rejectedWith("!_againstVoteRequired");
+				}
+			);
+
+			it(
 				"Should be able to record deployed YieldSyncV1Vault.sol on YieldSyncV1VaultFactory.sol..",
 				async () => {
 					const [, addr1] = await ethers.getSigners();

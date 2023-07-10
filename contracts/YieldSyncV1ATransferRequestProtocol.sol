@@ -234,7 +234,7 @@ contract YieldSyncV1ATransferRequestProtocol is
 		);
 		require(
 			_yieldSyncV1VaultAddress_yieldSyncV1VaultProperty[initiator].forVoteRequired > 0,
-			"!_againstVoteRequired"
+			"!forVoteRequired"
 		);
 
 		_yieldSyncV1VaultAddress_yieldSyncV1VaultProperty[
