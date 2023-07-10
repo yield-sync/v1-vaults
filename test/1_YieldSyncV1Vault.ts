@@ -575,6 +575,25 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 					);
 
 					it(
+						"Should revert when forERC20 and forERC721 are BOTH true..",
+						async () => {
+							const [, addr1] = await ethers.getSigners();
+
+							await expect(
+								yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1VaultAddress_transferRequestId_transferRequestCreate(
+									yieldSyncV1Vault.address,
+									true,
+									true,
+									addr1.address,
+									ethers.constants.AddressZero,
+									1,
+									0
+								)
+							).to.be.rejectedWith("forERC20 && forERC721");
+						}
+					);
+
+					it(
 						"Should be able to create a TransferRequest for Ether..",
 						async () => {
 							const [, addr1, addr2] = await ethers.getSigners();
@@ -1540,7 +1559,140 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 	describe("Restriction: admin (2/2)", async () => {
 		describe("yieldSyncV1VaultAddress_transferRequestId_transferRequestUpdate()", async () => {
 			it(
-				"Should be able to update TransferRequest.forVoteCount..",
+				"Should revert when amount is set to 0 or less..",
+				async () => {
+					const [, addr1, addr2] = await ethers.getSigners();
+
+					await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1VaultAddress_transferRequestId_transferRequestCreate(
+						yieldSyncV1Vault.address,
+						true,
+						false,
+						addr2.address,
+						mockERC20.address,
+						999,
+						0
+					);
+
+					const idsOfOpenTransferRequests = await yieldSyncV1ATransferRequestProtocol.yieldSyncV1VaultAddress_openTransferRequestIds(
+						yieldSyncV1Vault.address
+					);
+
+					const transferRequest: any = await yieldSyncV1ATransferRequestProtocol.yieldSyncV1VaultAddress_transferRequestId_transferRequest(
+						yieldSyncV1Vault.address,
+						idsOfOpenTransferRequests[idsOfOpenTransferRequests.length - 1]
+					);
+
+					await expect(
+						yieldSyncV1ATransferRequestProtocol.yieldSyncV1VaultAddress_transferRequestId_transferRequestUpdate(
+							yieldSyncV1Vault.address,
+							idsOfOpenTransferRequests[idsOfOpenTransferRequests.length - 1],
+							[
+								transferRequest.forERC20,
+								transferRequest.forERC721,
+								transferRequest.creator,
+								transferRequest.token,
+								transferRequest.tokenId,
+								0,
+								transferRequest.to
+							]
+						)
+					).to.be.rejectedWith("!transferRequest.amount");
+				}
+			);
+
+			it(
+				"Should revert when forERC20 and forERC721 are BOTH true..",
+				async () => {
+					const [, addr1, addr2] = await ethers.getSigners();
+
+					await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1VaultAddress_transferRequestId_transferRequestCreate(
+						yieldSyncV1Vault.address,
+						true,
+						false,
+						addr2.address,
+						mockERC20.address,
+						999,
+						0
+					);
+
+					const idsOfOpenTransferRequests = await yieldSyncV1ATransferRequestProtocol.yieldSyncV1VaultAddress_openTransferRequestIds(
+						yieldSyncV1Vault.address
+					);
+
+					const transferRequest: any = await yieldSyncV1ATransferRequestProtocol.yieldSyncV1VaultAddress_transferRequestId_transferRequest(
+						yieldSyncV1Vault.address,
+						idsOfOpenTransferRequests[idsOfOpenTransferRequests.length - 1]
+					);
+
+					await expect(
+						yieldSyncV1ATransferRequestProtocol.yieldSyncV1VaultAddress_transferRequestId_transferRequestUpdate(
+							yieldSyncV1Vault.address,
+							idsOfOpenTransferRequests[idsOfOpenTransferRequests.length - 1],
+							[
+								true,
+								true,
+								transferRequest.creator,
+								transferRequest.token,
+								transferRequest.tokenId,
+								transferRequest.amount - 10,
+								transferRequest.to
+							]
+						)
+					).to.be.rejectedWith("transferRequest.forERC20 && transferRequest.forERC721");
+				}
+			);
+
+			it(
+				"Should be able to update TransferRequest.amount..",
+				async () => {
+					const [, addr1, addr2] = await ethers.getSigners();
+
+					await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1VaultAddress_transferRequestId_transferRequestCreate(
+						yieldSyncV1Vault.address,
+						true,
+						false,
+						addr2.address,
+						mockERC20.address,
+						999,
+						0
+					);
+
+					const idsOfOpenTransferRequests = await yieldSyncV1ATransferRequestProtocol.yieldSyncV1VaultAddress_openTransferRequestIds(
+						yieldSyncV1Vault.address
+					);
+
+					const transferRequest: any = await yieldSyncV1ATransferRequestProtocol.yieldSyncV1VaultAddress_transferRequestId_transferRequest(
+						yieldSyncV1Vault.address,
+						idsOfOpenTransferRequests[idsOfOpenTransferRequests.length - 1]
+					);
+
+					await yieldSyncV1ATransferRequestProtocol.yieldSyncV1VaultAddress_transferRequestId_transferRequestUpdate(
+						yieldSyncV1Vault.address,
+						idsOfOpenTransferRequests[idsOfOpenTransferRequests.length - 1],
+						[
+							transferRequest.forERC20,
+							transferRequest.forERC721,
+							transferRequest.creator,
+							transferRequest.token,
+							transferRequest.tokenId,
+							transferRequest.amount - 10,
+							transferRequest.to
+						]
+					);
+
+					const updatedTransferRequest: any = await yieldSyncV1ATransferRequestProtocol.yieldSyncV1VaultAddress_transferRequestId_transferRequest(
+						yieldSyncV1Vault.address,
+						idsOfOpenTransferRequests[idsOfOpenTransferRequests.length - 1]
+					);
+
+					expect(updatedTransferRequest.amount).to.be.equal(transferRequest.amount - 10);
+				}
+			);
+		});
+
+		describe("yieldSyncV1VaultAddress_transferRequestId_transferRequestPollUpdate()", async () => {
+			it(
+				"Should be able to update TransferRequestPoll.forVoteCount..",
 				async () => {
 					const [, addr1, addr2] = await ethers.getSigners();
 
@@ -1590,7 +1742,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 			);
 
 			it(
-				"Should be able to update transferRequest.latestRelevantForVoteTime..",
+				"Should be able to update TransferRequestPoll.latestRelevantForVoteTime..",
 				async () => {
 					const [, addr1, addr2] = await ethers.getSigners();
 

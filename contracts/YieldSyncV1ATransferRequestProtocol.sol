@@ -299,6 +299,8 @@ contract YieldSyncV1ATransferRequestProtocol is
 	{
 		require(amount > 0, "!amount");
 
+		require(!(forERC20 && forERC721), "forERC20 && forERC721");
+
 		address[] memory initialVotedMembers;
 
 		_yieldSyncV1VaultAddress_transferRequestId_transferRequest[yieldSyncV1VaultAddress][
@@ -359,6 +361,13 @@ contract YieldSyncV1ATransferRequestProtocol is
 		accessAdmin(yieldSyncV1VaultAddress)
 		validTransferRequest(yieldSyncV1VaultAddress, transferRequestId)
 	{
+		require(transferRequest.amount > 0, "!transferRequest.amount");
+
+		require(
+			!(transferRequest.forERC20 && transferRequest.forERC721),
+			"transferRequest.forERC20 && transferRequest.forERC721"
+		);
+
 		_yieldSyncV1VaultAddress_transferRequestId_transferRequest[yieldSyncV1VaultAddress][
 			transferRequestId
 		] = transferRequest;
