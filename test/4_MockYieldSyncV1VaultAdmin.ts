@@ -30,7 +30,7 @@ describe("[4] MockAdmin.sol - Mock Admin Contract", async () => {
 		const YieldSyncV1Vault: ContractFactory = await ethers.getContractFactory("YieldSyncV1Vault");
 		const YieldSyncV1VaultFactory: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultFactory");
 		const YieldSyncV1VaultAccessControl: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultAccessControl");
-		const YieldSyncV1SignatureProtocol: ContractFactory = await ethers.getContractFactory("YieldSyncV1SignatureProtocol");
+		const YieldSyncV1ASignatureProtocol: ContractFactory = await ethers.getContractFactory("YieldSyncV1ASignatureProtocol");
 		const YieldSyncV1ATransferRequestProtocol: ContractFactory = await ethers.getContractFactory("YieldSyncV1ATransferRequestProtocol");
 
 
@@ -60,7 +60,7 @@ describe("[4] MockAdmin.sol - Mock Admin Contract", async () => {
 
 		// Deploy Signature Protocol
 		signatureProtocol = await (
-			await YieldSyncV1SignatureProtocol.deploy(
+			await YieldSyncV1ASignatureProtocol.deploy(
 				mockYieldSyncGovernance.address,
 				yieldSyncV1VaultAccessControl.address
 			)

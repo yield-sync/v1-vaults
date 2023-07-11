@@ -12,7 +12,7 @@ async function main() {
 	// Get factories
 	const YieldSyncV1VaultFactory: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultFactory");
 	const YieldSyncV1VaultAccessControl: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultAccessControl");
-	const YieldSyncV1SignatureProtocol: ContractFactory = await ethers.getContractFactory("YieldSyncV1SignatureProtocol");
+	const YieldSyncV1ASignatureProtocol: ContractFactory = await ethers.getContractFactory("YieldSyncV1ASignatureProtocol");
 	const YieldSyncV1ATransferRequestProtocol: ContractFactory = await ethers.getContractFactory("YieldSyncV1ATransferRequestProtocol");
 
 
@@ -37,7 +37,7 @@ async function main() {
 	{
 		// Deploy Signature Protocol
 		const signatureProtocol = await (
-			await YieldSyncV1SignatureProtocol.deploy(
+			await YieldSyncV1ASignatureProtocol.deploy(
 				process.env.YIELD_SYNC_GOVERNANCE_ADDRESS,
 				yieldSyncV1VaultAccessControl.address
 			)

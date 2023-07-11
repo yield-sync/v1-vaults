@@ -8,14 +8,14 @@ import { ECDSA } from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import { IYieldSyncV1Vault } from "@yield-sync/v1-sdk/contracts/interface/IYieldSyncV1Vault.sol";
 
 import { ISignatureProtocol, MessageHashData } from "./interface/ISignatureProtocol.sol";
-import { IYieldSyncV1SignatureProtocol, MessageHashVote } from "./interface/IYieldSyncV1SignatureProtocol.sol";
+import { IYieldSyncV1ASignatureProtocol, MessageHashVote } from "./interface/IYieldSyncV1ASignatureProtocol.sol";
 import { IYieldSyncV1VaultAccessControl } from "./interface/IYieldSyncV1VaultAccessControl.sol";
 
 
-contract YieldSyncV1SignatureProtocol is
+contract YieldSyncV1ASignatureProtocol is
 	Pausable,
 	ISignatureProtocol,
-	IYieldSyncV1SignatureProtocol
+	IYieldSyncV1ASignatureProtocol
 {
 	address public override immutable YieldSyncGovernance;
 	address public override immutable YieldSyncV1VaultAccessControl;
@@ -91,7 +91,7 @@ contract YieldSyncV1SignatureProtocol is
 	}
 
 
-	/// @inheritdoc IYieldSyncV1SignatureProtocol
+	/// @inheritdoc IYieldSyncV1ASignatureProtocol
 	function vaultMessageHashes(address yieldSyncV1VaultAddress)
 		public
 		view
@@ -101,7 +101,7 @@ contract YieldSyncV1SignatureProtocol is
 		return _vaultMessageHashes[yieldSyncV1VaultAddress];
 	}
 
-	/// @inheritdoc IYieldSyncV1SignatureProtocol
+	/// @inheritdoc IYieldSyncV1ASignatureProtocol
 	function purposer_signaturesRequired(address purposer)
 		public
 		view
@@ -111,7 +111,7 @@ contract YieldSyncV1SignatureProtocol is
 		return _purposer_signaturesRequired[purposer];
 	}
 
-	/// @inheritdoc IYieldSyncV1SignatureProtocol
+	/// @inheritdoc IYieldSyncV1ASignatureProtocol
 	function yieldSyncV1VaultAddress_messageHash_messageHashData(address yieldSyncV1VaultAddress, bytes32 messageHash)
 		public
 		view
@@ -121,7 +121,7 @@ contract YieldSyncV1SignatureProtocol is
 		return _yieldSyncV1VaultAddress_messageHash_messageHashData[yieldSyncV1VaultAddress][messageHash];
 	}
 
-	/// @inheritdoc IYieldSyncV1SignatureProtocol
+	/// @inheritdoc IYieldSyncV1ASignatureProtocol
 	function yieldSyncV1VaultAddress_messageHash_messageHashVote(address yieldSyncV1VaultAddress, bytes32 messageHash)
 		public
 		view
@@ -132,7 +132,7 @@ contract YieldSyncV1SignatureProtocol is
 	}
 
 
-	/// @inheritdoc IYieldSyncV1SignatureProtocol
+	/// @inheritdoc IYieldSyncV1ASignatureProtocol
 	function update_purposer_signaturesRequired(uint256 signatureRequired)
 		public
 		override
@@ -140,7 +140,7 @@ contract YieldSyncV1SignatureProtocol is
 		_purposer_signaturesRequired[msg.sender] = signatureRequired;
 	}
 
-	/// @inheritdoc IYieldSyncV1SignatureProtocol
+	/// @inheritdoc IYieldSyncV1ASignatureProtocol
 	function signMessageHash(address yieldSyncV1VaultAddress, bytes32 messageHash, bytes memory signature)
 		public
 		override
@@ -213,7 +213,7 @@ contract YieldSyncV1SignatureProtocol is
 	}
 
 
-	/// @inheritdoc IYieldSyncV1SignatureProtocol
+	/// @inheritdoc IYieldSyncV1ASignatureProtocol
 	function updatePause(bool pause)
 		public
 		override

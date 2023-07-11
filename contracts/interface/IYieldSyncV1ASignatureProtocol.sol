@@ -12,7 +12,7 @@ struct MessageHashVote
 }
 
 
-interface IYieldSyncV1SignatureProtocol is
+interface IYieldSyncV1ASignatureProtocol is
 	ISignatureProtocol
 {
 	/**
