@@ -30,16 +30,13 @@ describe("[2] YieldSyncV1VaultAccessControl.sol - YieldSync V1 Vault Record Cont
 			await YieldSyncV1VaultFactory.deploy(mockYieldSyncGovernance.address, yieldSyncV1VaultAccessControl.address)
 		).deployed();
 
-		// Deploy Transfer Request Protocol
+		// Deploy yieldSyncV1ATransferRequestProtocol
 		yieldSyncV1ATransferRequestProtocol = await (
 			await YieldSyncV1ATransferRequestProtocol.deploy(
 				yieldSyncV1VaultAccessControl.address,
 				yieldSyncV1VaultFactory.address
 			)
 		).deployed();
-
-		// Set Factory -> Transfer Request Protocol
-		await yieldSyncV1VaultFactory.defaultTransferRequestProtocolUpdate(yieldSyncV1ATransferRequestProtocol.address);
 
 		// Set YieldSyncV1Vault properties on TransferRequestProtocol.sol
 		await yieldSyncV1ATransferRequestProtocol.yieldSyncV1VaultAddress_yieldSyncV1VaultPropertyUpdate(
@@ -50,11 +47,9 @@ describe("[2] YieldSyncV1VaultAccessControl.sol - YieldSync V1 Vault Record Cont
 		// Deploy a vault
 		await yieldSyncV1VaultFactory.deployYieldSyncV1Vault(
 			ethers.constants.AddressZero,
-			ethers.constants.AddressZero,
+			yieldSyncV1ATransferRequestProtocol.address,
 			[owner.address],
 			[addr1.address, addr2.address, addr3.address],
-			true,
-			true,
 			{ value: 1 }
 		);
 

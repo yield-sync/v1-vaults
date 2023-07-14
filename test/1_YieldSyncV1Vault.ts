@@ -40,22 +40,22 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 		const YieldSyncV1ATransferRequestProtocol: ContractFactory = await ethers.getContractFactory("YieldSyncV1ATransferRequestProtocol");
 
 
-		/// Deploy
-		// Mock
+		/// Mock
+		// Governance and test contracts
 		mockAdmin = await (await MockAdmin.deploy()).deployed();
 		mockERC20 = await (await MockERC20.deploy()).deployed();
 		mockERC721 = await (await MockERC721.deploy()).deployed();
 		mockYieldSyncGovernance = await (await MockYieldSyncGovernance.deploy()).deployed();
 
-		// Expected
+		/// Core
+		// Deploy YieldSyncV1VaultAccessControl
 		yieldSyncV1VaultAccessControl = await (await YieldSyncV1VaultAccessControl.deploy()).deployed();
-
-		// Deploy Factory
+		// Deploy YieldSyncV1VaultFactory
 		yieldSyncV1VaultFactory = await (
 			await YieldSyncV1VaultFactory.deploy(mockYieldSyncGovernance.address, yieldSyncV1VaultAccessControl.address)
 		).deployed();
 
-		// Deploy Transfer Request Protocol
+		// Deploy YieldSyncV1ATransferRequestProtocol
 		yieldSyncV1ATransferRequestProtocol = await (
 			await YieldSyncV1ATransferRequestProtocol.deploy(
 				yieldSyncV1VaultAccessControl.address,
@@ -63,16 +63,13 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 			)
 		).deployed();
 
+		// Deploy mockSignatureProtocol
 		mockTransferRequestProtocol = await (
 			await MockTransferRequestProtocol.deploy(
 				yieldSyncV1VaultAccessControl.address,
 				yieldSyncV1VaultFactory.address
 			)
 		).deployed();
-
-
-		// Set Factory -> Transfer Request Protocol
-		await yieldSyncV1VaultFactory.defaultTransferRequestProtocolUpdate(yieldSyncV1ATransferRequestProtocol.address);
 
 		// Deploy Signature Protocol
 		signatureProtocol = await (
@@ -88,14 +85,15 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 			[2, 2, sixDaysInSeconds]
 		);
 
+		// Set purposer signature
+		await signatureProtocol.update_purposer_signaturesRequired(1);
+
 		// Deploy a vault
 		await yieldSyncV1VaultFactory.deployYieldSyncV1Vault(
-			ethers.constants.AddressZero,
-			ethers.constants.AddressZero,
+			signatureProtocol.address,
+			yieldSyncV1ATransferRequestProtocol.address,
 			[owner.address],
 			[addr1.address],
-			true,
-			true,
 			{ value: 1 }
 		);
 

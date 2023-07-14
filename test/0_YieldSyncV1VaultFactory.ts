@@ -24,9 +24,10 @@ describe("[0] YieldSyncV1VaultFactory.sol - YieldSync V1 Vault Factory Contract"
 		/// Mock
 		// Governance and AccessControl
 		mockYieldSyncGovernance = await (await MockYieldSyncGovernance.deploy()).deployed();
-		yieldSyncV1VaultAccessControl = await (await YieldSyncV1VaultAccessControl.deploy()).deployed();
 
-		// Expected
+		/// Core
+		// Deploy YieldSyncV1VaultAccessControl
+		yieldSyncV1VaultAccessControl = await (await YieldSyncV1VaultAccessControl.deploy()).deployed();
 		// Deploy YieldSyncV1VaultFactory
 		yieldSyncV1VaultFactory = await (
 			await YieldSyncV1VaultFactory.deploy(mockYieldSyncGovernance.address, yieldSyncV1VaultAccessControl.address)
@@ -44,7 +45,6 @@ describe("[0] YieldSyncV1VaultFactory.sol - YieldSync V1 Vault Factory Contract"
 		mockSignatureProtocol = await (
 			await MockSignatureProtocol.deploy(mockYieldSyncGovernance.address, yieldSyncV1VaultAccessControl.address)
 		).deployed();
-
 
 		// Send ether to YieldSyncV1VaultFactory contract
 		await addr1.sendTransaction({

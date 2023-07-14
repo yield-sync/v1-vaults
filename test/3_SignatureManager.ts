@@ -52,7 +52,7 @@ describe("[3] signatureProtocol.sol - Signature Manager Contract", async () => {
 			await YieldSyncV1VaultFactory.deploy(mockYieldSyncGovernance.address, yieldSyncV1VaultAccessControl.address)
 		).deployed();
 
-		// Deploy Transfer Request Protocol
+		// Deploy yieldSyncV1ATransferRequestProtocol
 		yieldSyncV1ATransferRequestProtocol = await (
 			await YieldSyncV1ATransferRequestProtocol.deploy(
 				yieldSyncV1VaultAccessControl.address,
@@ -70,12 +70,6 @@ describe("[3] signatureProtocol.sol - Signature Manager Contract", async () => {
 
 		await signatureProtocol.update_purposer_signaturesRequired(2);
 
-		// Set Factory -> Transfer Request Protocol
-		await yieldSyncV1VaultFactory.defaultTransferRequestProtocolUpdate(yieldSyncV1ATransferRequestProtocol.address);
-
-		// Set Factory -> Transfer Request Protocol
-		await yieldSyncV1VaultFactory.defaultSignatureProtocolUpdate(signatureProtocol.address);
-
 		// Set YieldSyncV1Vault properties on TransferRequestProtocol.sol
 		await yieldSyncV1ATransferRequestProtocol.yieldSyncV1VaultAddress_yieldSyncV1VaultPropertyUpdate(
 			owner.address,
@@ -84,12 +78,10 @@ describe("[3] signatureProtocol.sol - Signature Manager Contract", async () => {
 
 		// Deploy a vault
 		await yieldSyncV1VaultFactory.deployYieldSyncV1Vault(
-			ethers.constants.AddressZero,
-			ethers.constants.AddressZero,
+			signatureProtocol.address,
+			yieldSyncV1ATransferRequestProtocol.address,
 			[owner.address],
 			[addr1.address, addr2.address],
-			true,
-			true,
 			{ value: 1 }
 		);
 
