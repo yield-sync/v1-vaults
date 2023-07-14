@@ -15,9 +15,12 @@ async function main() {
 	const YieldSyncV1ASignatureProtocol: ContractFactory = await ethers.getContractFactory("YieldSyncV1ASignatureProtocol");
 	const YieldSyncV1ATransferRequestProtocol: ContractFactory = await ethers.getContractFactory("YieldSyncV1ATransferRequestProtocol");
 
-
-	// deploy
+	/// DEPLOY
+	// YieldSyncV1VaultAccessControl
 	const yieldSyncV1VaultAccessControl: Contract = await (await YieldSyncV1VaultAccessControl.deploy()).deployed();
+
+
+	// YieldSyncV1VaultFactory
 	const yieldSyncV1VaultFactory: Contract = await (
 		await YieldSyncV1VaultFactory.deploy(
 			process.env.YIELD_SYNC_GOVERNANCE_ADDRESS,
@@ -25,7 +28,7 @@ async function main() {
 		)
 	).deployed();
 
-	// Deploy Transfer Request Protocol
+	// YieldSyncV1ATransferRequestProtocol
 	const yieldSyncV1ATransferRequestProtocol = await (
 		await YieldSyncV1ATransferRequestProtocol.deploy(
 			yieldSyncV1VaultAccessControl.address,
@@ -35,7 +38,7 @@ async function main() {
 
 	if (false)
 	{
-		// Deploy Signature Protocol
+		// YieldSyncV1ASignatureProtocol
 		const signatureProtocol = await (
 			await YieldSyncV1ASignatureProtocol.deploy(
 				process.env.YIELD_SYNC_GOVERNANCE_ADDRESS,
@@ -43,9 +46,6 @@ async function main() {
 			)
 		).deployed();
 	}
-
-	// Set Factory -> Transfer Request Protocol
-	await yieldSyncV1VaultFactory.defaultTransferRequestProtocolUpdate(yieldSyncV1ATransferRequestProtocol.address);
 
 	console.log("Waiting 30 seconds before verifying..");
 
@@ -90,6 +90,8 @@ async function main() {
 				],
 			}
 		);
+
+		console.log("Verification complete!");
 	}
 	catch (e: any)
 	{
@@ -103,8 +105,9 @@ async function main() {
 		}
 	}
 
-	console.log("yieldSyncV1VaultAccessControl Contract address:", yieldSyncV1VaultAccessControl.address);
-	console.log("yieldSyncV1VaultFactory Contract address:", yieldSyncV1VaultFactory.address);
+	console.log("yieldSyncV1VaultAccessControl address:", yieldSyncV1VaultAccessControl.address);
+	console.log("yieldSyncV1VaultFactory address:", yieldSyncV1VaultFactory.address);
+	console.log("yieldSyncV1ATransferRequestProtocol address:", yieldSyncV1ATransferRequestProtocol.address);
 	console.log("Account Balance:", await owner.getBalance());
 }
 
