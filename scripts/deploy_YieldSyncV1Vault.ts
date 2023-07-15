@@ -4,13 +4,13 @@ import { Contract, ContractFactory } from "ethers";
 import { ethers, run } from "hardhat";
 
 async function main() {
-	if (process.env.YIELD_SYNC_GOVERNANCE_ADDRESS)
+	if (!process.env.YIELD_SYNC_GOVERNANCE_ADDRESS)
 	{
 		console.error("No process.env.YIELD_SYNC_GOVERNANCE_ADDRESS set.")
 		return;
 	}
 
-	if (process.env.YIELD_SYNC_V1_VAULT_TRANSFER_REQUEST_PROTOCOL)
+	if (!process.env.YIELD_SYNC_V1_VAULT_TRANSFER_REQUEST_PROTOCOL)
 	{
 		console.error("No process.env.YIELD_SYNC_V1_VAULT_TRANSFER_REQUEST_PROTOCOL set.")
 		return;''
