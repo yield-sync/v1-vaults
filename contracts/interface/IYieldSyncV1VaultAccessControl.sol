@@ -91,7 +91,6 @@ interface IYieldSyncV1VaultAccessControl
 		external
 	;
 
-
 	/**
 	* @notice Add Member
 	* @dev [update] `_member_yieldSyncV1Vaults`
