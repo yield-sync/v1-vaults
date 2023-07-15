@@ -1,15 +1,22 @@
-/**
- * @notice A instance of YieldSyncV1VaultFactory and YieldSyncV1ATransferRequestProtocol needs to be already deployed
- * befor running this script. The addresses of such contracts should be stored in `YIELD_SYNC_V1_VAULT_FACTORY` and
- * `YIELD_SYNC_V1_VAULT_TRANSFER_REQUEST_PROTOCOL` in the .env file. If you would like to run this script ona specified
- * network than pass `--network <network-name>` to the CLI.
-*/
 require("dotenv").config();
 
 import { Contract, ContractFactory } from "ethers";
 import { ethers, run } from "hardhat";
 
 async function main() {
+	if (process.env.YIELD_SYNC_GOVERNANCE_ADDRESS)
+	{
+		console.error("No process.env.YIELD_SYNC_GOVERNANCE_ADDRESS set.")
+		return;
+	}
+
+	if (process.env.YIELD_SYNC_V1_VAULT_TRANSFER_REQUEST_PROTOCOL)
+	{
+		console.error("No process.env.YIELD_SYNC_V1_VAULT_TRANSFER_REQUEST_PROTOCOL set.")
+		return;''
+	}
+
+
 	const [owner] = await ethers.getSigners();
 
 	// [log]
