@@ -45,7 +45,7 @@ async function main() {
 	);
 
 	// Deploy a vault
-	const yieldSyncV1Vault: Contract = await yieldSyncV1VaultFactory.deployYieldSyncV1Vault(
+	await yieldSyncV1VaultFactory.deployYieldSyncV1Vault(
 		ethers.constants.AddressZero,
 		process.env.YIELD_SYNC_V1_VAULT_TRANSFER_REQUEST_PROTOCOL,
 		[owner.address],
