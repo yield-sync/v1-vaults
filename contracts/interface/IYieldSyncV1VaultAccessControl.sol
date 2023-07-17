@@ -5,24 +5,24 @@ pragma solidity ^0.8.18;
 interface IYieldSyncV1VaultAccessControl
 {
 	/**
-	* @notice Getter for `_admin_yieldSyncV1VaultsAddresses`
+	* @notice Getter for `_admin_yieldSyncV1VaultAddresses`
 	* @dev [view]
 	* @param admin {address}
 	* @return {address[]}
 	*/
-	function admin_yieldSyncV1VaultsAddresses(address admin)
+	function admin_yieldSyncV1VaultAddresses(address admin)
 		external
 		view
 		returns (address[] memory)
 	;
 
 	/**
-	* @notice Getter for `_member_yieldSyncV1VaultsAddresses`
+	* @notice Getter for `_member_yieldSyncV1VaultAddresses`
 	* @dev [view]
 	* @param member {address}
 	* @return {address[]}
 	*/
-	function member_yieldSyncV1VaultsAddresses(address member)
+	function member_yieldSyncV1VaultAddresses(address member)
 		external
 		view
 		returns (address[] memory)

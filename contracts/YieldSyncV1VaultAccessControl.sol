@@ -17,8 +17,8 @@ struct Access
 contract YieldSyncV1VaultAccessControl is
 	IYieldSyncV1VaultAccessControl
 {
-	mapping (address admin => address[] yieldSyncV1VaultsAddresses) internal _admin_yieldSyncV1VaultsAddresses;
-	mapping (address member => address[] yieldSyncV1VaultsAddresses) internal _member_yieldSyncV1VaultsAddresses;
+	mapping (address admin => address[] yieldSyncV1VaultAddresses) internal _admin_yieldSyncV1VaultAddresses;
+	mapping (address member => address[] yieldSyncV1VaultAddresses) internal _member_yieldSyncV1VaultAddresses;
 	mapping (address yieldSyncV1VaultAddress => address[] admins) internal _yieldSyncV1VaultAddress_admins;
 	mapping (address yieldSyncV1VaultAddress => address[] members) internal _yieldSyncV1VaultAddress_members;
 
@@ -36,23 +36,23 @@ contract YieldSyncV1VaultAccessControl is
 
 
 	/// @inheritdoc IYieldSyncV1VaultAccessControl
-	function admin_yieldSyncV1VaultsAddresses(address admin)
+	function admin_yieldSyncV1VaultAddresses(address admin)
 		public
 		view
 		override
 		returns (address[] memory)
 	{
-		return _admin_yieldSyncV1VaultsAddresses[admin];
+		return _admin_yieldSyncV1VaultAddresses[admin];
 	}
 
 		/// @inheritdoc IYieldSyncV1VaultAccessControl
-	function member_yieldSyncV1VaultsAddresses(address member)
+	function member_yieldSyncV1VaultAddresses(address member)
 		public
 		view
 		override
 		returns (address[] memory)
 	{
-		return _member_yieldSyncV1VaultsAddresses[member];
+		return _member_yieldSyncV1VaultAddresses[member];
 	}
 
 	/// @inheritdoc IYieldSyncV1VaultAccessControl
@@ -95,7 +95,7 @@ contract YieldSyncV1VaultAccessControl is
 	{
 		require(!_yieldSyncV1VaultAddress_participant_access[yieldSyncV1VaultAddress][target].admin, "Already admin");
 
-		_admin_yieldSyncV1VaultsAddresses[target].push(yieldSyncV1VaultAddress);
+		_admin_yieldSyncV1VaultAddresses[target].push(yieldSyncV1VaultAddress);
 
 		_yieldSyncV1VaultAddress_admins[yieldSyncV1VaultAddress].push(target);
 
@@ -114,15 +114,15 @@ contract YieldSyncV1VaultAccessControl is
 		require(_yieldSyncV1VaultAddress_participant_access[yieldSyncV1VaultAddress][admin].admin, "Not admin");
 
 		// [update] _admin_yieldSyncV1Vaults
-		for (uint256 i = 0; i < _admin_yieldSyncV1VaultsAddresses[admin].length; i++)
+		for (uint256 i = 0; i < _admin_yieldSyncV1VaultAddresses[admin].length; i++)
 		{
-			if (_admin_yieldSyncV1VaultsAddresses[admin][i] == yieldSyncV1VaultAddress)
+			if (_admin_yieldSyncV1VaultAddresses[admin][i] == yieldSyncV1VaultAddress)
 			{
-				_admin_yieldSyncV1VaultsAddresses[admin][i] = _admin_yieldSyncV1VaultsAddresses[admin][
-					_admin_yieldSyncV1VaultsAddresses[admin].length - 1
+				_admin_yieldSyncV1VaultAddresses[admin][i] = _admin_yieldSyncV1VaultAddresses[admin][
+					_admin_yieldSyncV1VaultAddresses[admin].length - 1
 				];
 
-				_admin_yieldSyncV1VaultsAddresses[admin].pop();
+				_admin_yieldSyncV1VaultAddresses[admin].pop();
 
 				break;
 			}
@@ -159,7 +159,7 @@ contract YieldSyncV1VaultAccessControl is
 	{
 		require(!_yieldSyncV1VaultAddress_participant_access[yieldSyncV1VaultAddress][target].member, "Already member");
 
-		_member_yieldSyncV1VaultsAddresses[target].push(yieldSyncV1VaultAddress);
+		_member_yieldSyncV1VaultAddresses[target].push(yieldSyncV1VaultAddress);
 
 		_yieldSyncV1VaultAddress_members[yieldSyncV1VaultAddress].push(target);
 
@@ -178,15 +178,15 @@ contract YieldSyncV1VaultAccessControl is
 		require(_yieldSyncV1VaultAddress_participant_access[yieldSyncV1VaultAddress][member].member, "Not member");
 
 		// [update] _member_yieldSyncV1Vaults
-		for (uint256 i = 0; i < _member_yieldSyncV1VaultsAddresses[member].length; i++)
+		for (uint256 i = 0; i < _member_yieldSyncV1VaultAddresses[member].length; i++)
 		{
-			if (_member_yieldSyncV1VaultsAddresses[member][i] == yieldSyncV1VaultAddress)
+			if (_member_yieldSyncV1VaultAddresses[member][i] == yieldSyncV1VaultAddress)
 			{
-				_member_yieldSyncV1VaultsAddresses[member][i] = _member_yieldSyncV1VaultsAddresses[member][
-					_member_yieldSyncV1VaultsAddresses[member].length - 1
+				_member_yieldSyncV1VaultAddresses[member][i] = _member_yieldSyncV1VaultAddresses[member][
+					_member_yieldSyncV1VaultAddresses[member].length - 1
 				];
 
-				_member_yieldSyncV1VaultsAddresses[member].pop();
+				_member_yieldSyncV1VaultAddresses[member].pop();
 
 				break;
 			}

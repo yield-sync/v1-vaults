@@ -280,13 +280,13 @@ describe("[0] YieldSyncV1VaultFactory.sol - YieldSync V1 Vault Factory Contract"
 						{ value: 1 }
 					);
 
-					const vaultAddress = await yieldSyncV1VaultAccessControl.member_yieldSyncV1Vaults(addr1.address);
+					const vaultAddress = await yieldSyncV1VaultAccessControl.member_yieldSyncV1VaultAddresses(addr1.address);
 
 					expect(vaultAddress[0]).to.equal(
 						await yieldSyncV1VaultFactory.yieldSyncV1VaultId_yieldSyncV1VaultAddress(0)
 					);
 
-					const vaultAddress1 = await yieldSyncV1VaultAccessControl.admin_yieldSyncV1Vaults(addr1.address);
+					const vaultAddress1 = await yieldSyncV1VaultAccessControl.admin_yieldSyncV1VaultAddresses(addr1.address);
 
 					expect(vaultAddress1[0]).to.equal(
 						await yieldSyncV1VaultFactory.yieldSyncV1VaultId_yieldSyncV1VaultAddress(0)
