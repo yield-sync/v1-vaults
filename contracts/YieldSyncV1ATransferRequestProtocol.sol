@@ -77,9 +77,12 @@ contract YieldSyncV1ATransferRequestProtocol is
 		_;
 	}
 
-	modifier contractYieldSyncV1VaultFactory()
+	modifier contractYieldSyncV1VaultFactoryOrYieldSyncV1Vault(address yieldSyncV1VaultAddress)
 	{
-		require(msg.sender == YieldSyncV1VaultFactory, "!YieldSyncV1VaultFactory");
+		require(
+			msg.sender == YieldSyncV1VaultFactory || msg.sender == yieldSyncV1VaultAddress,
+			"!YieldSyncV1VaultFactory && !yieldSyncV1VaultAddress"
+		);
 
 		_;
 	}
@@ -226,7 +229,7 @@ contract YieldSyncV1ATransferRequestProtocol is
 	function yieldSyncV1VaultInitialize(address initiator, address yieldSyncV1VaultAddress)
 		public
 		override
-		contractYieldSyncV1VaultFactory()
+		contractYieldSyncV1VaultFactoryOrYieldSyncV1Vault(yieldSyncV1VaultAddress)
 	{
 		require(
 			_yieldSyncV1VaultAddress_yieldSyncV1VaultProperty[initiator].againstVoteRequired > 0,

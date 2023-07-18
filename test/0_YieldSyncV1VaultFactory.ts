@@ -43,7 +43,11 @@ describe("[0] YieldSyncV1VaultFactory.sol - YieldSync V1 Vault Factory Contract"
 
 		// Deploy mockSignatureProtocol
 		mockSignatureProtocol = await (
-			await MockSignatureProtocol.deploy(mockYieldSyncGovernance.address, yieldSyncV1VaultAccessControl.address)
+			await MockSignatureProtocol.deploy(
+				mockYieldSyncGovernance.address,
+				yieldSyncV1VaultAccessControl.address,
+				yieldSyncV1VaultFactory.address
+			)
 		).deployed();
 
 		// Send ether to YieldSyncV1VaultFactory contract
@@ -344,7 +348,7 @@ describe("[0] YieldSyncV1VaultFactory.sol - YieldSync V1 Vault Factory Contract"
 						[1, 1, 10]
 					);
 
-					await mockSignatureProtocol.connect(addr1).update_purposer_signaturesRequired(1);
+					await mockSignatureProtocol.connect(addr1).yieldSyncV1VaultAddress_signaturesRequiredUpdate(1);
 
 					await yieldSyncV1VaultFactory.connect(addr1).deployYieldSyncV1Vault(
 						mockSignatureProtocol.address,
@@ -376,7 +380,7 @@ describe("[0] YieldSyncV1VaultFactory.sol - YieldSync V1 Vault Factory Contract"
 							[1, 1, 10]
 						);
 
-						await mockSignatureProtocol.connect(addr1).update_purposer_signaturesRequired(1);
+						await mockSignatureProtocol.connect(addr1).yieldSyncV1VaultAddress_signaturesRequiredUpdate(1);
 
 						await yieldSyncV1VaultFactory.connect(addr1).deployYieldSyncV1Vault(
 							mockSignatureProtocol.address,
@@ -414,7 +418,7 @@ describe("[0] YieldSyncV1VaultFactory.sol - YieldSync V1 Vault Factory Contract"
 							[1, 1, 10]
 						);
 
-						await mockSignatureProtocol.connect(addr1).update_purposer_signaturesRequired(1);
+						await mockSignatureProtocol.connect(addr1).yieldSyncV1VaultAddress_signaturesRequiredUpdate(1);
 
 						await yieldSyncV1VaultFactory.connect(addr1).deployYieldSyncV1Vault(
 							mockSignatureProtocol.address,

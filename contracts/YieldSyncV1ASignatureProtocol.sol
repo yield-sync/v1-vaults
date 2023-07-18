@@ -19,12 +19,11 @@ contract YieldSyncV1ASignatureProtocol is
 {
 	address public override immutable YieldSyncGovernance;
 	address public override immutable YieldSyncV1VaultAccessControl;
+	address public override immutable YieldSyncV1VaultFactory;
 
 	bytes4 public constant ERC1271_MAGIC_VALUE = 0x1626ba7e;
 
 	mapping (address yieldSyncV1VaultAddress => bytes32[] messageHash) internal _vaultMessageHashes;
-
-	mapping (address purposer => uint256 signaturesRequired) internal _purposer_signaturesRequired;
 
 	mapping (
 		address yieldSyncV1VaultAddress => uint256 signaturesRequired
@@ -38,20 +37,31 @@ contract YieldSyncV1ASignatureProtocol is
 		address yieldSyncV1VaultAddress => mapping (bytes32 messageHash => MessageHashVote messageHashVote)
 	) internal _yieldSyncV1VaultAddress_messageHash_messageHashVote;
 
-	constructor (address _YieldSyncGovernance, address _YieldSyncV1VaultAccessControl)
-	{
-		_pause();
-
-		YieldSyncGovernance = _YieldSyncGovernance;
-		YieldSyncV1VaultAccessControl = _YieldSyncV1VaultAccessControl;
-	}
-
 
 	modifier contractYieldSyncGovernance(bytes32 role)
 	{
 		require(IAccessControlEnumerable(YieldSyncGovernance).hasRole(role, msg.sender), "!auth");
 
 		_;
+	}
+
+	modifier contractYieldSyncV1VaultFactoryOrYieldSyncV1Vault(address yieldSyncV1VaultAddress)
+	{
+		require(
+			msg.sender == YieldSyncV1VaultFactory || msg.sender == yieldSyncV1VaultAddress,
+			"!YieldSyncV1VaultFactory && !yieldSyncV1VaultAddress"
+		);
+
+		_;
+	}
+
+	constructor (address _YieldSyncGovernance, address _YieldSyncV1VaultAccessControl, address _YieldSyncV1VaultFactory)
+	{
+		_pause();
+
+		YieldSyncGovernance = _YieldSyncGovernance;
+		YieldSyncV1VaultAccessControl = _YieldSyncV1VaultAccessControl;
+		YieldSyncV1VaultFactory = _YieldSyncV1VaultFactory;
 	}
 
 
@@ -84,10 +94,18 @@ contract YieldSyncV1ASignatureProtocol is
 	function yieldSyncV1VaultInitialize(address initiator, address yieldSyncV1VaultAddress)
 		public
 		override
+		contractYieldSyncV1VaultFactoryOrYieldSyncV1Vault(yieldSyncV1VaultAddress)
 	{
-		require(_purposer_signaturesRequired[initiator] > 0, "!_purposer_signaturesRequired[initiator]");
+		require(
+			_yieldSyncV1VaultAddress_signaturesRequired[initiator] > 0,
+			"!_yieldSyncV1VaultAddress_signaturesRequired[initiator]"
+		);
 
-		_yieldSyncV1VaultAddress_signaturesRequired[yieldSyncV1VaultAddress] = _purposer_signaturesRequired[initiator];
+		_yieldSyncV1VaultAddress_signaturesRequired[
+			yieldSyncV1VaultAddress
+		] = _yieldSyncV1VaultAddress_signaturesRequired[
+			initiator
+		];
 	}
 
 
@@ -102,13 +120,13 @@ contract YieldSyncV1ASignatureProtocol is
 	}
 
 	/// @inheritdoc IYieldSyncV1ASignatureProtocol
-	function purposer_signaturesRequired(address purposer)
+	function yieldSyncV1VaultAddress_signaturesRequired(address purposer)
 		public
 		view
 		override
 		returns (uint256)
 	{
-		return _purposer_signaturesRequired[purposer];
+		return _yieldSyncV1VaultAddress_signaturesRequired[purposer];
 	}
 
 	/// @inheritdoc IYieldSyncV1ASignatureProtocol
@@ -133,11 +151,11 @@ contract YieldSyncV1ASignatureProtocol is
 
 
 	/// @inheritdoc IYieldSyncV1ASignatureProtocol
-	function update_purposer_signaturesRequired(uint256 signatureRequired)
+	function yieldSyncV1VaultAddress_signaturesRequiredUpdate(uint256 signatureRequired)
 		public
 		override
 	{
-		_purposer_signaturesRequired[msg.sender] = signatureRequired;
+		_yieldSyncV1VaultAddress_signaturesRequired[msg.sender] = signatureRequired;
 	}
 
 	/// @inheritdoc IYieldSyncV1ASignatureProtocol

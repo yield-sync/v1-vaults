@@ -6,6 +6,7 @@ import { IERC1271 } from "@openzeppelin/contracts/interfaces/IERC1271.sol";
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { IERC721 } from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 
+import { ISignatureProtocol } from "./interface/ISignatureProtocol.sol";
 import { IYieldSyncV1Vault, ITransferRequestProtocol, TransferRequest } from "./interface/IYieldSyncV1Vault.sol";
 import { IYieldSyncV1VaultAccessControl } from "./interface/IYieldSyncV1VaultAccessControl.sol";
 
@@ -163,6 +164,11 @@ contract YieldSyncV1Vault is
 		override
 		accessAdmin()
 	{
+		ISignatureProtocol(_signatureProtocol).yieldSyncV1VaultInitialize(
+			msg.sender,
+			address(this)
+		);
+
 		signatureProtocol = _signatureProtocol;
 
 		emit UpdatedSignatureProtocol(signatureProtocol);
@@ -174,6 +180,11 @@ contract YieldSyncV1Vault is
 		override
 		accessAdmin()
 	{
+		ITransferRequestProtocol(_transferRequestProtocol).yieldSyncV1VaultInitialize(
+			msg.sender,
+			address(this)
+		);
+
 		transferRequestProtocol = _transferRequestProtocol;
 
 		emit UpdatedSignatureProtocol(transferRequestProtocol);

@@ -38,6 +38,17 @@ interface IYieldSyncV1ASignatureProtocol is
 	;
 
 	/**
+	* @notice YieldSyncV1VaultFactory Contract Address
+	* @dev [view-address]
+	* @return {address}
+	*/
+	function YieldSyncV1VaultFactory()
+		external
+		view
+		returns (address)
+	;
+
+	/**
 	* @notice Getter for `_vaultMessageHashes`
 	* @dev [view][mapping]
 	* @param yieldSyncV1VaultAddress {address}
@@ -50,12 +61,12 @@ interface IYieldSyncV1ASignatureProtocol is
 	;
 
 	/**
-	* @notice Getter for `_purposer_signaturesRequired`
+	* @notice Getter for `_yieldSyncV1VaultAddress_signaturesRequired`
 	* @dev [view][mapping]
 	* @param purposer {address}
 	* @return {YieldSyncV1VaultProperty}
 	*/
-	function purposer_signaturesRequired(address purposer)
+	function yieldSyncV1VaultAddress_signaturesRequired(address purposer)
 		external
 		returns (uint256)
 	;
@@ -90,11 +101,11 @@ interface IYieldSyncV1ASignatureProtocol is
 	/**
 	* @notice Update signaturesRequired
 	* @dev [restriction] `YieldSyncV1Record` → admin
-	* @dev [update] `update_purposer_signaturesRequired`
+	* @dev [update] `yieldSyncV1VaultAddress_signaturesRequiredUpdate`
 	* @param signatureRequired {YieldSyncV1VaultProperty}
 	* Emits: `UpdatedPurposerYieldSyncV1VaultProperty`
 	*/
-	function update_purposer_signaturesRequired(uint256 signatureRequired)
+	function yieldSyncV1VaultAddress_signaturesRequiredUpdate(uint256 signatureRequired)
 		external
 	;
 

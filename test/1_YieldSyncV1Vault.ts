@@ -66,8 +66,8 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 		// Deploy mockSignatureProtocol
 		mockTransferRequestProtocol = await (
 			await MockTransferRequestProtocol.deploy(
-				yieldSyncV1VaultAccessControl.address,
-				yieldSyncV1VaultFactory.address
+				mockYieldSyncGovernance.address,
+				yieldSyncV1VaultAccessControl.address
 			)
 		).deployed();
 
@@ -75,7 +75,8 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 		signatureProtocol = await (
 			await YieldSyncV1ASignatureProtocol.deploy(
 				mockYieldSyncGovernance.address,
-				yieldSyncV1VaultAccessControl.address
+				yieldSyncV1VaultAccessControl.address,
+				yieldSyncV1VaultFactory.address
 			)
 		).deployed();
 
@@ -86,7 +87,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 		);
 
 		// Set purposer signature
-		await signatureProtocol.update_purposer_signaturesRequired(1);
+		await signatureProtocol.yieldSyncV1VaultAddress_signaturesRequiredUpdate(1);
 
 		// Deploy a vault
 		await yieldSyncV1VaultFactory.deployYieldSyncV1Vault(
