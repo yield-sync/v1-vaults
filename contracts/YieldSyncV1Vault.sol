@@ -175,10 +175,7 @@ contract YieldSyncV1Vault is
 		override
 		accessAdmin()
 	{
-		ISignatureProtocol(_signatureProtocol).yieldSyncV1VaultInitialize(
-			msg.sender,
-			address(this)
-		);
+		ISignatureProtocol(_signatureProtocol).yieldSyncV1VaultInitialize(msg.sender, address(this));
 
 		signatureProtocol = _signatureProtocol;
 
@@ -191,10 +188,7 @@ contract YieldSyncV1Vault is
 		override
 		accessAdmin()
 	{
-		ITransferRequestProtocol(_transferRequestProtocol).yieldSyncV1VaultInitialize(
-			msg.sender,
-			address(this)
-		);
+		ITransferRequestProtocol(_transferRequestProtocol).yieldSyncV1VaultInitialize(msg.sender, address(this));
 
 		transferRequestProtocol = _transferRequestProtocol;
 
