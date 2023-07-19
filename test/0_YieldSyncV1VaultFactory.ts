@@ -35,17 +35,12 @@ describe("[0] YieldSyncV1VaultFactory.sol - YieldSync V1 Vault Factory Contract"
 
 		// Deploy YieldSyncV1ATransferRequestProtocol
 		yieldSyncV1ATransferRequestProtocol = await (
-			await YieldSyncV1ATransferRequestProtocol.deploy(
-				yieldSyncV1VaultAccessControl.address
-			)
+			await YieldSyncV1ATransferRequestProtocol.deploy(yieldSyncV1VaultAccessControl.address)
 		).deployed();
 
 		// Deploy mockSignatureProtocol
 		mockSignatureProtocol = await (
-			await MockSignatureProtocol.deploy(
-				mockYieldSyncGovernance.address,
-				yieldSyncV1VaultAccessControl.address
-			)
+			await MockSignatureProtocol.deploy(mockYieldSyncGovernance.address, yieldSyncV1VaultAccessControl.address)
 		).deployed();
 
 		// Send ether to YieldSyncV1VaultFactory contract
@@ -78,9 +73,7 @@ describe("[0] YieldSyncV1VaultFactory.sol - YieldSync V1 Vault Factory Contract"
 		it(
 			"Should initialize `yieldSyncGovernance` to `MockYieldSyncGovernance` address..",
 			async () => {
-				expect(await yieldSyncV1VaultFactory.YieldSyncGovernance()).to.equal(
-					mockYieldSyncGovernance.address
-				);
+				expect(await yieldSyncV1VaultFactory.YieldSyncGovernance()).to.equal(mockYieldSyncGovernance.address);
 			}
 		);
 

@@ -57,16 +57,12 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 
 		// Deploy YieldSyncV1ATransferRequestProtocol
 		yieldSyncV1ATransferRequestProtocol = await (
-			await YieldSyncV1ATransferRequestProtocol.deploy(
-				yieldSyncV1VaultAccessControl.address
-			)
+			await YieldSyncV1ATransferRequestProtocol.deploy(yieldSyncV1VaultAccessControl.address)
 		).deployed();
 
 		// Deploy mockSignatureProtocol
 		mockTransferRequestProtocol = await (
-			await MockTransferRequestProtocol.deploy(
-				yieldSyncV1VaultAccessControl.address
-			)
+			await MockTransferRequestProtocol.deploy(yieldSyncV1VaultAccessControl.address)
 		).deployed();
 
 		// Deploy Signature Protocol
