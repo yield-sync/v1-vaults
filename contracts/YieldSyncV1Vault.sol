@@ -55,14 +55,14 @@ contract YieldSyncV1Vault is
 		signatureProtocol = _signatureProtocol;
 		transferRequestProtocol = _transferRequestProtocol;
 
-		if (_signatureProtocol != address(0))
+		if (signatureProtocol != address(0))
 		{
-			ISignatureProtocol(_signatureProtocol).yieldSyncV1VaultInitialize(deployer, address(this));
+			ISignatureProtocol(signatureProtocol).yieldSyncV1VaultInitialize(deployer, address(this));
 		}
 
-		if (_transferRequestProtocol != address(0))
+		if (transferRequestProtocol != address(0))
 		{
-			ITransferRequestProtocol(_transferRequestProtocol).yieldSyncV1VaultInitialize(deployer, address(this));
+			ITransferRequestProtocol(transferRequestProtocol).yieldSyncV1VaultInitialize(deployer, address(this));
 		}
 
 		for (uint i = 0; i < admins.length; i++)
