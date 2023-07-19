@@ -44,8 +44,8 @@ contract YieldSyncV1Vault is
 	constructor (
 		address deployer,
 		address _YieldSyncV1VaultAccessControl,
-		address _transferRequestProtocol,
 		address _signatureProtocol,
+		address _transferRequestProtocol,
 		address[] memory admins,
 		address[] memory members
 	)
