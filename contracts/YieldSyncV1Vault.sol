@@ -36,9 +36,7 @@ contract YieldSyncV1Vault is
 
 	bool public override processTransferRequestLocked;
 
-	mapping (
-		uint256 transferRequestId => TransferRequest transferRequest
-	) internal _transferRequestId_transferRequest;
+	mapping (uint256 transferRequestId => TransferRequest transferRequest) internal _transferRequestId_transferRequest;
 
 
 	constructor (
