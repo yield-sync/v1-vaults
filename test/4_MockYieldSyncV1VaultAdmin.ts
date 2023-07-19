@@ -53,8 +53,7 @@ describe("[4] MockAdmin.sol - Mock Admin Contract", async () => {
 		// Deploy Transfer Request Protocol
 		yieldSyncV1ATransferRequestProtocol = await (
 			await YieldSyncV1ATransferRequestProtocol.deploy(
-				yieldSyncV1VaultAccessControl.address,
-				yieldSyncV1VaultFactory.address
+				yieldSyncV1VaultAccessControl.address
 			)
 		).deployed();
 
@@ -62,8 +61,7 @@ describe("[4] MockAdmin.sol - Mock Admin Contract", async () => {
 		signatureProtocol = await (
 			await YieldSyncV1ASignatureProtocol.deploy(
 				mockYieldSyncGovernance.address,
-				yieldSyncV1VaultAccessControl.address,
-				yieldSyncV1VaultFactory.address
+				yieldSyncV1VaultAccessControl.address
 			)
 		).deployed();
 

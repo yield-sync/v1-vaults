@@ -34,7 +34,6 @@ describe("[2] YieldSyncV1VaultAccessControl.sol - YieldSync V1 Vault Record Cont
 		yieldSyncV1ATransferRequestProtocol = await (
 			await YieldSyncV1ATransferRequestProtocol.deploy(
 				yieldSyncV1VaultAccessControl.address,
-				yieldSyncV1VaultFactory.address
 			)
 		).deployed();
 

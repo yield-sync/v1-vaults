@@ -37,16 +37,6 @@ interface IYieldSyncV1ASignatureProtocol is
 		returns (address)
 	;
 
-	/**
-	* @notice YieldSyncV1VaultFactory Contract Address
-	* @dev [view-address]
-	* @return {address}
-	*/
-	function YieldSyncV1VaultFactory()
-		external
-		view
-		returns (address)
-	;
 
 	/**
 	* @notice Getter for `_vaultMessageHashes`

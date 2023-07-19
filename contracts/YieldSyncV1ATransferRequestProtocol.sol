@@ -19,7 +19,6 @@ contract YieldSyncV1ATransferRequestProtocol is
 	uint256 internal _transferRequestIdTracker;
 
 	address public override immutable YieldSyncV1VaultAccessControl;
-	address public override immutable YieldSyncV1VaultFactory;
 
 	mapping (
 		address yieldSyncV1VaultAddress => uint256[] openTransferRequestsIds
@@ -40,10 +39,9 @@ contract YieldSyncV1ATransferRequestProtocol is
 	) internal _yieldSyncV1VaultAddress_transferRequestId_transferRequestPoll;
 
 
-	constructor (address _YieldSyncV1VaultAccessControl, address _YieldSyncV1VaultFactory)
+	constructor (address _YieldSyncV1VaultAccessControl)
 	{
 		YieldSyncV1VaultAccessControl = _YieldSyncV1VaultAccessControl;
-		YieldSyncV1VaultFactory = _YieldSyncV1VaultFactory;
 
 		_transferRequestIdTracker = 0;
 	}
@@ -73,16 +71,6 @@ contract YieldSyncV1ATransferRequestProtocol is
 		);
 
 		require(member || msg.sender == yieldSyncV1VaultAddress, "!member && msg.sender != yieldSyncV1VaultAddress");
-
-		_;
-	}
-
-	modifier contractYieldSyncV1VaultFactoryOrYieldSyncV1Vault(address yieldSyncV1VaultAddress)
-	{
-		require(
-			msg.sender == YieldSyncV1VaultFactory || msg.sender == yieldSyncV1VaultAddress,
-			"!YieldSyncV1VaultFactory && !yieldSyncV1VaultAddress"
-		);
 
 		_;
 	}
@@ -229,7 +217,7 @@ contract YieldSyncV1ATransferRequestProtocol is
 	function yieldSyncV1VaultInitialize(address initiator, address yieldSyncV1VaultAddress)
 		public
 		override
-		contractYieldSyncV1VaultFactoryOrYieldSyncV1Vault(yieldSyncV1VaultAddress)
+		contractYieldSyncV1Vault(yieldSyncV1VaultAddress)
 	{
 		require(
 			_yieldSyncV1VaultAddress_yieldSyncV1VaultProperty[initiator].againstVoteRequired > 0,

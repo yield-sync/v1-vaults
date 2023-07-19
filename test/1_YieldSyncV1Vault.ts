@@ -58,15 +58,13 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 		// Deploy YieldSyncV1ATransferRequestProtocol
 		yieldSyncV1ATransferRequestProtocol = await (
 			await YieldSyncV1ATransferRequestProtocol.deploy(
-				yieldSyncV1VaultAccessControl.address,
-				yieldSyncV1VaultFactory.address
+				yieldSyncV1VaultAccessControl.address
 			)
 		).deployed();
 
 		// Deploy mockSignatureProtocol
 		mockTransferRequestProtocol = await (
 			await MockTransferRequestProtocol.deploy(
-				mockYieldSyncGovernance.address,
 				yieldSyncV1VaultAccessControl.address
 			)
 		).deployed();
@@ -75,8 +73,7 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 		signatureProtocol = await (
 			await YieldSyncV1ASignatureProtocol.deploy(
 				mockYieldSyncGovernance.address,
-				yieldSyncV1VaultAccessControl.address,
-				yieldSyncV1VaultFactory.address
+				yieldSyncV1VaultAccessControl.address
 			)
 		).deployed();
 
@@ -401,13 +398,13 @@ describe("[1] YieldSyncV1Vault.sol - YieldSync V1 Vault Contract", async () => {
 			);
 
 			it(
-				"Should be able to set a signature manager contract..",
+				"Should be able to set a transferRequestProtocol contract..",
 				async () => {
-					const [owner] = await ethers.getSigners();
+					const [admin] = await ethers.getSigners();
 
-					// Set YieldSyncV1Vault properties on TransferRequestProtocol.sol
+					// Set YieldSyncV1Vault properties for admin
 					await mockTransferRequestProtocol.yieldSyncV1VaultAddress_yieldSyncV1VaultPropertyUpdate(
-						yieldSyncV1Vault.address,
+						admin.address,
 						[2, 2, sixDaysInSeconds]
 					);
 

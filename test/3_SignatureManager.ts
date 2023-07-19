@@ -55,8 +55,7 @@ describe("[3] signatureProtocol.sol - Signature Manager Contract", async () => {
 		// Deploy yieldSyncV1ATransferRequestProtocol
 		yieldSyncV1ATransferRequestProtocol = await (
 			await YieldSyncV1ATransferRequestProtocol.deploy(
-				yieldSyncV1VaultAccessControl.address,
-				yieldSyncV1VaultFactory.address
+				yieldSyncV1VaultAccessControl.address
 			)
 		).deployed();
 
@@ -64,8 +63,7 @@ describe("[3] signatureProtocol.sol - Signature Manager Contract", async () => {
 		signatureProtocol = await (
 			await YieldSyncV1ASignatureProtocol.deploy(
 				mockYieldSyncGovernance.address,
-				yieldSyncV1VaultAccessControl.address,
-				yieldSyncV1VaultFactory.address
+				yieldSyncV1VaultAccessControl.address
 			)
 		).deployed();
 

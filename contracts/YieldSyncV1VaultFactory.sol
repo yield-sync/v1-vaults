@@ -4,8 +4,6 @@ pragma solidity ^0.8.18;
 
 import { IAccessControlEnumerable } from "@openzeppelin/contracts/access/IAccessControlEnumerable.sol";
 
-import { ISignatureProtocol } from "./interface/ISignatureProtocol.sol";
-import { ITransferRequestProtocol } from "./interface/ITransferRequestProtocol.sol";
 import { IYieldSyncV1VaultFactory } from "./interface/IYieldSyncV1VaultFactory.sol";
 import { YieldSyncV1Vault } from "./YieldSyncV1Vault.sol";
 
@@ -81,6 +79,7 @@ contract YieldSyncV1VaultFactory is
 		require(msg.value >= fee, "!msg.value");
 
 		YieldSyncV1Vault deployedYieldSyncV1Vault = new YieldSyncV1Vault(
+			msg.sender,
 			YieldSyncV1VaultAccessControl,
 			transferRequestProtocol,
 			signatureProtocol,
@@ -90,19 +89,6 @@ contract YieldSyncV1VaultFactory is
 
 		yieldSyncV1VaultAddress_yieldSyncV1VaultId[address(deployedYieldSyncV1Vault)] = yieldSyncV1VaultIdTracker;
 		yieldSyncV1VaultId_yieldSyncV1VaultAddress[yieldSyncV1VaultIdTracker] = address(deployedYieldSyncV1Vault);
-
-		ITransferRequestProtocol(transferRequestProtocol).yieldSyncV1VaultInitialize(
-			msg.sender,
-			address(deployedYieldSyncV1Vault)
-		);
-
-		if (signatureProtocol != address(0))
-		{
-			ISignatureProtocol(signatureProtocol).yieldSyncV1VaultInitialize(
-				msg.sender,
-				address(deployedYieldSyncV1Vault)
-			);
-		}
 
 		yieldSyncV1VaultIdTracker++;
 

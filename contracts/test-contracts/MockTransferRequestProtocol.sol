@@ -6,7 +6,7 @@ import { YieldSyncV1ATransferRequestProtocol } from "../YieldSyncV1ATransferRequ
 
 
 contract MockTransferRequestProtocol is YieldSyncV1ATransferRequestProtocol {
-	constructor (address _YieldSyncV1VaultAccessControl, address _YieldSyncV1VaultFactory)
-		YieldSyncV1ATransferRequestProtocol(_YieldSyncV1VaultAccessControl, _YieldSyncV1VaultFactory)
+	constructor (address _YieldSyncV1VaultAccessControl)
+		YieldSyncV1ATransferRequestProtocol(_YieldSyncV1VaultAccessControl)
 	{}
 }

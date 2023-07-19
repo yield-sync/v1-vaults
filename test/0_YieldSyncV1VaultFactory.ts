@@ -36,8 +36,7 @@ describe("[0] YieldSyncV1VaultFactory.sol - YieldSync V1 Vault Factory Contract"
 		// Deploy YieldSyncV1ATransferRequestProtocol
 		yieldSyncV1ATransferRequestProtocol = await (
 			await YieldSyncV1ATransferRequestProtocol.deploy(
-				yieldSyncV1VaultAccessControl.address,
-				yieldSyncV1VaultFactory.address
+				yieldSyncV1VaultAccessControl.address
 			)
 		).deployed();
 
@@ -45,8 +44,7 @@ describe("[0] YieldSyncV1VaultFactory.sol - YieldSync V1 Vault Factory Contract"
 		mockSignatureProtocol = await (
 			await MockSignatureProtocol.deploy(
 				mockYieldSyncGovernance.address,
-				yieldSyncV1VaultAccessControl.address,
-				yieldSyncV1VaultFactory.address
+				yieldSyncV1VaultAccessControl.address
 			)
 		).deployed();
 

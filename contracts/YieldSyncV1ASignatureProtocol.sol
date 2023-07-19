@@ -19,7 +19,6 @@ contract YieldSyncV1ASignatureProtocol is
 {
 	address public override immutable YieldSyncGovernance;
 	address public override immutable YieldSyncV1VaultAccessControl;
-	address public override immutable YieldSyncV1VaultFactory;
 
 	bytes4 public constant ERC1271_MAGIC_VALUE = 0x1626ba7e;
 
@@ -45,23 +44,20 @@ contract YieldSyncV1ASignatureProtocol is
 		_;
 	}
 
-	modifier contractYieldSyncV1VaultFactoryOrYieldSyncV1Vault(address yieldSyncV1VaultAddress)
+	modifier contractYieldSyncV1Vault(address yieldSyncV1VaultAddress)
 	{
-		require(
-			msg.sender == YieldSyncV1VaultFactory || msg.sender == yieldSyncV1VaultAddress,
-			"!YieldSyncV1VaultFactory && !yieldSyncV1VaultAddress"
-		);
+		require(msg.sender == yieldSyncV1VaultAddress, "!yieldSyncV1VaultAddress");
 
 		_;
 	}
 
-	constructor (address _YieldSyncGovernance, address _YieldSyncV1VaultAccessControl, address _YieldSyncV1VaultFactory)
+
+	constructor (address _YieldSyncGovernance, address _YieldSyncV1VaultAccessControl)
 	{
 		_pause();
 
 		YieldSyncGovernance = _YieldSyncGovernance;
 		YieldSyncV1VaultAccessControl = _YieldSyncV1VaultAccessControl;
-		YieldSyncV1VaultFactory = _YieldSyncV1VaultFactory;
 	}
 
 
@@ -94,7 +90,7 @@ contract YieldSyncV1ASignatureProtocol is
 	function yieldSyncV1VaultInitialize(address initiator, address yieldSyncV1VaultAddress)
 		public
 		override
-		contractYieldSyncV1VaultFactoryOrYieldSyncV1Vault(yieldSyncV1VaultAddress)
+		contractYieldSyncV1Vault(yieldSyncV1VaultAddress)
 	{
 		require(
 			_yieldSyncV1VaultAddress_signaturesRequired[initiator] > 0,

@@ -44,17 +44,6 @@ interface IYieldSyncV1ATransferRequestProtocol is
 	;
 
 	/**
-	* @notice YieldSyncV1VaultFactory Contract Address
-	* @dev [view-address]
-	* @return {address}
-	*/
-	function YieldSyncV1VaultFactory()
-		external
-		view
-		returns (address)
-	;
-
-	/**
 	* @notice Getter for `_yieldSyncV1VaultAddress_openTransferRequestIds`
 	* @dev [view][mapping]
 	* @param yieldSyncV1VaultAddress {address}

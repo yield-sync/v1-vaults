@@ -42,6 +42,7 @@ contract YieldSyncV1Vault is
 
 
 	constructor (
+		address deployer,
 		address _YieldSyncV1VaultAccessControl,
 		address _transferRequestProtocol,
 		address _signatureProtocol,
@@ -53,6 +54,16 @@ contract YieldSyncV1Vault is
 
 		signatureProtocol = _signatureProtocol;
 		transferRequestProtocol = _transferRequestProtocol;
+
+		if (_signatureProtocol != address(0))
+		{
+			ISignatureProtocol(_signatureProtocol).yieldSyncV1VaultInitialize(deployer, address(this));
+		}
+
+		if (_transferRequestProtocol != address(0))
+		{
+			ITransferRequestProtocol(_transferRequestProtocol).yieldSyncV1VaultInitialize(deployer, address(this));
+		}
 
 		for (uint i = 0; i < admins.length; i++)
 		{
