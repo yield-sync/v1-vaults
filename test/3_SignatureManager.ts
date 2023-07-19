@@ -7,7 +7,7 @@ const { ethers } = require("hardhat");
 const chainId: number = 31337;
 
 
-describe("[3] signatureProtocol.sol - Signature Manager Contract", async () => {
+describe("[3] signatureProtocol.sol", async () => {
 	let yieldSyncV1Vault: Contract;
 	let yieldSyncV1VaultAccessControl: Contract;
 	let yieldSyncV1VaultFactory: Contract;

@@ -4,7 +4,7 @@ import { Contract, ContractFactory } from "ethers";
 const { ethers } = require("hardhat");
 
 
-describe("[2] YieldSyncV1VaultAccessControl.sol - YieldSync V1 Vault Record Contract", async () => {
+describe("[2] YieldSyncV1VaultAccessControl.sol", async () => {
 	let yieldSyncV1Vault: Contract;
 	let yieldSyncV1VaultFactory: Contract;
 	let yieldSyncV1ATransferRequestProtocol: Contract;

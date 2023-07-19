@@ -4,7 +4,7 @@ import { Contract, ContractFactory } from "ethers";
 const { ethers } = require("hardhat");
 
 
-describe("[4] MockAdmin.sol - Mock Admin Contract", async () => {
+describe("[4] MockAdmin.sol", async () => {
 	let yieldSyncV1Vault: Contract;
 	let yieldSyncV1VaultAccessControl: Contract;
 	let yieldSyncV1VaultFactory: Contract;
