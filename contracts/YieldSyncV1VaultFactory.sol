@@ -74,8 +74,6 @@ contract YieldSyncV1VaultFactory is
 		override
 		returns (address deployedYieldSyncV1VaultAddress)
 	{
-		require(transferRequestProtocol != address(0), "!transferRequestProtocol");
-
 		require(msg.value >= fee, "!msg.value");
 
 		YieldSyncV1Vault deployedYieldSyncV1Vault = new YieldSyncV1Vault(
