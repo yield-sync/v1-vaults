@@ -7,8 +7,12 @@ import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { IERC721 } from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 
 import { ISignatureProtocol } from "./interface/ISignatureProtocol.sol";
-import { IYieldSyncV1Vault, ITransferRequestProtocol, TransferRequest } from "./interface/IYieldSyncV1Vault.sol";
-import { IYieldSyncV1VaultAccessControl } from "./interface/IYieldSyncV1VaultAccessControl.sol";
+import {
+	IYieldSyncV1Vault,
+	ITransferRequestProtocol,
+	TransferRequest,
+	IYieldSyncV1VaultAccessControl
+} from "./interface/IYieldSyncV1Vault.sol";
 
 
 contract YieldSyncV1Vault is
@@ -29,29 +33,29 @@ contract YieldSyncV1Vault is
 	{}
 
 
-	address public immutable override YieldSyncV1VaultAccessControl;
-
 	address public override signatureProtocol;
 	address public override transferRequestProtocol;
 
 	bool public override processTransferRequestLocked;
+
+	IYieldSyncV1VaultAccessControl public immutable override YieldSyncV1VaultAccessControl;
 
 	mapping (uint256 transferRequestId => TransferRequest transferRequest) internal _transferRequestId_transferRequest;
 
 
 	constructor (
 		address deployer,
-		address _YieldSyncV1VaultAccessControl,
 		address _signatureProtocol,
 		address _transferRequestProtocol,
+		address _YieldSyncV1VaultAccessControl,
 		address[] memory admins,
 		address[] memory members
 	)
 	{
-		YieldSyncV1VaultAccessControl = _YieldSyncV1VaultAccessControl;
-
 		signatureProtocol = _signatureProtocol;
 		transferRequestProtocol = _transferRequestProtocol;
+
+		YieldSyncV1VaultAccessControl = IYieldSyncV1VaultAccessControl(_YieldSyncV1VaultAccessControl);
 
 		if (signatureProtocol != address(0))
 		{
@@ -65,12 +69,12 @@ contract YieldSyncV1Vault is
 
 		for (uint i = 0; i < admins.length; i++)
 		{
-			IYieldSyncV1VaultAccessControl(YieldSyncV1VaultAccessControl).adminAdd(address(this), admins[i]);
+			YieldSyncV1VaultAccessControl.adminAdd(address(this), admins[i]);
 		}
 
 		for (uint i = 0; i < members.length; i++)
 		{
-			IYieldSyncV1VaultAccessControl(YieldSyncV1VaultAccessControl).memberAdd(address(this), members[i]);
+			YieldSyncV1VaultAccessControl.memberAdd(address(this), members[i]);
 		}
 
 		processTransferRequestLocked = false;
@@ -93,9 +97,7 @@ contract YieldSyncV1Vault is
 
 	modifier accessAdmin()
 	{
-		(bool admin,) = IYieldSyncV1VaultAccessControl(
-			YieldSyncV1VaultAccessControl
-		).yieldSyncV1VaultAddress_participant_access(
+		(bool admin,) = YieldSyncV1VaultAccessControl.yieldSyncV1VaultAddress_participant_access(
 			address(this),
 			msg.sender
 		);
@@ -107,9 +109,7 @@ contract YieldSyncV1Vault is
 
 	modifier accessMember()
 	{
-		(, bool member) = IYieldSyncV1VaultAccessControl(
-			YieldSyncV1VaultAccessControl
-		).yieldSyncV1VaultAddress_participant_access(
+		(, bool member) = YieldSyncV1VaultAccessControl.yieldSyncV1VaultAddress_participant_access(
 			address(this),
 			msg.sender
 		);
@@ -137,7 +137,7 @@ contract YieldSyncV1Vault is
 		override
 		accessAdmin()
 	{
-		IYieldSyncV1VaultAccessControl(YieldSyncV1VaultAccessControl).adminAdd(address(this), targetAddress);
+		YieldSyncV1VaultAccessControl.adminAdd(address(this), targetAddress);
 	}
 
 	/// @inheritdoc IYieldSyncV1Vault
@@ -146,7 +146,7 @@ contract YieldSyncV1Vault is
 		override
 		accessAdmin()
 	{
-		IYieldSyncV1VaultAccessControl(YieldSyncV1VaultAccessControl).adminRemove(address(this), admin);
+		YieldSyncV1VaultAccessControl.adminRemove(address(this), admin);
 	}
 
 	/// @inheritdoc IYieldSyncV1Vault
@@ -155,7 +155,7 @@ contract YieldSyncV1Vault is
 		override
 		accessAdmin()
 	{
-		IYieldSyncV1VaultAccessControl(YieldSyncV1VaultAccessControl).memberAdd(address(this), targetAddress);
+		YieldSyncV1VaultAccessControl.memberAdd(address(this), targetAddress);
 	}
 
 	/// @inheritdoc IYieldSyncV1Vault
@@ -164,7 +164,7 @@ contract YieldSyncV1Vault is
 		override
 		accessAdmin()
 	{
-		IYieldSyncV1VaultAccessControl(YieldSyncV1VaultAccessControl).memberRemove(address(this), member);
+		YieldSyncV1VaultAccessControl.memberRemove(address(this), member);
 	}
 
 	/// @inheritdoc IYieldSyncV1Vault
@@ -283,6 +283,6 @@ contract YieldSyncV1Vault is
 		override
 		accessMember()
 	{
-		IYieldSyncV1VaultAccessControl(YieldSyncV1VaultAccessControl).memberRemove(address(this), msg.sender);
+		YieldSyncV1VaultAccessControl.memberRemove(address(this), msg.sender);
 	}
 }

@@ -3,6 +3,7 @@ pragma solidity ^0.8.18;
 
 
 import { ITransferRequestProtocol, TransferRequest } from "./ITransferRequestProtocol.sol";
+import { IYieldSyncV1VaultAccessControl } from "./IYieldSyncV1VaultAccessControl.sol";
 
 
 interface IYieldSyncV1Vault
@@ -22,17 +23,6 @@ interface IYieldSyncV1Vault
 		payable
 	;
 
-
-	/**
-	* @notice YieldSyncV1Vault Contract Address
-	* @dev [view-address]
-	* @return {address}
-	*/
-	function YieldSyncV1VaultAccessControl()
-		external
-		view
-		returns (address)
-	;
 
 	/**
 	* @notice SignatureProtocol Contract Address
@@ -65,6 +55,17 @@ interface IYieldSyncV1Vault
 		external
 		view
 		returns (bool)
+	;
+
+	/**
+	* @notice YieldSyncV1VaultAccessControl Interfaced
+	* @dev [view-address]
+	* @return {IYieldSyncV1VaultAccessControl}
+	*/
+	function YieldSyncV1VaultAccessControl()
+		external
+		view
+		returns (IYieldSyncV1VaultAccessControl)
 	;
 
 

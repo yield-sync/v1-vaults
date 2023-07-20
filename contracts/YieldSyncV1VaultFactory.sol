@@ -78,9 +78,9 @@ contract YieldSyncV1VaultFactory is
 
 		YieldSyncV1Vault deployedYieldSyncV1Vault = new YieldSyncV1Vault(
 			msg.sender,
-			YieldSyncV1VaultAccessControl,
 			signatureProtocol,
 			transferRequestProtocol,
+			YieldSyncV1VaultAccessControl,
 			admins,
 			members
 		);
