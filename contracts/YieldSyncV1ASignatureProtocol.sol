@@ -7,9 +7,13 @@ import { Pausable } from "@openzeppelin/contracts/security/Pausable.sol";
 import { ECDSA } from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import { IYieldSyncV1Vault } from "@yield-sync/v1-sdk/contracts/interface/IYieldSyncV1Vault.sol";
 
-import { ISignatureProtocol, MessageHashData } from "./interface/ISignatureProtocol.sol";
-import { IYieldSyncV1ASignatureProtocol, MessageHashVote } from "./interface/IYieldSyncV1ASignatureProtocol.sol";
-import { IYieldSyncV1VaultAccessControl } from "./interface/IYieldSyncV1VaultAccessControl.sol";
+import {
+	ISignatureProtocol,
+	IYieldSyncV1ASignatureProtocol,
+	IYieldSyncV1VaultAccessControl,
+	MessageHashData,
+	MessageHashVote
+} from "./interface/IYieldSyncV1ASignatureProtocol.sol";
 
 
 contract YieldSyncV1ASignatureProtocol is
@@ -18,9 +22,10 @@ contract YieldSyncV1ASignatureProtocol is
 	IYieldSyncV1ASignatureProtocol
 {
 	address public immutable override YieldSyncGovernance;
-	address public immutable override YieldSyncV1VaultAccessControl;
 
 	bytes4 public constant ERC1271_MAGIC_VALUE = 0x1626ba7e;
+
+	IYieldSyncV1VaultAccessControl public immutable override YieldSyncV1VaultAccessControl;
 
 	mapping (address yieldSyncV1VaultAddress => bytes32[] messageHash) internal _vaultMessageHashes;
 
@@ -54,10 +59,11 @@ contract YieldSyncV1ASignatureProtocol is
 
 	constructor (address _YieldSyncGovernance, address _YieldSyncV1VaultAccessControl)
 	{
-		_pause();
-
 		YieldSyncGovernance = _YieldSyncGovernance;
-		YieldSyncV1VaultAccessControl = _YieldSyncV1VaultAccessControl;
+
+		YieldSyncV1VaultAccessControl = IYieldSyncV1VaultAccessControl(_YieldSyncV1VaultAccessControl);
+
+		_pause();
 	}
 
 
@@ -160,9 +166,7 @@ contract YieldSyncV1ASignatureProtocol is
 		override
 		whenNotPaused()
 	{
-		(, bool member) = IYieldSyncV1VaultAccessControl(
-			YieldSyncV1VaultAccessControl
-		).yieldSyncV1VaultAddress_participant_access(
+		(, bool member) = YieldSyncV1VaultAccessControl.yieldSyncV1VaultAddress_participant_access(
 			yieldSyncV1VaultAddress,
 			msg.sender
 		);
@@ -192,10 +196,7 @@ contract YieldSyncV1ASignatureProtocol is
 
 			address recovered = ECDSA.recover(ECDSA.toEthSignedMessageHash(messageHash), signature);
 
-			(
-				,
-				bool recoveredIsMember
-			) = IYieldSyncV1VaultAccessControl(YieldSyncV1VaultAccessControl).yieldSyncV1VaultAddress_participant_access(
+			(, bool recoveredIsMember) = YieldSyncV1VaultAccessControl.yieldSyncV1VaultAddress_participant_access(
 				yieldSyncV1VaultAddress,
 				recovered
 			);
