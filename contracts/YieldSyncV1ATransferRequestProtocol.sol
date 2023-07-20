@@ -5,11 +5,11 @@ pragma solidity ^0.8.18;
 import {
 	ITransferRequestProtocol,
 	IYieldSyncV1ATransferRequestProtocol,
+	IYieldSyncV1VaultAccessControl,
 	TransferRequest,
 	TransferRequestPoll,
 	YieldSyncV1VaultProperty
 } from "./interface/IYieldSyncV1ATransferRequestProtocol.sol";
-import { IYieldSyncV1VaultAccessControl } from "./interface/IYieldSyncV1VaultAccessControl.sol";
 
 
 contract YieldSyncV1ATransferRequestProtocol is
@@ -18,7 +18,7 @@ contract YieldSyncV1ATransferRequestProtocol is
 {
 	uint256 internal _transferRequestIdTracker;
 
-	address public override immutable YieldSyncV1VaultAccessControl;
+	IYieldSyncV1VaultAccessControl public immutable YieldSyncV1VaultAccessControl;
 
 	mapping (
 		address yieldSyncV1VaultAddress => uint256[] openTransferRequestsIds
@@ -41,7 +41,7 @@ contract YieldSyncV1ATransferRequestProtocol is
 
 	constructor (address _YieldSyncV1VaultAccessControl)
 	{
-		YieldSyncV1VaultAccessControl = _YieldSyncV1VaultAccessControl;
+		YieldSyncV1VaultAccessControl = IYieldSyncV1VaultAccessControl(_YieldSyncV1VaultAccessControl);
 
 		_transferRequestIdTracker = 0;
 	}
@@ -49,9 +49,7 @@ contract YieldSyncV1ATransferRequestProtocol is
 
 	modifier accessAdmin(address yieldSyncV1VaultAddress)
 	{
-		(bool admin,) = IYieldSyncV1VaultAccessControl(
-			YieldSyncV1VaultAccessControl
-		).yieldSyncV1VaultAddress_participant_access(
+		(bool admin,) = YieldSyncV1VaultAccessControl.yieldSyncV1VaultAddress_participant_access(
 			yieldSyncV1VaultAddress,
 			msg.sender
 		);
@@ -63,9 +61,7 @@ contract YieldSyncV1ATransferRequestProtocol is
 
 	modifier accessMember(address yieldSyncV1VaultAddress)
 	{
-		(, bool member) = IYieldSyncV1VaultAccessControl(
-			YieldSyncV1VaultAccessControl
-		).yieldSyncV1VaultAddress_participant_access(
+		(, bool member) = YieldSyncV1VaultAccessControl.yieldSyncV1VaultAddress_participant_access(
 			yieldSyncV1VaultAddress,
 			msg.sender
 		);
