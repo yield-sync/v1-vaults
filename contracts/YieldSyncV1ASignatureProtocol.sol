@@ -17,8 +17,8 @@ contract YieldSyncV1ASignatureProtocol is
 	ISignatureProtocol,
 	IYieldSyncV1ASignatureProtocol
 {
-	address public override immutable YieldSyncGovernance;
-	address public override immutable YieldSyncV1VaultAccessControl;
+	address public immutable override YieldSyncGovernance;
+	address public immutable override YieldSyncV1VaultAccessControl;
 
 	bytes4 public constant ERC1271_MAGIC_VALUE = 0x1626ba7e;
 

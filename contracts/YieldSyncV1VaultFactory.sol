@@ -25,8 +25,8 @@ contract YieldSyncV1VaultFactory is
 	{}
 
 
-	address public override immutable YieldSyncGovernance;
-	address public override immutable YieldSyncV1VaultAccessControl;
+	address public immutable override YieldSyncGovernance;
+	address public immutable override YieldSyncV1VaultAccessControl;
 
 	bool public override etherTransferLocked;
 

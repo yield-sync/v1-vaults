@@ -18,7 +18,7 @@ contract YieldSyncV1ATransferRequestProtocol is
 {
 	uint256 internal _transferRequestIdTracker;
 
-	IYieldSyncV1VaultAccessControl public immutable YieldSyncV1VaultAccessControl;
+	IYieldSyncV1VaultAccessControl public immutable override YieldSyncV1VaultAccessControl;
 
 	mapping (
 		address yieldSyncV1VaultAddress => uint256[] openTransferRequestsIds

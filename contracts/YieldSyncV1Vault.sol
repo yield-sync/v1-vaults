@@ -29,7 +29,7 @@ contract YieldSyncV1Vault is
 	{}
 
 
-	address public override immutable YieldSyncV1VaultAccessControl;
+	address public immutable override YieldSyncV1VaultAccessControl;
 
 	address public override signatureProtocol;
 	address public override transferRequestProtocol;
