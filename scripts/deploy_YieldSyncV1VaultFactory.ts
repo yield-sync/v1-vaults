@@ -31,8 +31,7 @@ async function main() {
 	// YieldSyncV1ATransferRequestProtocol
 	const yieldSyncV1ATransferRequestProtocol = await (
 		await YieldSyncV1ATransferRequestProtocol.deploy(
-			yieldSyncV1VaultAccessControl.address,
-			yieldSyncV1VaultFactory.address
+			yieldSyncV1VaultAccessControl.address
 		)
 	).deployed();
 
@@ -85,8 +84,7 @@ async function main() {
 			{
 				address: yieldSyncV1ATransferRequestProtocol.address,
 				constructorArguments: [
-					yieldSyncV1VaultAccessControl.address,
-					yieldSyncV1VaultFactory.address
+					yieldSyncV1VaultAccessControl.address
 				],
 			}
 		);
