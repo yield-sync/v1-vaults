@@ -5,10 +5,7 @@ import "@nomiclabs/hardhat-ethers";
 import "@nomiclabs/hardhat-solhint";
 
 
-/**
- * @type import("hardhat/config").HardhatUserConfig
-*/
-const config: any = {
+export default {
 	etherscan: {
 		apiKey: {
 			mainnet: process.env.ETHERSCAN_API_KEY,
@@ -43,7 +40,4 @@ const config: any = {
 		sources: "./contracts",
 	},
 	solidity: "0.8.18"
-};
-
-
-export default config;
+} as import("hardhat/config").HardhatUserConfig;

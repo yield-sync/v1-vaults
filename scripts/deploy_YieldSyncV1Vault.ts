@@ -66,6 +66,7 @@ async function main() {
 		await run(
 			"verify:verify",
 			{
+				contract: "contracts/YieldSyncV1Vault.sol:YieldSyncV1Vault",
 				address: await yieldSyncV1VaultFactory.yieldSyncV1VaultId_yieldSyncV1VaultAddress(
 					await yieldSyncV1VaultFactory.yieldSyncV1VaultIdTracker() - 1
 				),

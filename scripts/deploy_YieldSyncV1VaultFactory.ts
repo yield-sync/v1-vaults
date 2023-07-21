@@ -16,9 +16,13 @@ async function main() {
 	const YieldSyncV1ATransferRequestProtocol: ContractFactory = await ethers.getContractFactory("YieldSyncV1ATransferRequestProtocol");
 
 	/// DEPLOY
+	console.log("Deploying YieldSyncV1VaultAccessControl..");
+
 	// YieldSyncV1VaultAccessControl
 	const yieldSyncV1VaultAccessControl: Contract = await (await YieldSyncV1VaultAccessControl.deploy()).deployed();
 
+
+	console.log("Deploying YieldSyncV1VaultFactory..");
 
 	// YieldSyncV1VaultFactory
 	const yieldSyncV1VaultFactory: Contract = await (
@@ -27,6 +31,8 @@ async function main() {
 			yieldSyncV1VaultAccessControl.address
 		)
 	).deployed();
+
+	console.log("Deploying YieldSyncV1ATransferRequestProtocol..");
 
 	// YieldSyncV1ATransferRequestProtocol
 	const yieldSyncV1ATransferRequestProtocol = await (
@@ -37,6 +43,8 @@ async function main() {
 
 	if (false)
 	{
+		console.log("Deploying YieldSyncV1ASignatureProtocol..");
+
 		// YieldSyncV1ASignatureProtocol
 		const signatureProtocol = await (
 			await YieldSyncV1ASignatureProtocol.deploy(
@@ -61,6 +69,7 @@ async function main() {
 		await run(
 			"verify:verify",
 			{
+				contract: "contracts/YieldSyncV1VaultAccessControl.sol:YieldSyncV1VaultAccessControl",
 				address: yieldSyncV1VaultAccessControl.address,
 				constructorArguments: [],
 			}
@@ -70,6 +79,7 @@ async function main() {
 		await run(
 			"verify:verify",
 			{
+				contract: "contracts/YieldSyncV1VaultFactory.sol:YieldSyncV1VaultFactory",
 				address: yieldSyncV1VaultFactory.address,
 				constructorArguments: [
 					process.env.YIELD_SYNC_GOVERNANCE_ADDRESS,
@@ -82,6 +92,7 @@ async function main() {
 		await run(
 			"verify:verify",
 			{
+				contract: "contracts/YieldSyncV1ATransferRequestProtocol.sol:YieldSyncV1ATransferRequestProtocol",
 				address: yieldSyncV1ATransferRequestProtocol.address,
 				constructorArguments: [
 					yieldSyncV1VaultAccessControl.address
@@ -102,6 +113,8 @@ async function main() {
 			console.log(e);
 		}
 	}
+	finally
+	{}
 
 	console.log("yieldSyncV1VaultAccessControl address:", yieldSyncV1VaultAccessControl.address);
 	console.log("yieldSyncV1VaultFactory address:", yieldSyncV1VaultFactory.address);
