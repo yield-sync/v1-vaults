@@ -394,14 +394,16 @@ contract YieldSyncV1ATransferRequestProtocol is
 
 		for (uint256 i = 0; i < transferRequestPoll.votedMembers.length; i++)
 		{
-			require(
-				transferRequestPoll.votedMembers[i] != msg.sender,
-				"Already voted"
-			);
+			require(transferRequestPoll.votedMembers[i] != msg.sender, "Already voted");
 		}
 
 		if (vote)
 		{
+			if (transferRequestPoll.forVoteCount < yieldSyncV1VaultProperty.forVoteRequired)
+			{
+				transferRequestPoll.latestRelevantForVoteTime = block.timestamp;
+			}
+
 			transferRequestPoll.forVoteCount++;
 		}
 		else
@@ -418,11 +420,6 @@ contract YieldSyncV1ATransferRequestProtocol is
 		}
 
 		transferRequestPoll.votedMembers.push(msg.sender);
-
-		if (transferRequestPoll.forVoteCount < yieldSyncV1VaultProperty.forVoteRequired)
-		{
-			transferRequestPoll.latestRelevantForVoteTime = block.timestamp;
-		}
 
 		_yieldSyncV1VaultAddress_transferRequestId_transferRequestPoll[yieldSyncV1VaultAddress][
 			transferRequestId
