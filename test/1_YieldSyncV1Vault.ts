@@ -1734,7 +1734,7 @@ describe("[1] YieldSyncV1Vault.sol", async () => {
 						[
 							transferRequestPoll.againstVoteCount + 1,
 							transferRequestPoll.forVoteCount,
-							transferRequestPoll.latestRelevantForVoteTime,
+							transferRequestPoll.latestForVoteTime,
 							transferRequestPoll.votedMembers,
 						]
 					);
@@ -1749,7 +1749,7 @@ describe("[1] YieldSyncV1Vault.sol", async () => {
 			);
 
 			it(
-				"Should be able to update TransferRequestPoll.latestRelevantForVoteTime..",
+				"Should be able to update TransferRequestPoll.latestForVoteTime..",
 				async () => {
 					const [, addr1, addr2] = await ethers.getSigners();
 
@@ -1778,13 +1778,13 @@ describe("[1] YieldSyncV1Vault.sol", async () => {
 						[
 							transferRequestPoll.againstVoteCount + 1,
 							transferRequestPoll.forVoteCount,
-							BigInt(transferRequestPoll.latestRelevantForVoteTime) + BigInt(10),
+							BigInt(transferRequestPoll.latestForVoteTime) + BigInt(10),
 							transferRequestPoll.votedMembers,
 						]
 					);
 
 					expect(
-						BigInt(transferRequestPoll.latestRelevantForVoteTime) + BigInt(10)
+						BigInt(transferRequestPoll.latestForVoteTime) + BigInt(10)
 					).to.be.greaterThanOrEqual(
 						BigInt(
 							(
@@ -1792,7 +1792,7 @@ describe("[1] YieldSyncV1Vault.sol", async () => {
 									yieldSyncV1Vault.address,
 									idsOfOpenTransferRequests[idsOfOpenTransferRequests.length - 1]
 								)
-							).latestRelevantForVoteTime
+							).latestForVoteTime
 						)
 					);
 				}

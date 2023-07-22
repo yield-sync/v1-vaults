@@ -33,7 +33,7 @@ contract MockAdmin is Ownable {
 	}
 
 
-	function yieldSyncV1VaultAddress_transferRequestId_transferRequestPollUpdateLatestRelevantForVoteTime(
+	function yieldSyncV1VaultAddress_transferRequestId_transferRequestPollUpdatelatestForVoteTime(
 		address yieldSyncV1ATransferRequestProtocol,
 		address yieldSyncV1VaultAddress,
 		uint256 transferRequestId,
@@ -53,12 +53,12 @@ contract MockAdmin is Ownable {
 		if (arithmaticSign)
 		{
 			// [update] TransferRequest within `_transferRequest`
-			transferRequestPoll.latestRelevantForVoteTime += (timeInSeconds * 1 seconds);
+			transferRequestPoll.latestForVoteTime += (timeInSeconds * 1 seconds);
 		}
 		else
 		{
 			// [update] TransferRequest within `_transferRequest`
-			transferRequestPoll.latestRelevantForVoteTime -= (timeInSeconds * 1 seconds);
+			transferRequestPoll.latestForVoteTime -= (timeInSeconds * 1 seconds);
 		}
 
 		IYieldSyncV1ATransferRequestProtocol(

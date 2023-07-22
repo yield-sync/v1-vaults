@@ -177,7 +177,7 @@ contract YieldSyncV1ATransferRequestProtocol is
 			)
 			{
 				if (
-					block.timestamp - transferRequestPoll.latestRelevantForVoteTime >= (
+					block.timestamp - transferRequestPoll.latestForVoteTime >= (
 						yieldSyncV1VaultProperty.transferDelaySeconds * 1 seconds
 					)
 				)
@@ -310,7 +310,7 @@ contract YieldSyncV1ATransferRequestProtocol is
 			{
 				againstVoteCount: 0,
 				forVoteCount: 0,
-				latestRelevantForVoteTime: block.timestamp,
+				latestForVoteTime: block.timestamp,
 				votedMembers: initialVotedMembers
 			}
 		);
@@ -399,12 +399,9 @@ contract YieldSyncV1ATransferRequestProtocol is
 
 		if (vote)
 		{
-			if (transferRequestPoll.forVoteCount < yieldSyncV1VaultProperty.forVoteRequired)
-			{
-				transferRequestPoll.latestRelevantForVoteTime = block.timestamp;
-			}
-
 			transferRequestPoll.forVoteCount++;
+
+			transferRequestPoll.latestForVoteTime = block.timestamp;
 		}
 		else
 		{

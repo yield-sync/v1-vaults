@@ -113,9 +113,9 @@ describe("[4] MockAdmin.sol", async () => {
 		/**
 		 * @dev yieldSyncV1VaultAddress_transferRequestId_transferRequestDelete
 		*/
-		describe("yieldSyncV1VaultAddress_transferRequestId_transferRequestUpdateLatestRelevantForVoteTime()", async () => {
+		describe("yieldSyncV1VaultAddress_transferRequestId_transferRequestUpdatelatestForVoteTime()", async () => {
 			it(
-				"Should update the latestRelevantForVoteTime to ADD seconds..",
+				"Should update the latestForVoteTime to ADD seconds..",
 				async () => {
 					const [, addr1, addr2] = await ethers.getSigners();
 
@@ -136,9 +136,9 @@ describe("[4] MockAdmin.sol", async () => {
 							yieldSyncV1Vault.address,
 							0
 						)
-					).latestRelevantForVoteTime);
+					).latestForVoteTime);
 
-					await mockAdmin.yieldSyncV1VaultAddress_transferRequestId_transferRequestPollUpdateLatestRelevantForVoteTime(
+					await mockAdmin.yieldSyncV1VaultAddress_transferRequestId_transferRequestPollUpdatelatestForVoteTime(
 						yieldSyncV1ATransferRequestProtocol.address,
 						yieldSyncV1Vault.address,
 						0,
@@ -151,7 +151,7 @@ describe("[4] MockAdmin.sol", async () => {
 							yieldSyncV1Vault.address,
 							0
 						)
-					).latestRelevantForVoteTime);
+					).latestForVoteTime);
 
 					expect(BigInt(beforeBlockTimestamp + BigInt(4000))).to.be.equal(afterBlockTimestamp);
 				}
