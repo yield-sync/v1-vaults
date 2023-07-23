@@ -3,6 +3,7 @@ pragma solidity ^0.8.18;
 
 
 import { IERC1271 } from "@openzeppelin/contracts/interfaces/IERC1271.sol";
+import { ReentrancyGuard } from "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { IERC721 } from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 
@@ -17,6 +18,7 @@ import {
 
 contract YieldSyncV1Vault is
 	IERC1271,
+	ReentrancyGuard,
 	IYieldSyncV1Vault
 {
 	receive ()
@@ -35,8 +37,6 @@ contract YieldSyncV1Vault is
 
 	address public override signatureProtocol;
 	address public override transferRequestProtocol;
-
-	bool public override processTransferRequestLocked;
 
 	IYieldSyncV1VaultAccessControl public immutable override YieldSyncV1VaultAccessControl;
 
@@ -76,8 +76,6 @@ contract YieldSyncV1Vault is
 		{
 			YieldSyncV1VaultAccessControl.memberAdd(address(this), members[i]);
 		}
-
-		processTransferRequestLocked = false;
 	}
 
 
@@ -198,6 +196,7 @@ contract YieldSyncV1Vault is
 	function yieldSyncV1VaultAddress_transferRequestId_transferRequestProcess(uint256 transferRequestId)
 		public
 		override
+		nonReentrant()
 		accessMember()
 		validYieldSyncV1Vault_transferRequestId_transferRequest(transferRequestId)
 	{
@@ -209,8 +208,6 @@ contract YieldSyncV1Vault is
 		);
 
 		require(readyToBeProcessed, message);
-
-		processTransferRequestLocked = true;
 
 		if (approved)
 		{
@@ -273,8 +270,6 @@ contract YieldSyncV1Vault is
 			address(this),
 			transferRequestId
 		);
-
-		processTransferRequestLocked = false;
 	}
 
 	/// @inheritdoc IYieldSyncV1Vault

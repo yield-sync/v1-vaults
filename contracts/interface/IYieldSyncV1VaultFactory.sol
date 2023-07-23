@@ -42,17 +42,6 @@ interface IYieldSyncV1VaultFactory
 	;
 
 	/**
-	* @notice Transfer Ether Locked
-	* @dev [view-bool]
-	* @return {bool}
-	*/
-	function etherTransferLocked()
-		external
-		view
-		returns (bool)
-	;
-
-	/**
 	* @notice Fee
 	* @dev [view-uint256]
 	* @return {uint256}

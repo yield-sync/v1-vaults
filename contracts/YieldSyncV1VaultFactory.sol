@@ -28,8 +28,6 @@ contract YieldSyncV1VaultFactory is
 	address public immutable override YieldSyncGovernance;
 	address public immutable override YieldSyncV1VaultAccessControl;
 
-	bool public override etherTransferLocked;
-
 	uint256 public override fee;
 	uint256 public override yieldSyncV1VaultIdTracker;
 
@@ -44,8 +42,6 @@ contract YieldSyncV1VaultFactory is
 
 	constructor (address _YieldSyncGovernance, address _YieldSyncV1VaultAccessControl)
 	{
-		etherTransferLocked = false;
-
 		fee = 0;
 		yieldSyncV1VaultIdTracker = 0;
 
@@ -110,15 +106,8 @@ contract YieldSyncV1VaultFactory is
 		override
 		contractYieldSyncGovernance(bytes32(0))
 	{
-		require(!etherTransferLocked, "etherTransferLocked");
-
-		etherTransferLocked = true;
-
-		// [transfer]
 		(bool success, ) = to.call{value: address(this).balance}("");
 
-		etherTransferLocked = false;
-
-		require(success, "Failed");
+		require(success, "etherTransfer failed");
 	}
 }

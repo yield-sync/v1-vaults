@@ -47,17 +47,6 @@ interface IYieldSyncV1Vault
 	;
 
 	/**
-	* @notice Process TransferRequest Locked
-	* @dev [view-bool]
-	* @return {bool}
-	*/
-	function processTransferRequestLocked()
-		external
-		view
-		returns (bool)
-	;
-
-	/**
 	* @notice YieldSyncV1VaultAccessControl Interfaced
 	* @dev [view-address]
 	* @return {IYieldSyncV1VaultAccessControl}
