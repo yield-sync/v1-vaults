@@ -178,7 +178,7 @@ contract YieldSyncV1ATransferRequestProtocol is
 			{
 				if (
 					block.timestamp - transferRequestPoll.latestForVoteTime >= (
-						yieldSyncV1VaultProperty.transferDelaySeconds * 1 seconds
+						yieldSyncV1VaultProperty.transferDelaySeconds
 					)
 				)
 				{

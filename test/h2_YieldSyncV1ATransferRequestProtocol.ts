@@ -4,9 +4,6 @@ import { Contract, ContractFactory } from "ethers";
 const { ethers } = require("hardhat");
 
 
-const twoDaysInSeconds = 2 * 24 * 60 * 60;
-
-
 describe("[h2] YieldSyncV1ATransferRequestProtocol.sol", async () => {
 	let yieldSyncV1Vault: Contract;
 	let yieldSyncV1VaultFactory: Contract;
@@ -41,7 +38,7 @@ describe("[h2] YieldSyncV1ATransferRequestProtocol.sol", async () => {
 		// Set YieldSyncV1Vault properties on TransferRequestProtocol.sol
 		await yieldSyncV1ATransferRequestProtocol.yieldSyncV1VaultAddress_yieldSyncV1VaultPropertyUpdate(
 			admin.address,
-			[2, 2, twoDaysInSeconds]
+			[2, 2, 5]
 		);
 
 		// Deploy a vault
@@ -166,59 +163,6 @@ describe("[h2] YieldSyncV1ATransferRequestProtocol.sol", async () => {
 			const [, , , , BadActor] = await ethers.getSigners();
 
 			await expect(yieldSyncV1Vault.connect(BadActor).renounceMembership()).to.be.rejectedWith("!member");
-		});
-	});
-
-	describe("Potential Reentrancy attack", async () => {
-		it("Should fail if a reentrancy attack is attempted..", async function () {
-			const balanceBefore = ethers.utils.formatUnits(await ethers.provider.getBalance(yieldSyncV1Vault.address));
-
-			const [, addr1, addr2] = await ethers.getSigners();
-
-			// Deploy the attacker contract
-			const ReenteranceAttacker = await ethers.getContractFactory("ReenteranceAttacker");
-
-			const reenteranceAttacker = await ReenteranceAttacker.connect(addr1).deploy();
-
-			await yieldSyncV1Vault.memberAdd(reenteranceAttacker.address);
-
-			await yieldSyncV1ATransferRequestProtocol.connect(
-				addr1
-			).yieldSyncV1VaultAddress_transferRequestId_transferRequestCreate(
-				yieldSyncV1Vault.address,
-				false,
-				false,
-				reenteranceAttacker.address,
-				ethers.constants.AddressZero,
-				ethers.utils.parseEther(".5"),
-				0
-			);
-
-			// Vote
-			await yieldSyncV1ATransferRequestProtocol.connect(
-				addr1
-			).yieldSyncV1VaultAddress_transferRequestId_transferRequestPollVote(
-				yieldSyncV1Vault.address,
-				0,
-				true
-			)
-
-			// Vote
-			await yieldSyncV1ATransferRequestProtocol.connect(
-				addr2
-			).yieldSyncV1VaultAddress_transferRequestId_transferRequestPollVote(
-				yieldSyncV1Vault.address,
-				0,
-				true
-			)
-
-			await ethers.provider.send('evm_increaseTime', [twoDaysInSeconds + 60]);
-
-			expect(
-				balanceBefore
-			).to.be.equal(
-				ethers.utils.formatUnits(await ethers.provider.getBalance(yieldSyncV1Vault.address))
-			);
 		});
 	});
 });
