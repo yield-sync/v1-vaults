@@ -57,6 +57,12 @@ describe("[h1] YieldSyncV1Vault.sol", async () => {
 		yieldSyncV1Vault = await YieldSyncV1Vault.attach(
 			await yieldSyncV1VaultFactory.yieldSyncV1VaultId_yieldSyncV1VaultAddress(0)
 		);
+
+		// Send ether to YieldSyncV1Vault contract
+		await addr1.sendTransaction({
+			to: yieldSyncV1Vault.address,
+			value: ethers.utils.parseEther("5")
+		});
 	});
 
 	describe("adminAdd()", async () => {
