@@ -212,6 +212,7 @@ describe("[5] YieldSyncV1Vault.sol", async () => {
 				true
 			)
 
+			// Fast forward
 			await ethers.provider.send('evm_increaseTime', [twoDaysInSeconds + 60]);
 
 			// Attempt attack
