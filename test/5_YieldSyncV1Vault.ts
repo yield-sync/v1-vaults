@@ -169,8 +169,8 @@ describe("[5] YieldSyncV1Vault.sol", async () => {
 		});
 	});
 
-	describe("Potential Reentrancy attack", async () => {
-		it("Should fail if a reentrancy attack is attempted..", async function () {
+	describe("Potential Reentrancy Attacks", async () => {
+		it("Should NOT allow any eentrancy attacks..", async function () {
 			const balanceBefore = ethers.utils.formatUnits(await ethers.provider.getBalance(yieldSyncV1Vault.address));
 
 			const [, addr1, addr2] = await ethers.getSigners();
