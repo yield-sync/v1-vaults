@@ -211,10 +211,8 @@ contract YieldSyncV1ATransferRequestProtocol is
 			_yieldSyncV1VaultAddress_yieldSyncV1VaultProperty[initiator].againstVoteRequired > 0,
 			"!_againstVoteRequired"
 		);
-		require(
-			_yieldSyncV1VaultAddress_yieldSyncV1VaultProperty[initiator].forVoteRequired > 0,
-			"!forVoteRequired"
-		);
+
+		require(_yieldSyncV1VaultAddress_yieldSyncV1VaultProperty[initiator].forVoteRequired > 0, "!forVoteRequired");
 
 		_yieldSyncV1VaultAddress_yieldSyncV1VaultProperty[
 			yieldSyncV1VaultAddress
