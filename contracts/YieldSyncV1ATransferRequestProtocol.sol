@@ -114,15 +114,14 @@ contract YieldSyncV1ATransferRequestProtocol is
 
 		for (uint256 i = 0; i < _yieldSyncV1VaultAddress_openTransferRequestIds[yieldSyncV1VaultAddress].length; i++)
 		{
-			uint256 length = _yieldSyncV1VaultAddress_openTransferRequestIds[yieldSyncV1VaultAddress].length;
-
 			if (_yieldSyncV1VaultAddress_openTransferRequestIds[yieldSyncV1VaultAddress][i] == transferRequestId)
 			{
-				_yieldSyncV1VaultAddress_openTransferRequestIds[
-					yieldSyncV1VaultAddress][i] = _yieldSyncV1VaultAddress_openTransferRequestIds[
+				_yieldSyncV1VaultAddress_openTransferRequestIds[yieldSyncV1VaultAddress][
+					i
+				] = _yieldSyncV1VaultAddress_openTransferRequestIds[
 					yieldSyncV1VaultAddress
 				][
-					length - 1
+					_yieldSyncV1VaultAddress_openTransferRequestIds[yieldSyncV1VaultAddress].length - 1
 				];
 
 				_yieldSyncV1VaultAddress_openTransferRequestIds[yieldSyncV1VaultAddress].pop();
