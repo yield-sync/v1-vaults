@@ -167,31 +167,24 @@ contract YieldSyncV1ATransferRequestProtocol is
 		];
 
 		if (
-			transferRequestPoll.forVoteCount >= yieldSyncV1VaultProperty.forVoteRequired ||
-			transferRequestPoll.againstVoteCount >= yieldSyncV1VaultProperty.againstVoteRequired
+			transferRequestPoll.forVoteCount < yieldSyncV1VaultProperty.forVoteRequired &&
+			transferRequestPoll.againstVoteCount < yieldSyncV1VaultProperty.againstVoteRequired
 		)
 		{
-			if (
-				transferRequestPoll.forVoteCount >= yieldSyncV1VaultProperty.forVoteRequired &&
-				transferRequestPoll.againstVoteCount < yieldSyncV1VaultProperty.againstVoteRequired
-			)
-			{
-				if (
-					block.timestamp - transferRequestPoll.latestForVoteTime >= (
-						yieldSyncV1VaultProperty.transferDelaySeconds
-					)
-				)
-				{
-					return (true, true, "Transfer request approved");
-				}
+			return (false, false, "Transfer request pending");
+		}
 
-				return (false, true, "Transfer request approved and waiting delay");
-			}
-
+		if (transferRequestPoll.againstVoteCount >= yieldSyncV1VaultProperty.againstVoteRequired)
+		{
 			return (true, false, "Transfer request denied");
 		}
 
-		return (false, false, "Transfer request pending");
+		if (block.timestamp - transferRequestPoll.latestForVoteTime < yieldSyncV1VaultProperty.transferDelaySeconds)
+		{
+			return (false, true, "Transfer request approved and waiting delay");
+		}
+
+		return (true, true, "Transfer request approved");
 	}
 
 	/// @inheritdoc ITransferRequestProtocol
