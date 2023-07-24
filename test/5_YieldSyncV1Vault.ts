@@ -7,7 +7,7 @@ const { ethers } = require("hardhat");
 const twoDaysInSeconds = 2 * 24 * 60 * 60;
 
 
-describe("[h1] YieldSyncV1Vault.sol", async () => {
+describe("[5] YieldSyncV1Vault.sol", async () => {
 	let yieldSyncV1Vault: Contract;
 	let yieldSyncV1VaultFactory: Contract;
 	let yieldSyncV1ATransferRequestProtocol: Contract;
@@ -214,15 +214,6 @@ describe("[h1] YieldSyncV1Vault.sol", async () => {
 
 			await ethers.provider.send('evm_increaseTime', [twoDaysInSeconds + 60]);
 
-			console.log(
-				await yieldSyncV1ATransferRequestProtocol.connect(
-					addr2
-				).yieldSyncV1VaultAddress_transferRequestId_transferRequestStatus(
-					yieldSyncV1Vault.address,
-					0
-				)
-			);
-
 			// Attempt attack
 			await reenteranceAttacker.attack(yieldSyncV1Vault.address, 0);
 
@@ -231,12 +222,6 @@ describe("[h1] YieldSyncV1Vault.sol", async () => {
 			).to.be.equal(
 				ethers.utils.formatUnits(await ethers.provider.getBalance(yieldSyncV1Vault.address))
 			);
-
-			await ethers.provider.send('evm_increaseTime', [twoDaysInSeconds + 60]);
-
-			console.log(
-				ethers.utils.formatUnits(await ethers.provider.getBalance(yieldSyncV1Vault.address))
-			)
 		});
 	});
 });
