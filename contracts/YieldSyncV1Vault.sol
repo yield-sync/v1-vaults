@@ -248,9 +248,7 @@ contract YieldSyncV1Vault is
 
 			if (!transferRequest.forERC20 && !transferRequest.forERC721)
 			{
-				(bool success, ) = transferRequest.to.call{
-					value: transferRequest.amount
-				}("");
+				(bool success, ) = transferRequest.to.call{ value: transferRequest.amount }("");
 
 				if (!success)
 				{
