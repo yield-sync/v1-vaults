@@ -10,7 +10,7 @@ async function main() {
 	const [owner] = await ethers.getSigners();
 
 	console.log("Deploying on Network:", network.name);
-	console.log("Deploying contract with Account:", owner.address);
+	console.log("Deploying with Account:", owner.address);
 	console.log("Account Balance:", await owner.getBalance());
 
 	// Get factories
