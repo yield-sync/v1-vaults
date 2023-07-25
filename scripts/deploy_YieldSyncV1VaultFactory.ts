@@ -10,11 +10,8 @@ async function main()
 {
 	const [deployer] = await ethers.getSigners();
 
-	console.log("Deploying on Network:", network.name);
-	console.log("Deployer Account:", deployer.address);
-	console.log("Account Balance:", await deployer.getBalance());
-
 	// Get factories
+	const MockYieldSyncGovernance: ContractFactory = await ethers.getContractFactory("MockYieldSyncGovernance");
 	const YieldSyncV1VaultFactory: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultFactory");
 	const YieldSyncV1VaultAccessControl: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultAccessControl");
 	const YieldSyncV1ASignatureProtocol: ContractFactory = await ethers.getContractFactory("YieldSyncV1ASignatureProtocol");
@@ -26,26 +23,38 @@ async function main()
 	{
 		case "mainnet":
 			governanceContractAddress = String(process.env.YIELD_SYNC_MAINNET_GOVERNANCE_ADDRESS);
+
 			break;
 
 		case "optimism":
 			governanceContractAddress = String(process.env.YIELD_SYNC_OP_GOVERNANCE_ADDRESS);
+
 			break;
 
 		case "optimismgoerli":
 			governanceContractAddress = String(process.env.YIELD_SYNC_OP_GOERLI_GOVERNANCE_ADDRESS);
+
 			break;
 
 		case "sepolia":
 			governanceContractAddress = String(process.env.YIELD_SYNC_SEPOLIA_GOVERNANCE_ADDRESS);
+
 			break;
 
 		default:
 			console.log("WARNING: Governance contract not set");
 
-			governanceContractAddress = ethers.constants.AddressZero;
+			const mockYieldSyncGovernance: Contract = await (await MockYieldSyncGovernance.deploy()).deployed();
+
+			governanceContractAddress = mockYieldSyncGovernance.address;
+
 			break;
 	}
+
+	console.log("Deploying on Network:", network.name);
+	console.log("Deployer Account:", deployer.address);
+	console.log("Account Balance:", await deployer.getBalance());
+	console.log("governanceContractAddress:", governanceContractAddress);
 
 	/// DEPLOY
 	console.log("Deploying YieldSyncV1VaultAccessControl..");
@@ -64,7 +73,7 @@ async function main()
 	console.log("Deploying YieldSyncV1ATransferRequestProtocol..");
 
 	// YieldSyncV1ATransferRequestProtocol
-	const yieldSyncV1ATransferRequestProtocol = await (
+	const yieldSyncV1ATransferRequestProtocol: Contract = await (
 		await YieldSyncV1ATransferRequestProtocol.deploy(
 			yieldSyncV1VaultAccessControl.address
 		)
@@ -75,7 +84,7 @@ async function main()
 		console.log("Deploying YieldSyncV1ASignatureProtocol..");
 
 		// YieldSyncV1ASignatureProtocol
-		const signatureProtocol = await (
+		const signatureProtocol: Contract = await (
 			await YieldSyncV1ASignatureProtocol.deploy(
 				governanceContractAddress,
 				yieldSyncV1VaultAccessControl.address
