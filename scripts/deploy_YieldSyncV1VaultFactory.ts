@@ -6,12 +6,13 @@ import { ethers, run, network } from "hardhat";
 const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
 
 
-async function main() {
-	const [owner] = await ethers.getSigners();
+async function main()
+{
+	const [deployer] = await ethers.getSigners();
 
 	console.log("Deploying on Network:", network.name);
-	console.log("Deploying with Account:", owner.address);
-	console.log("Account Balance:", await owner.getBalance());
+	console.log("Deployer Account:", deployer.address);
+	console.log("Account Balance:", await deployer.getBalance());
 
 	// Get factories
 	const YieldSyncV1VaultFactory: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultFactory");
@@ -144,7 +145,7 @@ async function main() {
 	console.log("yieldSyncV1VaultAccessControl address:", yieldSyncV1VaultAccessControl.address);
 	console.log("yieldSyncV1VaultFactory address:", yieldSyncV1VaultFactory.address);
 	console.log("yieldSyncV1ATransferRequestProtocol address:", yieldSyncV1ATransferRequestProtocol.address);
-	console.log("Account Balance:", await owner.getBalance());
+	console.log("Account Balance:", await deployer.getBalance());
 }
 
 
