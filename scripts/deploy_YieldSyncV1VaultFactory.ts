@@ -1,11 +1,15 @@
 require("dotenv").config();
 import { Contract, ContractFactory } from "ethers";
-import { ethers, run } from "hardhat";
+import { ethers, run, network } from "hardhat";
+
+
+const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
 
 
 async function main() {
 	const [owner] = await ethers.getSigners();
 
+	console.log("Deploying on Network:", network.name);
 	console.log("Deploying contract with Account:", owner.address);
 	console.log("Account Balance:", await owner.getBalance());
 
@@ -14,6 +18,33 @@ async function main() {
 	const YieldSyncV1VaultAccessControl: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultAccessControl");
 	const YieldSyncV1ASignatureProtocol: ContractFactory = await ethers.getContractFactory("YieldSyncV1ASignatureProtocol");
 	const YieldSyncV1ATransferRequestProtocol: ContractFactory = await ethers.getContractFactory("YieldSyncV1ATransferRequestProtocol");
+
+	let governanceContractAddress: string = "";
+
+	switch (network.name)
+	{
+		case "mainnet":
+			governanceContractAddress = String(process.env.YIELD_SYNC_MAINNET_GOVERNANCE_ADDRESS);
+			break;
+
+		case "optimism":
+			governanceContractAddress = String(process.env.YIELD_SYNC_OP_GOVERNANCE_ADDRESS);
+			break;
+
+		case "optimismgoerli":
+			governanceContractAddress = String(process.env.YIELD_SYNC_OP_GOERLI_GOVERNANCE_ADDRESS);
+			break;
+
+		case "sepolia":
+			governanceContractAddress = String(process.env.YIELD_SYNC_SEPOLIA_GOVERNANCE_ADDRESS);
+			break;
+
+		default:
+			console.log("WARNING: Governance contract not set");
+
+			governanceContractAddress = ethers.constants.AddressZero;
+			break;
+	}
 
 	/// DEPLOY
 	console.log("Deploying YieldSyncV1VaultAccessControl..");
@@ -26,10 +57,7 @@ async function main() {
 
 	// YieldSyncV1VaultFactory
 	const yieldSyncV1VaultFactory: Contract = await (
-		await YieldSyncV1VaultFactory.deploy(
-			process.env.YIELD_SYNC_GOVERNANCE_ADDRESS,
-			yieldSyncV1VaultAccessControl.address
-		)
+		await YieldSyncV1VaultFactory.deploy(governanceContractAddress, yieldSyncV1VaultAccessControl.address)
 	).deployed();
 
 	console.log("Deploying YieldSyncV1ATransferRequestProtocol..");
@@ -48,16 +76,13 @@ async function main() {
 		// YieldSyncV1ASignatureProtocol
 		const signatureProtocol = await (
 			await YieldSyncV1ASignatureProtocol.deploy(
-				process.env.YIELD_SYNC_GOVERNANCE_ADDRESS,
+				governanceContractAddress,
 				yieldSyncV1VaultAccessControl.address
 			)
 		).deployed();
 	}
 
 	console.log("Waiting 30 seconds before verifying..");
-
-	// Delay
-	const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
 
 	// Delay
 	await delay(30000);
@@ -82,7 +107,7 @@ async function main() {
 				contract: "contracts/YieldSyncV1VaultFactory.sol:YieldSyncV1VaultFactory",
 				address: yieldSyncV1VaultFactory.address,
 				constructorArguments: [
-					process.env.YIELD_SYNC_GOVERNANCE_ADDRESS,
+					governanceContractAddress,
 					yieldSyncV1VaultAccessControl.address,
 				],
 			}

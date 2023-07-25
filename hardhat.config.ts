@@ -14,6 +14,7 @@ export default {
 			mainnet: process.env.ETHERSCAN_API_KEY,
 			goerli: process.env.ETHERSCAN_API_KEY,
 			optimisticEthereum: process.env.OPTIMISTIC_ETHERSCAN_API_KEY,
+			optimisticGoerli: process.env.OPTIMISTIC_ETHERSCAN_API_KEY,
 			sepolia: process.env.ETHERSCAN_API_KEY,
 		}
 	},
@@ -39,8 +40,7 @@ export default {
 		optimismgoerli: {
 			url: `https://goerli.optimism.io`,
 			accounts: [`0x${process.env.PRIVATE_KEY}`],
-			gasPrice: 15000000,
-      		ovm: true
+			gasPrice: 15000000
 		},
 		sepolia: {
 			url: `https://sepolia.infura.io/v3/${process.env.INFURA_API_KEY}`,
