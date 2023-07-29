@@ -6,7 +6,7 @@
 		"compiler-version": ["error", "^0.8.18"],
 		"func-name-mixedcase": "off",
 		"func-order": "off",
-		"indent": ["error", 4],
+		"indent": ["error", 2],
 		"quotes": ["error", "double"],
 		"max-line-length": ["warn", 120],
 		"no-console": "warn",
