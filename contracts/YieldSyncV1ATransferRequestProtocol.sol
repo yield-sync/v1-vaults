@@ -287,10 +287,11 @@ contract YieldSyncV1ATransferRequestProtocol is
 				forERC20: forERC20,
 				forERC721: forERC721,
 				creator: msg.sender,
-				token: tokenAddress,
-				tokenId: tokenId,
+				to: to,
+				tokenAddress: tokenAddress,
 				amount: amount,
-				to: to
+				created: block.timestamp,
+				tokenId: tokenId
 			}
 		);
 

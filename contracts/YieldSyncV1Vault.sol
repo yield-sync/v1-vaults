@@ -220,9 +220,9 @@ contract YieldSyncV1Vault is
 
 			if (transferRequest.forERC20 && !transferRequest.forERC721)
 			{
-				if (IERC20(transferRequest.token).balanceOf(address(this)) >= transferRequest.amount)
+				if (IERC20(transferRequest.tokenAddress).balanceOf(address(this)) >= transferRequest.amount)
 				{
-					IERC20(transferRequest.token).transfer(transferRequest.to, transferRequest.amount);
+					IERC20(transferRequest.tokenAddress).transfer(transferRequest.to, transferRequest.amount);
 				}
 				else
 				{
@@ -232,9 +232,9 @@ contract YieldSyncV1Vault is
 
 			if (!transferRequest.forERC20 && transferRequest.forERC721)
 			{
-				if (IERC721(transferRequest.token).ownerOf(transferRequest.tokenId) == address(this))
+				if (IERC721(transferRequest.tokenAddress).ownerOf(transferRequest.tokenId) == address(this))
 				{
-					IERC721(transferRequest.token).transferFrom(
+					IERC721(transferRequest.tokenAddress).transferFrom(
 						address(this),
 						transferRequest.to,
 						transferRequest.tokenId

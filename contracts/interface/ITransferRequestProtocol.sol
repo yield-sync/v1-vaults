@@ -7,10 +7,11 @@ struct TransferRequest
 	bool forERC20;
 	bool forERC721;
 	address creator;
-	address token;
-	uint256 tokenId;
-	uint256 amount;
 	address to;
+	address tokenAddress;
+	uint256 amount;
+	uint256 created;
+	uint256 tokenId;
 }
 
 

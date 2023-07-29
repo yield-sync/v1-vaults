@@ -619,7 +619,7 @@ describe("[1] YieldSyncV1Vault.sol", async () => {
 							expect(createdTransferRequest.forERC20).to.be.false;
 							expect(createdTransferRequest.forERC721).to.be.false;
 							expect(createdTransferRequest.creator).to.be.equal(addr1.address);
-							expect(createdTransferRequest.token).to.be.equal(ethers.constants.AddressZero);
+							expect(createdTransferRequest.tokenAddress).to.be.equal(ethers.constants.AddressZero);
 							expect(createdTransferRequest.tokenId).to.be.equal(0);
 							expect(createdTransferRequest.amount).to.be.equal(ethers.utils.parseEther(".5"));
 							expect(createdTransferRequest.to).to.be.equal(addr2.address);
@@ -1011,7 +1011,7 @@ describe("[1] YieldSyncV1Vault.sol", async () => {
 							expect(createdTransferRequest.forERC20).to.be.true;
 							expect(createdTransferRequest.forERC721).to.be.false;
 							expect(createdTransferRequest.creator).to.be.equal(addr1.address);
-							expect(createdTransferRequest.token).to.be.equal(mockERC20.address);
+							expect(createdTransferRequest.tokenAddress).to.be.equal(mockERC20.address);
 							expect(createdTransferRequest.tokenId).to.be.equal(0);
 							expect(createdTransferRequest.amount).to.be.equal(50);
 							expect(createdTransferRequest.to).to.be.equal(addr2.address);
@@ -1243,7 +1243,7 @@ describe("[1] YieldSyncV1Vault.sol", async () => {
 							expect(createdTransferRequest.forERC20).to.be.false;
 							expect(createdTransferRequest.forERC721).to.be.true;
 							expect(createdTransferRequest.creator).to.be.equal(addr1.address);
-							expect(createdTransferRequest.token).to.be.equal(mockERC721.address);
+							expect(createdTransferRequest.tokenAddress).to.be.equal(mockERC721.address);
 							expect(createdTransferRequest.tokenId).to.be.equal(1);
 							expect(createdTransferRequest.amount).to.be.equal(1);
 							expect(createdTransferRequest.to).to.be.equal(addr2.address);
@@ -1597,7 +1597,7 @@ describe("[1] YieldSyncV1Vault.sol", async () => {
 								transferRequest.forERC20,
 								transferRequest.forERC721,
 								transferRequest.creator,
-								transferRequest.token,
+								transferRequest.tokenAddress,
 								transferRequest.tokenId,
 								0,
 								transferRequest.to
@@ -1639,7 +1639,7 @@ describe("[1] YieldSyncV1Vault.sol", async () => {
 								true,
 								true,
 								transferRequest.creator,
-								transferRequest.token,
+								transferRequest.tokenAddress,
 								transferRequest.tokenId,
 								transferRequest.amount - 10,
 								transferRequest.to
@@ -1680,7 +1680,7 @@ describe("[1] YieldSyncV1Vault.sol", async () => {
 							transferRequest.forERC20,
 							transferRequest.forERC721,
 							transferRequest.creator,
-							transferRequest.token,
+							transferRequest.tokenAddress,
 							transferRequest.tokenId,
 							transferRequest.amount - 10,
 							transferRequest.to
