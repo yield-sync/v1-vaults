@@ -83,7 +83,7 @@ contract YieldSyncV1Vault is
 	{
 		TransferRequest memory transferRequest = ITransferRequestProtocol(
 			transferRequestProtocol
-		).yieldSyncV1VaultAddress_transferRequestId_transferRequest(
+		).yieldSyncV1Vault_transferRequestId_transferRequest(
 			address(this),
 			transferRequestId
 		);
@@ -95,10 +95,7 @@ contract YieldSyncV1Vault is
 
 	modifier accessAdmin()
 	{
-		(bool admin,) = YieldSyncV1VaultAccessControl.yieldSyncV1VaultAddress_participant_access(
-			address(this),
-			msg.sender
-		);
+		(bool admin,) = YieldSyncV1VaultAccessControl.yieldSyncV1Vault_participant_access(address(this), msg.sender);
 
 		require(admin, "!admin");
 
@@ -107,10 +104,7 @@ contract YieldSyncV1Vault is
 
 	modifier accessMember()
 	{
-		(, bool member) = YieldSyncV1VaultAccessControl.yieldSyncV1VaultAddress_participant_access(
-			address(this),
-			msg.sender
-		);
+		(, bool member) = YieldSyncV1VaultAccessControl.yieldSyncV1Vault_participant_access(address(this), msg.sender);
 
 		require(member, "!member");
 
@@ -193,7 +187,7 @@ contract YieldSyncV1Vault is
 
 
 	/// @inheritdoc IYieldSyncV1Vault
-	function yieldSyncV1VaultAddress_transferRequestId_transferRequestProcess(uint256 transferRequestId)
+	function yieldSyncV1Vault_transferRequestId_transferRequestProcess(uint256 transferRequestId)
 		public
 		override
 		nonReentrant()
@@ -202,7 +196,7 @@ contract YieldSyncV1Vault is
 	{
 		(bool readyToBeProcessed, bool approved, string memory message) = ITransferRequestProtocol(
 			transferRequestProtocol
-		).yieldSyncV1VaultAddress_transferRequestId_transferRequestStatus(
+		).yieldSyncV1Vault_transferRequestId_transferRequestStatus(
 			address(this),
 			transferRequestId
 		);
@@ -213,16 +207,16 @@ contract YieldSyncV1Vault is
 		{
 			TransferRequest memory transferRequest = ITransferRequestProtocol(
 				transferRequestProtocol
-			).yieldSyncV1VaultAddress_transferRequestId_transferRequest(
+			).yieldSyncV1Vault_transferRequestId_transferRequest(
 				address(this),
 				transferRequestId
 			);
 
 			if (transferRequest.forERC20 && !transferRequest.forERC721)
 			{
-				if (IERC20(transferRequest.tokenAddress).balanceOf(address(this)) >= transferRequest.amount)
+				if (IERC20(transferRequest.token).balanceOf(address(this)) >= transferRequest.amount)
 				{
-					IERC20(transferRequest.tokenAddress).transfer(transferRequest.to, transferRequest.amount);
+					IERC20(transferRequest.token).transfer(transferRequest.to, transferRequest.amount);
 				}
 				else
 				{
@@ -232,9 +226,9 @@ contract YieldSyncV1Vault is
 
 			if (!transferRequest.forERC20 && transferRequest.forERC721)
 			{
-				if (IERC721(transferRequest.tokenAddress).ownerOf(transferRequest.tokenId) == address(this))
+				if (IERC721(transferRequest.token).ownerOf(transferRequest.tokenId) == address(this))
 				{
-					IERC721(transferRequest.tokenAddress).transferFrom(
+					IERC721(transferRequest.token).transferFrom(
 						address(this),
 						transferRequest.to,
 						transferRequest.tokenId
@@ -259,9 +253,7 @@ contract YieldSyncV1Vault is
 			emit TokensTransferred(msg.sender, transferRequest.to, transferRequest.amount);
 		}
 
-		ITransferRequestProtocol(
-			transferRequestProtocol
-		).yieldSyncV1VaultAddress_transferRequestId_transferRequestProcess(
+		ITransferRequestProtocol(transferRequestProtocol).yieldSyncV1Vault_transferRequestId_transferRequestProcess(
 			address(this),
 			transferRequestId
 		);

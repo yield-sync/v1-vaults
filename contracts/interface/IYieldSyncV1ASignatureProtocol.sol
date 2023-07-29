@@ -42,47 +42,47 @@ interface IYieldSyncV1ASignatureProtocol is
 	/**
 	* @notice Getter for `_vaultMessageHashes`
 	* @dev [view][mapping]
-	* @param yieldSyncV1VaultAddress {address}
+	* @param yieldSyncV1Vault {address}
 	* @return {bytes32[]}
 	*/
-	function vaultMessageHashes(address yieldSyncV1VaultAddress)
+	function vaultMessageHashes(address yieldSyncV1Vault)
 		external
 		view
 		returns (bytes32[] memory)
 	;
 
 	/**
-	* @notice Getter for `_yieldSyncV1VaultAddress_signaturesRequired`
+	* @notice Getter for `_yieldSyncV1Vault_signaturesRequired`
 	* @dev [view][mapping]
 	* @param purposer {address}
 	* @return {YieldSyncV1VaultProperty}
 	*/
-	function yieldSyncV1VaultAddress_signaturesRequired(address purposer)
+	function yieldSyncV1Vault_signaturesRequired(address purposer)
 		external
 		returns (uint256)
 	;
 
 	/**
-	* @notice Getter for `_yieldSyncV1VaultAddress_messageHash_messageHashData`
+	* @notice Getter for `_yieldSyncV1Vault_messageHash_messageHashData`
 	* @dev [view][mapping]
-	* @param yieldSyncV1VaultAddress {address}
+	* @param yieldSyncV1Vault {address}
 	* @param messageHash {bytes32}
 	* @return {MessageHashData}
 	*/
-	function yieldSyncV1VaultAddress_messageHash_messageHashData(address yieldSyncV1VaultAddress, bytes32 messageHash)
+	function yieldSyncV1Vault_messageHash_messageHashData(address yieldSyncV1Vault, bytes32 messageHash)
 		external
 		view
 		returns (MessageHashData memory)
 	;
 
 	/**
-	* @notice Getter for `_yieldSyncV1VaultAddress_messageHash_messageHashVote`
+	* @notice Getter for `_yieldSyncV1Vault_messageHash_messageHashVote`
 	* @dev [view][mapping]
-	* @param yieldSyncV1VaultAddress {address}
+	* @param yieldSyncV1Vault {address}
 	* @param messageHash {bytes32}
 	* @return {MessageHashData}
 	*/
-	function yieldSyncV1VaultAddress_messageHash_messageHashVote(address yieldSyncV1VaultAddress, bytes32 messageHash)
+	function yieldSyncV1Vault_messageHash_messageHashVote(address yieldSyncV1Vault, bytes32 messageHash)
 		external
 		view
 		returns (MessageHashVote memory)
@@ -92,11 +92,11 @@ interface IYieldSyncV1ASignatureProtocol is
 	/**
 	* @notice Update signaturesRequired
 	* @dev [restriction] `YieldSyncV1Record` → admin
-	* @dev [update] `yieldSyncV1VaultAddress_signaturesRequiredUpdate`
+	* @dev [update] `yieldSyncV1Vault_signaturesRequiredUpdate`
 	* @param signatureRequired {YieldSyncV1VaultProperty}
 	* Emits: `UpdatedPurposerYieldSyncV1VaultProperty`
 	*/
-	function yieldSyncV1VaultAddress_signaturesRequiredUpdate(uint256 signatureRequired)
+	function yieldSyncV1Vault_signaturesRequiredUpdate(uint256 signatureRequired)
 		external
 	;
 

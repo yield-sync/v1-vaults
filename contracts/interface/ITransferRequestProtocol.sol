@@ -8,7 +8,7 @@ struct TransferRequest
 	bool forERC721;
 	address creator;
 	address to;
-	address tokenAddress;
+	address token;
 	uint256 amount;
 	uint256 created;
 	uint256 tokenId;
@@ -18,12 +18,12 @@ struct TransferRequest
 interface ITransferRequestProtocol
 {
 	/**
-	* @param yieldSyncV1VaultAddress {address}
+	* @param yieldSyncV1Vault {address}
 	* @param transferRequestId {uint256}
 	* @return {TransferRequest}
 	*/
-	function yieldSyncV1VaultAddress_transferRequestId_transferRequest(
-		address yieldSyncV1VaultAddress,
+	function yieldSyncV1Vault_transferRequestId_transferRequest(
+		address yieldSyncV1Vault,
 		uint256 transferRequestId
 	)
 		external
@@ -31,25 +31,25 @@ interface ITransferRequestProtocol
 	;
 
 	/**
-	* @param yieldSyncV1VaultAddress {address}
+	* @param yieldSyncV1Vault {address}
 	* @param transferRequestId {uint256}
 	*/
-	function yieldSyncV1VaultAddress_transferRequestId_transferRequestProcess(
-		address yieldSyncV1VaultAddress,
+	function yieldSyncV1Vault_transferRequestId_transferRequestProcess(
+		address yieldSyncV1Vault,
 		uint256 transferRequestId
 	)
 		external
 	;
 
 	/**
-	* @param yieldSyncV1VaultAddress {address}
+	* @param yieldSyncV1Vault {address}
 	* @param transferRequestId {uint256}
 	* @return readyToBeProcessed {bool}
 	* @return approved {bool}
 	* @return message {string}
 	*/
-	function yieldSyncV1VaultAddress_transferRequestId_transferRequestStatus(
-		address yieldSyncV1VaultAddress,
+	function yieldSyncV1Vault_transferRequestId_transferRequestStatus(
+		address yieldSyncV1Vault,
 		uint256 transferRequestId
 	)
 		external
@@ -60,9 +60,9 @@ interface ITransferRequestProtocol
 
 	/**
 	* @param initiator {address}
-	* @param yieldSyncV1VaultAddress {address}
+	* @param yieldSyncV1Vault {address}
 	*/
-	function yieldSyncV1VaultInitialize(address initiator, address yieldSyncV1VaultAddress)
+	function yieldSyncV1VaultInitialize(address initiator, address yieldSyncV1Vault)
 		external
 	;
 }

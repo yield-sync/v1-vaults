@@ -16,14 +16,14 @@ import {
 contract MockAdmin is Ownable {
 	modifier validTransferRequest(
 		address yieldSyncV1ATransferRequestProtocol,
-		address yieldSyncV1VaultAddress,
+		address yieldSyncV1Vault,
 		uint256 transferRequestId
 	) {
 		require(
 			IYieldSyncV1ATransferRequestProtocol(
 				yieldSyncV1ATransferRequestProtocol
-			).yieldSyncV1VaultAddress_transferRequestId_transferRequest(
-				yieldSyncV1VaultAddress,
+			).yieldSyncV1Vault_transferRequestId_transferRequest(
+				yieldSyncV1Vault,
 				transferRequestId
 			).creator != address(0),
 			"No TransferRequest found"
@@ -33,20 +33,20 @@ contract MockAdmin is Ownable {
 	}
 
 
-	function yieldSyncV1VaultAddress_transferRequestId_transferRequestPollUpdatelatestForVoteTime(
+	function yieldSyncV1Vault_transferRequestId_transferRequestPollUpdatelatestForVoteTime(
 		address yieldSyncV1ATransferRequestProtocol,
-		address yieldSyncV1VaultAddress,
+		address yieldSyncV1Vault,
 		uint256 transferRequestId,
 		bool arithmaticSign,
 		uint256 timeInSeconds
 	)
 		public
-		validTransferRequest(yieldSyncV1ATransferRequestProtocol, yieldSyncV1VaultAddress, transferRequestId)
+		validTransferRequest(yieldSyncV1ATransferRequestProtocol, yieldSyncV1Vault, transferRequestId)
 	{
 		TransferRequestPoll memory transferRequestPoll = IYieldSyncV1ATransferRequestProtocol(
 			yieldSyncV1ATransferRequestProtocol
-		).yieldSyncV1VaultAddress_transferRequestId_transferRequestPoll(
-			yieldSyncV1VaultAddress,
+		).yieldSyncV1Vault_transferRequestId_transferRequestPoll(
+			yieldSyncV1Vault,
 			transferRequestId
 		);
 
@@ -63,8 +63,8 @@ contract MockAdmin is Ownable {
 
 		IYieldSyncV1ATransferRequestProtocol(
 			yieldSyncV1ATransferRequestProtocol
-		).yieldSyncV1VaultAddress_transferRequestId_transferRequestPollUpdate(
-			yieldSyncV1VaultAddress,
+		).yieldSyncV1Vault_transferRequestId_transferRequestPollUpdate(
+			yieldSyncV1Vault,
 			transferRequestId,
 			transferRequestPoll
 		);

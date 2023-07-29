@@ -40,7 +40,7 @@ async function main()
 		String(process.env.YIELD_SYNC_V1_VAULT_TRANSFER_REQUEST_PROTOCOL)
 	);
 
-	await yieldSyncV1ATransferRequestProtocol.yieldSyncV1VaultAddress_yieldSyncV1VaultPropertyUpdate(
+	await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 		owner.address,
 		[1, 1, 10]
 	);
@@ -68,7 +68,7 @@ async function main()
 			"verify:verify",
 			{
 				contract: "contracts/YieldSyncV1Vault.sol:YieldSyncV1Vault",
-				address: await yieldSyncV1VaultFactory.yieldSyncV1VaultId_yieldSyncV1VaultAddress(
+				address: await yieldSyncV1VaultFactory.yieldSyncV1VaultId_yieldSyncV1Vault(
 					await yieldSyncV1VaultFactory.yieldSyncV1VaultIdTracker() - 1
 				),
 				constructorArguments: [

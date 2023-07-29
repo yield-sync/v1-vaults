@@ -36,7 +36,7 @@ describe("[6] YieldSyncV1ATransferRequestProtocol.sol", async () => {
 		).deployed();
 
 		// Set YieldSyncV1Vault properties on TransferRequestProtocol.sol
-		await yieldSyncV1ATransferRequestProtocol.yieldSyncV1VaultAddress_yieldSyncV1VaultPropertyUpdate(
+		await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 			admin.address,
 			[2, 2, 5]
 		);
@@ -52,7 +52,7 @@ describe("[6] YieldSyncV1ATransferRequestProtocol.sol", async () => {
 
 		// Attach the deployed vault's address
 		yieldSyncV1Vault = await YieldSyncV1Vault.attach(
-			await yieldSyncV1VaultFactory.yieldSyncV1VaultId_yieldSyncV1VaultAddress(0)
+			await yieldSyncV1VaultFactory.yieldSyncV1VaultId_yieldSyncV1Vault(0)
 		);
 
 		// Send ether to YieldSyncV1Vault contract
@@ -109,7 +109,7 @@ describe("[6] YieldSyncV1ATransferRequestProtocol.sol", async () => {
 			).deployed();
 
 			// Preset
-			await mockSignatureProtocol.connect(BadActor).yieldSyncV1VaultAddress_signaturesRequiredUpdate(2);
+			await mockSignatureProtocol.connect(BadActor).yieldSyncV1Vault_signaturesRequiredUpdate(2);
 
 			await expect(
 				yieldSyncV1Vault.connect(BadActor).signatureProtocolUpdate(mockSignatureProtocol.address)
@@ -133,7 +133,7 @@ describe("[6] YieldSyncV1ATransferRequestProtocol.sol", async () => {
 			).deployed();
 
 			// Preset
-			await mockTransferRequestProtocol.connect(BadActor).yieldSyncV1VaultAddress_yieldSyncV1VaultPropertyUpdate(
+			await mockTransferRequestProtocol.connect(BadActor).yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 				BadActor.address,
 				[1, 1, 10]
 			);
@@ -146,12 +146,12 @@ describe("[6] YieldSyncV1ATransferRequestProtocol.sol", async () => {
 		});
 	});
 
-	describe("yieldSyncV1VaultAddress_transferRequestId_transferRequestProcess()", async () => {
+	describe("yieldSyncV1Vault_transferRequestId_transferRequestProcess()", async () => {
 		it("BadActor should not be able to process transferRequest..", async () => {
 			const [, , , , BadActor] = await ethers.getSigners();
 
 			await expect(
-				yieldSyncV1Vault.connect(BadActor).yieldSyncV1VaultAddress_transferRequestId_transferRequestProcess(0)
+				yieldSyncV1Vault.connect(BadActor).yieldSyncV1Vault_transferRequestId_transferRequestProcess(0)
 			).to.be.rejectedWith(
 				"!member"
 			);

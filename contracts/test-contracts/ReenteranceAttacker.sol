@@ -20,7 +20,7 @@ contract ReenteranceAttacker is Ownable
 		external
 		payable
 	{
-		IYieldSyncV1Vault(payable(vaultAddress)).yieldSyncV1VaultAddress_transferRequestId_transferRequestProcess(
+		IYieldSyncV1Vault(payable(vaultAddress)).yieldSyncV1Vault_transferRequestId_transferRequestProcess(
 			transferRequestId
 		);
 
@@ -36,7 +36,7 @@ contract ReenteranceAttacker is Ownable
 
 		transferRequestId = _transferRequestId;
 
-		IYieldSyncV1Vault(payable(_vaultAddress)).yieldSyncV1VaultAddress_transferRequestId_transferRequestProcess(
+		IYieldSyncV1Vault(payable(_vaultAddress)).yieldSyncV1Vault_transferRequestId_transferRequestProcess(
 			_transferRequestId
 		);
 	}
