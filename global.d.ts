@@ -11,7 +11,6 @@ type UpdateYieldSyncV1VaultProperty = [
 	number,
 ]
 
-
 // Open transfer request ids
 type OpenTransferRequestIds = number[]
 
