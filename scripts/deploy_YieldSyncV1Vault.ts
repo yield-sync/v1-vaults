@@ -111,10 +111,10 @@ async function main()
 		{ value: 0 }
 	);
 
-	console.log("Waiting 30 seconds before verifying..");
+	console.log("Waiting 60 seconds before verifying..");
 
 	// Delay
-	await delay(30000);
+	await delay(60000);
 
 	// verify
 	try
