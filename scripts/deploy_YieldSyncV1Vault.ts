@@ -31,18 +31,18 @@ async function main()
 	);
 
 	// Attach the deployed YieldSyncV1VaultFactory address
-	const yieldSyncV1VaultFactory = await YieldSyncV1VaultFactory.attach(
+	const yieldSyncV1VaultFactory: Contract = await YieldSyncV1VaultFactory.attach(
 		String(process.env.YIELD_SYNC_V1_VAULT_FACTORY)
 	);
 
 	// Attach the deployed YieldSyncV1ATransferRequestProtocol address
-	const yieldSyncV1ATransferRequestProtocol = await YieldSyncV1ATransferRequestProtocol.attach(
+	const yieldSyncV1ATransferRequestProtocol: Contract = await YieldSyncV1ATransferRequestProtocol.attach(
 		String(process.env.YIELD_SYNC_V1_VAULT_TRANSFER_REQUEST_PROTOCOL)
 	);
 
 	await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 		owner.address,
-		[1, 1, 10]
+		[1, 1, 10] as UpdateVaultProperty
 	);
 
 	// Deploy a vault

@@ -3,6 +3,7 @@ import { Contract, ContractFactory } from "ethers";
 import { ethers, run, network } from "hardhat";
 
 
+// [const]
 const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
 
 

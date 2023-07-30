@@ -3,6 +3,10 @@ import { Contract, ContractFactory } from "ethers";
 import { ethers, run } from "hardhat";
 
 
+// [const]
+const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
+
+
 async function main() {
 	const [owner] = await ethers.getSigners();
 
@@ -17,13 +21,12 @@ async function main() {
 	const mockERC20: Contract = await (await MockERC20.deploy()).deployed();
 	const mockERC721: Contract = await (await MockERC721.deploy()).deployed();
 
+
 	console.log("Waiting 30 seconds before verifying..");
 
 	// Delay
-	const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
-
-	// Delay
 	await delay(30000);
+
 
 	// verify
 	try
