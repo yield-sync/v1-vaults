@@ -156,10 +156,7 @@ contract YieldSyncV1ASignatureProtocol is
 		override
 		whenNotPaused()
 	{
-		(, bool member) = YieldSyncV1VaultAccessControl.yieldSyncV1Vault_participant_access(
-			yieldSyncV1Vault,
-			msg.sender
-		);
+		(, bool member) = YieldSyncV1VaultAccessControl.yieldSyncV1Vault_participant_access(yieldSyncV1Vault, msg.sender);
 
 		require(member, "!member");
 

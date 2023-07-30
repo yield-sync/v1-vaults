@@ -200,9 +200,7 @@ contract YieldSyncV1ATransferRequestProtocol is
 
 		require(_yieldSyncV1Vault_yieldSyncV1VaultProperty[initiator].forVoteRequired > 0, "!forVoteRequired");
 
-		_yieldSyncV1Vault_yieldSyncV1VaultProperty[
-			yieldSyncV1Vault
-		] = _yieldSyncV1Vault_yieldSyncV1VaultProperty[
+		_yieldSyncV1Vault_yieldSyncV1VaultProperty[yieldSyncV1Vault] = _yieldSyncV1Vault_yieldSyncV1VaultProperty[
 			initiator
 		];
 	}
@@ -389,9 +387,7 @@ contract YieldSyncV1ATransferRequestProtocol is
 
 		transferRequestPoll.votedMembers.push(msg.sender);
 
-		_yieldSyncV1Vault_transferRequestId_transferRequestPoll[yieldSyncV1Vault][
-			transferRequestId
-		] = transferRequestPoll;
+		_yieldSyncV1Vault_transferRequestId_transferRequestPoll[yieldSyncV1Vault][transferRequestId] = transferRequestPoll;
 
 		emit MemberVoted(yieldSyncV1Vault, transferRequestId, msg.sender, vote);
 	}
@@ -407,9 +403,7 @@ contract YieldSyncV1ATransferRequestProtocol is
 		accessAdmin(yieldSyncV1Vault)
 		validTransferRequest(yieldSyncV1Vault, transferRequestId)
 	{
-		_yieldSyncV1Vault_transferRequestId_transferRequestPoll[yieldSyncV1Vault][
-			transferRequestId
-		] = transferRequestPoll;
+		_yieldSyncV1Vault_transferRequestId_transferRequestPoll[yieldSyncV1Vault][transferRequestId] = transferRequestPoll;
 
 		emit UpdatedTransferRequestPoll(
 			yieldSyncV1Vault,

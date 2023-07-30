@@ -228,11 +228,7 @@ contract YieldSyncV1Vault is
 			{
 				if (IERC721(transferRequest.token).ownerOf(transferRequest.tokenId) == address(this))
 				{
-					IERC721(transferRequest.token).transferFrom(
-						address(this),
-						transferRequest.to,
-						transferRequest.tokenId
-					);
+					IERC721(transferRequest.token).transferFrom(address(this), transferRequest.to, transferRequest.tokenId);
 				}
 				else
 				{

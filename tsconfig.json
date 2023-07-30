@@ -8,5 +8,5 @@
 		"skipLibCheck": true
 	},
 	"files": ["./hardhat.config.ts"],
-	"include": ["./src", "./scripts", "./scripts/*", "./test/*"]
+	"include": ["./src", "./scripts", "./scripts/*", "./test/*", "global.d.ts"]
 }

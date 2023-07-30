@@ -8,29 +8,6 @@ const sevenDaysInSeconds = 7 * 24 * 60 * 60;
 const sixDaysInSeconds = 6 * 24 * 60 * 60;
 
 
-type TransferRequest = {
-	forERC20: boolean;
-	forERC721: boolean;
-	creator: string;
-	to: string;
-	token: string;
-	amount: number;
-	created: number;
-	tokenId: number;
-}
-
-type UpdatedTransferRequest = [
-	boolean,
-	boolean,
-	string,
-	string,
-	string,
-	number,
-	number,
-	number,
-]
-
-
 describe("[1] YieldSyncV1Vault.sol", async () => {
 	let mockAdmin: Contract;
 	let mockERC20: Contract;
@@ -1719,7 +1696,7 @@ describe("[1] YieldSyncV1Vault.sol", async () => {
 						updatedTR
 					);
 
-					const updatedTransferRequest: any = await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_transferRequestId_transferRequest(
+					const updatedTransferRequest: TransferRequest = await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_transferRequestId_transferRequest(
 						yieldSyncV1Vault.address,
 						idsOfOpenTransferRequests[idsOfOpenTransferRequests.length - 1]
 					);
@@ -1766,12 +1743,12 @@ describe("[1] YieldSyncV1Vault.sol", async () => {
 						]
 					);
 
-					const updatedTransferRequest: any = await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_transferRequestId_transferRequestPoll(
+					const updatedTransferRequestPoll: any = await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_transferRequestId_transferRequestPoll(
 						yieldSyncV1Vault.address,
 						idsOfOpenTransferRequests[idsOfOpenTransferRequests.length - 1]
 					);
 
-					expect(updatedTransferRequest.againstVoteCount).to.be.equal(1);
+					expect(updatedTransferRequestPoll.againstVoteCount).to.be.equal(1);
 				}
 			);
 
