@@ -2,6 +2,8 @@
 pragma solidity ^0.8.18;
 
 
+import { ReentrancyGuard } from "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+
 import {
 	ITransferRequestProtocol,
 	IYieldSyncV1ATransferRequestProtocol,
@@ -13,6 +15,7 @@ import {
 
 
 contract YieldSyncV1ATransferRequestProtocol is
+	ReentrancyGuard,
 	ITransferRequestProtocol,
 	IYieldSyncV1ATransferRequestProtocol
 {
@@ -342,6 +345,7 @@ contract YieldSyncV1ATransferRequestProtocol is
 	)
 		public
 		override
+		nonReentrant()
 		accessMember(yieldSyncV1Vault)
 		validTransferRequest(yieldSyncV1Vault, transferRequestId)
 	{
