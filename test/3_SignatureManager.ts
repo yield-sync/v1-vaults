@@ -1,7 +1,8 @@
+const { ethers } = require("hardhat");
+
+
 import { expect } from "chai";
 import { Bytes, Contract, ContractFactory, Signature, TypedDataDomain, TypedDataField } from "ethers";
-
-const { ethers } = require("hardhat");
 
 
 const chainId: number = 31337;

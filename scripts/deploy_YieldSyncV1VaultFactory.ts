@@ -1,4 +1,6 @@
 require("dotenv").config();
+
+
 import { Contract, ContractFactory } from "ethers";
 import { ethers, run, network } from "hardhat";
 
@@ -75,9 +77,7 @@ async function main()
 
 	// YieldSyncV1ATransferRequestProtocol
 	const yieldSyncV1ATransferRequestProtocol: Contract = await (
-		await YieldSyncV1ATransferRequestProtocol.deploy(
-			yieldSyncV1VaultAccessControl.address
-		)
+		await YieldSyncV1ATransferRequestProtocol.deploy(yieldSyncV1VaultAccessControl.address)
 	).deployed();
 
 	if (false)
@@ -160,11 +160,15 @@ async function main()
 
 
 main()
-	.then(() => {
+.then(
+	() =>
+	{
 		process.exit(0);
-	})
-	.catch((error) => {
+	}
+).catch(
+	(error) =>
+	{
 		console.error(error);
 		process.exit(1);
-	})
-;
+	}
+);

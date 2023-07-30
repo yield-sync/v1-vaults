@@ -1,7 +1,8 @@
+const { ethers } = require("hardhat");
+
+
 import { expect } from "chai";
 import { Contract, ContractFactory } from "ethers";
-
-const { ethers } = require("hardhat");
 
 
 const sevenDaysInSeconds = 7 * 24 * 60 * 60;
