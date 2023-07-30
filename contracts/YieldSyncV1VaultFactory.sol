@@ -31,13 +31,9 @@ contract YieldSyncV1VaultFactory is
 	uint256 public override fee;
 	uint256 public override yieldSyncV1VaultIdTracker;
 
-	mapping (
-		address yieldSyncV1VaultAddress => uint256 yieldSyncV1VaultId
-	) public override yieldSyncV1VaultAddress_yieldSyncV1VaultId;
+	mapping (address yieldSyncV1Vault => uint256 yieldSyncV1VaultId) public override yieldSyncV1Vault_yieldSyncV1VaultId;
 
-	mapping (
-		uint256 yieldSyncV1VaultId => address yieldSyncV1VaultAddress
-	) public override yieldSyncV1VaultId_yieldSyncV1VaultAddress;
+	mapping (uint256 yieldSyncV1VaultId => address yieldSyncV1Vault) public override yieldSyncV1VaultId_yieldSyncV1Vault;
 
 
 	constructor (address _YieldSyncGovernance, address _YieldSyncV1VaultAccessControl)
@@ -68,7 +64,7 @@ contract YieldSyncV1VaultFactory is
 		public
 		payable
 		override
-		returns (address deployedYieldSyncV1VaultAddress)
+		returns (address deployedyieldSyncV1Vault)
 	{
 		require(msg.value >= fee, "!msg.value");
 
@@ -81,8 +77,8 @@ contract YieldSyncV1VaultFactory is
 			members
 		);
 
-		yieldSyncV1VaultAddress_yieldSyncV1VaultId[address(deployedYieldSyncV1Vault)] = yieldSyncV1VaultIdTracker;
-		yieldSyncV1VaultId_yieldSyncV1VaultAddress[yieldSyncV1VaultIdTracker] = address(deployedYieldSyncV1Vault);
+		yieldSyncV1Vault_yieldSyncV1VaultId[address(deployedYieldSyncV1Vault)] = yieldSyncV1VaultIdTracker;
+		yieldSyncV1VaultId_yieldSyncV1Vault[yieldSyncV1VaultIdTracker] = address(deployedYieldSyncV1Vault);
 
 		yieldSyncV1VaultIdTracker++;
 

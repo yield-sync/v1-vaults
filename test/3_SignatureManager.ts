@@ -67,10 +67,10 @@ describe("[3] signatureProtocol.sol", async () => {
 			)
 		).deployed();
 
-		await signatureProtocol.yieldSyncV1VaultAddress_signaturesRequiredUpdate(2);
+		await signatureProtocol.yieldSyncV1Vault_signaturesRequiredUpdate(2);
 
 		// Set YieldSyncV1Vault properties on TransferRequestProtocol.sol
-		await yieldSyncV1ATransferRequestProtocol.yieldSyncV1VaultAddress_yieldSyncV1VaultPropertyUpdate(
+		await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 			owner.address,
 			[2, 2, 5]
 		);
@@ -86,7 +86,7 @@ describe("[3] signatureProtocol.sol", async () => {
 
 		// Attach the deployed vault's address
 		yieldSyncV1Vault = await YieldSyncV1Vault.attach(
-			await yieldSyncV1VaultFactory.yieldSyncV1VaultId_yieldSyncV1VaultAddress(0)
+			await yieldSyncV1VaultFactory.yieldSyncV1VaultId_yieldSyncV1Vault(0)
 		);
 
 		// Send ether to YieldSyncV1Vault contract
@@ -174,7 +174,7 @@ describe("[3] signatureProtocol.sol", async () => {
 		});
 
 		it(
-			"Should allow a MEMBER to sign a bytes32 messageHash and create a yieldSyncV1VaultAddress_messageHash_messageHashData value..",
+			"Should allow a MEMBER to sign a bytes32 messageHash and create a yieldSyncV1Vault_messageHash_messageHashData value..",
 			async () => {
 				await signatureProtocol.updatePause(false);
 
@@ -192,12 +192,12 @@ describe("[3] signatureProtocol.sol", async () => {
 
 				expect(retrievedBytes32[0]).to.be.equal(messageHash);
 
-				const messageHashData: any = await signatureProtocol.yieldSyncV1VaultAddress_messageHash_messageHashData(
+				const messageHashData: any = await signatureProtocol.yieldSyncV1Vault_messageHash_messageHashData(
 					yieldSyncV1Vault.address,
 					retrievedBytes32[0]
 				);
 
-				const messageHashVote: any = await signatureProtocol.yieldSyncV1VaultAddress_messageHash_messageHashVote(
+				const messageHashVote: any = await signatureProtocol.yieldSyncV1Vault_messageHash_messageHashVote(
 					yieldSyncV1Vault.address,
 					retrievedBytes32[0]
 				);
@@ -224,7 +224,7 @@ describe("[3] signatureProtocol.sol", async () => {
 			// [contract]
 			const retrievedBytes32 = await signatureProtocol.vaultMessageHashes(yieldSyncV1Vault.address);
 
-			const messageHashData: any = await signatureProtocol.yieldSyncV1VaultAddress_messageHash_messageHashData(
+			const messageHashData: any = await signatureProtocol.yieldSyncV1Vault_messageHash_messageHashData(
 				yieldSyncV1Vault.address,
 				retrievedBytes32[0]
 			);
@@ -266,7 +266,7 @@ describe("[3] signatureProtocol.sol", async () => {
 				// [contract]
 				const retrievedBytes32 = await signatureProtocol.vaultMessageHashes(yieldSyncV1Vault.address);
 
-				const messageHashData = await signatureProtocol.yieldSyncV1VaultAddress_messageHash_messageHashData(
+				const messageHashData = await signatureProtocol.yieldSyncV1Vault_messageHash_messageHashData(
 					yieldSyncV1Vault.address,
 					retrievedBytes32[0]
 				);
@@ -296,7 +296,7 @@ describe("[3] signatureProtocol.sol", async () => {
 			// [contract]
 			const retrievedBytes32 = await signatureProtocol.vaultMessageHashes(yieldSyncV1Vault.address);
 
-			const messageHashData: any = await signatureProtocol.yieldSyncV1VaultAddress_messageHash_messageHashData(
+			const messageHashData: any = await signatureProtocol.yieldSyncV1Vault_messageHash_messageHashData(
 				yieldSyncV1Vault.address,
 				retrievedBytes32[0]
 			);
@@ -375,12 +375,12 @@ describe("[3] signatureProtocol.sol", async () => {
 
 			expect(retrievedBytes32[0]).to.be.equal(messageHash);
 
-			const messageHashData: any = await signatureProtocol.yieldSyncV1VaultAddress_messageHash_messageHashData(
+			const messageHashData: any = await signatureProtocol.yieldSyncV1Vault_messageHash_messageHashData(
 				yieldSyncV1Vault.address,
 				retrievedBytes32[0]
 			);
 
-			const messageHashVote: any = await signatureProtocol.yieldSyncV1VaultAddress_messageHash_messageHashVote(
+			const messageHashVote: any = await signatureProtocol.yieldSyncV1Vault_messageHash_messageHashVote(
 				yieldSyncV1Vault.address,
 				retrievedBytes32[0]
 			);
@@ -410,7 +410,7 @@ describe("[3] signatureProtocol.sol", async () => {
 			// [contract]
 			const retrievedBytes32 = await signatureProtocol.vaultMessageHashes(yieldSyncV1Vault.address);
 
-			const messageHashData = await signatureProtocol.yieldSyncV1VaultAddress_messageHash_messageHashData(
+			const messageHashData = await signatureProtocol.yieldSyncV1Vault_messageHash_messageHashData(
 				yieldSyncV1Vault.address,
 				retrievedBytes32[0]
 			);

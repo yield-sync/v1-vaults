@@ -64,24 +64,24 @@ interface IYieldSyncV1VaultFactory
 	;
 
 	/**
-	* @notice yieldSyncV1VaultAddress to yieldSyncV1VaultId
+	* @notice yieldSyncV1Vault to yieldSyncV1VaultId
 	* @dev [view-mapping]
-	* @param yieldSyncV1VaultAddress {address}
+	* @param yieldSyncV1Vault {address}
 	* @return {uint256}
 	*/
-	function yieldSyncV1VaultAddress_yieldSyncV1VaultId(address yieldSyncV1VaultAddress)
+	function yieldSyncV1Vault_yieldSyncV1VaultId(address yieldSyncV1Vault)
 		external
 		view
 		returns (uint256)
 	;
 
 	/**
-	* @notice yieldSyncV1VaultId to yieldSyncV1VaultAddress
+	* @notice yieldSyncV1VaultId to yieldSyncV1Vault
 	* @dev [view-mapping]
 	* @param yieldSyncV1VaultId {uint256}
 	* @return {address}
 	*/
-	function yieldSyncV1VaultId_yieldSyncV1VaultAddress(uint256 yieldSyncV1VaultId)
+	function yieldSyncV1VaultId_yieldSyncV1Vault(uint256 yieldSyncV1VaultId)
 		external
 		view
 		returns (address)
@@ -94,7 +94,7 @@ interface IYieldSyncV1VaultFactory
 	* @param transferRequestProtocol {uint256}
 	* @param admins {address[]}
 	* @param members {address[]}
-	* @return deployedYieldSyncV1VaultAddress {address} Deployed vault
+	* @return deployedyieldSyncV1Vault {address} Deployed vault
 	*/
 	function deployYieldSyncV1Vault(
 		address signatureProtocol,
@@ -104,7 +104,7 @@ interface IYieldSyncV1VaultFactory
 	)
 		external
 		payable
-		returns (address deployedYieldSyncV1VaultAddress)
+		returns (address deployedyieldSyncV1Vault)
 	;
 
 	/**

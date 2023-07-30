@@ -39,7 +39,7 @@ describe("[5] YieldSyncV1Vault.sol", async () => {
 		).deployed();
 
 		// Set YieldSyncV1Vault properties on TransferRequestProtocol.sol
-		await yieldSyncV1ATransferRequestProtocol.yieldSyncV1VaultAddress_yieldSyncV1VaultPropertyUpdate(
+		await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 			admin.address,
 			[2, 2, twoDaysInSeconds]
 		);
@@ -55,7 +55,7 @@ describe("[5] YieldSyncV1Vault.sol", async () => {
 
 		// Attach the deployed vault's address
 		yieldSyncV1Vault = await YieldSyncV1Vault.attach(
-			await yieldSyncV1VaultFactory.yieldSyncV1VaultId_yieldSyncV1VaultAddress(0)
+			await yieldSyncV1VaultFactory.yieldSyncV1VaultId_yieldSyncV1Vault(0)
 		);
 
 		// Send ether to YieldSyncV1Vault contract
@@ -112,7 +112,7 @@ describe("[5] YieldSyncV1Vault.sol", async () => {
 			).deployed();
 
 			// Preset
-			await mockSignatureProtocol.connect(BadActor).yieldSyncV1VaultAddress_signaturesRequiredUpdate(2);
+			await mockSignatureProtocol.connect(BadActor).yieldSyncV1Vault_signaturesRequiredUpdate(2);
 
 			await expect(
 				yieldSyncV1Vault.connect(BadActor).signatureProtocolUpdate(mockSignatureProtocol.address)
@@ -136,7 +136,7 @@ describe("[5] YieldSyncV1Vault.sol", async () => {
 			).deployed();
 
 			// Preset
-			await mockTransferRequestProtocol.connect(BadActor).yieldSyncV1VaultAddress_yieldSyncV1VaultPropertyUpdate(
+			await mockTransferRequestProtocol.connect(BadActor).yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 				BadActor.address,
 				[1, 1, 10]
 			);
@@ -149,12 +149,12 @@ describe("[5] YieldSyncV1Vault.sol", async () => {
 		});
 	});
 
-	describe("yieldSyncV1VaultAddress_transferRequestId_transferRequestProcess()", async () => {
+	describe("yieldSyncV1Vault_transferRequestId_transferRequestProcess()", async () => {
 		it("BadActor should not be able to process transferRequest..", async () => {
 			const [, , , , BadActor] = await ethers.getSigners();
 
 			await expect(
-				yieldSyncV1Vault.connect(BadActor).yieldSyncV1VaultAddress_transferRequestId_transferRequestProcess(0)
+				yieldSyncV1Vault.connect(BadActor).yieldSyncV1Vault_transferRequestId_transferRequestProcess(0)
 			).to.be.rejectedWith(
 				"!member"
 			);
@@ -184,7 +184,7 @@ describe("[5] YieldSyncV1Vault.sol", async () => {
 
 			await yieldSyncV1ATransferRequestProtocol.connect(
 				addr1
-			).yieldSyncV1VaultAddress_transferRequestId_transferRequestCreate(
+			).yieldSyncV1Vault_transferRequestId_transferRequestCreate(
 				yieldSyncV1Vault.address,
 				false,
 				false,
@@ -197,7 +197,7 @@ describe("[5] YieldSyncV1Vault.sol", async () => {
 			// Vote
 			await yieldSyncV1ATransferRequestProtocol.connect(
 				addr1
-			).yieldSyncV1VaultAddress_transferRequestId_transferRequestPollVote(
+			).yieldSyncV1Vault_transferRequestId_transferRequestPollVote(
 				yieldSyncV1Vault.address,
 				0,
 				true
@@ -206,7 +206,7 @@ describe("[5] YieldSyncV1Vault.sol", async () => {
 			// Vote
 			await yieldSyncV1ATransferRequestProtocol.connect(
 				addr2
-			).yieldSyncV1VaultAddress_transferRequestId_transferRequestPollVote(
+			).yieldSyncV1Vault_transferRequestId_transferRequestPollVote(
 				yieldSyncV1Vault.address,
 				0,
 				true
