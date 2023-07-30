@@ -41,7 +41,7 @@ describe("[5] YieldSyncV1Vault.sol", async () => {
 		// Set YieldSyncV1Vault properties on TransferRequestProtocol.sol
 		await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 			admin.address,
-			[2, 2, twoDaysInSeconds] as UpdateYieldSyncV1VaultProperty
+			[2, 2, twoDaysInSeconds] as UpdateVaultProperty
 		);
 
 		// Deploy a vault

@@ -1,11 +1,11 @@
 // Vault properties
-type YieldSyncV1VaultProperty = {
+type VaultProperty = {
 	againstVoteRequired: number,
 	forVoteRequired: number,
 	transferDelaySeconds: number,
 }
 
-type UpdateYieldSyncV1VaultProperty = [
+type UpdateVaultProperty = [
 	number,
 	number,
 	number,
