@@ -89,7 +89,7 @@ contract YieldSyncV1ATransferRequestProtocol is
 	* @dev [restriction][internal]
 	* @dev [delete] `_yieldSyncV1Vault_transferRequestId_transferRequest[yieldSyncV1Vault]` value
 	* @dev [delete] `_yieldSyncV1Vault_transferRequestId_transferRequestPoll[yieldSyncV1Vault]` value
-	*      [delete] `_yieldSyncV1Vault_idsOfOpenTransferRequests` value
+	*      [delete] `_yieldSyncV1Vault_openTransferRequestIds` value
 	* @param yieldSyncV1Vault {address}
 	* @param transferRequestId {uint256}
 	*/

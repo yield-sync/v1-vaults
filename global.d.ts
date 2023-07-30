@@ -1,3 +1,7 @@
+// Open transfer request ids
+type OpenTransferRequestIds = number[]
+
+// Transfer Request
 type TransferRequest = {
 	forERC20: boolean;
 	forERC721: boolean;
@@ -18,4 +22,19 @@ type UpdatedTransferRequest = [
 	number,
 	number,
 	number,
+]
+
+// Transfer Request Poll
+type TransferRequestPoll = {
+	againstVoteCount: number;
+	forVoteCount: number;
+	latestForVoteTime: number;
+	votedMembers: string[];
+}
+
+type UpdatedTransferRequestPoll = [
+	number,
+	number,
+	nusmber,
+	string[],
 ]
