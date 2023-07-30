@@ -169,7 +169,7 @@ describe("[0] YieldSyncV1VaultFactory.sol", async () => {
 					await expect(
 						yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 							addr1.address,
-							[1, 1, 10]
+							[1, 1, 10] as UpdateYieldSyncV1VaultProperty
 						)
 					).to.be.rejectedWith("!admin && msg.sender != yieldSyncV1Vault");
 				}
@@ -183,10 +183,10 @@ describe("[0] YieldSyncV1VaultFactory.sol", async () => {
 					// Preset
 					await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 						addr1.address,
-						[1, 1, 10]
+						[1, 1, 10] as UpdateYieldSyncV1VaultProperty
 					);
 
-					const vaultProperties = await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultProperty(
+					const vaultProperties: YieldSyncV1VaultProperty = await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultProperty(
 						addr1.address
 					);
 
@@ -242,7 +242,7 @@ describe("[0] YieldSyncV1VaultFactory.sol", async () => {
 					// Preset
 					await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 						addr1.address,
-						[1, 1, 10]
+						[1, 1, 10] as UpdateYieldSyncV1VaultProperty
 					);
 
 					const deployedObj = await yieldSyncV1VaultFactory.connect(addr1).deployYieldSyncV1Vault(
@@ -265,9 +265,11 @@ describe("[0] YieldSyncV1VaultFactory.sol", async () => {
 					const [, addr1] = await ethers.getSigners();
 
 					// Preset
-					await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+					await yieldSyncV1ATransferRequestProtocol.connect(
+						addr1
+					).yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 						addr1.address,
-						[1, 1, 10]
+						[1, 1, 10] as UpdateYieldSyncV1VaultProperty
 					);
 
 					await yieldSyncV1VaultFactory.connect(addr1).deployYieldSyncV1Vault(
@@ -312,7 +314,7 @@ describe("[0] YieldSyncV1VaultFactory.sol", async () => {
 					// Preset
 					await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 						addr1.address,
-						[1, 1, 10]
+						[1, 1, 10] as UpdateYieldSyncV1VaultProperty
 					);
 
 					await yieldSyncV1VaultFactory.connect(addr1).deployYieldSyncV1Vault(
@@ -341,7 +343,7 @@ describe("[0] YieldSyncV1VaultFactory.sol", async () => {
 					// Preset
 					await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 						addr1.address,
-						[1, 1, 10]
+						[1, 1, 10] as UpdateYieldSyncV1VaultProperty
 					);
 
 					// Preset
@@ -375,7 +377,7 @@ describe("[0] YieldSyncV1VaultFactory.sol", async () => {
 						// Preset
 						await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 							addr1.address,
-							[1, 1, 10]
+							[1, 1, 10] as UpdateYieldSyncV1VaultProperty
 						);
 
 						// Preset
@@ -415,7 +417,7 @@ describe("[0] YieldSyncV1VaultFactory.sol", async () => {
 						// Preset
 						await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 							addr1.address,
-							[1, 1, 10]
+							[1, 1, 10] as UpdateYieldSyncV1VaultProperty
 						);
 
 						// Preset

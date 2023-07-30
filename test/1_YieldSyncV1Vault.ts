@@ -76,7 +76,7 @@ describe("[1] YieldSyncV1Vault.sol", async () => {
 		// Set YieldSyncV1Vault properties on TransferRequestProtocol.sol
 		await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 			owner.address,
-			[2, 2, sixDaysInSeconds]
+			[2, 2, sixDaysInSeconds] as UpdateYieldSyncV1VaultProperty
 		);
 
 		// Preset - Set purposer signature
