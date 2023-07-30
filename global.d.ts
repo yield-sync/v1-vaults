@@ -6,8 +6,11 @@ type VaultProperty = {
 }
 
 type UpdateVaultProperty = [
+	// againstVoteRequired
 	number,
+	// forVoteRequired
 	number,
+	// transferDelaySeconds
 	number,
 ]
 
@@ -27,13 +30,21 @@ type TransferRequest = {
 }
 
 type UpdatedTransferRequest = [
+	// forERC20
 	boolean,
+	// forERC721
 	boolean,
+	// creator
 	string,
+	// to
 	string,
+	// token
 	string,
+	// amount
 	number,
+	// created
 	number,
+	// tokenId
 	number,
 ]
 
@@ -46,8 +57,12 @@ type TransferRequestPoll = {
 }
 
 type UpdatedTransferRequestPoll = [
+	// againstVoteCount
 	number,
+	// forVoteCount
 	number,
-	nusmber,
+	// latestForVoteTime
+	number,
+	// votedMembers
 	string[],
 ]
