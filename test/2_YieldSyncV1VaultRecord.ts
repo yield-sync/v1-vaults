@@ -61,7 +61,7 @@ describe("[2] YieldSyncV1VaultAccessControl.sol", async () => {
 		it("Should have values set properly..", async () => {
 			const [owner] = await ethers.getSigners();
 
-			const admin_yieldSyncV1Vaults = await yieldSyncV1VaultAccessControl.admin_yieldSyncV1Vaultes(
+			const admin_yieldSyncV1Vaults = await yieldSyncV1VaultAccessControl.admin_yieldSyncV1Vaults(
 				owner.address
 			);
 
@@ -102,21 +102,21 @@ describe("[2] YieldSyncV1VaultAccessControl.sol", async () => {
 		it("Should have values set properly..", async () => {
 			const [, addr1, addr2, addr3] = await ethers.getSigners();
 
-			const addr1_member_yieldSyncV1Vaults = await yieldSyncV1VaultAccessControl.member_yieldSyncV1Vaultes(
+			const addr1_member_yieldSyncV1Vaults = await yieldSyncV1VaultAccessControl.member_yieldSyncV1Vaults(
 				addr1.address
 			);
 
 			expect(addr1_member_yieldSyncV1Vaults.length).to.be.equal(1);
 			expect(addr1_member_yieldSyncV1Vaults[0]).to.be.equal(yieldSyncV1Vault.address);
 
-			const addr2_member_yieldSyncV1Vaults = await yieldSyncV1VaultAccessControl.member_yieldSyncV1Vaultes(
+			const addr2_member_yieldSyncV1Vaults = await yieldSyncV1VaultAccessControl.member_yieldSyncV1Vaults(
 				addr2.address
 			);
 
 			expect(addr2_member_yieldSyncV1Vaults.length).to.be.equal(1);
 			expect(addr2_member_yieldSyncV1Vaults[0]).to.be.equal(yieldSyncV1Vault.address);
 
-			const addr3_member_yieldSyncV1Vaults = await yieldSyncV1VaultAccessControl.member_yieldSyncV1Vaultes(
+			const addr3_member_yieldSyncV1Vaults = await yieldSyncV1VaultAccessControl.member_yieldSyncV1Vaults(
 				addr3.address
 			);
 
@@ -249,7 +249,7 @@ describe("[2] YieldSyncV1VaultAccessControl.sol", async () => {
 			await yieldSyncV1Vault.adminRemove(addr4.address);
 
 			// admin_yieldSyncV1Vaults
-			const admin_yieldSyncV1Vaults = await yieldSyncV1VaultAccessControl.admin_yieldSyncV1Vaultes(
+			const admin_yieldSyncV1Vaults = await yieldSyncV1VaultAccessControl.admin_yieldSyncV1Vaults(
 				addr4.address
 			);
 
@@ -327,7 +327,7 @@ describe("[2] YieldSyncV1VaultAccessControl.sol", async () => {
 			await yieldSyncV1Vault.memberRemove(addr2.address);
 
 			// member_yieldSyncV1Vaults
-			const member_yieldSyncV1Vaults = await yieldSyncV1VaultAccessControl.member_yieldSyncV1Vaultes(
+			const member_yieldSyncV1Vaults = await yieldSyncV1VaultAccessControl.member_yieldSyncV1Vaults(
 				addr2.address
 			);
 

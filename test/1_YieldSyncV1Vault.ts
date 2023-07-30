@@ -190,7 +190,7 @@ describe("[1] YieldSyncV1Vault.sol", async () => {
 				).to.be.equal(owner.address);
 
 				expect(
-					(await yieldSyncV1VaultAccessControl.admin_yieldSyncV1Vaultes(owner.address))[0]
+					(await yieldSyncV1VaultAccessControl.admin_yieldSyncV1Vaults(owner.address))[0]
 				).to.be.equal(yieldSyncV1Vault.address);
 			}
 		);
@@ -212,7 +212,7 @@ describe("[1] YieldSyncV1Vault.sol", async () => {
 				).to.be.equal(addr1.address);
 
 				expect(
-					(await yieldSyncV1VaultAccessControl.member_yieldSyncV1Vaultes(addr1.address))[0]
+					(await yieldSyncV1VaultAccessControl.member_yieldSyncV1Vaults(addr1.address))[0]
 				).to.be.equal(yieldSyncV1Vault.address);
 			}
 		);
@@ -236,7 +236,7 @@ describe("[1] YieldSyncV1Vault.sol", async () => {
 					).to.be.true;
 
 					expect(
-						(await yieldSyncV1VaultAccessControl.admin_yieldSyncV1Vaultes(addr4.address))[0]
+						(await yieldSyncV1VaultAccessControl.admin_yieldSyncV1Vaults(addr4.address))[0]
 					).to.be.equal(yieldSyncV1Vault.address);
 
 
@@ -259,7 +259,7 @@ describe("[1] YieldSyncV1Vault.sol", async () => {
 					).to.be.true;
 
 					expect(
-						(await yieldSyncV1VaultAccessControl.admin_yieldSyncV1Vaultes(mockAdmin.address))[0]
+						(await yieldSyncV1VaultAccessControl.admin_yieldSyncV1Vaults(mockAdmin.address))[0]
 					).to.be.equal(yieldSyncV1Vault.address);
 
 
@@ -304,7 +304,7 @@ describe("[1] YieldSyncV1Vault.sol", async () => {
 					).to.be.true;
 
 					expect(
-						(await yieldSyncV1VaultAccessControl.member_yieldSyncV1Vaultes(addr2.address))[0]
+						(await yieldSyncV1VaultAccessControl.member_yieldSyncV1Vaults(addr2.address))[0]
 					).to.be.equal(yieldSyncV1Vault.address);
 
 
@@ -1601,7 +1601,7 @@ describe("[1] YieldSyncV1Vault.sol", async () => {
 
 					await yieldSyncV1Vault.memberAdd(addr6.address);
 
-					const vaultsBefore = await yieldSyncV1VaultAccessControl.member_yieldSyncV1Vaultes(addr6.address)
+					const vaultsBefore = await yieldSyncV1VaultAccessControl.member_yieldSyncV1Vaults(addr6.address)
 
 					let found: boolean = false;
 
@@ -1614,7 +1614,7 @@ describe("[1] YieldSyncV1Vault.sol", async () => {
 
 					await yieldSyncV1Vault.connect(addr6).renounceMembership();
 
-					const vaultsAfter = await yieldSyncV1VaultAccessControl.member_yieldSyncV1Vaultes(addr6.address)
+					const vaultsAfter = await yieldSyncV1VaultAccessControl.member_yieldSyncV1Vaults(addr6.address)
 
 					for (let i = 0; i < vaultsAfter.length; i++)
 					{

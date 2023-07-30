@@ -17,8 +17,8 @@ struct Access
 contract YieldSyncV1VaultAccessControl is
 	IYieldSyncV1VaultAccessControl
 {
-	mapping (address admin => address[] yieldSyncV1Vaultes) internal _admin_yieldSyncV1Vaultes;
-	mapping (address member => address[] yieldSyncV1Vaultes) internal _member_yieldSyncV1Vaultes;
+	mapping (address admin => address[] yieldSyncV1Vaults) internal _admin_yieldSyncV1Vaults;
+	mapping (address member => address[] yieldSyncV1Vaults) internal _member_yieldSyncV1Vaults;
 	mapping (address yieldSyncV1Vault => address[] admins) internal _yieldSyncV1Vault_admins;
 	mapping (address yieldSyncV1Vault => address[] members) internal _yieldSyncV1Vault_members;
 
@@ -36,23 +36,23 @@ contract YieldSyncV1VaultAccessControl is
 
 
 	/// @inheritdoc IYieldSyncV1VaultAccessControl
-	function admin_yieldSyncV1Vaultes(address admin)
+	function admin_yieldSyncV1Vaults(address admin)
 		public
 		view
 		override
 		returns (address[] memory)
 	{
-		return _admin_yieldSyncV1Vaultes[admin];
+		return _admin_yieldSyncV1Vaults[admin];
 	}
 
 		/// @inheritdoc IYieldSyncV1VaultAccessControl
-	function member_yieldSyncV1Vaultes(address member)
+	function member_yieldSyncV1Vaults(address member)
 		public
 		view
 		override
 		returns (address[] memory)
 	{
-		return _member_yieldSyncV1Vaultes[member];
+		return _member_yieldSyncV1Vaults[member];
 	}
 
 	/// @inheritdoc IYieldSyncV1VaultAccessControl
@@ -95,7 +95,7 @@ contract YieldSyncV1VaultAccessControl is
 	{
 		require(!_yieldSyncV1Vault_participant_access[yieldSyncV1Vault][target].admin, "Already admin");
 
-		_admin_yieldSyncV1Vaultes[target].push(yieldSyncV1Vault);
+		_admin_yieldSyncV1Vaults[target].push(yieldSyncV1Vault);
 
 		_yieldSyncV1Vault_admins[yieldSyncV1Vault].push(target);
 
@@ -114,15 +114,15 @@ contract YieldSyncV1VaultAccessControl is
 		require(_yieldSyncV1Vault_participant_access[yieldSyncV1Vault][admin].admin, "Not admin");
 
 		// [update] _admin_yieldSyncV1Vaults
-		for (uint256 i = 0; i < _admin_yieldSyncV1Vaultes[admin].length; i++)
+		for (uint256 i = 0; i < _admin_yieldSyncV1Vaults[admin].length; i++)
 		{
-			if (_admin_yieldSyncV1Vaultes[admin][i] == yieldSyncV1Vault)
+			if (_admin_yieldSyncV1Vaults[admin][i] == yieldSyncV1Vault)
 			{
-				_admin_yieldSyncV1Vaultes[admin][i] = _admin_yieldSyncV1Vaultes[admin][
-					_admin_yieldSyncV1Vaultes[admin].length - 1
+				_admin_yieldSyncV1Vaults[admin][i] = _admin_yieldSyncV1Vaults[admin][
+					_admin_yieldSyncV1Vaults[admin].length - 1
 				];
 
-				_admin_yieldSyncV1Vaultes[admin].pop();
+				_admin_yieldSyncV1Vaults[admin].pop();
 
 				break;
 			}
@@ -157,7 +157,7 @@ contract YieldSyncV1VaultAccessControl is
 	{
 		require(!_yieldSyncV1Vault_participant_access[yieldSyncV1Vault][target].member, "Already member");
 
-		_member_yieldSyncV1Vaultes[target].push(yieldSyncV1Vault);
+		_member_yieldSyncV1Vaults[target].push(yieldSyncV1Vault);
 
 		_yieldSyncV1Vault_members[yieldSyncV1Vault].push(target);
 
@@ -176,15 +176,15 @@ contract YieldSyncV1VaultAccessControl is
 		require(_yieldSyncV1Vault_participant_access[yieldSyncV1Vault][member].member, "Not member");
 
 		// [update] _member_yieldSyncV1Vaults
-		for (uint256 i = 0; i < _member_yieldSyncV1Vaultes[member].length; i++)
+		for (uint256 i = 0; i < _member_yieldSyncV1Vaults[member].length; i++)
 		{
-			if (_member_yieldSyncV1Vaultes[member][i] == yieldSyncV1Vault)
+			if (_member_yieldSyncV1Vaults[member][i] == yieldSyncV1Vault)
 			{
-				_member_yieldSyncV1Vaultes[member][i] = _member_yieldSyncV1Vaultes[member][
-					_member_yieldSyncV1Vaultes[member].length - 1
+				_member_yieldSyncV1Vaults[member][i] = _member_yieldSyncV1Vaults[member][
+					_member_yieldSyncV1Vaults[member].length - 1
 				];
 
-				_member_yieldSyncV1Vaultes[member].pop();
+				_member_yieldSyncV1Vaults[member].pop();
 
 				break;
 			}
