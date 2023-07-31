@@ -331,7 +331,7 @@ contract YieldSyncV1ATransferRequestProtocol is
 
 		_yieldSyncV1Vault_transferRequestId_transferRequest[yieldSyncV1Vault][transferRequestId] = transferRequest;
 
-		emit UpdatedTransferRequest(
+		emit UpdateTransferRequest(
 			yieldSyncV1Vault,
 			_yieldSyncV1Vault_transferRequestId_transferRequest[yieldSyncV1Vault][transferRequestId]
 		);
@@ -409,7 +409,7 @@ contract YieldSyncV1ATransferRequestProtocol is
 	{
 		_yieldSyncV1Vault_transferRequestId_transferRequestPoll[yieldSyncV1Vault][transferRequestId] = transferRequestPoll;
 
-		emit UpdatedTransferRequestPoll(
+		emit UpdateTransferRequestPoll(
 			yieldSyncV1Vault,
 			_yieldSyncV1Vault_transferRequestId_transferRequestPoll[yieldSyncV1Vault][transferRequestId]
 		);

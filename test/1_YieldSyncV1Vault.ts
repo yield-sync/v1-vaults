@@ -1654,7 +1654,7 @@ describe("[1] YieldSyncV1Vault.sol", async () => {
 						openTransferRequestIds[openTransferRequestIds.length - 1]
 					);
 
-					const updatedTR: UpdatedTransferRequest = [
+					const updatedTR: UpdateTransferRequest = [
 						transferRequest.forERC20,
 						transferRequest.forERC721,
 						transferRequest.creator,
@@ -1702,7 +1702,7 @@ describe("[1] YieldSyncV1Vault.sol", async () => {
 						openTransferRequestIds[openTransferRequestIds.length - 1]
 					);
 
-					const updatedTR: UpdatedTransferRequest = [
+					const updatedTR: UpdateTransferRequest = [
 						true,
 						true,
 						transferRequest.creator,
@@ -1749,7 +1749,7 @@ describe("[1] YieldSyncV1Vault.sol", async () => {
 						openTransferRequestIds[openTransferRequestIds.length - 1]
 					);
 
-					const updatedTR: UpdatedTransferRequest = [
+					const updatedTR: UpdateTransferRequest = [
 						transferRequest.forERC20,
 						transferRequest.forERC721,
 						transferRequest.creator,
@@ -1813,7 +1813,7 @@ describe("[1] YieldSyncV1Vault.sol", async () => {
 							transferRequestPoll.forVoteCount,
 							transferRequestPoll.latestForVoteTime,
 							transferRequestPoll.votedMembers,
-						] as UpdatedTransferRequestPoll
+						] as UpdateTransferRequestPoll
 					);
 
 					const updatedTransferRequestPoll: TransferRequestPoll = await yieldSyncV1ATransferRequestProtocol

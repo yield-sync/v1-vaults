@@ -27,8 +27,8 @@ interface IYieldSyncV1ATransferRequestProtocol is
 {
 	event CreatedTransferRequest(address yieldSyncV1Vault, uint256 transferRequestId);
 	event DeletedTransferRequest(address yieldSyncV1Vault, uint256 transferRequestId);
-	event UpdatedTransferRequest(address yieldSyncV1Vault, TransferRequest transferRequest);
-	event UpdatedTransferRequestPoll(address yieldSyncV1Vault, TransferRequestPoll transferRequestPoll);
+	event UpdateTransferRequest(address yieldSyncV1Vault, TransferRequest transferRequest);
+	event UpdateTransferRequestPoll(address yieldSyncV1Vault, TransferRequestPoll transferRequestPoll);
 	event MemberVoted(address yieldSyncV1Vault, uint256 transferRequestId, address indexed member, bool vote);
 	event TransferRequestReadyToBeProcessed(address yieldSyncV1Vault, uint256 transferRequestId);
 
@@ -132,7 +132,7 @@ interface IYieldSyncV1ATransferRequestProtocol is
 	* @param yieldSyncV1Vault {address}
 	* @param transferRequestId {uint256}
 	* @param transferRequest {TransferRequest}
-	* Emits: `UpdatedTransferRequest`
+	* Emits: `UpdateTransferRequest`
 	*/
 	function yieldSyncV1Vault_transferRequestId_transferRequestUpdate(
 		address yieldSyncV1Vault,
@@ -167,7 +167,7 @@ interface IYieldSyncV1ATransferRequestProtocol is
 	* @param yieldSyncV1Vault {address}
 	* @param transferRequestId {uint256}
 	* @param transferRequestPoll {TransferRequestPoll}
-	* Emits: `UpdatedTransferRequestPoll`
+	* Emits: `UpdateTransferRequestPoll`
 	*/
 	function yieldSyncV1Vault_transferRequestId_transferRequestPollUpdate(
 		address yieldSyncV1Vault,

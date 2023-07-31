@@ -29,7 +29,7 @@ type TransferRequest = {
 	tokenId: number,
 }
 
-type UpdatedTransferRequest = [
+type UpdateTransferRequest = [
 	// forERC20
 	boolean,
 	// forERC721
@@ -56,7 +56,7 @@ type TransferRequestPoll = {
 	votedMembers: string[],
 }
 
-type UpdatedTransferRequestPoll = [
+type UpdateTransferRequestPoll = [
 	// againstVoteCount
 	number,
 	// forVoteCount
