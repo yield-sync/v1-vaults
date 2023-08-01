@@ -62,7 +62,7 @@ type UpdateTransferRequestPoll = [
 	// forVoteCount
 	number,
 	// latestForVoteTime
-	number,
+	number | bigint,
 	// votedMembers
 	string[],
 ]

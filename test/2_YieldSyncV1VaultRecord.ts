@@ -61,7 +61,7 @@ describe("[2] YieldSyncV1VaultAccessControl.sol", async () => {
 		it("Should have values set properly..", async () => {
 			const [owner] = await ethers.getSigners();
 
-			const admin_yieldSyncV1Vaults = await yieldSyncV1VaultAccessControl.admin_yieldSyncV1Vaults(
+			const admin_yieldSyncV1Vaults: string[] = await yieldSyncV1VaultAccessControl.admin_yieldSyncV1Vaults(
 				owner.address
 			);
 
@@ -87,7 +87,7 @@ describe("[2] YieldSyncV1VaultAccessControl.sol", async () => {
 		it("Should have values set properly..", async () => {
 			const [, addr1, addr2, addr3] = await ethers.getSigners();
 
-			const yieldSyncV1Vault_members = await yieldSyncV1VaultAccessControl.yieldSyncV1Vault_members(
+			const yieldSyncV1Vault_members: string[] = await yieldSyncV1VaultAccessControl.yieldSyncV1Vault_members(
 				yieldSyncV1Vault.address
 			);
 
@@ -102,21 +102,21 @@ describe("[2] YieldSyncV1VaultAccessControl.sol", async () => {
 		it("Should have values set properly..", async () => {
 			const [, addr1, addr2, addr3] = await ethers.getSigners();
 
-			const addr1_member_yieldSyncV1Vaults = await yieldSyncV1VaultAccessControl.member_yieldSyncV1Vaults(
+			const addr1_member_yieldSyncV1Vaults: string[] = await yieldSyncV1VaultAccessControl.member_yieldSyncV1Vaults(
 				addr1.address
 			);
 
 			expect(addr1_member_yieldSyncV1Vaults.length).to.be.equal(1);
 			expect(addr1_member_yieldSyncV1Vaults[0]).to.be.equal(yieldSyncV1Vault.address);
 
-			const addr2_member_yieldSyncV1Vaults = await yieldSyncV1VaultAccessControl.member_yieldSyncV1Vaults(
+			const addr2_member_yieldSyncV1Vaults: string[] = await yieldSyncV1VaultAccessControl.member_yieldSyncV1Vaults(
 				addr2.address
 			);
 
 			expect(addr2_member_yieldSyncV1Vaults.length).to.be.equal(1);
 			expect(addr2_member_yieldSyncV1Vaults[0]).to.be.equal(yieldSyncV1Vault.address);
 
-			const addr3_member_yieldSyncV1Vaults = await yieldSyncV1VaultAccessControl.member_yieldSyncV1Vaults(
+			const addr3_member_yieldSyncV1Vaults: string[] = await yieldSyncV1VaultAccessControl.member_yieldSyncV1Vaults(
 				addr3.address
 			);
 
@@ -212,7 +212,7 @@ describe("[2] YieldSyncV1VaultAccessControl.sol", async () => {
 
 			await yieldSyncV1Vault.adminAdd(addr4.address);
 
-			const yieldSyncV1Vault_admins = await yieldSyncV1VaultAccessControl.yieldSyncV1Vault_admins(
+			const yieldSyncV1Vault_admins: string[] = await yieldSyncV1VaultAccessControl.yieldSyncV1Vault_admins(
 				yieldSyncV1Vault.address
 			);
 
@@ -249,7 +249,7 @@ describe("[2] YieldSyncV1VaultAccessControl.sol", async () => {
 			await yieldSyncV1Vault.adminRemove(addr4.address);
 
 			// admin_yieldSyncV1Vaults
-			const admin_yieldSyncV1Vaults = await yieldSyncV1VaultAccessControl.admin_yieldSyncV1Vaults(
+			const admin_yieldSyncV1Vaults: string[] = await yieldSyncV1VaultAccessControl.admin_yieldSyncV1Vaults(
 				addr4.address
 			);
 
@@ -262,7 +262,7 @@ describe("[2] YieldSyncV1VaultAccessControl.sol", async () => {
 			}
 
 			// yieldSyncV1Vault_admins
-			const yieldSyncV1Vault_admins = await yieldSyncV1VaultAccessControl.yieldSyncV1Vault_admins(
+			const yieldSyncV1Vault_admins: string[] = await yieldSyncV1VaultAccessControl.yieldSyncV1Vault_admins(
 				yieldSyncV1Vault.address
 			);
 
@@ -293,7 +293,7 @@ describe("[2] YieldSyncV1VaultAccessControl.sol", async () => {
 
 			await yieldSyncV1Vault.memberAdd(addr4.address);
 
-			const yieldSyncV1Vault_members = await yieldSyncV1VaultAccessControl.yieldSyncV1Vault_members(
+			const yieldSyncV1Vault_members: string[] = await yieldSyncV1VaultAccessControl.yieldSyncV1Vault_members(
 				yieldSyncV1Vault.address
 			);
 
@@ -327,7 +327,7 @@ describe("[2] YieldSyncV1VaultAccessControl.sol", async () => {
 			await yieldSyncV1Vault.memberRemove(addr2.address);
 
 			// member_yieldSyncV1Vaults
-			const member_yieldSyncV1Vaults = await yieldSyncV1VaultAccessControl.member_yieldSyncV1Vaults(
+			const member_yieldSyncV1Vaults: string[] = await yieldSyncV1VaultAccessControl.member_yieldSyncV1Vaults(
 				addr2.address
 			);
 
@@ -340,7 +340,7 @@ describe("[2] YieldSyncV1VaultAccessControl.sol", async () => {
 			}
 
 			// yieldSyncV1Vault_members
-			const yieldSyncV1Vault_members = await yieldSyncV1VaultAccessControl.yieldSyncV1Vault_members(
+			const yieldSyncV1Vault_members: string[] = await yieldSyncV1VaultAccessControl.yieldSyncV1Vault_members(
 				yieldSyncV1Vault.address
 			);
 

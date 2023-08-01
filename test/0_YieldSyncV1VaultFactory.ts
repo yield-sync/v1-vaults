@@ -182,12 +182,15 @@ describe("[0] YieldSyncV1VaultFactory.sol", async () => {
 					const [, addr1] = await ethers.getSigners();
 
 					// Preset
-					await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+					await yieldSyncV1ATransferRequestProtocol.connect(
+						addr1
+					).yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 						addr1.address,
 						[1, 1, 10] as UpdateVaultProperty
 					);
 
-					const vaultProperties: VaultProperty = await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultProperty(
+					const vaultProperties: VaultProperty = await yieldSyncV1ATransferRequestProtocol
+					.yieldSyncV1Vault_yieldSyncV1VaultProperty(
 						addr1.address
 					);
 
@@ -241,7 +244,9 @@ describe("[0] YieldSyncV1VaultFactory.sol", async () => {
 					const [, addr1] = await ethers.getSigners();
 
 					// Preset
-					await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+					await yieldSyncV1ATransferRequestProtocol.connect(
+						addr1
+					).yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 						addr1.address,
 						[1, 1, 10] as UpdateVaultProperty
 					);
@@ -313,7 +318,9 @@ describe("[0] YieldSyncV1VaultFactory.sol", async () => {
 					const [, addr1] = await ethers.getSigners();
 
 					// Preset
-					await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+					await yieldSyncV1ATransferRequestProtocol.connect(
+						addr1
+					).yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 						addr1.address,
 						[1, 1, 10] as UpdateVaultProperty
 					);
@@ -342,7 +349,9 @@ describe("[0] YieldSyncV1VaultFactory.sol", async () => {
 					const [, addr1] = await ethers.getSigners();
 
 					// Preset
-					await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+					await yieldSyncV1ATransferRequestProtocol.connect(
+						addr1
+					).yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 						addr1.address,
 						[1, 1, 10] as UpdateVaultProperty
 					);
@@ -376,7 +385,9 @@ describe("[0] YieldSyncV1VaultFactory.sol", async () => {
 						const [, addr1] = await ethers.getSigners();
 
 						// Preset
-						await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+						await yieldSyncV1ATransferRequestProtocol.connect(
+							addr1
+						).yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 							addr1.address,
 							[1, 1, 10] as UpdateVaultProperty
 						);
@@ -416,7 +427,9 @@ describe("[0] YieldSyncV1VaultFactory.sol", async () => {
 						const [, addr1] = await ethers.getSigners();
 
 						// Preset
-						await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+						await yieldSyncV1ATransferRequestProtocol.connect(
+							addr1
+						).yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 							addr1.address,
 							[1, 1, 10] as UpdateVaultProperty
 						);

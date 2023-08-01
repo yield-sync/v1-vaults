@@ -390,7 +390,7 @@ describe("[1] YieldSyncV1Vault.sol", async () => {
 						yieldSyncV1Vault.address,
 						[
 							2, 2, sixDaysInSeconds
-						]
+						] as UpdateVaultProperty
 					);
 
 					await expect(
@@ -407,7 +407,7 @@ describe("[1] YieldSyncV1Vault.sol", async () => {
 					// Set YieldSyncV1Vault properties for admin
 					await mockTransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 						admin.address,
-						[2, 2, sixDaysInSeconds]
+						[2, 2, sixDaysInSeconds] as UpdateVaultProperty
 					);
 
 					await yieldSyncV1Vault.transferRequestProtocolUpdate(mockTransferRequestProtocol.address);
@@ -443,7 +443,7 @@ describe("[1] YieldSyncV1Vault.sol", async () => {
 								1,
 								2,
 								sixDaysInSeconds
-							]
+							] as UpdateVaultProperty
 						)
 					).to.be.rejected;
 				}
@@ -458,7 +458,7 @@ describe("[1] YieldSyncV1Vault.sol", async () => {
 							1,
 							2,
 							sixDaysInSeconds
-						]
+						] as UpdateVaultProperty
 					)
 
 					const vProp: VaultProperty = await yieldSyncV1ATransferRequestProtocol
@@ -481,7 +481,7 @@ describe("[1] YieldSyncV1Vault.sol", async () => {
 							2,
 							1,
 							sixDaysInSeconds
-						]
+						] as UpdateVaultProperty
 					)
 
 					const vProp: VaultProperty = await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultProperty(
@@ -504,7 +504,7 @@ describe("[1] YieldSyncV1Vault.sol", async () => {
 							2,
 							2,
 							10
-						]
+						] as UpdateVaultProperty
 					)
 
 					const vProp: VaultProperty = await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultProperty(
@@ -854,7 +854,7 @@ describe("[1] YieldSyncV1Vault.sol", async () => {
 									2,
 									1,
 									sevenDaysInSeconds
-								]
+								] as UpdateVaultProperty
 							);
 
 							await yieldSyncV1ATransferRequestProtocol.connect(
@@ -900,7 +900,7 @@ describe("[1] YieldSyncV1Vault.sol", async () => {
 									2,
 									1,
 									sixDaysInSeconds
-								]
+								] as UpdateVaultProperty
 							);
 
 							await yieldSyncV1ATransferRequestProtocol.connect(
@@ -962,7 +962,7 @@ describe("[1] YieldSyncV1Vault.sol", async () => {
 									2,
 									1,
 									sevenDaysInSeconds
-								]
+								] as UpdateVaultProperty
 							);
 
 							await yieldSyncV1ATransferRequestProtocol.connect(
@@ -1136,7 +1136,7 @@ describe("[1] YieldSyncV1Vault.sol", async () => {
 									2,
 									1,
 									sevenDaysInSeconds
-								]
+								] as UpdateVaultProperty
 							);
 
 							await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestCreate(
@@ -1179,7 +1179,7 @@ describe("[1] YieldSyncV1Vault.sol", async () => {
 									2,
 									1,
 									sixDaysInSeconds
-								]
+								] as UpdateVaultProperty
 							);
 
 							await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestCreate(
@@ -1380,7 +1380,7 @@ describe("[1] YieldSyncV1Vault.sol", async () => {
 									2,
 									1,
 									sixDaysInSeconds
-								]
+								] as UpdateVaultProperty
 							);
 
 							await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestCreate(
@@ -1426,7 +1426,7 @@ describe("[1] YieldSyncV1Vault.sol", async () => {
 									2,
 									1,
 									sixDaysInSeconds
-								]
+								] as UpdateVaultProperty
 							);
 
 							await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestCreate(
@@ -1513,7 +1513,7 @@ describe("[1] YieldSyncV1Vault.sol", async () => {
 								1,
 								2,
 								sixDaysInSeconds
-							]
+							] as UpdateVaultProperty
 						);
 
 						await yieldSyncV1ATransferRequestProtocol.connect(addr1)
@@ -1601,7 +1601,9 @@ describe("[1] YieldSyncV1Vault.sol", async () => {
 
 					await yieldSyncV1Vault.memberAdd(addr6.address);
 
-					const vaultsBefore = await yieldSyncV1VaultAccessControl.member_yieldSyncV1Vaults(addr6.address)
+					const vaultsBefore: string[] = await yieldSyncV1VaultAccessControl.member_yieldSyncV1Vaults(
+						addr6.address
+					);
 
 					let found: boolean = false;
 
@@ -1614,7 +1616,9 @@ describe("[1] YieldSyncV1Vault.sol", async () => {
 
 					await yieldSyncV1Vault.connect(addr6).renounceMembership();
 
-					const vaultsAfter = await yieldSyncV1VaultAccessControl.member_yieldSyncV1Vaults(addr6.address)
+					const vaultsAfter: string[] = await yieldSyncV1VaultAccessControl.member_yieldSyncV1Vaults(
+						addr6.address
+					);
 
 					for (let i = 0; i < vaultsAfter.length; i++)
 					{
@@ -1860,8 +1864,8 @@ describe("[1] YieldSyncV1Vault.sol", async () => {
 							transferRequestPoll.againstVoteCount + 1,
 							transferRequestPoll.forVoteCount,
 							BigInt(transferRequestPoll.latestForVoteTime) + BigInt(10),
-							transferRequestPoll.votedMembers,
-						]
+							transferRequestPoll.votedMembers
+						] as UpdateTransferRequestPoll
 					);
 
 					expect(
@@ -1889,7 +1893,9 @@ describe("[1] YieldSyncV1Vault.sol", async () => {
 					const [, addr1] = await ethers.getSigners();
 
 					await expect(
-						yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestDelete(2)
+						yieldSyncV1ATransferRequestProtocol.connect(
+							addr1
+						).yieldSyncV1Vault_transferRequestId_transferRequestDelete(2)
 					).to.be.rejected;
 				}
 			);
@@ -1899,7 +1905,9 @@ describe("[1] YieldSyncV1Vault.sol", async () => {
 				async () => {
 					const [, addr1, addr2] = await ethers.getSigners();
 
-					await yieldSyncV1ATransferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestCreate(
+					await yieldSyncV1ATransferRequestProtocol.connect(
+						addr1
+					).yieldSyncV1Vault_transferRequestId_transferRequestCreate(
 						yieldSyncV1Vault.address,
 						true,
 						false,
