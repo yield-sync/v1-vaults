@@ -9,7 +9,7 @@ const secondsIn7Days = 24 * 60 * 60 * 7;
 const secondsIn6Days = 24 * 60 * 60 * 6;
 
 
-describe("[1A] YieldSyncV1Vault.sol - YieldSyncV1ATransferRequestProtocol", async () => {
+describe("[1B] YieldSyncV1Vault.sol - YieldSyncV1BTransferRequestProtocol", async () => {
 	let mockAdmin: Contract;
 	let mockERC20: Contract;
 	let mockERC721: Contract;
@@ -33,7 +33,7 @@ describe("[1A] YieldSyncV1Vault.sol - YieldSyncV1ATransferRequestProtocol", asyn
 		const YieldSyncV1Vault: ContractFactory = await ethers.getContractFactory("YieldSyncV1Vault");
 		const YieldSyncV1VaultFactory: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultFactory");
 		const YieldSyncV1VaultAccessControl: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultAccessControl");
-		const YieldSyncV1ATransferRequestProtocol: ContractFactory = await ethers.getContractFactory("YieldSyncV1ATransferRequestProtocol");
+		const YieldSyncV1BTransferRequestProtocol: ContractFactory = await ethers.getContractFactory("YieldSyncV1BTransferRequestProtocol");
 
 		/// Mock
 		// Governance and test contracts
@@ -50,9 +50,9 @@ describe("[1A] YieldSyncV1Vault.sol - YieldSyncV1ATransferRequestProtocol", asyn
 			await YieldSyncV1VaultFactory.deploy(mockYieldSyncGovernance.address, accessControl.address)
 		).deployed();
 
-		// Deploy YieldSyncV1ATransferRequestProtocol
+		// Deploy YieldSyncV1BTransferRequestProtocol
 		transferRequestProtocol = await (
-			await YieldSyncV1ATransferRequestProtocol.deploy(accessControl.address)
+			await YieldSyncV1BTransferRequestProtocol.deploy(accessControl.address)
 		).deployed();
 
 		// Set YieldSyncV1Vault properties on TransferRequestProtocol.sol
@@ -87,7 +87,7 @@ describe("[1A] YieldSyncV1Vault.sol - YieldSyncV1ATransferRequestProtocol", asyn
 	});
 
 
-	describe("[yieldSyncV1ATransferRequestProtocol] Initial Values", async () => {
+	describe("[yieldSyncV1BTransferRequestProtocol] Initial Values", async () => {
 		it(
 			"Should intialize againstVoteRequired as 2..",
 			async () => {
@@ -110,7 +110,6 @@ describe("[1A] YieldSyncV1Vault.sol - YieldSyncV1ATransferRequestProtocol", asyn
 			}
 		);
 	});
-
 
 	describe("Restriction: member (1/1)", async () => {
 		describe("[transferRequest] For", async () => {
@@ -1188,7 +1187,6 @@ describe("[1A] YieldSyncV1Vault.sol - YieldSyncV1ATransferRequestProtocol", asyn
 			);
 		});
 	});
-
 
 	describe("Restriction: admin (2/2)", async () => {
 		describe("vault_transferRequestId_transferRequestUpdate()", async () => {
