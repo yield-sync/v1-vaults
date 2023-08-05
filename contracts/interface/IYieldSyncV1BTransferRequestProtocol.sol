@@ -17,12 +17,13 @@ struct TransferRequestPoll
 {
 	uint256 againstVoteCount;
 	uint256 forVoteCount;
-	uint256 latestForVoteTime;
-	address[] votedMembers;
+	uint256 voteCloseTime;
+	address[] votedAgainstMembers;
+	address[] votedForMembers;
 }
 
 
-interface IYieldSyncV1ATransferRequestProtocol is
+interface IYieldSyncV1BTransferRequestProtocol is
 	ITransferRequestProtocol
 {
 	event CreatedTransferRequest(address yieldSyncV1Vault, uint256 transferRequestId);
@@ -107,7 +108,8 @@ interface IYieldSyncV1ATransferRequestProtocol is
 		address to,
 		address token,
 		uint256 amount,
-		uint256 tokenId
+		uint256 tokenId,
+		uint256 voteCloseTime
 	)
 		external
 	;
