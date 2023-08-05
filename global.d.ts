@@ -66,3 +66,8 @@ type UpdateTransferRequestPoll = [
 	// votedMembers
 	string[],
 ]
+
+type Access = {
+	admin: boolean,
+	member: boolean,
+}
