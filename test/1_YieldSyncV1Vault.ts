@@ -5,8 +5,8 @@ import { expect } from "chai";
 import { Contract, ContractFactory } from "ethers";
 
 
-const sevenDaysInSeconds = 7 * 24 * 60 * 60;
-const sixDaysInSeconds = 6 * 24 * 60 * 60;
+const secondsIn7Days = 24 * 60 * 60 * 7;
+const secondsIn6Days = 24 * 60 * 60 * 6;
 
 
 describe("[1] YieldSyncV1Vault.sol", async () => {
@@ -77,7 +77,7 @@ describe("[1] YieldSyncV1Vault.sol", async () => {
 		// Set YieldSyncV1Vault properties on TransferRequestProtocol.sol
 		await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 			owner.address,
-			[2, 2, sixDaysInSeconds] as UpdateVaultProperty
+			[2, 2, secondsIn6Days] as UpdateVaultProperty
 		);
 
 		// Preset - Set purposer signature
@@ -163,14 +163,14 @@ describe("[1] YieldSyncV1Vault.sol", async () => {
 		);
 
 		it(
-			"Should initialize transferDelaySeconds as sixDaysInSeconds..",
+			"Should initialize transferDelaySeconds as secondsIn6Days..",
 			async () => {
 				const vProp: VaultProperty = await yieldSyncV1ATransferRequestProtocol
 				.yieldSyncV1Vault_yieldSyncV1VaultProperty(
 					yieldSyncV1Vault.address
 				);
 
-				expect(vProp.transferDelaySeconds).to.equal(BigInt(sixDaysInSeconds));
+				expect(vProp.transferDelaySeconds).to.equal(BigInt(secondsIn6Days));
 			}
 		);
 
@@ -392,7 +392,7 @@ describe("[1] YieldSyncV1Vault.sol", async () => {
 					await mockTransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 						yieldSyncV1Vault.address,
 						[
-							2, 2, sixDaysInSeconds
+							2, 2, secondsIn6Days
 						] as UpdateVaultProperty
 					);
 
@@ -410,7 +410,7 @@ describe("[1] YieldSyncV1Vault.sol", async () => {
 					// Set YieldSyncV1Vault properties for admin
 					await mockTransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 						admin.address,
-						[2, 2, sixDaysInSeconds] as UpdateVaultProperty
+						[2, 2, secondsIn6Days] as UpdateVaultProperty
 					);
 
 					await yieldSyncV1Vault.transferRequestProtocolUpdate(mockTransferRequestProtocol.address);
@@ -426,7 +426,7 @@ describe("[1] YieldSyncV1Vault.sol", async () => {
 
 					expect(vaultProperties.forVoteRequired).to.equal(BigInt(2));
 					expect(vaultProperties.againstVoteRequired).to.equal(BigInt(2));
-					expect(vaultProperties.transferDelaySeconds).to.equal(BigInt(sixDaysInSeconds));
+					expect(vaultProperties.transferDelaySeconds).to.equal(BigInt(secondsIn6Days));
 				}
 			);
 		});
@@ -445,7 +445,7 @@ describe("[1] YieldSyncV1Vault.sol", async () => {
 							[
 								1,
 								2,
-								sixDaysInSeconds
+								secondsIn6Days
 							] as UpdateVaultProperty
 						)
 					).to.be.rejected;
@@ -461,7 +461,7 @@ describe("[1] YieldSyncV1Vault.sol", async () => {
 						[
 							1,
 							2,
-							sixDaysInSeconds
+							secondsIn6Days
 						] as UpdateVaultProperty
 					)
 
@@ -472,7 +472,7 @@ describe("[1] YieldSyncV1Vault.sol", async () => {
 
 					expect(vProp.againstVoteRequired).to.equal(BigInt(1));
 					expect(vProp.forVoteRequired).to.equal(BigInt(2));
-					expect(vProp.transferDelaySeconds).to.equal(BigInt(sixDaysInSeconds));
+					expect(vProp.transferDelaySeconds).to.equal(BigInt(secondsIn6Days));
 				}
 			);
 
@@ -485,7 +485,7 @@ describe("[1] YieldSyncV1Vault.sol", async () => {
 						[
 							2,
 							1,
-							sixDaysInSeconds
+							secondsIn6Days
 						] as UpdateVaultProperty
 					)
 
@@ -495,7 +495,7 @@ describe("[1] YieldSyncV1Vault.sol", async () => {
 
 					expect(vProp.againstVoteRequired).to.equal(BigInt(2));
 					expect(vProp.forVoteRequired).to.equal(BigInt(1));
-					expect(vProp.transferDelaySeconds).to.equal(BigInt(sixDaysInSeconds));
+					expect(vProp.transferDelaySeconds).to.equal(BigInt(secondsIn6Days));
 				}
 			);
 
@@ -866,7 +866,7 @@ describe("[1] YieldSyncV1Vault.sol", async () => {
 								[
 									2,
 									1,
-									sevenDaysInSeconds
+									secondsIn7Days
 								] as UpdateVaultProperty
 							);
 
@@ -891,7 +891,7 @@ describe("[1] YieldSyncV1Vault.sol", async () => {
 							);
 
 							// Fast-forward 6 days
-							await ethers.provider.send('evm_increaseTime', [sixDaysInSeconds]);
+							await ethers.provider.send('evm_increaseTime', [secondsIn6Days]);
 
 							await expect(
 								yieldSyncV1Vault.connect(
@@ -912,7 +912,7 @@ describe("[1] YieldSyncV1Vault.sol", async () => {
 								[
 									2,
 									1,
-									sixDaysInSeconds
+									secondsIn6Days
 								] as UpdateVaultProperty
 							);
 
@@ -937,7 +937,7 @@ describe("[1] YieldSyncV1Vault.sol", async () => {
 							);
 
 							// Fast-forward 6 days
-							await ethers.provider.send('evm_increaseTime', [sixDaysInSeconds]);
+							await ethers.provider.send('evm_increaseTime', [secondsIn6Days]);
 
 							const recieverBalanceBefore: number = ethers.utils.formatUnits(
 								await ethers.provider.getBalance(addr2.address)
@@ -975,7 +975,7 @@ describe("[1] YieldSyncV1Vault.sol", async () => {
 								[
 									2,
 									1,
-									sevenDaysInSeconds
+									secondsIn7Days
 								] as UpdateVaultProperty
 							);
 
@@ -1010,7 +1010,7 @@ describe("[1] YieldSyncV1Vault.sol", async () => {
 							const recieverBalanceBefore: number = await ethers.provider.getBalance(addr2.address);
 
 							// Fast-forward 7 days
-							await ethers.provider.send('evm_increaseTime', [sevenDaysInSeconds]);
+							await ethers.provider.send('evm_increaseTime', [secondsIn7Days]);
 
 							await yieldSyncV1Vault.connect(
 								addr1
@@ -1149,7 +1149,7 @@ describe("[1] YieldSyncV1Vault.sol", async () => {
 								[
 									2,
 									1,
-									sevenDaysInSeconds
+									secondsIn7Days
 								] as UpdateVaultProperty
 							);
 
@@ -1197,7 +1197,7 @@ describe("[1] YieldSyncV1Vault.sol", async () => {
 								[
 									2,
 									1,
-									sixDaysInSeconds
+									secondsIn6Days
 								] as UpdateVaultProperty
 							);
 
@@ -1224,7 +1224,7 @@ describe("[1] YieldSyncV1Vault.sol", async () => {
 							const recieverBalanceBefore: number = await mockERC20.balanceOf(addr2.address);
 
 							// Fast-forward 6 days
-							await ethers.provider.send('evm_increaseTime', [sixDaysInSeconds]);
+							await ethers.provider.send('evm_increaseTime', [secondsIn6Days]);
 
 							await yieldSyncV1Vault.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestProcess(0);
 
@@ -1247,7 +1247,7 @@ describe("[1] YieldSyncV1Vault.sol", async () => {
 								[
 									2,
 									1,
-									sixDaysInSeconds
+									secondsIn6Days
 								]
 							);
 
@@ -1276,7 +1276,7 @@ describe("[1] YieldSyncV1Vault.sol", async () => {
 							);
 
 							// Fast-forward 7 days
-							await ethers.provider.send('evm_increaseTime', [sevenDaysInSeconds]);
+							await ethers.provider.send('evm_increaseTime', [secondsIn7Days]);
 
 							await yieldSyncV1Vault.connect(
 								addr1
@@ -1415,7 +1415,7 @@ describe("[1] YieldSyncV1Vault.sol", async () => {
 								[
 									2,
 									1,
-									sixDaysInSeconds
+									secondsIn6Days
 								] as UpdateVaultProperty
 							);
 
@@ -1440,7 +1440,7 @@ describe("[1] YieldSyncV1Vault.sol", async () => {
 							);
 
 							// Fast-forward 6 days
-							await ethers.provider.send('evm_increaseTime', [sixDaysInSeconds]);
+							await ethers.provider.send('evm_increaseTime', [secondsIn6Days]);
 
 							const recieverBalanceBefore: number = await mockERC721.balanceOf(addr2.address);
 
@@ -1465,7 +1465,7 @@ describe("[1] YieldSyncV1Vault.sol", async () => {
 								[
 									2,
 									1,
-									sixDaysInSeconds
+									secondsIn6Days
 								] as UpdateVaultProperty
 							);
 
@@ -1490,7 +1490,7 @@ describe("[1] YieldSyncV1Vault.sol", async () => {
 							);
 
 							// Fast-forward 7 days
-							await ethers.provider.send('evm_increaseTime', [sevenDaysInSeconds]);
+							await ethers.provider.send('evm_increaseTime', [secondsIn7Days]);
 
 							const recieverBalanceBefore: number = await mockERC721.balanceOf(addr2.address);
 
@@ -1558,7 +1558,7 @@ describe("[1] YieldSyncV1Vault.sol", async () => {
 							[
 								1,
 								2,
-								sixDaysInSeconds
+								secondsIn6Days
 							] as UpdateVaultProperty
 						);
 
