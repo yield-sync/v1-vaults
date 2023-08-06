@@ -21,7 +21,7 @@ describe("[1B] YieldSyncV1Vault.sol - YieldSyncV1BTransferRequestProtocol", asyn
 	let mockYieldSyncGovernance: Contract;
 
 
-	beforeEach("[before] Set up contracts..", async () => {
+	beforeEach("[beforeEach] Set up contracts..", async () => {
 		const [owner, addr1] = await ethers.getSigners();
 
 		// Contract Factory
@@ -84,6 +84,68 @@ describe("[1B] YieldSyncV1Vault.sol - YieldSyncV1BTransferRequestProtocol", asyn
 
 		// Send ERC721 to YieldSyncV1Vault contract
 		await mockERC721.transferFrom(owner.address, vault.address, 1);
+	});
+
+
+	describe("[yieldSyncV1ATransferRequestProtocol] Expected Failures", async () => {
+		describe("Initiator must have property set before deploying vault", async () => {
+			it(
+				"Should fail to deploy a vault without setting initiator property first..",
+				async () => {
+					const [, addr1] = await ethers.getSigners();
+
+					const vProp: VaultProperty = await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultProperty(
+						addr1.address
+					);
+
+					expect(vProp.forVoteRequired).to.equal(BigInt(0));
+					expect(vProp.againstVoteRequired).to.equal(BigInt(0));
+
+					// fail to deploy a vault
+					await expect(
+						factory.connect(addr1).deployYieldSyncV1Vault(
+							ethers.constants.AddressZero,
+							transferRequestProtocol.address,
+							[addr1.address],
+							[addr1.address],
+							{ value: 1 }
+						)
+					).to.be.rejectedWith("!_yieldSyncV1Vault_yieldSyncV1VaultProperty[initiator].againstVoteRequired");
+				}
+			);
+		});
+
+		describe("When initiator sets properties, they must be >0", async () => {
+			it(
+				"Should fail to set againstVoteRequired on addr1 yieldSyncV1VaultProperty to 0..",
+				async () => {
+					const [, addr1] = await ethers.getSigners();
+
+					// fail to deploy a vault
+					await expect(
+						transferRequestProtocol.connect(addr1).yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+							addr1.address,
+							[0, 0, secondsIn6Days] as UpdateVaultProperty
+						)
+					).to.be.rejectedWith("!yieldSyncV1VaultProperty.againstVoteRequired");
+				}
+			);
+
+			it(
+				"Should fail to set forVoteRequired on addr1 yieldSyncV1VaultProperty to 0..",
+				async () => {
+					const [, addr1] = await ethers.getSigners();
+
+					// fail to deploy a vault
+					await expect(
+						transferRequestProtocol.connect(addr1).yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+							addr1.address,
+							[1, 0, secondsIn6Days] as UpdateVaultProperty
+						)
+					).to.be.rejectedWith("!yieldSyncV1VaultProperty.forVoteRequired");
+				}
+			);
+		});
 	});
 
 
@@ -409,7 +471,7 @@ describe("[1B] YieldSyncV1Vault.sol - YieldSyncV1BTransferRequestProtocol", asyn
 								vault.connect(
 									addr1
 								).yieldSyncV1Vault_transferRequestId_transferRequestProcess(0)
-							).to.be.rejectedWith("Transfer request pending");
+							).to.be.rejectedWith("TransferRequest pending");
 						}
 					);
 
@@ -455,7 +517,7 @@ describe("[1B] YieldSyncV1Vault.sol - YieldSyncV1BTransferRequestProtocol", asyn
 								vault.connect(
 									addr1
 								).yieldSyncV1Vault_transferRequestId_transferRequestProcess(0)
-							).to.be.rejectedWith("Transfer request approved and waiting delay");
+							).to.be.rejectedWith("TransferRequest approved and waiting delay");
 						}
 					);
 

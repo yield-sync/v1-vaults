@@ -16,7 +16,7 @@ describe("[5] YieldSyncV1Vault.sol", async () => {
 	let mockYieldSyncGovernance: Contract;
 
 
-	beforeEach("[before] Set up contracts..", async () => {
+	beforeEach("[beforeEach] Set up contracts..", async () => {
 		const [admin, addr1, addr2, addr3] = await ethers.getSigners();
 
 		// Contract Factory

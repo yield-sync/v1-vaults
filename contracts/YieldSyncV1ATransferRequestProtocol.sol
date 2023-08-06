@@ -162,20 +162,20 @@ contract YieldSyncV1ATransferRequestProtocol is
 			transferRequestPoll.againstVoteCount < yieldSyncV1VaultProperty.againstVoteRequired
 		)
 		{
-			return (false, false, "Transfer request pending");
+			return (false, false, "TransferRequest pending");
 		}
 
 		if (transferRequestPoll.againstVoteCount >= yieldSyncV1VaultProperty.againstVoteRequired)
 		{
-			return (true, false, "Transfer request denied");
+			return (true, false, "TransferRequest denied");
 		}
 
 		if (block.timestamp - transferRequestPoll.latestForVoteTime < yieldSyncV1VaultProperty.transferDelaySeconds)
 		{
-			return (false, true, "Transfer request approved and waiting delay");
+			return (false, true, "TransferRequest approved and waiting delay");
 		}
 
-		return (true, true, "Transfer request approved");
+		return (true, true, "TransferRequest approved");
 	}
 
 	/// @inheritdoc ITransferRequestProtocol
@@ -199,9 +199,15 @@ contract YieldSyncV1ATransferRequestProtocol is
 		override
 		contractYieldSyncV1Vault(yieldSyncV1Vault)
 	{
-		require(_yieldSyncV1Vault_yieldSyncV1VaultProperty[initiator].againstVoteRequired > 0, "!_againstVoteRequired");
+		require(
+			_yieldSyncV1Vault_yieldSyncV1VaultProperty[initiator].againstVoteRequired > 0,
+			"!_yieldSyncV1Vault_yieldSyncV1VaultProperty[initiator].againstVoteRequired"
+		);
 
-		require(_yieldSyncV1Vault_yieldSyncV1VaultProperty[initiator].forVoteRequired > 0, "!forVoteRequired");
+		require(
+			_yieldSyncV1Vault_yieldSyncV1VaultProperty[initiator].forVoteRequired > 0,
+			"!_yieldSyncV1Vault_yieldSyncV1VaultProperty[initiator].forVoteRequired"
+		);
 
 		_yieldSyncV1Vault_yieldSyncV1VaultProperty[yieldSyncV1Vault] = _yieldSyncV1Vault_yieldSyncV1VaultProperty[
 			initiator
@@ -424,8 +430,9 @@ contract YieldSyncV1ATransferRequestProtocol is
 		override
 		accessAdmin(yieldSyncV1Vault)
 	{
-		require(yieldSyncV1VaultProperty.againstVoteRequired > 0, "!_againstVoteRequired");
-		require(yieldSyncV1VaultProperty.forVoteRequired > 0, "!_againstVoteRequired");
+		require(yieldSyncV1VaultProperty.againstVoteRequired > 0, "!yieldSyncV1VaultProperty.againstVoteRequired");
+
+		require(yieldSyncV1VaultProperty.forVoteRequired > 0, "!yieldSyncV1VaultProperty.forVoteRequired");
 
 		_yieldSyncV1Vault_yieldSyncV1VaultProperty[yieldSyncV1Vault] = yieldSyncV1VaultProperty;
 	}

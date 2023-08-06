@@ -159,23 +159,23 @@ contract YieldSyncV1BTransferRequestProtocol is
 
 		if (block.timestamp < transferRequestPoll.voteCloseTime)
 		{
-			return (false, true, "Transfer request voting not closed");
+			return (false, true, "Voting not closed");
 		}
 
-		if (transferRequestPoll.againstVoteCount >= yieldSyncV1VaultProperty.againstVoteRequired)
+		if (transferRequestPoll.votedAgainstMembers.length >= yieldSyncV1VaultProperty.againstVoteRequired)
 		{
-			return (true, false, "Transfer request denied");
+			return (true, false, "TransferRequest denied");
 		}
 
 		if (
-			transferRequestPoll.forVoteCount < yieldSyncV1VaultProperty.forVoteRequired &&
-			transferRequestPoll.againstVoteCount < yieldSyncV1VaultProperty.againstVoteRequired
+			transferRequestPoll.votedForMembers.length < yieldSyncV1VaultProperty.forVoteRequired &&
+			transferRequestPoll.votedAgainstMembers.length < yieldSyncV1VaultProperty.againstVoteRequired
 		)
 		{
-			return (false, false, "Transfer request pending");
+			return (false, false, "TransferRequest pending");
 		}
 
-		return (true, true, "Transfer request approved");
+		return (true, true, "TransferRequest approved");
 	}
 
 	/// @inheritdoc ITransferRequestProtocol
@@ -199,9 +199,15 @@ contract YieldSyncV1BTransferRequestProtocol is
 		override
 		contractYieldSyncV1Vault(yieldSyncV1Vault)
 	{
-		require(_yieldSyncV1Vault_yieldSyncV1VaultProperty[initiator].againstVoteRequired > 0, "!_againstVoteRequired");
+		require(
+			_yieldSyncV1Vault_yieldSyncV1VaultProperty[initiator].againstVoteRequired > 0,
+			"!_yieldSyncV1Vault_yieldSyncV1VaultProperty[initiator].againstVoteRequired"
+		);
 
-		require(_yieldSyncV1Vault_yieldSyncV1VaultProperty[initiator].forVoteRequired > 0, "!forVoteRequired");
+		require(
+			_yieldSyncV1Vault_yieldSyncV1VaultProperty[initiator].forVoteRequired > 0,
+			"!_yieldSyncV1Vault_yieldSyncV1VaultProperty[initiator].forVoteRequired"
+		);
 
 		_yieldSyncV1Vault_yieldSyncV1VaultProperty[yieldSyncV1Vault] = _yieldSyncV1Vault_yieldSyncV1VaultProperty[
 			initiator
@@ -283,8 +289,6 @@ contract YieldSyncV1BTransferRequestProtocol is
 			_transferRequestIdTracker
 		] = TransferRequestPoll(
 			{
-				againstVoteCount: 0,
-				forVoteCount: 0,
 				voteCloseTime: voteCloseTime,
 				votedAgainstMembers: emptyArray,
 				votedForMembers: emptyArray
@@ -353,6 +357,7 @@ contract YieldSyncV1BTransferRequestProtocol is
 	{
 		bool votedForPreviously = false;
 		bool votedAgainstPreviously = false;
+
 		uint256 votedAgainstMembersIndex;
 		uint256 votedForMembersIndex;
 
@@ -362,43 +367,33 @@ contract YieldSyncV1BTransferRequestProtocol is
 			transferRequestId
 		];
 
-		YieldSyncV1VaultProperty memory yieldSyncV1VaultProperty = _yieldSyncV1Vault_yieldSyncV1VaultProperty[
-			yieldSyncV1Vault
-		];
-
-		require(
-			transferRequestPoll.forVoteCount < yieldSyncV1VaultProperty.forVoteRequired &&
-			transferRequestPoll.againstVoteCount < yieldSyncV1VaultProperty.againstVoteRequired,
-			"Voting closed"
-		);
+		require(block.timestamp < transferRequestPoll.voteCloseTime, "Voting closed");
 
 		for (uint256 i = 0; i < transferRequestPoll.votedAgainstMembers.length; i++)
 		{
-			if (transferRequestPoll.votedAgainstMembers[i] != msg.sender)
+			if (transferRequestPoll.votedAgainstMembers[i] == msg.sender)
 			{
 				votedAgainstPreviously = true;
 
 				votedAgainstMembersIndex = i;
-
-				return;
 			}
 		}
 
 		for (uint256 i = 0; i < transferRequestPoll.votedForMembers.length; i++)
 		{
-			if (transferRequestPoll.votedForMembers[i] != msg.sender)
+			if (transferRequestPoll.votedForMembers[i] == msg.sender)
 			{
 				votedForPreviously = true;
 
 				votedForMembersIndex = i;
-
-				return;
 			}
 		}
 
 		if (vote)
 		{
 			require(!votedForPreviously, "votedForPreviously");
+
+			transferRequestPoll.votedForMembers.push(msg.sender);
 
 			if (votedAgainstPreviously)
 			{
@@ -409,31 +404,22 @@ contract YieldSyncV1BTransferRequestProtocol is
 
 				transferRequestPoll.votedAgainstMembers.pop();
 			}
-
-			transferRequestPoll.forVoteCount++;
-
-			transferRequestPoll.votedForMembers.push(msg.sender);
 		}
 		else
 		{
 			require(!votedAgainstPreviously, "votedAgainstPreviously");
 
+			transferRequestPoll.votedAgainstMembers.push(msg.sender);
+
 			if (votedForPreviously)
 			{
-				// Remove from array
+				for (uint256 i = votedForMembersIndex; i < transferRequestPoll.votedForMembers.length - 1; i++)
+				{
+					transferRequestPoll.votedForMembers[i] = transferRequestPoll.votedForMembers[i + 1];
+				}
+
+				transferRequestPoll.votedForMembers.pop();
 			}
-
-			transferRequestPoll.againstVoteCount++;
-
-			transferRequestPoll.votedAgainstMembers.push(msg.sender);
-		}
-
-		if (
-			transferRequestPoll.forVoteCount >= yieldSyncV1VaultProperty.forVoteRequired ||
-			transferRequestPoll.againstVoteCount >= yieldSyncV1VaultProperty.againstVoteRequired
-		)
-		{
-			emit TransferRequestReadyToBeProcessed(yieldSyncV1Vault, transferRequestId);
 		}
 
 		_yieldSyncV1Vault_transferRequestId_transferRequestPoll[yieldSyncV1Vault][transferRequestId] = transferRequestPoll;
@@ -469,8 +455,9 @@ contract YieldSyncV1BTransferRequestProtocol is
 		override
 		accessAdmin(yieldSyncV1Vault)
 	{
-		require(yieldSyncV1VaultProperty.againstVoteRequired > 0, "!_againstVoteRequired");
-		require(yieldSyncV1VaultProperty.forVoteRequired > 0, "!_againstVoteRequired");
+		require(yieldSyncV1VaultProperty.againstVoteRequired > 0, "!yieldSyncV1VaultProperty.againstVoteRequired");
+
+		require(yieldSyncV1VaultProperty.forVoteRequired > 0, "!yieldSyncV1VaultProperty.forVoteRequired");
 
 		_yieldSyncV1Vault_yieldSyncV1VaultProperty[yieldSyncV1Vault] = yieldSyncV1VaultProperty;
 	}
