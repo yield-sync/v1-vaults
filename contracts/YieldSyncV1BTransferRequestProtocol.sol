@@ -355,6 +355,13 @@ contract YieldSyncV1BTransferRequestProtocol is
 		accessMember(yieldSyncV1Vault)
 		validTransferRequest(yieldSyncV1Vault, transferRequestId)
 	{
+		require(
+			block.timestamp < _yieldSyncV1Vault_transferRequestId_transferRequestPoll[yieldSyncV1Vault][
+				transferRequestId
+			].voteCloseTime,
+			"Voting closed"
+		);
+
 		bool votedForPreviously = false;
 		bool votedAgainstPreviously = false;
 
@@ -366,8 +373,6 @@ contract YieldSyncV1BTransferRequestProtocol is
 		][
 			transferRequestId
 		];
-
-		require(block.timestamp < transferRequestPoll.voteCloseTime, "Voting closed");
 
 		for (uint256 i = 0; i < transferRequestPoll.votedAgainstMembers.length; i++)
 		{
