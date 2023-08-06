@@ -9,7 +9,7 @@ const secondsIn7Days = 24 * 60 * 60 * 7;
 const secondsIn6Days = 24 * 60 * 60 * 6;
 
 
-describe("[1_A] YieldSyncV1Vault.sol - YieldSyncV1ATransferRequestProtocol", async () => {
+describe("[1.2] YieldSyncV1Vault.sol - YieldSyncV1ATransferRequestProtocol", async () => {
 	let mockAdmin: Contract;
 	let mockERC20: Contract;
 	let mockERC721: Contract;
