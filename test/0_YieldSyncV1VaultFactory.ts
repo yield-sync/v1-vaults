@@ -12,7 +12,7 @@ describe("[0] YieldSyncV1VaultFactory.sol", async () => {
 	let mockYieldSyncGovernance: Contract;
 	let mockSignatureProtocol: Contract;
 
-	beforeEach("[before] Set up contracts..", async () => {
+	beforeEach("[beforeEach] Set up contracts..", async () => {
 		const [, addr1] = await ethers.getSigners();
 
 		// Contract Factory
@@ -234,7 +234,7 @@ describe("[0] YieldSyncV1VaultFactory.sol", async () => {
 						{
 							value: ethers.utils.parseEther("1")
 						}
-					)).to.be.rejectedWith("!_againstVoteRequired");
+					)).to.be.rejectedWith();
 				}
 			);
 

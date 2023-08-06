@@ -18,7 +18,7 @@ describe("[4] MockAdmin.sol", async () => {
 	let mockYieldSyncGovernance: Contract;
 
 
-	beforeEach("[before] Set up contracts..", async () => {
+	beforeEach("[beforeEach] Set up contracts..", async () => {
 		const [owner, addr1, addr2] = await ethers.getSigners();
 
 		/// Contract Factory

@@ -6,18 +6,18 @@ import { ReentrancyGuard } from "@openzeppelin/contracts/security/ReentrancyGuar
 
 import {
 	ITransferRequestProtocol,
-	IYieldSyncV1ATransferRequestProtocol,
+	IYieldSyncV1BTransferRequestProtocol,
 	IYieldSyncV1VaultAccessControl,
 	TransferRequest,
 	TransferRequestPoll,
 	YieldSyncV1VaultProperty
-} from "./interface/IYieldSyncV1ATransferRequestProtocol.sol";
+} from "./interface/IYieldSyncV1BTransferRequestProtocol.sol";
 
 
-contract YieldSyncV1ATransferRequestProtocol is
+contract YieldSyncV1BTransferRequestProtocol is
 	ReentrancyGuard,
 	ITransferRequestProtocol,
-	IYieldSyncV1ATransferRequestProtocol
+	IYieldSyncV1BTransferRequestProtocol
 {
 	uint256 internal _transferRequestIdTracker;
 
@@ -157,22 +157,22 @@ contract YieldSyncV1ATransferRequestProtocol is
 			yieldSyncV1Vault
 		];
 
-		if (
-			transferRequestPoll.forVoteCount < yieldSyncV1VaultProperty.forVoteRequired &&
-			transferRequestPoll.againstVoteCount < yieldSyncV1VaultProperty.againstVoteRequired
-		)
+		if (block.timestamp < transferRequestPoll.voteCloseTime)
 		{
-			return (false, false, "TransferRequest pending");
+			return (false, true, "Voting not closed");
 		}
 
-		if (transferRequestPoll.againstVoteCount >= yieldSyncV1VaultProperty.againstVoteRequired)
+		if (transferRequestPoll.votedAgainstMembers.length >= yieldSyncV1VaultProperty.againstVoteRequired)
 		{
 			return (true, false, "TransferRequest denied");
 		}
 
-		if (block.timestamp - transferRequestPoll.latestForVoteTime < yieldSyncV1VaultProperty.transferDelaySeconds)
+		if (
+			transferRequestPoll.votedForMembers.length < yieldSyncV1VaultProperty.forVoteRequired &&
+			transferRequestPoll.votedAgainstMembers.length < yieldSyncV1VaultProperty.againstVoteRequired
+		)
 		{
-			return (false, true, "TransferRequest approved and waiting delay");
+			return (true, false, "TransferRequest denied from insufficient vote count");
 		}
 
 		return (true, true, "TransferRequest approved");
@@ -215,7 +215,7 @@ contract YieldSyncV1ATransferRequestProtocol is
 	}
 
 
-	/// @inheritdoc IYieldSyncV1ATransferRequestProtocol
+	/// @inheritdoc IYieldSyncV1BTransferRequestProtocol
 	function yieldSyncV1Vault_openTransferRequestIds(address yieldSyncV1Vault)
 		public
 		view
@@ -225,7 +225,7 @@ contract YieldSyncV1ATransferRequestProtocol is
 		return _yieldSyncV1Vault_openTransferRequestIds[yieldSyncV1Vault];
 	}
 
-	/// @inheritdoc IYieldSyncV1ATransferRequestProtocol
+	/// @inheritdoc IYieldSyncV1BTransferRequestProtocol
 	function yieldSyncV1Vault_yieldSyncV1VaultProperty(address yieldSyncV1Vault)
 		public
 		view
@@ -236,7 +236,7 @@ contract YieldSyncV1ATransferRequestProtocol is
 	}
 
 
-	/// @inheritdoc IYieldSyncV1ATransferRequestProtocol
+	/// @inheritdoc IYieldSyncV1BTransferRequestProtocol
 	function yieldSyncV1Vault_transferRequestId_transferRequestPoll(
 		address yieldSyncV1Vault,
 		uint256 transferRequestId
@@ -251,7 +251,7 @@ contract YieldSyncV1ATransferRequestProtocol is
 	}
 
 
-	/// @inheritdoc IYieldSyncV1ATransferRequestProtocol
+	/// @inheritdoc IYieldSyncV1BTransferRequestProtocol
 	function yieldSyncV1Vault_transferRequestId_transferRequestCreate(
 		address yieldSyncV1Vault,
 		bool forERC20,
@@ -259,7 +259,8 @@ contract YieldSyncV1ATransferRequestProtocol is
 		address to,
 		address token,
 		uint256 amount,
-		uint256 tokenId
+		uint256 tokenId,
+		uint256 voteCloseTime
 	)
 		public
 		override
@@ -269,7 +270,7 @@ contract YieldSyncV1ATransferRequestProtocol is
 
 		require(!(forERC20 && forERC721), "forERC20 && forERC721");
 
-		address[] memory initialVotedMembers;
+		address[] memory emptyArray;
 
 		_yieldSyncV1Vault_transferRequestId_transferRequest[yieldSyncV1Vault][_transferRequestIdTracker] = TransferRequest(
 			{
@@ -288,10 +289,9 @@ contract YieldSyncV1ATransferRequestProtocol is
 			_transferRequestIdTracker
 		] = TransferRequestPoll(
 			{
-				againstVoteCount: 0,
-				forVoteCount: 0,
-				latestForVoteTime: block.timestamp,
-				votedMembers: initialVotedMembers
+				voteCloseTime: voteCloseTime,
+				votedAgainstMembers: emptyArray,
+				votedForMembers: emptyArray
 			}
 		);
 
@@ -302,7 +302,7 @@ contract YieldSyncV1ATransferRequestProtocol is
 		emit CreatedTransferRequest(yieldSyncV1Vault, _transferRequestIdTracker - 1);
 	}
 
-	/// @inheritdoc IYieldSyncV1ATransferRequestProtocol
+	/// @inheritdoc IYieldSyncV1BTransferRequestProtocol
 	function yieldSyncV1Vault_transferRequestId_transferRequestDelete(
 		address yieldSyncV1Vault,
 		uint256 transferRequestId
@@ -317,7 +317,7 @@ contract YieldSyncV1ATransferRequestProtocol is
 		emit DeletedTransferRequest(yieldSyncV1Vault, transferRequestId);
 	}
 
-	/// @inheritdoc IYieldSyncV1ATransferRequestProtocol
+	/// @inheritdoc IYieldSyncV1BTransferRequestProtocol
 	function yieldSyncV1Vault_transferRequestId_transferRequestUpdate(
 		address yieldSyncV1Vault,
 		uint256 transferRequestId,
@@ -343,7 +343,7 @@ contract YieldSyncV1ATransferRequestProtocol is
 		);
 	}
 
-	/// @inheritdoc IYieldSyncV1ATransferRequestProtocol
+	/// @inheritdoc IYieldSyncV1BTransferRequestProtocol
 	function yieldSyncV1Vault_transferRequestId_transferRequestPollVote(
 		address yieldSyncV1Vault,
 		uint256 transferRequestId,
@@ -355,54 +355,79 @@ contract YieldSyncV1ATransferRequestProtocol is
 		accessMember(yieldSyncV1Vault)
 		validTransferRequest(yieldSyncV1Vault, transferRequestId)
 	{
+		bool votedForPreviously = false;
+		bool votedAgainstPreviously = false;
+
+		uint256 votedAgainstMembersIndex;
+		uint256 votedForMembersIndex;
+
 		TransferRequestPoll storage transferRequestPoll = _yieldSyncV1Vault_transferRequestId_transferRequestPoll[
 			yieldSyncV1Vault
 		][
 			transferRequestId
 		];
 
-		YieldSyncV1VaultProperty memory yieldSyncV1VaultProperty = _yieldSyncV1Vault_yieldSyncV1VaultProperty[
-			yieldSyncV1Vault
-		];
+		require(block.timestamp < transferRequestPoll.voteCloseTime, "Voting closed");
 
-		require(
-			transferRequestPoll.forVoteCount < yieldSyncV1VaultProperty.forVoteRequired &&
-			transferRequestPoll.againstVoteCount < yieldSyncV1VaultProperty.againstVoteRequired,
-			"Voting closed"
-		);
-
-		for (uint256 i = 0; i < transferRequestPoll.votedMembers.length; i++)
+		for (uint256 i = 0; i < transferRequestPoll.votedAgainstMembers.length; i++)
 		{
-			require(transferRequestPoll.votedMembers[i] != msg.sender, "Already voted");
+			if (transferRequestPoll.votedAgainstMembers[i] == msg.sender)
+			{
+				votedAgainstPreviously = true;
+
+				votedAgainstMembersIndex = i;
+			}
+		}
+
+		for (uint256 i = 0; i < transferRequestPoll.votedForMembers.length; i++)
+		{
+			if (transferRequestPoll.votedForMembers[i] == msg.sender)
+			{
+				votedForPreviously = true;
+
+				votedForMembersIndex = i;
+			}
 		}
 
 		if (vote)
 		{
-			transferRequestPoll.forVoteCount++;
+			require(!votedForPreviously, "votedForPreviously");
 
-			transferRequestPoll.latestForVoteTime = block.timestamp;
+			transferRequestPoll.votedForMembers.push(msg.sender);
+
+			if (votedAgainstPreviously)
+			{
+				for (uint256 i = votedAgainstMembersIndex; i < transferRequestPoll.votedAgainstMembers.length - 1; i++)
+				{
+					transferRequestPoll.votedAgainstMembers[i] = transferRequestPoll.votedAgainstMembers[i + 1];
+				}
+
+				transferRequestPoll.votedAgainstMembers.pop();
+			}
 		}
 		else
 		{
-			transferRequestPoll.againstVoteCount++;
-		}
+			require(!votedAgainstPreviously, "votedAgainstPreviously");
 
-		if (
-			transferRequestPoll.forVoteCount >= yieldSyncV1VaultProperty.forVoteRequired ||
-			transferRequestPoll.againstVoteCount >= yieldSyncV1VaultProperty.againstVoteRequired
-		)
-		{
-			emit TransferRequestReadyToBeProcessed(yieldSyncV1Vault, transferRequestId);
-		}
+			transferRequestPoll.votedAgainstMembers.push(msg.sender);
 
-		transferRequestPoll.votedMembers.push(msg.sender);
+			if (votedForPreviously)
+			{
+				for (uint256 i = votedForMembersIndex; i < transferRequestPoll.votedForMembers.length - 1; i++)
+				{
+					transferRequestPoll.votedForMembers[i] = transferRequestPoll.votedForMembers[i + 1];
+				}
+
+				transferRequestPoll.votedForMembers.pop();
+			}
+		}
 
 		_yieldSyncV1Vault_transferRequestId_transferRequestPoll[yieldSyncV1Vault][transferRequestId] = transferRequestPoll;
 
 		emit MemberVoted(yieldSyncV1Vault, transferRequestId, msg.sender, vote);
 	}
 
-	/// @inheritdoc IYieldSyncV1ATransferRequestProtocol
+	/// @inheritdoc IYieldSyncV1BTransferRequestProtocol
 	function yieldSyncV1Vault_transferRequestId_transferRequestPollUpdate(
 		address yieldSyncV1Vault,
 		uint256 transferRequestId,
@@ -421,7 +446,7 @@ contract YieldSyncV1ATransferRequestProtocol is
 		);
 	}
 
-	/// @inheritdoc IYieldSyncV1ATransferRequestProtocol
+	/// @inheritdoc IYieldSyncV1BTransferRequestProtocol
 	function yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 		address yieldSyncV1Vault,
 		YieldSyncV1VaultProperty memory yieldSyncV1VaultProperty

@@ -1,3 +1,8 @@
+type Access = {
+	admin: boolean,
+	member: boolean,
+}
+
 // Vault properties
 type VaultProperty = {
 	againstVoteRequired: number,
@@ -64,5 +69,21 @@ type UpdateTransferRequestPoll = [
 	// latestForVoteTime
 	number | bigint,
 	// votedMembers
+	string[],
+]
+
+// Transfer Request Poll
+type V1BTransferRequestPoll = {
+	voteCloseTime: number,
+	votedAgainstMembers: string[],
+	votedForMembers: string[],
+}
+
+type UpdateV1BTransferRequestPoll = [
+	// latestForVoteTime
+	number | bigint,
+	// votedAgainstMembers
+	string[],
+	// votedForMembers
 	string[],
 ]
