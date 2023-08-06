@@ -1338,12 +1338,13 @@ describe("[1B] YieldSyncV1Vault.sol - YieldSyncV1BTransferRequestProtocol", asyn
 								voteCloseTime
 							)
 
-						await transferRequestProtocol.connect(addr1)
-							.yieldSyncV1Vault_transferRequestId_transferRequestPollVote(
-								vault.address,
-								0,
-								false
-							);
+						await transferRequestProtocol.connect(
+							addr1
+						).yieldSyncV1Vault_transferRequestId_transferRequestPollVote(
+							vault.address,
+							0,
+							false
+						);
 
 						// Fast-forward 7 days
 						await ethers.provider.send('evm_increaseTime', [secondsIn7Days]);
