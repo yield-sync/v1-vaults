@@ -379,8 +379,8 @@ describe("[1] YieldSyncV1Vault.sol", async () => {
 						yieldSyncV1Vault.address
 					);
 
-					expect(vaultProperties.forVoteRequired).to.equal(BigInt(2));
-					expect(vaultProperties.againstVoteRequired).to.equal(BigInt(2));
+					expect(vaultProperties.voteForRequired).to.equal(BigInt(2));
+					expect(vaultProperties.voteAgainstRequired).to.equal(BigInt(2));
 					expect(vaultProperties.transferDelaySeconds).to.equal(BigInt(secondsIn6Days));
 				}
 			);

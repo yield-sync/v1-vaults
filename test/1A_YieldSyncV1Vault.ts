@@ -97,8 +97,8 @@ describe("[1A] YieldSyncV1Vault.sol - YieldSyncV1ATransferRequestProtocol", asyn
 						addr1.address
 					);
 
-					expect(vProp.forVoteRequired).to.equal(BigInt(0));
-					expect(vProp.againstVoteRequired).to.equal(BigInt(0));
+					expect(vProp.voteForRequired).to.equal(BigInt(0));
+					expect(vProp.voteAgainstRequired).to.equal(BigInt(0));
 
 					// fail to deploy a vault
 					await expect(
@@ -109,14 +109,14 @@ describe("[1A] YieldSyncV1Vault.sol - YieldSyncV1ATransferRequestProtocol", asyn
 							[addr1.address],
 							{ value: 1 }
 						)
-					).to.be.rejectedWith("!_yieldSyncV1Vault_yieldSyncV1VaultProperty[initiator].againstVoteRequired");
+					).to.be.rejectedWith("!_yieldSyncV1Vault_yieldSyncV1VaultProperty[initiator].voteAgainstRequired");
 				}
 			);
 		});
 
 		describe("When initiator sets properties, they must be >0", async () => {
 			it(
-				"Should fail to set againstVoteRequired on addr1 yieldSyncV1VaultProperty to 0..",
+				"Should fail to set voteAgainstRequired on addr1 yieldSyncV1VaultProperty to 0..",
 				async () => {
 					const [, addr1] = await ethers.getSigners();
 
@@ -126,12 +126,12 @@ describe("[1A] YieldSyncV1Vault.sol - YieldSyncV1ATransferRequestProtocol", asyn
 							addr1.address,
 							[0, 0, secondsIn6Days] as UpdateVaultProperty
 						)
-					).to.be.rejectedWith("!yieldSyncV1VaultProperty.againstVoteRequired");
+					).to.be.rejectedWith("!yieldSyncV1VaultProperty.voteAgainstRequired");
 				}
 			);
 
 			it(
-				"Should fail to set forVoteRequired on addr1 yieldSyncV1VaultProperty to 0..",
+				"Should fail to set voteForRequired on addr1 yieldSyncV1VaultProperty to 0..",
 				async () => {
 					const [, addr1] = await ethers.getSigners();
 
@@ -141,7 +141,7 @@ describe("[1A] YieldSyncV1Vault.sol - YieldSyncV1ATransferRequestProtocol", asyn
 							addr1.address,
 							[1, 0, secondsIn6Days] as UpdateVaultProperty
 						)
-					).to.be.rejectedWith("!yieldSyncV1VaultProperty.forVoteRequired");
+					).to.be.rejectedWith("!yieldSyncV1VaultProperty.voteForRequired");
 				}
 			);
 		});
@@ -149,24 +149,24 @@ describe("[1A] YieldSyncV1Vault.sol - YieldSyncV1ATransferRequestProtocol", asyn
 
 	describe("[yieldSyncV1ATransferRequestProtocol] Initial Values", async () => {
 		it(
-			"Should intialize againstVoteRequired as 2..",
+			"Should intialize voteAgainstRequired as 2..",
 			async () => {
 				const vProp: VaultProperty = await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultProperty(
 					vault.address
 				);
 
-				expect(vProp.forVoteRequired).to.equal(BigInt(2));
+				expect(vProp.voteForRequired).to.equal(BigInt(2));
 			}
 		);
 
 		it(
-			"Should intialize forVoteRequired as 2..",
+			"Should intialize voteForRequired as 2..",
 			async () => {
 				const vProp: VaultProperty = await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultProperty(
 					vault.address
 				);
 
-				expect(vProp.againstVoteRequired).to.equal(BigInt(2));
+				expect(vProp.voteAgainstRequired).to.equal(BigInt(2));
 			}
 		);
 	});
