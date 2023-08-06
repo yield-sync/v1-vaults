@@ -158,14 +158,14 @@ contract YieldSyncV1ATransferRequestProtocol is
 		];
 
 		if (
-			transferRequestPoll.forVoteCount < yieldSyncV1VaultProperty.forVoteRequired &&
-			transferRequestPoll.againstVoteCount < yieldSyncV1VaultProperty.againstVoteRequired
+			transferRequestPoll.votedAgainstMembers.length < yieldSyncV1VaultProperty.forVoteRequired &&
+			transferRequestPoll.votedForMembers.length < yieldSyncV1VaultProperty.againstVoteRequired
 		)
 		{
 			return (false, false, "TransferRequest pending");
 		}
 
-		if (transferRequestPoll.againstVoteCount >= yieldSyncV1VaultProperty.againstVoteRequired)
+		if (transferRequestPoll.votedAgainstMembers.length >= yieldSyncV1VaultProperty.againstVoteRequired)
 		{
 			return (true, false, "TransferRequest denied");
 		}
