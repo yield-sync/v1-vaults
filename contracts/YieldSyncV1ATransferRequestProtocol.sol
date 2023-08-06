@@ -376,6 +376,11 @@ contract YieldSyncV1ATransferRequestProtocol is
 			require(transferRequestPoll.votedMembers[i] != msg.sender, "Already voted");
 		}
 
+		for (uint256 i = 0; i < transferRequestPoll.votedMembers.length; i++)
+		{
+			require(transferRequestPoll.votedMembers[i] != msg.sender, "Already voted");
+		}
+
 		if (vote)
 		{
 			transferRequestPoll.forVoteCount++;
