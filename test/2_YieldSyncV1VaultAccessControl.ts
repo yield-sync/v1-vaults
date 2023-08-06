@@ -8,7 +8,6 @@ import { Contract, ContractFactory } from "ethers";
 describe("[2] YieldSyncV1VaultAccessControl.sol", async () => {
 	let yieldSyncV1Vault: Contract;
 	let yieldSyncV1VaultFactory: Contract;
-	let yieldSyncV1ATransferRequestProtocol: Contract;
 	let yieldSyncV1VaultAccessControl: Contract;
 	let mockYieldSyncGovernance: Contract;
 
@@ -21,8 +20,6 @@ describe("[2] YieldSyncV1VaultAccessControl.sol", async () => {
 		const YieldSyncV1VaultFactory: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultFactory");
 		const YieldSyncV1VaultAccessControl: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultAccessControl");
 		const MockYieldSyncGovernance: ContractFactory = await ethers.getContractFactory("MockYieldSyncGovernance");
-		const YieldSyncV1ATransferRequestProtocol: ContractFactory = await ethers.getContractFactory("YieldSyncV1ATransferRequestProtocol");
-
 
 		// Contract
 		mockYieldSyncGovernance = await (await MockYieldSyncGovernance.deploy()).deployed();
@@ -31,21 +28,10 @@ describe("[2] YieldSyncV1VaultAccessControl.sol", async () => {
 			await YieldSyncV1VaultFactory.deploy(mockYieldSyncGovernance.address, yieldSyncV1VaultAccessControl.address)
 		).deployed();
 
-		// Deploy yieldSyncV1ATransferRequestProtocol
-		yieldSyncV1ATransferRequestProtocol = await (
-			await YieldSyncV1ATransferRequestProtocol.deploy(yieldSyncV1VaultAccessControl.address)
-		).deployed();
-
-		// Set YieldSyncV1Vault properties on TransferRequestProtocol.sol
-		await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
-			owner.address,
-			[2, 2, 5] as UpdateVaultProperty
-		);
-
 		// Deploy a vault
 		await yieldSyncV1VaultFactory.deployYieldSyncV1Vault(
 			ethers.constants.AddressZero,
-			yieldSyncV1ATransferRequestProtocol.address,
+			ethers.constants.AddressZero,
 			[owner.address],
 			[addr1.address, addr2.address, addr3.address],
 			{ value: 1 }
