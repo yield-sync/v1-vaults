@@ -15,10 +15,9 @@ struct YieldSyncV1VaultProperty
 
 struct TransferRequestPoll
 {
-	uint256 againstVoteCount;
-	uint256 forVoteCount;
 	uint256 latestForVoteTime;
-	address[] votedMembers;
+	address[] votedAgainstMembers;
+	address[] votedForMembers;
 }
 
 
