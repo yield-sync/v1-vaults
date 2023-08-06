@@ -9,7 +9,7 @@ const secondsIn7Days = 24 * 60 * 60 * 7;
 const secondsIn6Days = 24 * 60 * 60 * 6;
 
 
-describe("[1A] YieldSyncV1Vault.sol - YieldSyncV1ATransferRequestProtocol", async () => {
+describe("[1.2] YieldSyncV1Vault.sol - YieldSyncV1ATransferRequestProtocol", async () => {
 	let mockAdmin: Contract;
 	let mockERC20: Contract;
 	let mockERC721: Contract;
@@ -97,8 +97,8 @@ describe("[1A] YieldSyncV1Vault.sol - YieldSyncV1ATransferRequestProtocol", asyn
 						addr1.address
 					);
 
-					expect(vProp.forVoteRequired).to.equal(BigInt(0));
-					expect(vProp.againstVoteRequired).to.equal(BigInt(0));
+					expect(vProp.voteForRequired).to.equal(BigInt(0));
+					expect(vProp.voteAgainstRequired).to.equal(BigInt(0));
 
 					// fail to deploy a vault
 					await expect(
@@ -109,14 +109,14 @@ describe("[1A] YieldSyncV1Vault.sol - YieldSyncV1ATransferRequestProtocol", asyn
 							[addr1.address],
 							{ value: 1 }
 						)
-					).to.be.rejectedWith("!_yieldSyncV1Vault_yieldSyncV1VaultProperty[initiator].againstVoteRequired");
+					).to.be.rejectedWith("!_yieldSyncV1Vault_yieldSyncV1VaultProperty[initiator].voteAgainstRequired");
 				}
 			);
 		});
 
 		describe("When initiator sets properties, they must be >0", async () => {
 			it(
-				"Should fail to set againstVoteRequired on addr1 yieldSyncV1VaultProperty to 0..",
+				"Should fail to set voteAgainstRequired on addr1 yieldSyncV1VaultProperty to 0..",
 				async () => {
 					const [, addr1] = await ethers.getSigners();
 
@@ -126,12 +126,12 @@ describe("[1A] YieldSyncV1Vault.sol - YieldSyncV1ATransferRequestProtocol", asyn
 							addr1.address,
 							[0, 0, secondsIn6Days] as UpdateVaultProperty
 						)
-					).to.be.rejectedWith("!yieldSyncV1VaultProperty.againstVoteRequired");
+					).to.be.rejectedWith("!yieldSyncV1VaultProperty.voteAgainstRequired");
 				}
 			);
 
 			it(
-				"Should fail to set forVoteRequired on addr1 yieldSyncV1VaultProperty to 0..",
+				"Should fail to set voteForRequired on addr1 yieldSyncV1VaultProperty to 0..",
 				async () => {
 					const [, addr1] = await ethers.getSigners();
 
@@ -141,7 +141,7 @@ describe("[1A] YieldSyncV1Vault.sol - YieldSyncV1ATransferRequestProtocol", asyn
 							addr1.address,
 							[1, 0, secondsIn6Days] as UpdateVaultProperty
 						)
-					).to.be.rejectedWith("!yieldSyncV1VaultProperty.forVoteRequired");
+					).to.be.rejectedWith("!yieldSyncV1VaultProperty.voteForRequired");
 				}
 			);
 		});
@@ -149,24 +149,24 @@ describe("[1A] YieldSyncV1Vault.sol - YieldSyncV1ATransferRequestProtocol", asyn
 
 	describe("[yieldSyncV1ATransferRequestProtocol] Initial Values", async () => {
 		it(
-			"Should intialize againstVoteRequired as 2..",
+			"Should intialize voteAgainstRequired as 2..",
 			async () => {
 				const vProp: VaultProperty = await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultProperty(
 					vault.address
 				);
 
-				expect(vProp.forVoteRequired).to.equal(BigInt(2));
+				expect(vProp.voteForRequired).to.equal(BigInt(2));
 			}
 		);
 
 		it(
-			"Should intialize forVoteRequired as 2..",
+			"Should intialize voteForRequired as 2..",
 			async () => {
 				const vProp: VaultProperty = await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultProperty(
 					vault.address
 				);
 
-				expect(vProp.againstVoteRequired).to.equal(BigInt(2));
+				expect(vProp.voteAgainstRequired).to.equal(BigInt(2));
 			}
 		);
 	});
@@ -269,9 +269,8 @@ describe("[1A] YieldSyncV1Vault.sol - YieldSyncV1ATransferRequestProtocol", asyn
 							expect(createdTransferRequest.tokenId).to.be.equal(0);
 							expect(createdTransferRequest.amount).to.be.equal(ethers.utils.parseEther(".5"));
 							expect(createdTransferRequest.to).to.be.equal(addr2.address);
-							expect(createdTransferRequestPoll.forVoteCount).to.be.equal(0);
-							expect(createdTransferRequestPoll.againstVoteCount).to.be.equal(0);
-							expect(createdTransferRequestPoll.votedMembers.length).to.be.equal(0);
+							expect(createdTransferRequestPoll.voteForMembers.length).to.be.equal(0);
+							expect(createdTransferRequestPoll.voteAgainstMembers.length).to.be.equal(0);
 						}
 					);
 
@@ -361,9 +360,9 @@ describe("[1A] YieldSyncV1Vault.sol - YieldSyncV1ATransferRequestProtocol", asyn
 								);
 
 							// Vote count
-							expect(createdTransferRequestPoll.forVoteCount).to.be.equal(1);
+							expect(createdTransferRequestPoll.voteForMembers.length).to.be.equal(1);
 							// Voted members
-							expect(createdTransferRequestPoll.votedMembers[0]).to.be.equal(addr1.address);
+							expect(createdTransferRequestPoll.voteForMembers[0]).to.be.equal(addr1.address);
 						}
 					);
 
@@ -691,9 +690,8 @@ describe("[1A] YieldSyncV1Vault.sol - YieldSyncV1ATransferRequestProtocol", asyn
 							expect(createdTransferRequest.tokenId).to.be.equal(0);
 							expect(createdTransferRequest.amount).to.be.equal(50);
 							expect(createdTransferRequest.to).to.be.equal(addr2.address);
-							expect(createdTransferRequestPoll.againstVoteCount).to.be.equal(0);
-							expect(createdTransferRequestPoll.forVoteCount).to.be.equal(0);
-							expect(createdTransferRequestPoll.votedMembers.length).to.be.equal(0);
+							expect(createdTransferRequestPoll.voteAgainstMembers.length).to.be.equal(0);
+							expect(createdTransferRequestPoll.voteForMembers.length).to.be.equal(0);
 						}
 					);
 
@@ -794,8 +792,8 @@ describe("[1A] YieldSyncV1Vault.sol - YieldSyncV1ATransferRequestProtocol", asyn
 									0
 								);
 
-							expect(createdTransferRequestPoll.forVoteCount).to.be.equal(1);
-							expect(createdTransferRequestPoll.votedMembers[0]).to.be.equal(addr1.address);
+							expect(createdTransferRequestPoll.voteForMembers.length).to.be.equal(1);
+							expect(createdTransferRequestPoll.voteForMembers[0]).to.be.equal(addr1.address);
 						}
 					);
 				});
@@ -945,9 +943,8 @@ describe("[1A] YieldSyncV1Vault.sol - YieldSyncV1ATransferRequestProtocol", asyn
 							expect(createdTransferRequest.tokenId).to.be.equal(1);
 							expect(createdTransferRequest.amount).to.be.equal(1);
 							expect(createdTransferRequest.to).to.be.equal(addr2.address);
-							expect(createdTransferRequestPoll.againstVoteCount).to.be.equal(0);
-							expect(createdTransferRequestPoll.forVoteCount).to.be.equal(0);
-							expect(createdTransferRequestPoll.votedMembers.length).to.be.equal(0);
+							expect(createdTransferRequestPoll.voteAgainstMembers.length).to.be.equal(0);
+							expect(createdTransferRequestPoll.voteForMembers.length).to.be.equal(0);
 						}
 					);
 
@@ -1009,8 +1006,8 @@ describe("[1A] YieldSyncV1Vault.sol - YieldSyncV1ATransferRequestProtocol", asyn
 									0
 								);
 
-							expect(createdTransferRequestPoll.forVoteCount).to.be.equal(1);
-							expect(createdTransferRequestPoll.votedMembers[0]).to.be.equal(addr1.address);
+							expect(createdTransferRequestPoll.voteForMembers.length).to.be.equal(1);
+							expect(createdTransferRequestPoll.voteForMembers[0]).to.be.equal(addr1.address);
 						}
 					);
 				});
@@ -1152,8 +1149,8 @@ describe("[1A] YieldSyncV1Vault.sol - YieldSyncV1ATransferRequestProtocol", asyn
 								0
 							);
 
-						expect(createdTransferRequestPoll.againstVoteCount).to.be.equal(1);
-						expect(createdTransferRequestPoll.votedMembers[0]).to.be.equal(addr1.address);
+						expect(createdTransferRequestPoll.voteAgainstMembers.length).to.be.equal(1);
+						expect(createdTransferRequestPoll.voteAgainstMembers[0]).to.be.equal(addr1.address);
 					}
 				);
 			});
@@ -1423,10 +1420,9 @@ describe("[1A] YieldSyncV1Vault.sol - YieldSyncV1ATransferRequestProtocol", asyn
 						vault.address,
 						openTRIds[openTRIds.length - 1],
 						[
-							transferRequestPoll.againstVoteCount + 1,
-							transferRequestPoll.forVoteCount,
 							transferRequestPoll.latestForVoteTime,
-							transferRequestPoll.votedMembers,
+							[addr2.address],
+							transferRequestPoll.voteForMembers,
 						] as UpdateTransferRequestPoll
 					);
 
@@ -1436,7 +1432,8 @@ describe("[1A] YieldSyncV1Vault.sol - YieldSyncV1ATransferRequestProtocol", asyn
 							openTRIds[openTRIds.length - 1]
 						);
 
-					expect(updatedTransferRequestPoll.againstVoteCount).to.be.equal(1);
+					expect(updatedTransferRequestPoll.voteAgainstMembers.length).to.be.equal(1);
+					expect(updatedTransferRequestPoll.voteAgainstMembers[0]).to.be.equal(addr2.address);
 				}
 			);
 
@@ -1470,10 +1467,9 @@ describe("[1A] YieldSyncV1Vault.sol - YieldSyncV1ATransferRequestProtocol", asyn
 						vault.address,
 						openTRIds[openTRIds.length - 1],
 						[
-							transferRequestPoll.againstVoteCount + 1,
-							transferRequestPoll.forVoteCount,
 							BigInt(transferRequestPoll.latestForVoteTime) + BigInt(10),
-							transferRequestPoll.votedMembers
+							transferRequestPoll.voteAgainstMembers,
+							transferRequestPoll.voteForMembers,
 						] as UpdateTransferRequestPoll
 					);
 

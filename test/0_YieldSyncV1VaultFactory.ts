@@ -194,8 +194,8 @@ describe("[0] YieldSyncV1VaultFactory.sol", async () => {
 						addr1.address
 					);
 
-					expect(vaultProperties.forVoteRequired).to.equal(BigInt(1));
-					expect(vaultProperties.againstVoteRequired).to.equal(BigInt(1));
+					expect(vaultProperties.voteForRequired).to.equal(BigInt(1));
+					expect(vaultProperties.voteAgainstRequired).to.equal(BigInt(1));
 					expect(vaultProperties.transferDelaySeconds).to.equal(BigInt(10));
 				}
 			);
@@ -337,8 +337,8 @@ describe("[0] YieldSyncV1VaultFactory.sol", async () => {
 						await yieldSyncV1VaultFactory.yieldSyncV1VaultId_yieldSyncV1Vault(0)
 					);
 
-					expect(vProp.forVoteRequired).to.equal(BigInt(1));
-					expect(vProp.againstVoteRequired).to.equal(BigInt(1));
+					expect(vProp.voteForRequired).to.equal(BigInt(1));
+					expect(vProp.voteAgainstRequired).to.equal(BigInt(1));
 					expect(vProp.transferDelaySeconds).to.equal(BigInt(10));
 				}
 			);

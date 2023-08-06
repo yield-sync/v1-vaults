@@ -8,17 +8,16 @@ import { IYieldSyncV1VaultAccessControl } from "./IYieldSyncV1VaultAccessControl
 
 struct YieldSyncV1VaultProperty
 {
-	uint256 againstVoteRequired;
-	uint256 forVoteRequired;
+	uint256 voteAgainstRequired;
+	uint256 voteForRequired;
 	uint256 transferDelaySeconds;
 }
 
 struct TransferRequestPoll
 {
-	uint256 againstVoteCount;
-	uint256 forVoteCount;
 	uint256 latestForVoteTime;
-	address[] votedMembers;
+	address[] voteAgainstMembers;
+	address[] voteForMembers;
 }
 
 

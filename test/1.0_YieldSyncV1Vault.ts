@@ -8,7 +8,7 @@ import { Contract, ContractFactory } from "ethers";
 const secondsIn6Days = 24 * 60 * 60 * 6;
 
 
-describe("[1] YieldSyncV1Vault.sol", async () => {
+describe("[1.0] YieldSyncV1Vault.sol", async () => {
 	let mockAdmin: Contract;
 	let mockERC20: Contract;
 	let mockERC721: Contract;
@@ -379,8 +379,8 @@ describe("[1] YieldSyncV1Vault.sol", async () => {
 						yieldSyncV1Vault.address
 					);
 
-					expect(vaultProperties.forVoteRequired).to.equal(BigInt(2));
-					expect(vaultProperties.againstVoteRequired).to.equal(BigInt(2));
+					expect(vaultProperties.voteForRequired).to.equal(BigInt(2));
+					expect(vaultProperties.voteAgainstRequired).to.equal(BigInt(2));
 					expect(vaultProperties.transferDelaySeconds).to.equal(BigInt(secondsIn6Days));
 				}
 			);

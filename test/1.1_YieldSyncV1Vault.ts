@@ -8,7 +8,7 @@ import { Contract, ContractFactory } from "ethers";
 const twoDaysInSeconds = 2 * 24 * 60 * 60;
 
 
-describe("[5] YieldSyncV1Vault.sol", async () => {
+describe("[1.1] YieldSyncV1Vault.sol - Security", async () => {
 	let yieldSyncV1Vault: Contract;
 	let yieldSyncV1VaultFactory: Contract;
 	let yieldSyncV1ATransferRequestProtocol: Contract;

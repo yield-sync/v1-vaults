@@ -9,7 +9,7 @@ const secondsIn7Days = 24 * 60 * 60 * 7;
 const secondsIn6Days = 24 * 60 * 60 * 6;
 
 
-describe("[1B] YieldSyncV1Vault.sol - YieldSyncV1BTransferRequestProtocol", async () => {
+describe("[1.3] YieldSyncV1Vault.sol - YieldSyncV1BTransferRequestProtocol", async () => {
 	let mockAdmin: Contract;
 	let mockERC20: Contract;
 	let mockERC721: Contract;
@@ -95,8 +95,8 @@ describe("[1B] YieldSyncV1Vault.sol - YieldSyncV1BTransferRequestProtocol", asyn
 						addr1.address
 					);
 
-					expect(vProp.forVoteRequired).to.equal(BigInt(0));
-					expect(vProp.againstVoteRequired).to.equal(BigInt(0));
+					expect(vProp.voteForRequired).to.equal(BigInt(0));
+					expect(vProp.voteAgainstRequired).to.equal(BigInt(0));
 
 					// fail to deploy a vault
 					await expect(
@@ -107,14 +107,14 @@ describe("[1B] YieldSyncV1Vault.sol - YieldSyncV1BTransferRequestProtocol", asyn
 							[addr1.address],
 							{ value: 1 }
 						)
-					).to.be.rejectedWith("!_yieldSyncV1Vault_yieldSyncV1VaultProperty[initiator].againstVoteRequired");
+					).to.be.rejectedWith("!_yieldSyncV1Vault_yieldSyncV1VaultProperty[initiator].voteAgainstRequired");
 				}
 			);
 		});
 
 		describe("When initiator sets properties, they must be >0", async () => {
 			it(
-				"Should fail to set againstVoteRequired on addr1 yieldSyncV1VaultProperty to 0..",
+				"Should fail to set voteAgainstRequired on addr1 yieldSyncV1VaultProperty to 0..",
 				async () => {
 					const [, addr1] = await ethers.getSigners();
 
@@ -124,12 +124,12 @@ describe("[1B] YieldSyncV1Vault.sol - YieldSyncV1BTransferRequestProtocol", asyn
 							addr1.address,
 							[0, 0] as V1BUpdateVaultProperty
 						)
-					).to.be.rejectedWith("!yieldSyncV1VaultProperty.againstVoteRequired");
+					).to.be.rejectedWith("!yieldSyncV1VaultProperty.voteAgainstRequired");
 				}
 			);
 
 			it(
-				"Should fail to set forVoteRequired on addr1 yieldSyncV1VaultProperty to 0..",
+				"Should fail to set voteForRequired on addr1 yieldSyncV1VaultProperty to 0..",
 				async () => {
 					const [, addr1] = await ethers.getSigners();
 
@@ -139,7 +139,7 @@ describe("[1B] YieldSyncV1Vault.sol - YieldSyncV1BTransferRequestProtocol", asyn
 							addr1.address,
 							[1, 0] as V1BUpdateVaultProperty
 						)
-					).to.be.rejectedWith("!yieldSyncV1VaultProperty.forVoteRequired");
+					).to.be.rejectedWith("!yieldSyncV1VaultProperty.voteForRequired");
 				}
 			);
 		});
@@ -148,24 +148,24 @@ describe("[1B] YieldSyncV1Vault.sol - YieldSyncV1BTransferRequestProtocol", asyn
 
 	describe("[yieldSyncV1BTransferRequestProtocol] Initial Values", async () => {
 		it(
-			"Should intialize againstVoteRequired as 2..",
+			"Should intialize voteAgainstRequired as 2..",
 			async () => {
 				const vProp: VaultProperty = await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultProperty(
 					vault.address
 				);
 
-				expect(vProp.forVoteRequired).to.equal(BigInt(2));
+				expect(vProp.voteForRequired).to.equal(BigInt(2));
 			}
 		);
 
 		it(
-			"Should intialize forVoteRequired as 2..",
+			"Should intialize voteForRequired as 2..",
 			async () => {
 				const vProp: VaultProperty = await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultProperty(
 					vault.address
 				);
 
-				expect(vProp.againstVoteRequired).to.equal(BigInt(2));
+				expect(vProp.voteAgainstRequired).to.equal(BigInt(2));
 			}
 		);
 	});
@@ -277,8 +277,8 @@ describe("[1B] YieldSyncV1Vault.sol - YieldSyncV1BTransferRequestProtocol", asyn
 							expect(createdTransferRequest.to).to.be.equal(addr2.address);
 
 							expect(createdTransferRequestPoll.voteCloseTime).to.be.equal(voteCloseTime);
-							expect(createdTransferRequestPoll.votedAgainstMembers.length).to.be.equal(0);
-							expect(createdTransferRequestPoll.votedForMembers.length).to.be.equal(0);
+							expect(createdTransferRequestPoll.voteAgainstMembers.length).to.be.equal(0);
+							expect(createdTransferRequestPoll.voteForMembers.length).to.be.equal(0);
 						}
 					);
 
@@ -377,9 +377,9 @@ describe("[1B] YieldSyncV1Vault.sol - YieldSyncV1BTransferRequestProtocol", asyn
 								);
 
 							// Vote count
-							expect(createdTransferRequestPoll.votedForMembers.length).to.be.equal(1);
+							expect(createdTransferRequestPoll.voteForMembers.length).to.be.equal(1);
 							// Voted members
-							expect(createdTransferRequestPoll.votedForMembers[0]).to.be.equal(addr1.address);
+							expect(createdTransferRequestPoll.voteForMembers[0]).to.be.equal(addr1.address);
 						}
 					);
 
@@ -735,8 +735,8 @@ describe("[1B] YieldSyncV1Vault.sol - YieldSyncV1BTransferRequestProtocol", asyn
 							expect(createdTransferRequest.to).to.be.equal(addr2.address);
 
 							expect(createdTransferRequestPoll.voteCloseTime).to.be.equal(voteCloseTime);
-							expect(createdTransferRequestPoll.votedAgainstMembers.length).to.be.equal(0);
-							expect(createdTransferRequestPoll.votedForMembers.length).to.be.equal(0);
+							expect(createdTransferRequestPoll.voteAgainstMembers.length).to.be.equal(0);
+							expect(createdTransferRequestPoll.voteForMembers.length).to.be.equal(0);
 						}
 					);
 
@@ -801,7 +801,7 @@ describe("[1B] YieldSyncV1Vault.sol - YieldSyncV1BTransferRequestProtocol", asyn
 
 				describe("vault_transferRequestId_transferRequestPollVote()", async () => {
 					it(
-						"Should be able vote on TransferRequest and add member to _transferRequest[].votedForMembers..",
+						"Should be able vote on TransferRequest and add member to _transferRequest[].voteForMembers..",
 						async () => {
 							const [, addr1, addr2] = await ethers.getSigners();
 
@@ -843,8 +843,8 @@ describe("[1B] YieldSyncV1Vault.sol - YieldSyncV1BTransferRequestProtocol", asyn
 									0
 								);
 
-							expect(createdTransferRequestPoll.votedForMembers.length).to.be.equal(1);
-							expect(createdTransferRequestPoll.votedForMembers[0]).to.be.equal(addr1.address);
+							expect(createdTransferRequestPoll.voteForMembers.length).to.be.equal(1);
+							expect(createdTransferRequestPoll.voteForMembers[0]).to.be.equal(addr1.address);
 						}
 					);
 				});
@@ -1016,8 +1016,8 @@ describe("[1B] YieldSyncV1Vault.sol - YieldSyncV1BTransferRequestProtocol", asyn
 							expect(createdTransferRequest.to).to.be.equal(addr2.address);
 
 							expect(createdTransferRequestPoll.voteCloseTime).to.be.equal(voteCloseTime);
-							expect(createdTransferRequestPoll.votedAgainstMembers.length).to.be.equal(0);
-							expect(createdTransferRequestPoll.votedForMembers.length).to.be.equal(0);
+							expect(createdTransferRequestPoll.voteAgainstMembers.length).to.be.equal(0);
+							expect(createdTransferRequestPoll.voteForMembers.length).to.be.equal(0);
 						}
 					);
 
@@ -1051,7 +1051,7 @@ describe("[1B] YieldSyncV1Vault.sol - YieldSyncV1BTransferRequestProtocol", asyn
 
 				describe("vault_transferRequestId_transferRequestPollVote", async () => {
 					it(
-						"Should be able vote on TransferRequest and add member to _transferRequest[].votedForMembers..",
+						"Should be able vote on TransferRequest and add member to _transferRequest[].voteForMembers..",
 						async () => {
 							const [, addr1, addr2] = await ethers.getSigners();
 
@@ -1083,8 +1083,8 @@ describe("[1B] YieldSyncV1Vault.sol - YieldSyncV1BTransferRequestProtocol", asyn
 								0
 							);
 
-							expect(createdTransferRequestPoll.votedForMembers.length).to.be.equal(1);
-							expect(createdTransferRequestPoll.votedForMembers[0]).to.be.equal(addr1.address);
+							expect(createdTransferRequestPoll.voteForMembers.length).to.be.equal(1);
+							expect(createdTransferRequestPoll.voteForMembers[0]).to.be.equal(addr1.address);
 						}
 					);
 				});
@@ -1206,7 +1206,7 @@ describe("[1B] YieldSyncV1Vault.sol - YieldSyncV1BTransferRequestProtocol", asyn
 		describe("[transferRequest] Against", async () => {
 			describe("vault_transferRequestId_transferRequestPollVote()", async () => {
 				it(
-					"Should be able vote on TransferRequest and add member to _transferRequest[].votedAgainstMembers..",
+					"Should be able vote on TransferRequest and add member to _transferRequest[].voteAgainstMembers..",
 					async () => {
 						const [, addr1, addr2] = await ethers.getSigners();
 
@@ -1239,8 +1239,8 @@ describe("[1B] YieldSyncV1Vault.sol - YieldSyncV1BTransferRequestProtocol", asyn
 							0
 						);
 
-						expect(createdTransferRequestPoll.votedAgainstMembers.length).to.be.equal(1);
-						expect(createdTransferRequestPoll.votedAgainstMembers[0]).to.be.equal(addr1.address);
+						expect(createdTransferRequestPoll.voteAgainstMembers.length).to.be.equal(1);
+						expect(createdTransferRequestPoll.voteAgainstMembers[0]).to.be.equal(addr1.address);
 					}
 				);
 
@@ -1563,7 +1563,7 @@ describe("[1B] YieldSyncV1Vault.sol - YieldSyncV1BTransferRequestProtocol", asyn
 
 		describe("vault_transferRequestId_transferRequestPollUpdate()", async () => {
 			it(
-				"Should be able to update TransferRequestPoll.votedForMembers..",
+				"Should be able to update TransferRequestPoll.voteForMembers..",
 				async () => {
 					const [, addr1, addr2] = await ethers.getSigners();
 
@@ -1595,7 +1595,7 @@ describe("[1B] YieldSyncV1Vault.sol - YieldSyncV1BTransferRequestProtocol", asyn
 						openTRIds[openTRIds.length - 1],
 						[
 							voteCloseTime,
-							transferRequestPoll.votedAgainstMembers,
+							transferRequestPoll.voteAgainstMembers,
 							[addr2.address],
 						] as UpdateV1BTransferRequestPoll
 					);
@@ -1606,7 +1606,7 @@ describe("[1B] YieldSyncV1Vault.sol - YieldSyncV1BTransferRequestProtocol", asyn
 							openTRIds[openTRIds.length - 1]
 						);
 
-					expect(updatedTransferRequestPoll.votedForMembers[0]).to.be.equal(addr2.address);
+					expect(updatedTransferRequestPoll.voteForMembers[0]).to.be.equal(addr2.address);
 				}
 			);
 
@@ -1645,8 +1645,8 @@ describe("[1B] YieldSyncV1Vault.sol - YieldSyncV1BTransferRequestProtocol", asyn
 						openTRIds[openTRIds.length - 1],
 						[
 							voteCloseTime,
-							transferRequestPoll.votedAgainstMembers,
-							transferRequestPoll.votedForMembers,
+							transferRequestPoll.voteAgainstMembers,
+							transferRequestPoll.voteForMembers,
 						] as UpdateV1BTransferRequestPoll
 					);
 

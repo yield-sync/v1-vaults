@@ -5,15 +5,15 @@ type Access = {
 
 // Vault properties
 type VaultProperty = {
-	againstVoteRequired: number,
-	forVoteRequired: number,
+	voteAgainstRequired: number,
+	voteForRequired: number,
 	transferDelaySeconds: number,
 }
 
 type UpdateVaultProperty = [
-	// againstVoteRequired
+	// voteAgainstRequired
 	number,
-	// forVoteRequired
+	// voteForRequired
 	number,
 	// transferDelaySeconds
 	number,
@@ -55,36 +55,33 @@ type UpdateTransferRequest = [
 
 // Transfer Request Poll
 type TransferRequestPoll = {
-	againstVoteCount: number,
-	forVoteCount: number,
 	latestForVoteTime: number,
-	votedMembers: string[],
+	voteAgainstMembers: string[],
+	voteForMembers: string[],
 }
 
 type UpdateTransferRequestPoll = [
-	// againstVoteCount
-	number,
-	// forVoteCount
-	number,
 	// latestForVoteTime
 	number | bigint,
-	// votedMembers
+	// voteAgainstMembers
+	string[],
+	// voteForMembers
 	string[],
 ]
 
 // Transfer Request Poll
 type V1BTransferRequestPoll = {
 	voteCloseTime: number,
-	votedAgainstMembers: string[],
-	votedForMembers: string[],
+	voteAgainstMembers: string[],
+	voteForMembers: string[],
 }
 
 type UpdateV1BTransferRequestPoll = [
 	// latestForVoteTime
 	number | bigint,
-	// votedAgainstMembers
+	// voteAgainstMembers
 	string[],
-	// votedForMembers
+	// voteForMembers
 	string[],
 ]
 
@@ -95,8 +92,8 @@ type TransferRequestStatus = {
 }
 
 type V1BUpdateVaultProperty = [
-	// againstVoteRequired
+	// voteAgainstRequired
 	number,
-	// forVoteRequired
+	// voteForRequired
 	number,
 ]
