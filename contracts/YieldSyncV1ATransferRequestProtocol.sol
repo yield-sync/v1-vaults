@@ -371,14 +371,14 @@ contract YieldSyncV1ATransferRequestProtocol is
 			"Voting closed"
 		);
 
-		for (uint256 i = 0; i < transferRequestPoll.votedMembers.length; i++)
+		for (uint256 i = 0; i < transferRequestPoll.votedAgainstMembers.length; i++)
 		{
-			require(transferRequestPoll.votedMembers[i] != msg.sender, "Already voted");
+			require(transferRequestPoll.votedAgainstMembers[i] != msg.sender, "Already voted");
 		}
 
-		for (uint256 i = 0; i < transferRequestPoll.votedMembers.length; i++)
+		for (uint256 i = 0; i < transferRequestPoll.votedForMembers.length; i++)
 		{
-			require(transferRequestPoll.votedMembers[i] != msg.sender, "Already voted");
+			require(transferRequestPoll.votedForMembers[i] != msg.sender, "Already voted");
 		}
 
 		if (vote)
