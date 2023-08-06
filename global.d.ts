@@ -79,7 +79,7 @@ type V1BTransferRequestPoll = {
 	votedForMembers: string[],
 }
 
-type V1BUpdateTransferRequestPoll = [
+type UpdateV1BTransferRequestPoll = [
 	// latestForVoteTime
 	number | bigint,
 	// votedAgainstMembers
