@@ -87,3 +87,16 @@ type UpdateV1BTransferRequestPoll = [
 	// votedForMembers
 	string[],
 ]
+
+type TransferRequestStatus = {
+	readyToBeProcessed: boolean,
+	approved: boolean,
+	message: string,
+}
+
+type V1BUpdateVaultProperty = [
+	// againstVoteRequired
+	number,
+	// forVoteRequired
+	number,
+]
