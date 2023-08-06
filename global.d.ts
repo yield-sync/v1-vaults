@@ -55,20 +55,17 @@ type UpdateTransferRequest = [
 
 // Transfer Request Poll
 type TransferRequestPoll = {
-	againstVoteCount: number,
-	forVoteCount: number,
 	latestForVoteTime: number,
-	votedMembers: string[],
+	voteAgainstMembers: string[],
+	voteForMembers: string[],
 }
 
 type UpdateTransferRequestPoll = [
-	// againstVoteCount
-	number,
-	// forVoteCount
-	number,
 	// latestForVoteTime
 	number | bigint,
-	// votedMembers
+	// voteAgainstMembers
+	string[],
+	// voteForMembers
 	string[],
 ]
 
