@@ -269,9 +269,8 @@ describe("[1A] YieldSyncV1Vault.sol - YieldSyncV1ATransferRequestProtocol", asyn
 							expect(createdTransferRequest.tokenId).to.be.equal(0);
 							expect(createdTransferRequest.amount).to.be.equal(ethers.utils.parseEther(".5"));
 							expect(createdTransferRequest.to).to.be.equal(addr2.address);
-							expect(createdTransferRequestPoll.forVoteCount).to.be.equal(0);
-							expect(createdTransferRequestPoll.againstVoteCount).to.be.equal(0);
-							expect(createdTransferRequestPoll.votedMembers.length).to.be.equal(0);
+							expect(createdTransferRequestPoll.voteForMembers.length).to.be.equal(0);
+							expect(createdTransferRequestPoll.voteAgainstMembers.length).to.be.equal(0);
 						}
 					);
 
@@ -361,9 +360,9 @@ describe("[1A] YieldSyncV1Vault.sol - YieldSyncV1ATransferRequestProtocol", asyn
 								);
 
 							// Vote count
-							expect(createdTransferRequestPoll.forVoteCount).to.be.equal(1);
+							expect(createdTransferRequestPoll.voteForMembers.length).to.be.equal(1);
 							// Voted members
-							expect(createdTransferRequestPoll.votedMembers[0]).to.be.equal(addr1.address);
+							expect(createdTransferRequestPoll.voteForMembers[0]).to.be.equal(addr1.address);
 						}
 					);
 
@@ -691,9 +690,8 @@ describe("[1A] YieldSyncV1Vault.sol - YieldSyncV1ATransferRequestProtocol", asyn
 							expect(createdTransferRequest.tokenId).to.be.equal(0);
 							expect(createdTransferRequest.amount).to.be.equal(50);
 							expect(createdTransferRequest.to).to.be.equal(addr2.address);
-							expect(createdTransferRequestPoll.againstVoteCount).to.be.equal(0);
-							expect(createdTransferRequestPoll.forVoteCount).to.be.equal(0);
-							expect(createdTransferRequestPoll.votedMembers.length).to.be.equal(0);
+							expect(createdTransferRequestPoll.voteAgainstMembers.length).to.be.equal(0);
+							expect(createdTransferRequestPoll.voteForMembers.length).to.be.equal(0);
 						}
 					);
 
@@ -794,8 +792,8 @@ describe("[1A] YieldSyncV1Vault.sol - YieldSyncV1ATransferRequestProtocol", asyn
 									0
 								);
 
-							expect(createdTransferRequestPoll.forVoteCount).to.be.equal(1);
-							expect(createdTransferRequestPoll.votedMembers[0]).to.be.equal(addr1.address);
+							expect(createdTransferRequestPoll.voteForMembers.length).to.be.equal(1);
+							expect(createdTransferRequestPoll.voteForMembers[0]).to.be.equal(addr1.address);
 						}
 					);
 				});
@@ -945,9 +943,8 @@ describe("[1A] YieldSyncV1Vault.sol - YieldSyncV1ATransferRequestProtocol", asyn
 							expect(createdTransferRequest.tokenId).to.be.equal(1);
 							expect(createdTransferRequest.amount).to.be.equal(1);
 							expect(createdTransferRequest.to).to.be.equal(addr2.address);
-							expect(createdTransferRequestPoll.againstVoteCount).to.be.equal(0);
-							expect(createdTransferRequestPoll.forVoteCount).to.be.equal(0);
-							expect(createdTransferRequestPoll.votedMembers.length).to.be.equal(0);
+							expect(createdTransferRequestPoll.voteAgainstMembers.length).to.be.equal(0);
+							expect(createdTransferRequestPoll.voteForMembers.length).to.be.equal(0);
 						}
 					);
 
@@ -1009,8 +1006,8 @@ describe("[1A] YieldSyncV1Vault.sol - YieldSyncV1ATransferRequestProtocol", asyn
 									0
 								);
 
-							expect(createdTransferRequestPoll.forVoteCount).to.be.equal(1);
-							expect(createdTransferRequestPoll.votedMembers[0]).to.be.equal(addr1.address);
+							expect(createdTransferRequestPoll.voteForMembers.length).to.be.equal(1);
+							expect(createdTransferRequestPoll.voteForMembers[0]).to.be.equal(addr1.address);
 						}
 					);
 				});
@@ -1152,8 +1149,8 @@ describe("[1A] YieldSyncV1Vault.sol - YieldSyncV1ATransferRequestProtocol", asyn
 								0
 							);
 
-						expect(createdTransferRequestPoll.againstVoteCount).to.be.equal(1);
-						expect(createdTransferRequestPoll.votedMembers[0]).to.be.equal(addr1.address);
+						expect(createdTransferRequestPoll.voteAgainstMembers.length).to.be.equal(1);
+						expect(createdTransferRequestPoll.voteAgainstMembers[0]).to.be.equal(addr1.address);
 					}
 				);
 			});
@@ -1423,10 +1420,9 @@ describe("[1A] YieldSyncV1Vault.sol - YieldSyncV1ATransferRequestProtocol", asyn
 						vault.address,
 						openTRIds[openTRIds.length - 1],
 						[
-							transferRequestPoll.againstVoteCount + 1,
-							transferRequestPoll.forVoteCount,
 							transferRequestPoll.latestForVoteTime,
-							transferRequestPoll.votedMembers,
+							[addr2.address],
+							transferRequestPoll.voteForMembers,
 						] as UpdateTransferRequestPoll
 					);
 
@@ -1436,7 +1432,8 @@ describe("[1A] YieldSyncV1Vault.sol - YieldSyncV1ATransferRequestProtocol", asyn
 							openTRIds[openTRIds.length - 1]
 						);
 
-					expect(updatedTransferRequestPoll.againstVoteCount).to.be.equal(1);
+					expect(updatedTransferRequestPoll.voteAgainstMembers.length).to.be.equal(1);
+					expect(updatedTransferRequestPoll.voteAgainstMembers[0]).to.be.equal(addr2.address);
 				}
 			);
 
@@ -1470,10 +1467,9 @@ describe("[1A] YieldSyncV1Vault.sol - YieldSyncV1ATransferRequestProtocol", asyn
 						vault.address,
 						openTRIds[openTRIds.length - 1],
 						[
-							transferRequestPoll.againstVoteCount + 1,
-							transferRequestPoll.forVoteCount,
 							BigInt(transferRequestPoll.latestForVoteTime) + BigInt(10),
-							transferRequestPoll.votedMembers
+							transferRequestPoll.voteAgainstMembers,
+							transferRequestPoll.voteForMembers,
 						] as UpdateTransferRequestPoll
 					);
 
