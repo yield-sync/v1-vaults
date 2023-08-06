@@ -56,6 +56,13 @@ type TransferRequestPoll = {
 	votedMembers: string[],
 }
 
+// Transfer Request Poll
+type V1BTransferRequestPoll = {
+	voteCloseTime: number,
+	votedAgainstMembers: string[],
+	votedForMembers: string[],
+}
+
 type UpdateTransferRequestPoll = [
 	// againstVoteCount
 	number,

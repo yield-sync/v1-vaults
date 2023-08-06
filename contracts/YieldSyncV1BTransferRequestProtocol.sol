@@ -172,7 +172,7 @@ contract YieldSyncV1BTransferRequestProtocol is
 			transferRequestPoll.votedAgainstMembers.length < yieldSyncV1VaultProperty.againstVoteRequired
 		)
 		{
-			return (false, false, "TransferRequest pending");
+			return (true, false, "TransferRequest denied from insufficient vote count");
 		}
 
 		return (true, true, "TransferRequest approved");
