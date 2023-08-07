@@ -106,15 +106,7 @@ describe("[1.1] YieldSyncV1Vault.sol - Security", async () => {
 				"MockTransferRequestProtocol"
 			);
 
-			const mockTransferRequestProtocol = await (
-				await MockTransferRequestProtocol.deploy(yieldSyncV1VaultAccessControl.address)
-			).deployed();
-
-			// Preset
-			await mockTransferRequestProtocol.connect(BadActor).yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
-				BadActor.address,
-				[1, 1, 10]
-			);
+			const mockTransferRequestProtocol = await (await MockTransferRequestProtocol.deploy()).deployed();
 
 			await expect(
 				yieldSyncV1Vault.connect(BadActor).transferRequestProtocolUpdate(mockTransferRequestProtocol.address)

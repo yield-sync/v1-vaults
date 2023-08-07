@@ -301,7 +301,7 @@ describe("[1.0] YieldSyncV1Vault.sol", async () => {
 			);
 
 			it(
-				"Should be able to set a signature manager contract..",
+				"Should allow Admin to set a signature manager contract..",
 				async () => {
 					const MockSignatureProtocol: ContractFactory = await ethers.getContractFactory(
 						"MockSignatureProtocol"
@@ -326,26 +326,10 @@ describe("[1.0] YieldSyncV1Vault.sol", async () => {
 						"MockTransferRequestProtocol"
 					);
 
-					const mockTransferRequestProtocol: Contract = await (
-						await MockTransferRequestProtocol.deploy(yieldSyncV1VaultAccessControl.address)
-					).deployed();
-
-					// Set YieldSyncV1Vault properties for admin
-					await mockTransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
-						admin.address,
-						[2, 2, secondsIn6Days] as UpdateVaultProperty
-					);
-
-					// Set YieldSyncV1Vault properties on TransferRequestProtocol.sol
-					await mockTransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
-						yieldSyncV1Vault.address,
-						[
-							2, 2, secondsIn6Days
-						] as UpdateVaultProperty
-					);
+					const mockTransferRequestProtocol: Contract = await (await MockTransferRequestProtocol.deploy()).deployed();
 
 					await expect(
-						yieldSyncV1Vault.connect(addr1).transferRequestProtocolUpdate(addr1.address)
+						yieldSyncV1Vault.connect(addr1).transferRequestProtocolUpdate(mockTransferRequestProtocol.address)
 					).to.be.rejected;
 				}
 			);
@@ -359,29 +343,14 @@ describe("[1.0] YieldSyncV1Vault.sol", async () => {
 						"MockTransferRequestProtocol"
 					);
 
-					const mockTransferRequestProtocol: Contract = await (
-						await MockTransferRequestProtocol.deploy(yieldSyncV1VaultAccessControl.address)
-					).deployed();
+					const mockTransferRequestProtocol: Contract = await (await MockTransferRequestProtocol.deploy()).deployed();
 
-					// Set YieldSyncV1Vault properties for admin
-					await mockTransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
-						admin.address,
-						[2, 2, secondsIn6Days] as UpdateVaultProperty
-					);
 
 					await yieldSyncV1Vault.transferRequestProtocolUpdate(mockTransferRequestProtocol.address);
 
 					expect(await yieldSyncV1Vault.transferRequestProtocol()).to.be.equal(
 						mockTransferRequestProtocol.address
 					);
-
-					const vaultProperties: VaultProperty = await mockTransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultProperty(
-						yieldSyncV1Vault.address
-					);
-
-					expect(vaultProperties.voteForRequired).to.equal(BigInt(2));
-					expect(vaultProperties.voteAgainstRequired).to.equal(BigInt(2));
-					expect(vaultProperties.transferDelaySeconds).to.equal(BigInt(secondsIn6Days));
 				}
 			);
 		});
