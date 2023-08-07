@@ -13,12 +13,14 @@ import {
 } from "../interface/IYieldSyncV1ATransferRequestProtocol.sol";
 
 
-contract MockAdmin is Ownable {
+contract MockAdmin is Ownable
+{
 	modifier validTransferRequest(
 		address yieldSyncV1ATransferRequestProtocol,
 		address yieldSyncV1Vault,
 		uint256 transferRequestId
-	) {
+	)
+	{
 		require(
 			IYieldSyncV1ATransferRequestProtocol(
 				yieldSyncV1ATransferRequestProtocol
