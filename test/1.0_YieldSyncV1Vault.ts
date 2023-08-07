@@ -16,7 +16,6 @@ describe("[1.0] YieldSyncV1Vault.sol", async () => {
 	let yieldSyncV1Vault: Contract;
 	let yieldSyncV1VaultAccessControl: Contract;
 	let yieldSyncV1VaultFactory: Contract;
-	let signatureProtocol: Contract;
 	let mockYieldSyncGovernance: Contract;
 
 
@@ -33,7 +32,6 @@ describe("[1.0] YieldSyncV1Vault.sol", async () => {
 		const YieldSyncV1Vault: ContractFactory = await ethers.getContractFactory("YieldSyncV1Vault");
 		const YieldSyncV1VaultFactory: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultFactory");
 		const YieldSyncV1VaultAccessControl: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultAccessControl");
-		const YieldSyncV1ASignatureProtocol: ContractFactory = await ethers.getContractFactory("YieldSyncV1ASignatureProtocol");
 
 
 		/// Mock
@@ -51,20 +49,9 @@ describe("[1.0] YieldSyncV1Vault.sol", async () => {
 			await YieldSyncV1VaultFactory.deploy(mockYieldSyncGovernance.address, yieldSyncV1VaultAccessControl.address)
 		).deployed();
 
-		// Deploy Signature Protocol
-		signatureProtocol = await (
-			await YieldSyncV1ASignatureProtocol.deploy(
-				mockYieldSyncGovernance.address,
-				yieldSyncV1VaultAccessControl.address
-			)
-		).deployed();
-
-		// Preset - Set purposer signature
-		await signatureProtocol.yieldSyncV1Vault_signaturesRequiredUpdate(1);
-
 		// Deploy a vault
 		await yieldSyncV1VaultFactory.deployYieldSyncV1Vault(
-			signatureProtocol.address,
+			ethers.constants.AddressZero,
 			ethers.constants.AddressZero,
 			[owner.address],
 			[addr1.address],
@@ -163,7 +150,7 @@ describe("[1.0] YieldSyncV1Vault.sol", async () => {
 	});
 
 
-	describe("Restriction: admin (1/2)", async () => {
+	describe("Restriction: admin (1/1)", async () => {
 		describe("adminAdd()", async () => {
 			it(
 				"Should allow admin to add another admin..",
@@ -301,11 +288,21 @@ describe("[1.0] YieldSyncV1Vault.sol", async () => {
 				async () => {
 					const [, addr1] = await ethers.getSigners();
 
-					// Preset
-					await signatureProtocol.yieldSyncV1Vault_signaturesRequiredUpdate(2);
+					const YieldSyncV1ASignatureProtocol: ContractFactory = await ethers.getContractFactory(
+						"YieldSyncV1ASignatureProtocol"
+					);
+
+					const yieldSyncV1ASignatureProtocol = await (
+						await YieldSyncV1ASignatureProtocol.deploy(
+							mockYieldSyncGovernance.address,
+							yieldSyncV1VaultAccessControl.address
+						)
+					).deployed();
+
+					await yieldSyncV1ASignatureProtocol.yieldSyncV1Vault_signaturesRequiredUpdate(2);
 
 					await expect(
-						yieldSyncV1Vault.connect(addr1).signatureProtocolUpdate(addr1.address)
+						yieldSyncV1Vault.connect(addr1).signatureProtocolUpdate(yieldSyncV1ASignatureProtocol.address)
 					).to.be.rejected;
 				}
 			);
@@ -313,29 +310,39 @@ describe("[1.0] YieldSyncV1Vault.sol", async () => {
 			it(
 				"Should be able to set a signature manager contract..",
 				async () => {
-					// Preset
-					await signatureProtocol.yieldSyncV1Vault_signaturesRequiredUpdate(2);
+					const YieldSyncV1ASignatureProtocol: ContractFactory = await ethers.getContractFactory(
+						"YieldSyncV1ASignatureProtocol"
+					);
 
-					await yieldSyncV1Vault.signatureProtocolUpdate(signatureProtocol.address);
+					const yieldSyncV1ASignatureProtocol = await (
+						await YieldSyncV1ASignatureProtocol.deploy(
+							mockYieldSyncGovernance.address,
+							yieldSyncV1VaultAccessControl.address
+						)
+					).deployed();
 
-					expect(await yieldSyncV1Vault.signatureProtocol()).to.be.equal(signatureProtocol.address);
+					await yieldSyncV1ASignatureProtocol.yieldSyncV1Vault_signaturesRequiredUpdate(2);
+
+					await yieldSyncV1Vault.signatureProtocolUpdate(yieldSyncV1ASignatureProtocol.address);
+
+					expect(await yieldSyncV1Vault.signatureProtocol()).to.be.equal(yieldSyncV1ASignatureProtocol.address);
 				}
 			);
 		});
 
 		describe("transferRequestProtocolUpdate()", async () => {
-			const MockTransferRequestProtocol: ContractFactory = await ethers.getContractFactory(
-				"MockTransferRequestProtocol"
-			);
-
-			const mockTransferRequestProtocol: Contract = await (
-				await MockTransferRequestProtocol.deploy(yieldSyncV1VaultAccessControl.address)
-			).deployed();
-
 			it(
 				"Should revert when unauthorized msg.sender calls..",
 				async () => {
 					const [admin, addr1] = await ethers.getSigners();
+
+					const MockTransferRequestProtocol: ContractFactory = await ethers.getContractFactory(
+						"MockTransferRequestProtocol"
+					);
+
+					const mockTransferRequestProtocol: Contract = await (
+						await MockTransferRequestProtocol.deploy(yieldSyncV1VaultAccessControl.address)
+					).deployed();
 
 					// Set YieldSyncV1Vault properties for admin
 					await mockTransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
@@ -362,6 +369,14 @@ describe("[1.0] YieldSyncV1Vault.sol", async () => {
 				async () => {
 					const [admin] = await ethers.getSigners();
 
+					const MockTransferRequestProtocol: ContractFactory = await ethers.getContractFactory(
+						"MockTransferRequestProtocol"
+					);
+
+					const mockTransferRequestProtocol: Contract = await (
+						await MockTransferRequestProtocol.deploy(yieldSyncV1VaultAccessControl.address)
+					).deployed();
+
 					// Set YieldSyncV1Vault properties for admin
 					await mockTransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 						admin.address,
@@ -374,8 +389,7 @@ describe("[1.0] YieldSyncV1Vault.sol", async () => {
 						mockTransferRequestProtocol.address
 					);
 
-					const vaultProperties: VaultProperty = await mockTransferRequestProtocol
-					.yieldSyncV1Vault_yieldSyncV1VaultProperty(
+					const vaultProperties: VaultProperty = await mockTransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultProperty(
 						yieldSyncV1Vault.address
 					);
 
