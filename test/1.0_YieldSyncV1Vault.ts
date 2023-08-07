@@ -288,21 +288,14 @@ describe("[1.0] YieldSyncV1Vault.sol", async () => {
 				async () => {
 					const [, addr1] = await ethers.getSigners();
 
-					const YieldSyncV1ASignatureProtocol: ContractFactory = await ethers.getContractFactory(
-						"YieldSyncV1ASignatureProtocol"
+					const MockSignatureProtocol: ContractFactory = await ethers.getContractFactory(
+						"MockSignatureProtocol"
 					);
 
-					const yieldSyncV1ASignatureProtocol = await (
-						await YieldSyncV1ASignatureProtocol.deploy(
-							mockYieldSyncGovernance.address,
-							yieldSyncV1VaultAccessControl.address
-						)
-					).deployed();
-
-					await yieldSyncV1ASignatureProtocol.yieldSyncV1Vault_signaturesRequiredUpdate(2);
+					const mockSignatureProtocol = await (await MockSignatureProtocol.deploy()).deployed();
 
 					await expect(
-						yieldSyncV1Vault.connect(addr1).signatureProtocolUpdate(yieldSyncV1ASignatureProtocol.address)
+						yieldSyncV1Vault.connect(addr1).signatureProtocolUpdate(mockSignatureProtocol.address)
 					).to.be.rejected;
 				}
 			);
@@ -310,22 +303,15 @@ describe("[1.0] YieldSyncV1Vault.sol", async () => {
 			it(
 				"Should be able to set a signature manager contract..",
 				async () => {
-					const YieldSyncV1ASignatureProtocol: ContractFactory = await ethers.getContractFactory(
-						"YieldSyncV1ASignatureProtocol"
+					const MockSignatureProtocol: ContractFactory = await ethers.getContractFactory(
+						"MockSignatureProtocol"
 					);
 
-					const yieldSyncV1ASignatureProtocol = await (
-						await YieldSyncV1ASignatureProtocol.deploy(
-							mockYieldSyncGovernance.address,
-							yieldSyncV1VaultAccessControl.address
-						)
-					).deployed();
+					const mockSignatureProtocol = await (await MockSignatureProtocol.deploy()).deployed();
 
-					await yieldSyncV1ASignatureProtocol.yieldSyncV1Vault_signaturesRequiredUpdate(2);
+					yieldSyncV1Vault.signatureProtocolUpdate(mockSignatureProtocol.address)
 
-					await yieldSyncV1Vault.signatureProtocolUpdate(yieldSyncV1ASignatureProtocol.address);
-
-					expect(await yieldSyncV1Vault.signatureProtocol()).to.be.equal(yieldSyncV1ASignatureProtocol.address);
+					expect(await yieldSyncV1Vault.signatureProtocol()).to.be.equal(mockSignatureProtocol.address);
 				}
 			);
 		});

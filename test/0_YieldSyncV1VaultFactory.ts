@@ -40,9 +40,7 @@ describe("[0] YieldSyncV1VaultFactory.sol", async () => {
 		).deployed();
 
 		// Deploy mockSignatureProtocol
-		mockSignatureProtocol = await (
-			await MockSignatureProtocol.deploy(mockYieldSyncGovernance.address, yieldSyncV1VaultAccessControl.address)
-		).deployed();
+		mockSignatureProtocol = await (await MockSignatureProtocol.deploy()).deployed();
 
 		// Send ether to YieldSyncV1VaultFactory contract
 		await addr1.sendTransaction({
@@ -356,9 +354,6 @@ describe("[0] YieldSyncV1VaultFactory.sol", async () => {
 						[1, 1, 10] as UpdateVaultProperty
 					);
 
-					// Preset
-					await mockSignatureProtocol.connect(addr1).yieldSyncV1Vault_signaturesRequiredUpdate(1);
-
 					await yieldSyncV1VaultFactory.connect(addr1).deployYieldSyncV1Vault(
 						mockSignatureProtocol.address,
 						yieldSyncV1ATransferRequestProtocol.address,
@@ -391,9 +386,6 @@ describe("[0] YieldSyncV1VaultFactory.sol", async () => {
 							addr1.address,
 							[1, 1, 10] as UpdateVaultProperty
 						);
-
-						// Preset
-						await mockSignatureProtocol.connect(addr1).yieldSyncV1Vault_signaturesRequiredUpdate(1);
 
 						await yieldSyncV1VaultFactory.connect(addr1).deployYieldSyncV1Vault(
 							mockSignatureProtocol.address,
@@ -433,9 +425,6 @@ describe("[0] YieldSyncV1VaultFactory.sol", async () => {
 							addr1.address,
 							[1, 1, 10] as UpdateVaultProperty
 						);
-
-						// Preset
-						await mockSignatureProtocol.connect(addr1).yieldSyncV1Vault_signaturesRequiredUpdate(1);
 
 						await yieldSyncV1VaultFactory.connect(addr1).deployYieldSyncV1Vault(
 							mockSignatureProtocol.address,

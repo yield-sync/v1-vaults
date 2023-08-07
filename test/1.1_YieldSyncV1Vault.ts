@@ -88,15 +88,7 @@ describe("[1.1] YieldSyncV1Vault.sol - Security", async () => {
 			const MockSignatureProtocol: ContractFactory = await ethers.getContractFactory("MockSignatureProtocol");
 
 			// Deploy mockSignatureProtocol
-			const mockSignatureProtocol = await (
-				await MockSignatureProtocol.deploy(
-					mockYieldSyncGovernance.address,
-					yieldSyncV1VaultAccessControl.address
-				)
-			).deployed();
-
-			// Preset
-			await mockSignatureProtocol.connect(BadActor).yieldSyncV1Vault_signaturesRequiredUpdate(2);
+			const mockSignatureProtocol = await (await MockSignatureProtocol.deploy()).deployed();
 
 			await expect(
 				yieldSyncV1Vault.connect(BadActor).signatureProtocolUpdate(mockSignatureProtocol.address)
@@ -114,7 +106,6 @@ describe("[1.1] YieldSyncV1Vault.sol - Security", async () => {
 				"MockTransferRequestProtocol"
 			);
 
-			// Deploy mockSignatureProtocol
 			const mockTransferRequestProtocol = await (
 				await MockTransferRequestProtocol.deploy(yieldSyncV1VaultAccessControl.address)
 			).deployed();
