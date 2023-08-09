@@ -115,8 +115,6 @@ async function main()
 			console.log(e);
 		}
 	}
-	finally
-	{}
 
 	console.log("yieldSyncV1VaultAccessControl address:", yieldSyncV1VaultAccessControl.address);
 	console.log("yieldSyncV1VaultFactory address:", yieldSyncV1VaultFactory.address);
@@ -124,8 +122,7 @@ async function main()
 }
 
 
-main()
-.then(
+main().then(
 	() =>
 	{
 		process.exit(0);

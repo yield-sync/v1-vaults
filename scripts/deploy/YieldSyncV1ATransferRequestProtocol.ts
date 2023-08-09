@@ -92,16 +92,13 @@ async function main()
 			console.log(e);
 		}
 	}
-	finally
-	{}
 
 	console.log("yieldSyncV1ATransferRequestProtocol Address:", yieldSyncV1ATransferRequestProtocol.address);
 	console.log("Account Balance:", await deployer.getBalance());
 }
 
 
-main()
-.then(
+main().then(
 	() =>
 	{
 		process.exit(0);
