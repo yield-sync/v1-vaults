@@ -46,6 +46,24 @@ export default {
 			url: `https://sepolia.infura.io/v3/${process.env.INFURA_API_KEY}`,
 			accounts: [`0x${process.env.PRIVATE_KEY}`]
 		},
+		// for mainnet
+		'base-mainnet': {
+			url: 'https://mainnet.base.org',
+			accounts: [`0x${process.env.PRIVATE_KEY}` as string],
+			gasPrice: 1000000000,
+		  },
+		  // for testnet
+		  'base-goerli': {
+			url: 'https://goerli.base.org',
+			accounts: [`0x${process.env.PRIVATE_KEY}` as string],
+			gasPrice: 1000000000,
+		  },
+		  // for local dev environment
+		  'base-local': {
+			url: 'http://localhost:8545',
+			accounts: [`0x${process.env.PRIVATE_KEY}` as string],
+			gasPrice: 1000000000,
+		  },
 	},
 	paths: {
 		sources: "./contracts",
