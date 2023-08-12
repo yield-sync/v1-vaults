@@ -8,13 +8,13 @@
 		"func-order": "off",
 		"indent": ["error", 2],
 		"quotes": ["error", "double"],
-		"max-line-length": ["warn", 120],
+		"max-line-length": ["warn", 124],
 		"no-console": "warn",
 		"no-empty-blocks": "off",
 		"no-global-import": "warn",
 		"not-rely-on-time": "off",
 		"private-vars-leading-underscore": "warn",
-		"reason-string": ["warn", { "maxLength": 64 }],
+		"reason-string": ["warn", { "maxLength": 124 }],
 		"var-name-mixedcase": "off",
 		"reentrancy": "off"
 	}
