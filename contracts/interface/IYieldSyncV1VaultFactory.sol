@@ -31,11 +31,11 @@ interface IYieldSyncV1VaultFactory
 	;
 
 	/**
-	* @notice YieldSyncV1VaultAccessControl contract address
+	* @notice YieldSyncV1VaultRegistry contract address
 	* @dev [view-address]
 	* @return {address}
 	*/
-	function YieldSyncV1VaultAccessControl()
+	function YieldSyncV1VaultRegistry()
 		external
 		view
 		returns (address)

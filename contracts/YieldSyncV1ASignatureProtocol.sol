@@ -10,7 +10,7 @@ import { IYieldSyncV1Vault } from "@yield-sync/v1-sdk/contracts/interface/IYield
 import {
 	ISignatureProtocol,
 	IYieldSyncV1ASignatureProtocol,
-	IYieldSyncV1VaultAccessControl,
+	IYieldSyncV1VaultRegistry,
 	MessageHashData,
 	MessageHashVote
 } from "./interface/IYieldSyncV1ASignatureProtocol.sol";
@@ -25,7 +25,7 @@ contract YieldSyncV1ASignatureProtocol is
 
 	bytes4 public constant ERC1271_MAGIC_VALUE = 0x1626ba7e;
 
-	IYieldSyncV1VaultAccessControl public immutable override YieldSyncV1VaultAccessControl;
+	IYieldSyncV1VaultRegistry public immutable override YieldSyncV1VaultRegistry;
 
 	mapping (address yieldSyncV1Vault => bytes32[] messageHash) internal _vaultMessageHashes;
 
@@ -55,11 +55,11 @@ contract YieldSyncV1ASignatureProtocol is
 	}
 
 
-	constructor (address _YieldSyncGovernance, address _YieldSyncV1VaultAccessControl)
+	constructor (address _YieldSyncGovernance, address _YieldSyncV1VaultRegistry)
 	{
 		YieldSyncGovernance = _YieldSyncGovernance;
 
-		YieldSyncV1VaultAccessControl = IYieldSyncV1VaultAccessControl(_YieldSyncV1VaultAccessControl);
+		YieldSyncV1VaultRegistry = IYieldSyncV1VaultRegistry(_YieldSyncV1VaultRegistry);
 
 		_pause();
 	}
@@ -156,7 +156,7 @@ contract YieldSyncV1ASignatureProtocol is
 		override
 		whenNotPaused()
 	{
-		(, bool member) = YieldSyncV1VaultAccessControl.yieldSyncV1Vault_participant_access(yieldSyncV1Vault, msg.sender);
+		(, bool member) = YieldSyncV1VaultRegistry.yieldSyncV1Vault_participant_access(yieldSyncV1Vault, msg.sender);
 
 		require(member, "!member");
 
@@ -179,7 +179,7 @@ contract YieldSyncV1ASignatureProtocol is
 
 			address recovered = ECDSA.recover(ECDSA.toEthSignedMessageHash(messageHash), signature);
 
-			(, bool recoveredIsMember) = YieldSyncV1VaultAccessControl.yieldSyncV1Vault_participant_access(
+			(, bool recoveredIsMember) = YieldSyncV1VaultRegistry.yieldSyncV1Vault_participant_access(
 				yieldSyncV1Vault,
 				recovered
 			);

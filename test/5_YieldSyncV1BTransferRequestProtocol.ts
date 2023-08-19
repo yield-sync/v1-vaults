@@ -15,7 +15,7 @@ describe("[5] YieldSyncV1Vault.sol with YieldSyncV1BTransferRequestProtocol", as
 	let mockERC721: Contract;
 
 	let vault: Contract;
-	let accessControl: Contract;
+	let Registry: Contract;
 	let factory: Contract;
 	let transferRequestProtocol: Contract;
 	let mockYieldSyncGovernance: Contract;
@@ -31,7 +31,7 @@ describe("[5] YieldSyncV1Vault.sol with YieldSyncV1BTransferRequestProtocol", as
 
 		const YieldSyncV1Vault: ContractFactory = await ethers.getContractFactory("YieldSyncV1Vault");
 		const YieldSyncV1VaultFactory: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultFactory");
-		const YieldSyncV1VaultAccessControl: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultAccessControl");
+		const YieldSyncV1VaultRegistry: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultRegistry");
 		const YieldSyncV1BTransferRequestProtocol: ContractFactory = await ethers.getContractFactory("YieldSyncV1BTransferRequestProtocol");
 
 		/// Mock
@@ -42,15 +42,15 @@ describe("[5] YieldSyncV1Vault.sol with YieldSyncV1BTransferRequestProtocol", as
 		mockYieldSyncGovernance = await (await MockYieldSyncGovernance.deploy()).deployed();
 
 		/// Core
-		// Deploy YieldSyncV1VaultAccessControl
-		accessControl = await (await YieldSyncV1VaultAccessControl.deploy()).deployed();
+		// Deploy YieldSyncV1VaultRegistry
+		Registry = await (await YieldSyncV1VaultRegistry.deploy()).deployed();
 		// Deploy YieldSyncV1VaultFactory
 		factory = await (
-			await YieldSyncV1VaultFactory.deploy(mockYieldSyncGovernance.address, accessControl.address)
+			await YieldSyncV1VaultFactory.deploy(mockYieldSyncGovernance.address, Registry.address)
 		).deployed();
 
 		// Deploy YieldSyncV1BTransferRequestProtocol
-		transferRequestProtocol = await (await YieldSyncV1BTransferRequestProtocol.deploy(accessControl.address)).deployed();
+		transferRequestProtocol = await (await YieldSyncV1BTransferRequestProtocol.deploy(Registry.address)).deployed();
 
 		// Set YieldSyncV1Vault properties on TransferRequestProtocol.sol
 		await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(

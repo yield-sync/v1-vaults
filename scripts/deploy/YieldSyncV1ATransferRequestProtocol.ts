@@ -13,7 +13,7 @@ async function main()
 {
 	const [deployer] = await ethers.getSigners();
 
-	let yieldSyncV1VaultAccessControl: string = "";
+	let yieldSyncV1VaultRegistry: string = "";
 
 	// Get factories
 	const YieldSyncV1ATransferRequestProtocol: ContractFactory = await ethers.getContractFactory(
@@ -23,22 +23,22 @@ async function main()
 	switch (network.name)
 	{
 		case "mainnet":
-			yieldSyncV1VaultAccessControl = String(process.env.YIELD_SYNC_V1_VAULT_ACCESS_CONTROL_MAINNET);
+			yieldSyncV1VaultRegistry = String(process.env.YIELD_SYNC_V1_VAULT_ACCESS_CONTROL_MAINNET);
 
 			break;
 
 		case "optimism":
-			yieldSyncV1VaultAccessControl = String(process.env.YIELD_SYNC_V1_VAULT_ACCESS_CONTROL_OP);
+			yieldSyncV1VaultRegistry = String(process.env.YIELD_SYNC_V1_VAULT_ACCESS_CONTROL_OP);
 
 			break;
 
 		case "optimismgoerli":
-			yieldSyncV1VaultAccessControl = String(process.env.YIELD_SYNC_V1_VAULT_ACCESS_CONTROL_OP_GOERLI);
+			yieldSyncV1VaultRegistry = String(process.env.YIELD_SYNC_V1_VAULT_ACCESS_CONTROL_OP_GOERLI);
 
 			break;
 
 		case "sepolia":
-			yieldSyncV1VaultAccessControl = String(process.env.YIELD_SYNC_V1_VAULT_ACCESS_CONTROL_SEPOLIA);
+			yieldSyncV1VaultRegistry = String(process.env.YIELD_SYNC_V1_VAULT_ACCESS_CONTROL_SEPOLIA);
 
 			break;
 
@@ -50,13 +50,13 @@ async function main()
 	console.log("Deploying on Network:", network.name);
 	console.log("Deployer Account:", deployer.address);
 	console.log("Account Balance:", await deployer.getBalance());
-	console.log("yieldSyncV1VaultAccessControl:", yieldSyncV1VaultAccessControl);
+	console.log("yieldSyncV1VaultRegistry:", yieldSyncV1VaultRegistry);
 
 	console.log("Deploying YieldSyncV1ATransferRequestProtocol..");
 
 	// YieldSyncV1ATransferRequestProtocol
 	const yieldSyncV1ATransferRequestProtocol: Contract = await (
-		await YieldSyncV1ATransferRequestProtocol.deploy(yieldSyncV1VaultAccessControl)
+		await YieldSyncV1ATransferRequestProtocol.deploy(yieldSyncV1VaultRegistry)
 	).deployed();
 
 	console.log("Waiting 30 seconds before verifying..");
@@ -74,7 +74,7 @@ async function main()
 				contract: "contracts/YieldSyncV1ATransferRequestProtocol.sol:YieldSyncV1ATransferRequestProtocol",
 				address: yieldSyncV1ATransferRequestProtocol.address,
 				constructorArguments: [
-					yieldSyncV1VaultAccessControl
+					yieldSyncV1VaultRegistry
 				],
 			}
 		);

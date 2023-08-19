@@ -14,7 +14,7 @@ async function main()
 	const [owner] = await ethers.getSigners();
 
 	// Factory
-	const YieldSyncV1VaultAccessControl: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultAccessControl");
+	const YieldSyncV1VaultRegistry: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultRegistry");
 	const YieldSyncV1VaultFactory: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultFactory");
 	const YieldSyncV1ATransferRequestProtocol: ContractFactory = await ethers.getContractFactory(
 		"YieldSyncV1ATransferRequestProtocol"
@@ -55,14 +55,14 @@ async function main()
 
 			const mockYieldSyncGovernance: Contract = await (await MockYieldSyncGovernance.deploy()).deployed();
 
-			const yieldSyncV1VaultAccessControl: Contract = await (
-				await YieldSyncV1VaultAccessControl.deploy()
+			const yieldSyncV1VaultRegistry: Contract = await (
+				await YieldSyncV1VaultRegistry.deploy()
 			).deployed();
 
 			const yieldSyncV1VaultFactory: Contract = await (
 				await YieldSyncV1VaultFactory.deploy(
 					mockYieldSyncGovernance.address,
-					yieldSyncV1VaultAccessControl.address
+					yieldSyncV1VaultRegistry.address
 				)
 			).deployed();
 
@@ -131,7 +131,7 @@ async function main()
 					owner.address,
 					ethers.constants.AddressZero,
 					transferRequestProtocolAddress,
-					await yieldSyncV1VaultFactory.YieldSyncV1VaultAccessControl(),
+					await yieldSyncV1VaultFactory.YieldSyncV1VaultRegistry(),
 					[owner.address],
 					[owner.address],
 				],

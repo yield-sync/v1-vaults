@@ -11,7 +11,7 @@ import { ISignatureProtocol } from "./interface/ISignatureProtocol.sol";
 import {
 	ITransferRequestProtocol,
 	IYieldSyncV1Vault,
-	IYieldSyncV1VaultAccessControl,
+	IYieldSyncV1VaultRegistry,
 	TransferRequest
 } from "./interface/IYieldSyncV1Vault.sol";
 
@@ -38,7 +38,7 @@ contract YieldSyncV1Vault is
 	address public override signatureProtocol;
 	address public override transferRequestProtocol;
 
-	IYieldSyncV1VaultAccessControl public immutable override YieldSyncV1VaultAccessControl;
+	IYieldSyncV1VaultRegistry public immutable override YieldSyncV1VaultRegistry;
 
 	mapping (uint256 transferRequestId => TransferRequest transferRequest) internal _transferRequestId_transferRequest;
 
@@ -47,7 +47,7 @@ contract YieldSyncV1Vault is
 		address deployer,
 		address _signatureProtocol,
 		address _transferRequestProtocol,
-		address _YieldSyncV1VaultAccessControl,
+		address _YieldSyncV1VaultRegistry,
 		address[] memory admins,
 		address[] memory members
 	)
@@ -55,7 +55,7 @@ contract YieldSyncV1Vault is
 		signatureProtocol = _signatureProtocol;
 		transferRequestProtocol = _transferRequestProtocol;
 
-		YieldSyncV1VaultAccessControl = IYieldSyncV1VaultAccessControl(_YieldSyncV1VaultAccessControl);
+		YieldSyncV1VaultRegistry = IYieldSyncV1VaultRegistry(_YieldSyncV1VaultRegistry);
 
 		if (signatureProtocol != address(0))
 		{
@@ -69,12 +69,12 @@ contract YieldSyncV1Vault is
 
 		for (uint i = 0; i < admins.length; i++)
 		{
-			YieldSyncV1VaultAccessControl.adminAdd(address(this), admins[i]);
+			YieldSyncV1VaultRegistry.adminAdd(address(this), admins[i]);
 		}
 
 		for (uint i = 0; i < members.length; i++)
 		{
-			YieldSyncV1VaultAccessControl.memberAdd(address(this), members[i]);
+			YieldSyncV1VaultRegistry.memberAdd(address(this), members[i]);
 		}
 	}
 
@@ -95,7 +95,7 @@ contract YieldSyncV1Vault is
 
 	modifier accessAdmin()
 	{
-		(bool admin,) = YieldSyncV1VaultAccessControl.yieldSyncV1Vault_participant_access(address(this), msg.sender);
+		(bool admin,) = YieldSyncV1VaultRegistry.yieldSyncV1Vault_participant_access(address(this), msg.sender);
 
 		require(admin, "!admin");
 
@@ -104,7 +104,7 @@ contract YieldSyncV1Vault is
 
 	modifier accessMember()
 	{
-		(, bool member) = YieldSyncV1VaultAccessControl.yieldSyncV1Vault_participant_access(address(this), msg.sender);
+		(, bool member) = YieldSyncV1VaultRegistry.yieldSyncV1Vault_participant_access(address(this), msg.sender);
 
 		require(member, "!member");
 
@@ -129,7 +129,7 @@ contract YieldSyncV1Vault is
 		override
 		accessAdmin()
 	{
-		YieldSyncV1VaultAccessControl.adminAdd(address(this), targetAddress);
+		YieldSyncV1VaultRegistry.adminAdd(address(this), targetAddress);
 	}
 
 	/// @inheritdoc IYieldSyncV1Vault
@@ -138,7 +138,7 @@ contract YieldSyncV1Vault is
 		override
 		accessAdmin()
 	{
-		YieldSyncV1VaultAccessControl.adminRemove(address(this), admin);
+		YieldSyncV1VaultRegistry.adminRemove(address(this), admin);
 	}
 
 	/// @inheritdoc IYieldSyncV1Vault
@@ -147,7 +147,7 @@ contract YieldSyncV1Vault is
 		override
 		accessAdmin()
 	{
-		YieldSyncV1VaultAccessControl.memberAdd(address(this), targetAddress);
+		YieldSyncV1VaultRegistry.memberAdd(address(this), targetAddress);
 	}
 
 	/// @inheritdoc IYieldSyncV1Vault
@@ -156,7 +156,7 @@ contract YieldSyncV1Vault is
 		override
 		accessAdmin()
 	{
-		YieldSyncV1VaultAccessControl.memberRemove(address(this), member);
+		YieldSyncV1VaultRegistry.memberRemove(address(this), member);
 	}
 
 	/// @inheritdoc IYieldSyncV1Vault
@@ -261,6 +261,6 @@ contract YieldSyncV1Vault is
 		override
 		accessMember()
 	{
-		YieldSyncV1VaultAccessControl.memberRemove(address(this), msg.sender);
+		YieldSyncV1VaultRegistry.memberRemove(address(this), msg.sender);
 	}
 }

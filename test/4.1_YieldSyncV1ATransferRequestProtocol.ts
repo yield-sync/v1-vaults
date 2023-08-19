@@ -12,7 +12,7 @@ describe("[4.1] YieldSyncV1Vault.sol with YieldSyncV1ATransferRequestProtocol - 
 	let yieldSyncV1Vault: Contract;
 	let yieldSyncV1VaultFactory: Contract;
 	let yieldSyncV1ATransferRequestProtocol: Contract;
-	let yieldSyncV1VaultAccessControl: Contract;
+	let yieldSyncV1VaultRegistry: Contract;
 	let mockYieldSyncGovernance: Contract;
 
 
@@ -22,21 +22,21 @@ describe("[4.1] YieldSyncV1Vault.sol with YieldSyncV1ATransferRequestProtocol - 
 		// Contract Factory
 		const YieldSyncV1Vault: ContractFactory = await ethers.getContractFactory("YieldSyncV1Vault");
 		const YieldSyncV1VaultFactory: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultFactory");
-		const YieldSyncV1VaultAccessControl: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultAccessControl");
+		const YieldSyncV1VaultRegistry: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultRegistry");
 		const MockYieldSyncGovernance: ContractFactory = await ethers.getContractFactory("MockYieldSyncGovernance");
 		const YieldSyncV1ATransferRequestProtocol: ContractFactory = await ethers.getContractFactory("YieldSyncV1ATransferRequestProtocol");
 
 
 		// Contract
 		mockYieldSyncGovernance = await (await MockYieldSyncGovernance.deploy()).deployed();
-		yieldSyncV1VaultAccessControl = await (await YieldSyncV1VaultAccessControl.deploy()).deployed();
+		yieldSyncV1VaultRegistry = await (await YieldSyncV1VaultRegistry.deploy()).deployed();
 		yieldSyncV1VaultFactory = await (
-			await YieldSyncV1VaultFactory.deploy(mockYieldSyncGovernance.address, yieldSyncV1VaultAccessControl.address)
+			await YieldSyncV1VaultFactory.deploy(mockYieldSyncGovernance.address, yieldSyncV1VaultRegistry.address)
 		).deployed();
 
 		// Deploy yieldSyncV1ATransferRequestProtocol
 		yieldSyncV1ATransferRequestProtocol = await (
-			await YieldSyncV1ATransferRequestProtocol.deploy(yieldSyncV1VaultAccessControl.address)
+			await YieldSyncV1ATransferRequestProtocol.deploy(yieldSyncV1VaultRegistry.address)
 		).deployed();
 
 		// Set YieldSyncV1Vault properties on TransferRequestProtocol.sol

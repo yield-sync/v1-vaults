@@ -18,7 +18,7 @@ async function main()
 	// Get factories
 	const MockYieldSyncGovernance: ContractFactory = await ethers.getContractFactory("MockYieldSyncGovernance");
 	const YieldSyncV1VaultFactory: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultFactory");
-	const YieldSyncV1VaultAccessControl: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultAccessControl");
+	const YieldSyncV1VaultRegistry: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultRegistry");
 
 	switch (network.name)
 	{
@@ -58,17 +58,17 @@ async function main()
 	console.log("governanceContractAddress:", governanceContractAddress);
 
 	/// DEPLOY
-	console.log("Deploying YieldSyncV1VaultAccessControl..");
+	console.log("Deploying YieldSyncV1VaultRegistry..");
 
-	// YieldSyncV1VaultAccessControl
-	const yieldSyncV1VaultAccessControl: Contract = await (await YieldSyncV1VaultAccessControl.deploy()).deployed();
+	// YieldSyncV1VaultRegistry
+	const yieldSyncV1VaultRegistry: Contract = await (await YieldSyncV1VaultRegistry.deploy()).deployed();
 
 
 	console.log("Deploying YieldSyncV1VaultFactory..");
 
 	// YieldSyncV1VaultFactory
 	const yieldSyncV1VaultFactory: Contract = await (
-		await YieldSyncV1VaultFactory.deploy(governanceContractAddress, yieldSyncV1VaultAccessControl.address)
+		await YieldSyncV1VaultFactory.deploy(governanceContractAddress, yieldSyncV1VaultRegistry.address)
 	).deployed();
 
 	console.log("Waiting 30 seconds before verifying..");
@@ -79,12 +79,12 @@ async function main()
 	// verify
 	try
 	{
-		// yieldSyncV1VaultAccessControl
+		// yieldSyncV1VaultRegistry
 		await run(
 			"verify:verify",
 			{
-				contract: "contracts/YieldSyncV1VaultAccessControl.sol:YieldSyncV1VaultAccessControl",
-				address: yieldSyncV1VaultAccessControl.address,
+				contract: "contracts/YieldSyncV1VaultRegistry.sol:YieldSyncV1VaultRegistry",
+				address: yieldSyncV1VaultRegistry.address,
 				constructorArguments: [],
 			}
 		);
@@ -97,7 +97,7 @@ async function main()
 				address: yieldSyncV1VaultFactory.address,
 				constructorArguments: [
 					governanceContractAddress,
-					yieldSyncV1VaultAccessControl.address,
+					yieldSyncV1VaultRegistry.address,
 				],
 			}
 		);
@@ -116,7 +116,7 @@ async function main()
 		}
 	}
 
-	console.log("yieldSyncV1VaultAccessControl address:", yieldSyncV1VaultAccessControl.address);
+	console.log("yieldSyncV1VaultRegistry address:", yieldSyncV1VaultRegistry.address);
 	console.log("yieldSyncV1VaultFactory address:", yieldSyncV1VaultFactory.address);
 	console.log("Account Balance:", await deployer.getBalance());
 }

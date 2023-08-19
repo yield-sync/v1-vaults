@@ -3,7 +3,7 @@ pragma solidity ^0.8.18;
 
 
 import { ISignatureProtocol, MessageHashData } from "./ISignatureProtocol.sol";
-import { IYieldSyncV1VaultAccessControl } from "./IYieldSyncV1VaultAccessControl.sol";
+import { IYieldSyncV1VaultRegistry } from "./IYieldSyncV1VaultRegistry.sol";
 
 
 struct MessageHashVote
@@ -28,14 +28,14 @@ interface IYieldSyncV1ASignatureProtocol is
 	;
 
 	/**
-	* @notice YieldSyncV1VaultAccessControl Interfaced
+	* @notice YieldSyncV1VaultRegistry Interfaced
 	* @dev [view-address]
-	* @return {IYieldSyncV1VaultAccessControl}
+	* @return {IYieldSyncV1VaultRegistry}
 	*/
-	function YieldSyncV1VaultAccessControl()
+	function YieldSyncV1VaultRegistry()
 		external
 		view
-		returns (IYieldSyncV1VaultAccessControl)
+		returns (IYieldSyncV1VaultRegistry)
 	;
 
 

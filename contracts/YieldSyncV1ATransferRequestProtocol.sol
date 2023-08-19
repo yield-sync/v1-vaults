@@ -7,7 +7,7 @@ import { ReentrancyGuard } from "@openzeppelin/contracts/security/ReentrancyGuar
 import {
 	ITransferRequestProtocol,
 	IYieldSyncV1ATransferRequestProtocol,
-	IYieldSyncV1VaultAccessControl,
+	IYieldSyncV1VaultRegistry,
 	TransferRequest,
 	TransferRequestPoll,
 	YieldSyncV1VaultProperty
@@ -21,7 +21,7 @@ contract YieldSyncV1ATransferRequestProtocol is
 {
 	uint256 internal _transferRequestIdTracker;
 
-	IYieldSyncV1VaultAccessControl public immutable override YieldSyncV1VaultAccessControl;
+	IYieldSyncV1VaultRegistry public immutable override YieldSyncV1VaultRegistry;
 
 	mapping (
 		address yieldSyncV1Vault => uint256[] openTransferRequestsIds
@@ -40,9 +40,9 @@ contract YieldSyncV1ATransferRequestProtocol is
 	) internal _yieldSyncV1Vault_transferRequestId_transferRequestPoll;
 
 
-	constructor (address _YieldSyncV1VaultAccessControl)
+	constructor (address _YieldSyncV1VaultRegistry)
 	{
-		YieldSyncV1VaultAccessControl = IYieldSyncV1VaultAccessControl(_YieldSyncV1VaultAccessControl);
+		YieldSyncV1VaultRegistry = IYieldSyncV1VaultRegistry(_YieldSyncV1VaultRegistry);
 
 		_transferRequestIdTracker = 0;
 	}
@@ -50,7 +50,7 @@ contract YieldSyncV1ATransferRequestProtocol is
 
 	modifier accessAdmin(address yieldSyncV1Vault)
 	{
-		(bool admin,) = YieldSyncV1VaultAccessControl.yieldSyncV1Vault_participant_access(yieldSyncV1Vault, msg.sender);
+		(bool admin,) = YieldSyncV1VaultRegistry.yieldSyncV1Vault_participant_access(yieldSyncV1Vault, msg.sender);
 
 		require(admin || msg.sender == yieldSyncV1Vault, "!admin && msg.sender != yieldSyncV1Vault");
 
@@ -59,7 +59,7 @@ contract YieldSyncV1ATransferRequestProtocol is
 
 	modifier accessMember(address yieldSyncV1Vault)
 	{
-		(, bool member) = YieldSyncV1VaultAccessControl.yieldSyncV1Vault_participant_access(
+		(, bool member) = YieldSyncV1VaultRegistry.yieldSyncV1Vault_participant_access(
 			yieldSyncV1Vault,
 			msg.sender
 		);

@@ -2,7 +2,7 @@
 pragma solidity ^0.8.18;
 
 
-interface IYieldSyncV1VaultAccessControl
+interface IYieldSyncV1VaultRegistry
 {
 	/**
 	* @notice Getter for `_admin_yieldSyncV1Vaults`

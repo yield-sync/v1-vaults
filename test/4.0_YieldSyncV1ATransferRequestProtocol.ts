@@ -15,7 +15,7 @@ describe("[4.0] YieldSyncV1Vault.sol with YieldSyncV1ATransferRequestProtocol", 
 	let mockERC721: Contract;
 
 	let vault: Contract;
-	let accessControl: Contract;
+	let Registry: Contract;
 	let factory: Contract;
 	let transferRequestProtocol: Contract;
 	let mockYieldSyncGovernance: Contract;
@@ -31,7 +31,7 @@ describe("[4.0] YieldSyncV1Vault.sol with YieldSyncV1ATransferRequestProtocol", 
 
 		const YieldSyncV1Vault: ContractFactory = await ethers.getContractFactory("YieldSyncV1Vault");
 		const YieldSyncV1VaultFactory: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultFactory");
-		const YieldSyncV1VaultAccessControl: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultAccessControl");
+		const YieldSyncV1VaultRegistry: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultRegistry");
 		const YieldSyncV1ATransferRequestProtocol: ContractFactory = await ethers.getContractFactory("YieldSyncV1ATransferRequestProtocol");
 
 		/// Mock
@@ -42,16 +42,16 @@ describe("[4.0] YieldSyncV1Vault.sol with YieldSyncV1ATransferRequestProtocol", 
 		mockYieldSyncGovernance = await (await MockYieldSyncGovernance.deploy()).deployed();
 
 		/// Core
-		// Deploy YieldSyncV1VaultAccessControl
-		accessControl = await (await YieldSyncV1VaultAccessControl.deploy()).deployed();
+		// Deploy YieldSyncV1VaultRegistry
+		Registry = await (await YieldSyncV1VaultRegistry.deploy()).deployed();
 		// Deploy YieldSyncV1VaultFactory
 		factory = await (
-			await YieldSyncV1VaultFactory.deploy(mockYieldSyncGovernance.address, accessControl.address)
+			await YieldSyncV1VaultFactory.deploy(mockYieldSyncGovernance.address, Registry.address)
 		).deployed();
 
 		// Deploy YieldSyncV1ATransferRequestProtocol
 		transferRequestProtocol = await (
-			await YieldSyncV1ATransferRequestProtocol.deploy(accessControl.address)
+			await YieldSyncV1ATransferRequestProtocol.deploy(Registry.address)
 		).deployed();
 
 		// Set YieldSyncV1Vault properties on TransferRequestProtocol.sol

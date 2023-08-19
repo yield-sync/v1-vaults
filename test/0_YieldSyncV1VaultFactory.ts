@@ -6,7 +6,7 @@ import { Contract, ContractFactory } from "ethers";
 
 
 describe("[0] YieldSyncV1VaultFactory.sol", async () => {
-	let yieldSyncV1VaultAccessControl: Contract;
+	let yieldSyncV1VaultRegistry: Contract;
 	let yieldSyncV1VaultFactory: Contract;
 	let yieldSyncV1ATransferRequestProtocol: Contract;
 	let mockYieldSyncGovernance: Contract;
@@ -17,26 +17,26 @@ describe("[0] YieldSyncV1VaultFactory.sol", async () => {
 
 		// Contract Factory
 		const YieldSyncV1VaultFactory: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultFactory");
-		const YieldSyncV1VaultAccessControl: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultAccessControl");
+		const YieldSyncV1VaultRegistry: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultRegistry");
 		const MockYieldSyncGovernance: ContractFactory = await ethers.getContractFactory("MockYieldSyncGovernance");
 		const MockSignatureProtocol: ContractFactory = await ethers.getContractFactory("MockSignatureProtocol");
 		const YieldSyncV1ATransferRequestProtocol: ContractFactory = await ethers.getContractFactory("YieldSyncV1ATransferRequestProtocol");
 
 		/// Mock
-		// Governance and AccessControl
+		// Governance and Registry
 		mockYieldSyncGovernance = await (await MockYieldSyncGovernance.deploy()).deployed();
 
 		/// Core
-		// Deploy YieldSyncV1VaultAccessControl
-		yieldSyncV1VaultAccessControl = await (await YieldSyncV1VaultAccessControl.deploy()).deployed();
+		// Deploy YieldSyncV1VaultRegistry
+		yieldSyncV1VaultRegistry = await (await YieldSyncV1VaultRegistry.deploy()).deployed();
 		// Deploy YieldSyncV1VaultFactory
 		yieldSyncV1VaultFactory = await (
-			await YieldSyncV1VaultFactory.deploy(mockYieldSyncGovernance.address, yieldSyncV1VaultAccessControl.address)
+			await YieldSyncV1VaultFactory.deploy(mockYieldSyncGovernance.address, yieldSyncV1VaultRegistry.address)
 		).deployed();
 
 		// Deploy YieldSyncV1ATransferRequestProtocol
 		yieldSyncV1ATransferRequestProtocol = await (
-			await YieldSyncV1ATransferRequestProtocol.deploy(yieldSyncV1VaultAccessControl.address)
+			await YieldSyncV1ATransferRequestProtocol.deploy(yieldSyncV1VaultRegistry.address)
 		).deployed();
 
 		// Deploy mockSignatureProtocol
@@ -264,7 +264,7 @@ describe("[0] YieldSyncV1VaultFactory.sol", async () => {
 			);
 
 			it(
-				"Should be able to record deployed YieldSyncV1Vault.sol on YieldSyncV1VaultAccessControl.sol..",
+				"Should be able to record deployed YieldSyncV1Vault.sol on YieldSyncV1VaultRegistry.sol..",
 				async () => {
 					const [, addr1] = await ethers.getSigners();
 
@@ -284,25 +284,25 @@ describe("[0] YieldSyncV1VaultFactory.sol", async () => {
 						{ value: 1 }
 					);
 
-					const vaultAddress = await yieldSyncV1VaultAccessControl.member_yieldSyncV1Vaults(addr1.address);
+					const vaultAddress = await yieldSyncV1VaultRegistry.member_yieldSyncV1Vaults(addr1.address);
 
 					expect(vaultAddress[0]).to.equal(
 						await yieldSyncV1VaultFactory.yieldSyncV1VaultId_yieldSyncV1Vault(0)
 					);
 
-					const vaultAddress1 = await yieldSyncV1VaultAccessControl.admin_yieldSyncV1Vaults(addr1.address);
+					const vaultAddress1 = await yieldSyncV1VaultRegistry.admin_yieldSyncV1Vaults(addr1.address);
 
 					expect(vaultAddress1[0]).to.equal(
 						await yieldSyncV1VaultFactory.yieldSyncV1VaultId_yieldSyncV1Vault(0)
 					);
 
-					const members = await yieldSyncV1VaultAccessControl.yieldSyncV1Vault_members(
+					const members = await yieldSyncV1VaultRegistry.yieldSyncV1Vault_members(
 						await yieldSyncV1VaultFactory.yieldSyncV1VaultId_yieldSyncV1Vault(0)
 					);
 
 					expect(members[0]).to.equal(addr1.address);
 
-					const admins = await yieldSyncV1VaultAccessControl.yieldSyncV1Vault_admins(
+					const admins = await yieldSyncV1VaultRegistry.yieldSyncV1Vault_admins(
 						await yieldSyncV1VaultFactory.yieldSyncV1VaultId_yieldSyncV1Vault(0)
 					);
 
@@ -404,7 +404,7 @@ describe("[0] YieldSyncV1VaultFactory.sol", async () => {
 
 						expect(
 							(
-								await yieldSyncV1VaultAccessControl.yieldSyncV1Vault_participant_access(
+								await yieldSyncV1VaultRegistry.yieldSyncV1Vault_participant_access(
 									yieldSyncV1Vault.address,
 									addr1.address,
 								)
@@ -443,7 +443,7 @@ describe("[0] YieldSyncV1VaultFactory.sol", async () => {
 
 						expect(
 							(
-								await yieldSyncV1VaultAccessControl.yieldSyncV1Vault_participant_access(
+								await yieldSyncV1VaultRegistry.yieldSyncV1Vault_participant_access(
 									yieldSyncV1Vault.address,
 									addr1.address,
 								)

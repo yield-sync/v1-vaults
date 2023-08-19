@@ -26,7 +26,7 @@ contract YieldSyncV1VaultFactory is
 
 
 	address public immutable override YieldSyncGovernance;
-	address public immutable override YieldSyncV1VaultAccessControl;
+	address public immutable override YieldSyncV1VaultRegistry;
 
 	uint256 public override fee;
 	uint256 public override yieldSyncV1VaultIdTracker;
@@ -36,13 +36,13 @@ contract YieldSyncV1VaultFactory is
 	mapping (uint256 yieldSyncV1VaultId => address yieldSyncV1Vault) public override yieldSyncV1VaultId_yieldSyncV1Vault;
 
 
-	constructor (address _YieldSyncGovernance, address _YieldSyncV1VaultAccessControl)
+	constructor (address _YieldSyncGovernance, address _YieldSyncV1VaultRegistry)
 	{
 		fee = 0;
 		yieldSyncV1VaultIdTracker = 0;
 
 		YieldSyncGovernance = _YieldSyncGovernance;
-		YieldSyncV1VaultAccessControl = _YieldSyncV1VaultAccessControl;
+		YieldSyncV1VaultRegistry = _YieldSyncV1VaultRegistry;
 	}
 
 
@@ -72,7 +72,7 @@ contract YieldSyncV1VaultFactory is
 			msg.sender,
 			signatureProtocol,
 			transferRequestProtocol,
-			YieldSyncV1VaultAccessControl,
+			YieldSyncV1VaultRegistry,
 			admins,
 			members
 		);

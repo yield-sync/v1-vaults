@@ -8,7 +8,7 @@ import { Contract, ContractFactory } from "ethers";
 describe("[1.1] YieldSyncV1Vault.sol - Security", async () => {
 	let yieldSyncV1Vault: Contract;
 	let yieldSyncV1VaultFactory: Contract;
-	let yieldSyncV1VaultAccessControl: Contract;
+	let yieldSyncV1VaultRegistry: Contract;
 	let mockYieldSyncGovernance: Contract;
 
 
@@ -18,14 +18,14 @@ describe("[1.1] YieldSyncV1Vault.sol - Security", async () => {
 		// Contract Factory
 		const YieldSyncV1Vault: ContractFactory = await ethers.getContractFactory("YieldSyncV1Vault");
 		const YieldSyncV1VaultFactory: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultFactory");
-		const YieldSyncV1VaultAccessControl: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultAccessControl");
+		const YieldSyncV1VaultRegistry: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultRegistry");
 		const MockYieldSyncGovernance: ContractFactory = await ethers.getContractFactory("MockYieldSyncGovernance");
 
 		// Contract
 		mockYieldSyncGovernance = await (await MockYieldSyncGovernance.deploy()).deployed();
-		yieldSyncV1VaultAccessControl = await (await YieldSyncV1VaultAccessControl.deploy()).deployed();
+		yieldSyncV1VaultRegistry = await (await YieldSyncV1VaultRegistry.deploy()).deployed();
 		yieldSyncV1VaultFactory = await (
-			await YieldSyncV1VaultFactory.deploy(mockYieldSyncGovernance.address, yieldSyncV1VaultAccessControl.address)
+			await YieldSyncV1VaultFactory.deploy(mockYieldSyncGovernance.address, yieldSyncV1VaultRegistry.address)
 		).deployed();
 
 		// Deploy a vault

@@ -11,7 +11,7 @@ const chainId: number = 31337;
 
 describe("[6] signatureProtocol.sol", async () => {
 	let yieldSyncV1Vault: Contract;
-	let yieldSyncV1VaultAccessControl: Contract;
+	let yieldSyncV1VaultRegistry: Contract;
 	let yieldSyncV1VaultFactory: Contract;
 	let yieldSyncV1ATransferRequestProtocol: Contract;
 	let signatureProtocol: Contract;
@@ -34,7 +34,7 @@ describe("[6] signatureProtocol.sol", async () => {
 
 		const YieldSyncV1Vault: ContractFactory = await ethers.getContractFactory("YieldSyncV1Vault");
 		const YieldSyncV1VaultFactory: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultFactory");
-		const YieldSyncV1VaultAccessControl: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultAccessControl");
+		const YieldSyncV1VaultRegistry: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultRegistry");
 		const YieldSyncV1ASignatureProtocol: ContractFactory = await ethers.getContractFactory("YieldSyncV1ASignatureProtocol");
 		const YieldSyncV1ATransferRequestProtocol: ContractFactory = await ethers.getContractFactory("YieldSyncV1ATransferRequestProtocol");
 
@@ -47,17 +47,17 @@ describe("[6] signatureProtocol.sol", async () => {
 		mockYieldSyncGovernance = await (await MockYieldSyncGovernance.deploy()).deployed();
 
 		// Expected
-		yieldSyncV1VaultAccessControl = await (await YieldSyncV1VaultAccessControl.deploy()).deployed();
+		yieldSyncV1VaultRegistry = await (await YieldSyncV1VaultRegistry.deploy()).deployed();
 
 		// Deploy Factory
 		yieldSyncV1VaultFactory = await (
-			await YieldSyncV1VaultFactory.deploy(mockYieldSyncGovernance.address, yieldSyncV1VaultAccessControl.address)
+			await YieldSyncV1VaultFactory.deploy(mockYieldSyncGovernance.address, yieldSyncV1VaultRegistry.address)
 		).deployed();
 
 		// Deploy yieldSyncV1ATransferRequestProtocol
 		yieldSyncV1ATransferRequestProtocol = await (
 			await YieldSyncV1ATransferRequestProtocol.deploy(
-				yieldSyncV1VaultAccessControl.address
+				yieldSyncV1VaultRegistry.address
 			)
 		).deployed();
 
@@ -65,7 +65,7 @@ describe("[6] signatureProtocol.sol", async () => {
 		signatureProtocol = await (
 			await YieldSyncV1ASignatureProtocol.deploy(
 				mockYieldSyncGovernance.address,
-				yieldSyncV1VaultAccessControl.address
+				yieldSyncV1VaultRegistry.address
 			)
 		).deployed();
 
