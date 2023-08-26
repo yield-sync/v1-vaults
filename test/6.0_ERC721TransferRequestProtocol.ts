@@ -9,7 +9,7 @@ const secondsIn7Days = 24 * 60 * 60 * 7;
 const secondsIn6Days = 24 * 60 * 60 * 6;
 
 
-describe("[4.0] YieldSyncV1Vault.sol with YieldSyncV1ATransferRequestProtocol", async () => {
+describe("[6.0] YieldSyncV1Vault.sol with ERC721TransferRequestProtocol", async () => {
 	let mockAdmin: Contract;
 	let mockERC20: Contract;
 	let mockERC721: Contract;
@@ -33,7 +33,7 @@ describe("[4.0] YieldSyncV1Vault.sol with YieldSyncV1ATransferRequestProtocol", 
 		const YieldSyncV1VaultFactory: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultFactory");
 		const YieldSyncV1VaultRegistry: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultRegistry");
 		const YieldSyncV1ATransferRequestProtocol: ContractFactory = await ethers.getContractFactory(
-			"YieldSyncV1ATransferRequestProtocol"
+			"ERC721TransferRequestProtocol"
 		);
 
 		/// Mock
