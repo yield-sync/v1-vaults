@@ -139,14 +139,14 @@ contract ERC721TransferRequestProtocol is
 		];
 
 		if (
-			transferRequestPoll.voteAgainstMembers.length < yieldSyncV1VaultProperty.voteAgainstRequired &&
-			transferRequestPoll.voteForMembers.length < yieldSyncV1VaultProperty.voteForRequired
+			transferRequestPoll.voteAgainstErc721TokenId.length < yieldSyncV1VaultProperty.voteAgainstRequired &&
+			transferRequestPoll.voteForErc721TokenId.length < yieldSyncV1VaultProperty.voteForRequired
 		)
 		{
 			return (false, false, "TransferRequest pending");
 		}
 
-		if (transferRequestPoll.voteAgainstMembers.length >= yieldSyncV1VaultProperty.voteAgainstRequired)
+		if (transferRequestPoll.voteAgainstErc721TokenId.length >= yieldSyncV1VaultProperty.voteAgainstRequired)
 		{
 			return (true, false, "TransferRequest denied");
 		}
@@ -264,8 +264,8 @@ contract ERC721TransferRequestProtocol is
 			_transferRequestIdTracker
 		] = TransferRequestPoll(
 			{
-				voteAgainstMembers: emptyArray,
-				voteForMembers: emptyArray
+				voteAgainstErc721TokenId: emptyArray,
+				voteForErc721TokenId: emptyArray
 			}
 		);
 
@@ -340,8 +340,8 @@ contract ERC721TransferRequestProtocol is
 		];
 
 		require(
-			transferRequestPoll.voteAgainstMembers.length < yieldSyncV1VaultProperty.voteAgainstRequired &&
-			transferRequestPoll.voteForMembers.length < yieldSyncV1VaultProperty.voteForRequired,
+			transferRequestPoll.voteAgainstErc721TokenId.length < yieldSyncV1VaultProperty.voteAgainstRequired &&
+			transferRequestPoll.voteForErc721TokenId.length < yieldSyncV1VaultProperty.voteForRequired,
 			"Voting closed"
 		);
 
@@ -352,29 +352,29 @@ contract ERC721TransferRequestProtocol is
 				"IERC721(yieldSyncV1VaultProperty.erc721Token).ownerOf(tokenIds[i]) != msg.sender"
 			);
 
-			for (uint256 ii = 0; ii < transferRequestPoll.voteAgainstMembers.length; ii++)
+			for (uint256 ii = 0; ii < transferRequestPoll.voteAgainstErc721TokenId.length; ii++)
 			{
-				require(tokenIds[i] != transferRequestPoll.voteAgainstMembers[ii], "Already voted");
+				require(tokenIds[i] != transferRequestPoll.voteAgainstErc721TokenId[ii], "Already voted");
 			}
 
-			for (uint256 ii = 0; ii < transferRequestPoll.voteForMembers.length; ii++)
+			for (uint256 ii = 0; ii < transferRequestPoll.voteForErc721TokenId.length; ii++)
 			{
-				require(tokenIds[i] != transferRequestPoll.voteForMembers[ii], "Already voted");
+				require(tokenIds[i] != transferRequestPoll.voteForErc721TokenId[ii], "Already voted");
 			}
 
 			if (vote)
 			{
-				transferRequestPoll.voteForMembers.push(tokenIds[i]);
+				transferRequestPoll.voteForErc721TokenId.push(tokenIds[i]);
 			}
 			else
 			{
-				transferRequestPoll.voteAgainstMembers.push(tokenIds[i]);
+				transferRequestPoll.voteAgainstErc721TokenId.push(tokenIds[i]);
 			}
 		}
 
 		if (
-			transferRequestPoll.voteAgainstMembers.length >= yieldSyncV1VaultProperty.voteAgainstRequired ||
-			transferRequestPoll.voteForMembers.length >= yieldSyncV1VaultProperty.voteForRequired
+			transferRequestPoll.voteAgainstErc721TokenId.length >= yieldSyncV1VaultProperty.voteAgainstRequired ||
+			transferRequestPoll.voteForErc721TokenId.length >= yieldSyncV1VaultProperty.voteForRequired
 		)
 		{
 			emit TransferRequestReadyToBeProcessed(yieldSyncV1Vault, transferRequestId);

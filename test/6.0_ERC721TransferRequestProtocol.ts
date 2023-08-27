@@ -10,6 +10,19 @@ type ERC721VaultProperty = {
 	voteForRequired: number,
 }
 
+// Transfer Request Poll
+type ERC721TransferRequestPoll = {
+	voteAgainstErc721TokenId: string[],
+	voteForErc721TokenId: string[],
+};
+
+type UpdateERC721TransferRequestPoll = [
+	// voteAgainstErc721TokenId
+	string[],
+	// voteForErc721TokenId
+	string[],
+];
+
 
 const { ethers } = require("hardhat");
 
@@ -280,27 +293,27 @@ describe("[6.0] YieldSyncV1Vault.sol with ERC721TransferRequestProtocol", async 
 								0
 							);
 
-							const createdTransferRequest: TransferRequest = await transferRequestProtocol
+							const transferRequest: TransferRequest = await transferRequestProtocol
 							.yieldSyncV1Vault_transferRequestId_transferRequest(
 								vault.address,
 								0
 							);
 
-							const createdTransferRequestPoll: TransferRequestPoll = await transferRequestProtocol
+							const transferRequestPoll: ERC721TransferRequestPoll = await transferRequestProtocol
 							.yieldSyncV1Vault_transferRequestId_transferRequestPoll(
 								vault.address,
 								0
 							);
 
-							expect(createdTransferRequest.forERC20).to.be.false;
-							expect(createdTransferRequest.forERC721).to.be.false;
-							expect(createdTransferRequest.creator).to.be.equal(addr1.address);
-							expect(createdTransferRequest.token).to.be.equal(ethers.constants.AddressZero);
-							expect(createdTransferRequest.tokenId).to.be.equal(0);
-							expect(createdTransferRequest.amount).to.be.equal(ethers.utils.parseEther(".5"));
-							expect(createdTransferRequest.to).to.be.equal(addr2.address);
-							expect(createdTransferRequestPoll.voteForMembers.length).to.be.equal(0);
-							expect(createdTransferRequestPoll.voteAgainstMembers.length).to.be.equal(0);
+							expect(transferRequest.forERC20).to.be.false;
+							expect(transferRequest.forERC721).to.be.false;
+							expect(transferRequest.creator).to.be.equal(addr1.address);
+							expect(transferRequest.token).to.be.equal(ethers.constants.AddressZero);
+							expect(transferRequest.tokenId).to.be.equal(0);
+							expect(transferRequest.amount).to.be.equal(ethers.utils.parseEther(".5"));
+							expect(transferRequest.to).to.be.equal(addr2.address);
+							expect(transferRequestPoll.voteForErc721TokenId.length).to.be.equal(0);
+							expect(transferRequestPoll.voteAgainstErc721TokenId.length).to.be.equal(0);
 						}
 					);
 
@@ -355,19 +368,17 @@ describe("[6.0] YieldSyncV1Vault.sol with ERC721TransferRequestProtocol", async 
 								addr1NFTs
 							);
 
-							const createdTransferRequestPoll: TransferRequestPoll = await transferRequestProtocol
+							const createdTransferRequestPoll: ERC721TransferRequestPoll = await transferRequestProtocol
 								.yieldSyncV1Vault_transferRequestId_transferRequestPoll(
 									vault.address,
 									0
 								);
 
-							console.log(createdTransferRequestPoll);
-
 							// Vote count
-							expect(createdTransferRequestPoll.voteForMembers.length).to.be.equal(addr1NFTs.length);
+							expect(createdTransferRequestPoll.voteForErc721TokenId.length).to.be.equal(addr1NFTs.length);
 
 							for (let i = 0; i < addr1NFTs.length; i++) {
-								expect(createdTransferRequestPoll.voteForMembers[i]).to.be.equal(addr1NFTs[i]);
+								expect(createdTransferRequestPoll.voteForErc721TokenId[i]).to.be.equal(addr1NFTs[i]);
 
 							}
 						}
@@ -400,17 +411,17 @@ describe("[6.0] YieldSyncV1Vault.sol with ERC721TransferRequestProtocol", async 
 								addr1NFTs
 							);
 
-							const transferRequestPoll: TransferRequestPoll = await transferRequestProtocol
+							const transferRequestPoll: ERC721TransferRequestPoll = await transferRequestProtocol
 								.yieldSyncV1Vault_transferRequestId_transferRequestPoll(
 									vault.address,
 									0
 								);
 
 							// Vote count
-							expect(transferRequestPoll.voteForMembers.length).to.be.equal(addr1NFTs.length);
+							expect(transferRequestPoll.voteForErc721TokenId.length).to.be.equal(addr1NFTs.length);
 
 							for (let i = 0; i < addr1NFTs.length; i++) {
-								expect(transferRequestPoll.voteForMembers[i]).to.be.equal(addr1NFTs[i]);
+								expect(transferRequestPoll.voteForErc721TokenId[i]).to.be.equal(addr1NFTs[i]);
 
 							}
 
@@ -464,9 +475,9 @@ describe("[6.0] YieldSyncV1Vault.sol with ERC721TransferRequestProtocol", async 
 
 				describe("vault_transferRequestId_transferRequestProcess()", async () => {
 					it(
-						"[auth] Should revert when unauthorized msg.sender calls..",
+						"Should fail to process TransferRequest because not enough votes..",
 						async () => {
-							const [, addr1, addr2] = await ethers.getSigners();
+							const [, addr1] = await ethers.getSigners();
 
 							await transferRequestProtocol.connect(
 								addr1
@@ -489,44 +500,6 @@ describe("[6.0] YieldSyncV1Vault.sol with ERC721TransferRequestProtocol", async 
 								addr1NFTs
 							);
 
-							console.log(await vault.connect(
-								addr2
-							).yieldSyncV1Vault_transferRequestId_transferRequestProcess(0));
-
-
-							await expect(
-								vault.connect(
-									addr2
-								).yieldSyncV1Vault_transferRequestId_transferRequestProcess(0)
-							).to.be.rejected;
-						}
-					);
-
-					it(
-						"Should fail to process TransferRequest because not enough votes..",
-						async () => {
-							const [, addr1] = await ethers.getSigners();
-
-							await transferRequestProtocol.connect(
-								addr1
-							).yieldSyncV1Vault_transferRequestId_transferRequestCreate(
-								vault.address,
-								false,
-								false,
-								addr1.address,
-								ethers.constants.AddressZero,
-								ethers.utils.parseEther(".5"),
-								0
-							);
-
-							await transferRequestProtocol.connect(
-								addr1
-							).yieldSyncV1Vault_transferRequestId_transferRequestPollVote(
-								vault.address,
-								0,
-								true
-							);
-
 							await expect(
 								vault.connect(
 									addr1
@@ -536,65 +509,9 @@ describe("[6.0] YieldSyncV1Vault.sol with ERC721TransferRequestProtocol", async 
 					);
 
 					it(
-						"Should fail to process TransferRequest because not enough time has passed..",
-						async () => {
-							const [, addr1] = await ethers.getSigners();
-
-							// Preset
-							await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
-								vault.address,
-								[
-									mockERC721.address,
-									2,
-									1,
-								] as UpdateERC721VaultProperty
-							);
-
-							await transferRequestProtocol.connect(
-								addr1
-							).yieldSyncV1Vault_transferRequestId_transferRequestCreate(
-								vault.address,
-								false,
-								false,
-								addr1.address,
-								ethers.constants.AddressZero,
-								ethers.utils.parseEther(".5"),
-								0
-							);
-
-							await transferRequestProtocol.connect(
-								addr1
-							).yieldSyncV1Vault_transferRequestId_transferRequestPollVote(
-								vault.address,
-								0,
-								true
-							);
-
-							// Fast-forward 6 days
-							await ethers.provider.send('evm_increaseTime', [secondsIn6Days]);
-
-							await expect(
-								vault.connect(
-									addr1
-								).yieldSyncV1Vault_transferRequestId_transferRequestProcess(0)
-							).to.be.rejectedWith("TransferRequest approved and waiting delay");
-						}
-					);
-
-					it(
 						"Should process TransferRequest for Ether..",
 						async () => {
 							const [, addr1, addr2] = await ethers.getSigners();
-
-							// Preset
-							await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
-								vault.address,
-								[
-									mockERC721.address,
-									2,
-									1,
-								] as UpdateERC721VaultProperty
-							);
 
 							await transferRequestProtocol.connect(
 								addr1
@@ -613,7 +530,17 @@ describe("[6.0] YieldSyncV1Vault.sol with ERC721TransferRequestProtocol", async 
 							).yieldSyncV1Vault_transferRequestId_transferRequestPollVote(
 								vault.address,
 								0,
-								true
+								true,
+								addr1NFTs
+							);
+
+							await transferRequestProtocol.connect(
+								addr2
+							).yieldSyncV1Vault_transferRequestId_transferRequestPollVote(
+								vault.address,
+								0,
+								true,
+								addr2NFTs
 							);
 
 							// Fast-forward 6 days
@@ -684,7 +611,8 @@ describe("[6.0] YieldSyncV1Vault.sol with ERC721TransferRequestProtocol", async 
 							).yieldSyncV1Vault_transferRequestId_transferRequestPollVote(
 								vault.address,
 								0,
-								true
+								true,
+								addr1NFTs,
 							);
 
 							const recieverBalanceBefore: number = await ethers.provider.getBalance(addr2.address);
@@ -692,15 +620,15 @@ describe("[6.0] YieldSyncV1Vault.sol with ERC721TransferRequestProtocol", async 
 							// Fast-forward 7 days
 							await ethers.provider.send('evm_increaseTime', [secondsIn7Days]);
 
-							await vault.connect(
-								addr1
-							).yieldSyncV1Vault_transferRequestId_transferRequestProcess(0);
+							await vault.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestProcess(0);
 
 							const recieverBalanceAfter: number = await ethers.provider.getBalance(addr2.address);
 
 							await expect(
 								ethers.utils.formatUnits(recieverBalanceAfter)
-							).to.be.equal(ethers.utils.formatUnits(recieverBalanceBefore));
+							).to.be.equal(
+								ethers.utils.formatUnits(recieverBalanceBefore)
+							);
 
 							expect(
 								(
@@ -739,7 +667,7 @@ describe("[6.0] YieldSyncV1Vault.sol with ERC721TransferRequestProtocol", async 
 									0
 								);
 
-							const createdTransferRequestPoll: TransferRequestPoll = await transferRequestProtocol
+							const createdTransferRequestPoll: ERC721TransferRequestPoll = await transferRequestProtocol
 								.yieldSyncV1Vault_transferRequestId_transferRequestPoll(
 									vault.address,
 									0
@@ -752,8 +680,8 @@ describe("[6.0] YieldSyncV1Vault.sol with ERC721TransferRequestProtocol", async 
 							expect(createdTransferRequest.tokenId).to.be.equal(0);
 							expect(createdTransferRequest.amount).to.be.equal(50);
 							expect(createdTransferRequest.to).to.be.equal(addr2.address);
-							expect(createdTransferRequestPoll.voteAgainstMembers.length).to.be.equal(0);
-							expect(createdTransferRequestPoll.voteForMembers.length).to.be.equal(0);
+							expect(createdTransferRequestPoll.voteAgainstErc721TokenId.length).to.be.equal(0);
+							expect(createdTransferRequestPoll.voteForErc721TokenId.length).to.be.equal(0);
 						}
 					);
 
@@ -814,19 +742,9 @@ describe("[6.0] YieldSyncV1Vault.sol with ERC721TransferRequestProtocol", async 
 
 				describe("vault_transferRequestId_transferRequestPollVote()", async () => {
 					it(
-						"Should be able vote on TransferRequest and add member to _transferRequest[].votedMembers..",
+						"Should be able vote on TransferRequest and add token ids to _transferRequest[].voteForErc721TokenId..",
 						async () => {
 							const [, addr1, addr2] = await ethers.getSigners();
-
-							// Preset
-							await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
-								vault.address,
-								[
-									mockERC721.address,
-									2,
-									1,
-								] as UpdateERC721VaultProperty
-							);
 
 							await transferRequestProtocol.connect(
 								addr1
@@ -845,17 +763,25 @@ describe("[6.0] YieldSyncV1Vault.sol with ERC721TransferRequestProtocol", async 
 							).yieldSyncV1Vault_transferRequestId_transferRequestPollVote(
 								vault.address,
 								0,
-								true
+								true,
+								addr1NFTs,
 							);
 
-							const createdTransferRequestPoll: TransferRequestPoll = await transferRequestProtocol
+							const createdTransferRequestPoll: ERC721TransferRequestPoll = await transferRequestProtocol
 								.yieldSyncV1Vault_transferRequestId_transferRequestPoll(
 									vault.address,
 									0
 								);
 
-							expect(createdTransferRequestPoll.voteForMembers.length).to.be.equal(1);
-							expect(createdTransferRequestPoll.voteForMembers[0]).to.be.equal(addr1.address);
+							expect(createdTransferRequestPoll.voteForErc721TokenId.length).to.be.equal(addr1NFTs.length);
+
+							for (let i = 0; i < addr1NFTs.length; i++) {
+								expect(
+									createdTransferRequestPoll.voteForErc721TokenId[i]
+								).to.be.equal(
+									addr1NFTs[i]
+								);
+							}
 						}
 					);
 				});
@@ -992,7 +918,7 @@ describe("[6.0] YieldSyncV1Vault.sol with ERC721TransferRequestProtocol", async 
 									0
 								);
 
-							const createdTransferRequestPoll: TransferRequestPoll = await transferRequestProtocol
+							const createdTransferRequestPoll: ERC721TransferRequestPoll = await transferRequestProtocol
 								.yieldSyncV1Vault_transferRequestId_transferRequestPoll(
 									vault.address,
 									0
@@ -1005,8 +931,8 @@ describe("[6.0] YieldSyncV1Vault.sol with ERC721TransferRequestProtocol", async 
 							expect(createdTransferRequest.tokenId).to.be.equal(1);
 							expect(createdTransferRequest.amount).to.be.equal(1);
 							expect(createdTransferRequest.to).to.be.equal(addr2.address);
-							expect(createdTransferRequestPoll.voteAgainstMembers.length).to.be.equal(0);
-							expect(createdTransferRequestPoll.voteForMembers.length).to.be.equal(0);
+							expect(createdTransferRequestPoll.voteAgainstErc721TokenId.length).to.be.equal(0);
+							expect(createdTransferRequestPoll.voteForErc721TokenId.length).to.be.equal(0);
 						}
 					);
 
@@ -1062,14 +988,14 @@ describe("[6.0] YieldSyncV1Vault.sol with ERC721TransferRequestProtocol", async 
 								true
 							);
 
-							const createdTransferRequestPoll: TransferRequestPoll = await transferRequestProtocol
+							const createdTransferRequestPoll: ERC721TransferRequestPoll = await transferRequestProtocol
 								.yieldSyncV1Vault_transferRequestId_transferRequestPoll(
 									vault.address,
 									0
 								);
 
-							expect(createdTransferRequestPoll.voteForMembers.length).to.be.equal(1);
-							expect(createdTransferRequestPoll.voteForMembers[0]).to.be.equal(addr1.address);
+							expect(createdTransferRequestPoll.voteForErc721TokenId.length).to.be.equal(1);
+							expect(createdTransferRequestPoll.voteForErc721TokenId[0]).to.be.equal(addr1.address);
 						}
 					);
 				});
@@ -1205,14 +1131,14 @@ describe("[6.0] YieldSyncV1Vault.sol with ERC721TransferRequestProtocol", async 
 							false
 						);
 
-						const createdTransferRequestPoll: TransferRequestPoll = await transferRequestProtocol
+						const createdTransferRequestPoll: ERC721TransferRequestPoll = await transferRequestProtocol
 							.yieldSyncV1Vault_transferRequestId_transferRequestPoll(
 								vault.address,
 								0
 							);
 
-						expect(createdTransferRequestPoll.voteAgainstMembers.length).to.be.equal(1);
-						expect(createdTransferRequestPoll.voteAgainstMembers[0]).to.be.equal(addr1.address);
+						expect(createdTransferRequestPoll.voteAgainstErc721TokenId.length).to.be.equal(1);
+						expect(createdTransferRequestPoll.voteAgainstErc721TokenId[0]).to.be.equal(addr1.address);
 					}
 				);
 			});
@@ -1453,7 +1379,7 @@ describe("[6.0] YieldSyncV1Vault.sol with ERC721TransferRequestProtocol", async 
 
 		describe("vault_transferRequestId_transferRequestPollUpdate()", async () => {
 			it(
-				"Should be able to update TransferRequestPoll.forVoteCount..",
+				"Should be able to update ERC721TransferRequestPoll.forVoteCount..",
 				async () => {
 					const [, addr1, addr2] = await ethers.getSigners();
 
@@ -1471,7 +1397,7 @@ describe("[6.0] YieldSyncV1Vault.sol with ERC721TransferRequestProtocol", async 
 						vault.address
 					);
 
-					const transferRequestPoll: TransferRequestPoll = await transferRequestProtocol.yieldSyncV1Vault_transferRequestId_transferRequestPoll(
+					const transferRequestPoll: ERC721TransferRequestPoll = await transferRequestProtocol.yieldSyncV1Vault_transferRequestId_transferRequestPoll(
 						vault.address,
 						openTRIds[openTRIds.length - 1]
 					);
@@ -1481,72 +1407,19 @@ describe("[6.0] YieldSyncV1Vault.sol with ERC721TransferRequestProtocol", async 
 						vault.address,
 						openTRIds[openTRIds.length - 1],
 						[
-							transferRequestPoll.latestForVoteTime,
-							[addr2.address,],
-							transferRequestPoll.voteForMembers,
-						] as UpdateTransferRequestPoll
+							transferRequestPoll.voteAgainstErc721TokenId,
+							transferRequestPoll.voteForErc721TokenId,
+						] as UpdateERC721TransferRequestPoll
 					);
 
-					const updatedTransferRequestPoll: TransferRequestPoll = await transferRequestProtocol
+					const updatedTransferRequestPoll: ERC721TransferRequestPoll = await transferRequestProtocol
 						.yieldSyncV1Vault_transferRequestId_transferRequestPoll(
 							vault.address,
 							openTRIds[openTRIds.length - 1]
 						);
 
-					expect(updatedTransferRequestPoll.voteAgainstMembers.length).to.be.equal(1);
-					expect(updatedTransferRequestPoll.voteAgainstMembers[0]).to.be.equal(addr2.address);
-				}
-			);
-
-			it(
-				"Should be able to update TransferRequestPoll.latestForVoteTime..",
-				async () => {
-					const [, addr1, addr2] = await ethers.getSigners();
-
-					await transferRequestProtocol.connect(addr1)
-						.yieldSyncV1Vault_transferRequestId_transferRequestCreate(
-							vault.address,
-							true,
-							false,
-							addr2.address,
-							mockERC20.address,
-							999,
-							0
-						);
-
-					const openTRIds: OpenTransferRequestIds = await transferRequestProtocol.yieldSyncV1Vault_openTransferRequestIds(
-						vault.address
-					);
-
-					const transferRequestPoll: TransferRequestPoll = await transferRequestProtocol
-						.yieldSyncV1Vault_transferRequestId_transferRequestPoll(
-							vault.address,
-							openTRIds[openTRIds.length - 1]
-						);
-
-					await transferRequestProtocol.yieldSyncV1Vault_transferRequestId_transferRequestPollUpdate(
-						vault.address,
-						openTRIds[openTRIds.length - 1],
-						[
-							BigInt(transferRequestPoll.latestForVoteTime) + BigInt(10),
-							transferRequestPoll.voteAgainstMembers,
-							transferRequestPoll.voteForMembers,
-						] as UpdateTransferRequestPoll
-					);
-
-					expect(
-						BigInt(transferRequestPoll.latestForVoteTime) + BigInt(10)
-					).to.be.greaterThanOrEqual(
-						BigInt(
-							(
-								await transferRequestProtocol
-									.yieldSyncV1Vault_transferRequestId_transferRequestPoll(
-										vault.address,
-										openTRIds[openTRIds.length - 1]
-									)
-							).latestForVoteTime
-						)
-					);
+					expect(updatedTransferRequestPoll.voteAgainstErc721TokenId.length).to.be.equal(1);
+					expect(updatedTransferRequestPoll.voteAgainstErc721TokenId[0]).to.be.equal(addr2.address);
 				}
 			);
 		});
