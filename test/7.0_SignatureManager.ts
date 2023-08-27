@@ -9,7 +9,7 @@ import { Bytes32 } from "soltypes";
 const chainId: number = 31337;
 
 
-describe("[6] signatureProtocol.sol", async () => {
+describe("[7.0] signatureProtocol.sol", async () => {
 	let yieldSyncV1Vault: Contract;
 	let yieldSyncV1VaultRegistry: Contract;
 	let yieldSyncV1VaultFactory: Contract;
