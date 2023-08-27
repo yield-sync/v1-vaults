@@ -361,18 +361,12 @@ contract ERC721TransferRequestProtocol is
 			{
 				require(tokenIds[i] != transferRequestPoll.voteForMembers[ii], "Already voted");
 			}
-		}
 
-		if (vote)
-		{
-			for (uint256 i = 0; i < tokenIds.length; i++)
+			if (vote)
 			{
 				transferRequestPoll.voteForMembers.push(tokenIds[i]);
 			}
-		}
-		else
-		{
-			for (uint256 i = 0; i < tokenIds.length; i++)
+			else
 			{
 				transferRequestPoll.voteAgainstMembers.push(tokenIds[i]);
 			}

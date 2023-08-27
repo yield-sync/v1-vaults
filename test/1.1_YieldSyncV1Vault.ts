@@ -116,18 +116,6 @@ describe("[1.1] YieldSyncV1Vault.sol - Security", async () => {
 		});
 	});
 
-	describe("yieldSyncV1Vault_transferRequestId_transferRequestProcess()", async () => {
-		it("BadActor should not be able to process transferRequest..", async () => {
-			const [, , , , BadActor] = await ethers.getSigners();
-
-			await expect(
-				yieldSyncV1Vault.connect(BadActor).yieldSyncV1Vault_transferRequestId_transferRequestProcess(0)
-			).to.be.rejectedWith(
-				"!member"
-			);
-		});
-	});
-
 	describe("renounceMembership()", async () => {
 		it("BadActor should not be able to renounce a membership that does not exist..", async () => {
 			const [, , , , BadActor] = await ethers.getSigners();

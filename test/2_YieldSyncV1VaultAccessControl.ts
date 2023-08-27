@@ -183,7 +183,7 @@ describe("[2] YieldSyncV1VaultRegistry.sol", async () => {
 
 	describe("adminAdd()", async () => {
 		it(
-			"Should revert when unauthorized msg.sender calls..",
+			"[auth] Should revert when unauthorized msg.sender calls..",
 			async () => {
 				const [, addr1] = await ethers.getSigners();
 
@@ -217,7 +217,7 @@ describe("[2] YieldSyncV1VaultRegistry.sol", async () => {
 
 	describe("adminRemove()", async () => {
 		it(
-			"Should revert when unauthorized msg.sender calls..",
+			"[auth] Should revert when unauthorized msg.sender calls..",
 			async () => {
 				const [, addr1] = await ethers.getSigners();
 
@@ -264,7 +264,7 @@ describe("[2] YieldSyncV1VaultRegistry.sol", async () => {
 
 	describe("memberAdd()", async () => {
 		it(
-			"Should revert when unauthorized msg.sender calls..",
+			"[auth] Should revert when unauthorized msg.sender calls..",
 			async () => {
 				const [, addr1] = await ethers.getSigners();
 
@@ -297,7 +297,7 @@ describe("[2] YieldSyncV1VaultRegistry.sol", async () => {
 
 	describe("memberRemove()", async () => {
 		it(
-			"Should revert when unauthorized msg.sender calls..",
+			"[auth] Should revert when unauthorized msg.sender calls..",
 			async () => {
 				const [, addr1] = await ethers.getSigners();
 
