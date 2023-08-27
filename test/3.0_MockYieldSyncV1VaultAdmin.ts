@@ -5,7 +5,7 @@ import { expect } from "chai";
 import { Contract, ContractFactory } from "ethers";
 
 
-describe("[3] MockAdmin.sol", async () => {
+describe("[3.0] MockAdmin.sol", async () => {
 	let yieldSyncV1Vault: Contract;
 	let yieldSyncV1VaultRegistry: Contract;
 	let yieldSyncV1VaultFactory: Contract;
