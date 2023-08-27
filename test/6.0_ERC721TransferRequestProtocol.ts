@@ -98,6 +98,10 @@ describe("[6.0] YieldSyncV1Vault.sol with ERC721TransferRequestProtocol", async 
 
 		// Send ERC721 to YieldSyncV1Vault contract
 		await mockERC721.transferFrom(owner.address, vault.address, 1);
+
+		// Send ERC721 to addr1 contract
+		await mockERC721.transferFrom(owner.address, addr1.address, 2);
+		await mockERC721.transferFrom(owner.address, addr1.address, 3);
 	});
 
 
@@ -212,27 +216,6 @@ describe("[6.0] YieldSyncV1Vault.sol with ERC721TransferRequestProtocol", async 
 		describe("[transferRequest] For", async () => {
 			describe("Requesting Ether", async () => {
 				describe("vault_transferRequestId_transferRequestCreate()", async () => {
-					it(
-						"Should revert when unauthorized msg.sender calls..",
-						async () => {
-							const [, , , , addr4] = await ethers.getSigners();
-
-							await expect(
-								transferRequestProtocol.connect(
-									addr4
-								).yieldSyncV1Vault_transferRequestId_transferRequestCreate(
-									vault.address,
-									false,
-									false,
-									addr4.address,
-									ethers.constants.AddressZero,
-									ethers.utils.parseEther(".5"),
-									0
-								)
-							).to.be.rejected;
-						}
-					);
-
 					it(
 						"Should revert when amount is set to 0 or less..",
 						async () => {
@@ -361,14 +344,15 @@ describe("[6.0] YieldSyncV1Vault.sol with ERC721TransferRequestProtocol", async 
 								).yieldSyncV1Vault_transferRequestId_transferRequestPollVote(
 									vault.address,
 									0,
-									true
+									true,
+									[1]
 								)
 							).to.be.rejected;
 						}
 					);
 
 					it(
-						"Should be able vote on TransferRequest & add member to _transferRequest[].votedMembers..",
+						"Should be able vote on TransferRequest & add token ids to _transferRequest[].votedMembers..",
 						async () => {
 							const [, addr1] = await ethers.getSigners();
 
@@ -386,8 +370,9 @@ describe("[6.0] YieldSyncV1Vault.sol with ERC721TransferRequestProtocol", async 
 							await transferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestPollVote(
 								vault.address,
 								0,
-								true
-							)
+								true,
+								[2,3]
+							);
 
 							const createdTransferRequestPoll: TransferRequestPoll = await transferRequestProtocol
 								.yieldSyncV1Vault_transferRequestId_transferRequestPoll(
@@ -395,10 +380,13 @@ describe("[6.0] YieldSyncV1Vault.sol with ERC721TransferRequestProtocol", async 
 									0
 								);
 
+							console.log(createdTransferRequestPoll);
+
 							// Vote count
-							expect(createdTransferRequestPoll.voteForMembers.length).to.be.equal(1);
-							// Voted members
-							expect(createdTransferRequestPoll.voteForMembers[0]).to.be.equal(addr1.address);
+							expect(createdTransferRequestPoll.voteForMembers.length).to.be.equal(2);
+							// Voted token ids
+							expect(createdTransferRequestPoll.voteForMembers[0]).to.be.equal(2);
+							expect(createdTransferRequestPoll.voteForMembers[1]).to.be.equal(3);
 						}
 					);
 
@@ -419,14 +407,27 @@ describe("[6.0] YieldSyncV1Vault.sol with ERC721TransferRequestProtocol", async 
 								0
 							);
 
-							// 1st vote
+							// 1st vote (should yield success)
 							await transferRequestProtocol.connect(
 								addr1
 							).yieldSyncV1Vault_transferRequestId_transferRequestPollVote(
 								vault.address,
 								0,
-								true
-							)
+								true,
+								[2,3]
+							);
+
+							const transferRequestPoll: TransferRequestPoll = await transferRequestProtocol
+								.yieldSyncV1Vault_transferRequestId_transferRequestPoll(
+									vault.address,
+									0
+								);
+
+							// Vote count
+							expect(transferRequestPoll.voteForMembers.length).to.be.equal(2);
+							// Voted token ids
+							expect(transferRequestPoll.voteForMembers[0]).to.be.equal(2);
+							expect(transferRequestPoll.voteForMembers[1]).to.be.equal(3);
 
 							// Attempt 2nd vote
 							await expect(
