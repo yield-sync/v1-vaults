@@ -32,7 +32,9 @@ describe("[4.0] YieldSyncV1Vault.sol with YieldSyncV1ATransferRequestProtocol", 
 		const YieldSyncV1Vault: ContractFactory = await ethers.getContractFactory("YieldSyncV1Vault");
 		const YieldSyncV1VaultFactory: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultFactory");
 		const YieldSyncV1VaultRegistry: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultRegistry");
-		const YieldSyncV1ATransferRequestProtocol: ContractFactory = await ethers.getContractFactory("YieldSyncV1ATransferRequestProtocol");
+		const YieldSyncV1ATransferRequestProtocol: ContractFactory = await ethers.getContractFactory(
+			"YieldSyncV1ATransferRequestProtocol"
+		);
 
 		/// Mock
 		// Governance and test contracts
@@ -177,7 +179,7 @@ describe("[4.0] YieldSyncV1Vault.sol with YieldSyncV1ATransferRequestProtocol", 
 			describe("Requesting Ether", async () => {
 				describe("vault_transferRequestId_transferRequestCreate()", async () => {
 					it(
-						"Should revert when unauthorized msg.sender calls..",
+						"[auth] Should revert when unauthorized msg.sender calls..",
 						async () => {
 							const [, , , , addr4] = await ethers.getSigners();
 
@@ -303,7 +305,7 @@ describe("[4.0] YieldSyncV1Vault.sol with YieldSyncV1ATransferRequestProtocol", 
 
 				describe("vault_transferRequestId_transferRequestPollVote()", async () => {
 					it(
-						"Should revert when unauthorized msg.sender calls..",
+						"[auth] Should revert when unauthorized msg.sender calls..",
 						async () => {
 							const [, addr1, , , addr4] = await ethers.getSigners();
 
@@ -408,7 +410,7 @@ describe("[4.0] YieldSyncV1Vault.sol with YieldSyncV1ATransferRequestProtocol", 
 
 				describe("vault_transferRequestId_transferRequestProcess()", async () => {
 					it(
-						"Should revert when unauthorized msg.sender calls..",
+						"[auth] Should revert when unauthorized msg.sender calls..",
 						async () => {
 							const [, addr1, addr2] = await ethers.getSigners();
 
@@ -1493,7 +1495,7 @@ describe("[4.0] YieldSyncV1Vault.sol with YieldSyncV1ATransferRequestProtocol", 
 
 		describe("vault_transferRequestId_transferRequestDelete()", async () => {
 			it(
-				"Should revert when unauthorized msg.sender calls..",
+				"[auth] Should revert when unauthorized msg.sender calls..",
 				async () => {
 					const [, addr1] = await ethers.getSigners();
 

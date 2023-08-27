@@ -125,10 +125,7 @@ contract YieldSyncV1BTransferRequestProtocol is
 
 
 	/// @inheritdoc ITransferRequestProtocol
-	function yieldSyncV1Vault_transferRequestId_transferRequest(
-		address yieldSyncV1Vault,
-		uint256 transferRequestId
-	)
+	function yieldSyncV1Vault_transferRequestId_transferRequest(address yieldSyncV1Vault, uint256 transferRequestId)
 		public
 		view
 		override

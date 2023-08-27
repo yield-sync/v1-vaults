@@ -9,7 +9,7 @@ import { Bytes32 } from "soltypes";
 const chainId: number = 31337;
 
 
-describe("[6] signatureProtocol.sol", async () => {
+describe("[7.0] signatureProtocol.sol", async () => {
 	let yieldSyncV1Vault: Contract;
 	let yieldSyncV1VaultRegistry: Contract;
 	let yieldSyncV1VaultFactory: Contract;
@@ -113,7 +113,7 @@ describe("[6] signatureProtocol.sol", async () => {
 		*/
 		describe("updatePause()", async () => {
 			it(
-				"Should revert when unauthorized msg.sender calls..",
+				"[auth] Should revert when unauthorized msg.sender calls..",
 				async () => {
 			await signatureProtocol.updatePause(false);
 					const [, addr1] = await ethers.getSigners();

@@ -191,7 +191,6 @@ contract YieldSyncV1Vault is
 		public
 		override
 		nonReentrant()
-		accessMember()
 		validYieldSyncV1Vault_transferRequestId_transferRequest(transferRequestId)
 	{
 		(bool readyToBeProcessed, bool approved, string memory message) = ITransferRequestProtocol(

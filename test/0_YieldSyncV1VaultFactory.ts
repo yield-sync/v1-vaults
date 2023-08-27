@@ -88,7 +88,7 @@ describe("[0] YieldSyncV1VaultFactory.sol", async () => {
 	describe("Restriction: IYieldSyncGovernance DEFAULT_ADMIN_ROLE", async () => {
 		describe("feeUpdate()", async () => {
 			it(
-				"Should revert when unauthorized msg.sender calls..",
+				"[auth] Should revert when unauthorized msg.sender calls..",
 				async () => {
 					const [, addr1] = await ethers.getSigners();
 
@@ -108,7 +108,7 @@ describe("[0] YieldSyncV1VaultFactory.sol", async () => {
 
 		describe("transferFunds()", async () => {
 			it(
-				"Should revert when unauthorized msg.sender calls..",
+				"[auth] Should revert when unauthorized msg.sender calls..",
 				async () => {
 					const [, addr1] = await ethers.getSigners();
 
@@ -161,7 +161,7 @@ describe("[0] YieldSyncV1VaultFactory.sol", async () => {
 	describe("!Restriction", async () => {
 		describe("YieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate()", async () => {
 			it(
-				"Should revert when unauthorized msg.sender calls..",
+				"[auth] Should revert when unauthorized msg.sender calls..",
 				async () => {
 					const [, addr1] = await ethers.getSigners();
 
