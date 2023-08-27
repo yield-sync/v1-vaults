@@ -1,3 +1,16 @@
+type UpdateERC721VaultProperty = [
+	string,
+	number,
+	number
+];
+
+type ERC721VaultProperty = {
+	erc721Token: string,
+	voteAgainstRequired: number,
+	voteForRequired: number,
+}
+
+
 const { ethers } = require("hardhat");
 
 
@@ -32,7 +45,7 @@ describe("[6.0] YieldSyncV1Vault.sol with ERC721TransferRequestProtocol", async 
 		const YieldSyncV1Vault: ContractFactory = await ethers.getContractFactory("YieldSyncV1Vault");
 		const YieldSyncV1VaultFactory: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultFactory");
 		const YieldSyncV1VaultRegistry: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultRegistry");
-		const YieldSyncV1ATransferRequestProtocol: ContractFactory = await ethers.getContractFactory(
+		const ERC721TransferRequestProtocol: ContractFactory = await ethers.getContractFactory(
 			"ERC721TransferRequestProtocol"
 		);
 
@@ -51,15 +64,15 @@ describe("[6.0] YieldSyncV1Vault.sol with ERC721TransferRequestProtocol", async 
 			await YieldSyncV1VaultFactory.deploy(mockYieldSyncGovernance.address, Registry.address)
 		).deployed();
 
-		// Deploy YieldSyncV1ATransferRequestProtocol
+		// Deploy ERC721TransferRequestProtocol
 		transferRequestProtocol = await (
-			await YieldSyncV1ATransferRequestProtocol.deploy(Registry.address)
+			await ERC721TransferRequestProtocol.deploy(Registry.address)
 		).deployed();
 
 		// Set YieldSyncV1Vault properties on TransferRequestProtocol.sol
 		await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 			owner.address,
-			[2, 2, secondsIn6Days] as UpdateVaultProperty
+			[mockERC721.address, 2, 2] as UpdateERC721VaultProperty
 		);
 
 		// Deploy a vault
@@ -95,10 +108,12 @@ describe("[6.0] YieldSyncV1Vault.sol with ERC721TransferRequestProtocol", async 
 				async () => {
 					const [, addr1] = await ethers.getSigners();
 
-					const vProp: VaultProperty = await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultProperty(
+					const vProp: ERC721VaultProperty = await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultProperty(
 						addr1.address
 					);
 
+					// Expect values to not be set before testing
+					expect(vProp.erc721Token).to.equal(ethers.constants.AddressZero);
 					expect(vProp.voteForRequired).to.equal(BigInt(0));
 					expect(vProp.voteAgainstRequired).to.equal(BigInt(0));
 
@@ -111,7 +126,24 @@ describe("[6.0] YieldSyncV1Vault.sol with ERC721TransferRequestProtocol", async 
 							[addr1.address],
 							{ value: 1 }
 						)
-					).to.be.rejectedWith("!_yieldSyncV1Vault_yieldSyncV1VaultProperty[initiator].voteAgainstRequired");
+					).to.be.rejectedWith("!_yieldSyncV1Vault_yieldSyncV1VaultProperty[initiator].erc721Token");
+				}
+			);
+		});
+
+		describe("When initiator sets properties, erc721Token != address(0)", async () => {
+			it(
+				"Should fail to set erc721Token on addr1 yieldSyncV1VaultProperty to address(0)..",
+				async () => {
+					const [, addr1] = await ethers.getSigners();
+
+					// Fail to set vault property with invalid values
+					await expect(
+						transferRequestProtocol.connect(addr1).yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+							addr1.address,
+							[ethers.constants.AddressZero, 1, 1] as UpdateERC721VaultProperty
+						)
+					).to.be.rejectedWith("!yieldSyncV1VaultProperty.erc721Token");
 				}
 			);
 		});
@@ -122,11 +154,11 @@ describe("[6.0] YieldSyncV1Vault.sol with ERC721TransferRequestProtocol", async 
 				async () => {
 					const [, addr1] = await ethers.getSigners();
 
-					// fail to deploy a vault
+					// Fail to set vault property with invalid values
 					await expect(
 						transferRequestProtocol.connect(addr1).yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 							addr1.address,
-							[0, 0, secondsIn6Days] as UpdateVaultProperty
+							[mockERC721.address, 0, 0] as UpdateERC721VaultProperty
 						)
 					).to.be.rejectedWith("!yieldSyncV1VaultProperty.voteAgainstRequired");
 				}
@@ -137,11 +169,11 @@ describe("[6.0] YieldSyncV1Vault.sol with ERC721TransferRequestProtocol", async 
 				async () => {
 					const [, addr1] = await ethers.getSigners();
 
-					// fail to deploy a vault
+					// Fail to set vault property with invalid values
 					await expect(
 						transferRequestProtocol.connect(addr1).yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 							addr1.address,
-							[1, 0, secondsIn6Days] as UpdateVaultProperty
+							[mockERC721.address, 1, 0,] as UpdateERC721VaultProperty
 						)
 					).to.be.rejectedWith("!yieldSyncV1VaultProperty.voteForRequired");
 				}
@@ -153,7 +185,9 @@ describe("[6.0] YieldSyncV1Vault.sol with ERC721TransferRequestProtocol", async 
 		it(
 			"Should intialize voteAgainstRequired as 2..",
 			async () => {
-				const vProp: VaultProperty = await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultProperty(
+				const [owner] = await ethers.getSigners();
+
+				const vProp: ERC721VaultProperty = await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultProperty(
 					vault.address
 				);
 
@@ -164,7 +198,7 @@ describe("[6.0] YieldSyncV1Vault.sol with ERC721TransferRequestProtocol", async 
 		it(
 			"Should intialize voteForRequired as 2..",
 			async () => {
-				const vProp: VaultProperty = await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultProperty(
+				const vProp: ERC721VaultProperty = await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultProperty(
 					vault.address
 				);
 
@@ -484,10 +518,10 @@ describe("[6.0] YieldSyncV1Vault.sol with ERC721TransferRequestProtocol", async 
 							await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 								vault.address,
 								[
+									mockERC721.address,
 									2,
 									1,
-									secondsIn7Days
-								] as UpdateVaultProperty
+								] as UpdateERC721VaultProperty
 							);
 
 							await transferRequestProtocol.connect(
@@ -530,10 +564,10 @@ describe("[6.0] YieldSyncV1Vault.sol with ERC721TransferRequestProtocol", async 
 							await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 								vault.address,
 								[
+									mockERC721.address,
 									2,
 									1,
-									secondsIn6Days
-								] as UpdateVaultProperty
+								] as UpdateERC721VaultProperty
 							);
 
 							await transferRequestProtocol.connect(
@@ -593,10 +627,10 @@ describe("[6.0] YieldSyncV1Vault.sol with ERC721TransferRequestProtocol", async 
 							await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 								vault.address,
 								[
+									mockERC721.address,
 									2,
 									1,
-									secondsIn7Days
-								] as UpdateVaultProperty
+								] as UpdateERC721VaultProperty
 							);
 
 							await transferRequestProtocol.connect(
@@ -762,10 +796,10 @@ describe("[6.0] YieldSyncV1Vault.sol with ERC721TransferRequestProtocol", async 
 							await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 								vault.address,
 								[
+									mockERC721.address,
 									2,
 									1,
-									secondsIn7Days
-								] as UpdateVaultProperty
+								] as UpdateERC721VaultProperty
 							);
 
 							await transferRequestProtocol.connect(
@@ -810,10 +844,10 @@ describe("[6.0] YieldSyncV1Vault.sol with ERC721TransferRequestProtocol", async 
 							await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 								vault.address,
 								[
+									mockERC721.address,
 									2,
 									1,
-									secondsIn6Days
-								] as UpdateVaultProperty
+								] as UpdateERC721VaultProperty
 							);
 
 							await transferRequestProtocol.connect(
@@ -1024,10 +1058,10 @@ describe("[6.0] YieldSyncV1Vault.sol with ERC721TransferRequestProtocol", async 
 							await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 								vault.address,
 								[
+									mockERC721.address,
 									2,
 									1,
-									secondsIn6Days
-								] as UpdateVaultProperty
+								] as UpdateERC721VaultProperty
 							);
 
 							await transferRequestProtocol.connect(
@@ -1074,10 +1108,10 @@ describe("[6.0] YieldSyncV1Vault.sol with ERC721TransferRequestProtocol", async 
 							await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 								vault.address,
 								[
+									mockERC721.address,
 									2,
 									1,
-									secondsIn6Days
-								] as UpdateVaultProperty
+								] as UpdateERC721VaultProperty
 							);
 
 							await transferRequestProtocol.connect(
@@ -1167,10 +1201,10 @@ describe("[6.0] YieldSyncV1Vault.sol with ERC721TransferRequestProtocol", async 
 						await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 							vault.address,
 							[
+								mockERC721.address,
 								1,
 								2,
-								secondsIn6Days
-							] as UpdateVaultProperty
+							] as UpdateERC721VaultProperty
 						);
 
 						await transferRequestProtocol.connect(addr1)

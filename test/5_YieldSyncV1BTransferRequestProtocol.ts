@@ -1,3 +1,11 @@
+type V1BUpdateVaultProperty = [
+	// voteAgainstRequired
+	number,
+	// voteForRequired
+	number,
+];
+
+
 const { ethers } = require("hardhat");
 
 

@@ -51,14 +51,14 @@ type UpdateTransferRequest = [
 	number,
 	// tokenId
 	number,
-]
+];
 
 // Transfer Request Poll
 type TransferRequestPoll = {
 	latestForVoteTime: number,
 	voteAgainstMembers: string[],
 	voteForMembers: string[],
-}
+};
 
 type UpdateTransferRequestPoll = [
 	// latestForVoteTime
@@ -67,14 +67,14 @@ type UpdateTransferRequestPoll = [
 	string[],
 	// voteForMembers
 	string[],
-]
+];
 
 // Transfer Request Poll
 type V1BTransferRequestPoll = {
 	voteCloseTime: number,
 	voteAgainstMembers: string[],
 	voteForMembers: string[],
-}
+};
 
 type UpdateV1BTransferRequestPoll = [
 	// latestForVoteTime
@@ -83,17 +83,10 @@ type UpdateV1BTransferRequestPoll = [
 	string[],
 	// voteForMembers
 	string[],
-]
+];
 
 type TransferRequestStatus = {
 	readyToBeProcessed: boolean,
 	approved: boolean,
 	message: string,
-}
-
-type V1BUpdateVaultProperty = [
-	// voteAgainstRequired
-	number,
-	// voteForRequired
-	number,
-]
+};

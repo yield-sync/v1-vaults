@@ -11,12 +11,10 @@ struct YieldSyncV1VaultProperty
 	address erc721Token;
 	uint256 voteAgainstRequired;
 	uint256 voteForRequired;
-	uint256 transferDelaySeconds;
 }
 
 struct TransferRequestPoll
 {
-	uint256 latestForVoteTime;
 	uint256[] voteAgainstMembers;
 	uint256[] voteForMembers;
 }

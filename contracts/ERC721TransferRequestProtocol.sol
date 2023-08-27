@@ -151,11 +151,6 @@ contract ERC721TransferRequestProtocol is
 			return (true, false, "TransferRequest denied");
 		}
 
-		if (block.timestamp - transferRequestPoll.latestForVoteTime < yieldSyncV1VaultProperty.transferDelaySeconds)
-		{
-			return (false, true, "TransferRequest approved and waiting delay");
-		}
-
 		return (true, true, "TransferRequest approved");
 	}
 
@@ -181,7 +176,22 @@ contract ERC721TransferRequestProtocol is
 		//override
 		contractYieldSyncV1Vault(yieldSyncV1Vault)
 	{
-		_yieldSyncV1Vault_yieldSyncV1VaultProperty[initiator] = _yieldSyncV1Vault_yieldSyncV1VaultProperty[yieldSyncV1Vault];
+		require(
+			_yieldSyncV1Vault_yieldSyncV1VaultProperty[initiator].erc721Token != address(0),
+			"!_yieldSyncV1Vault_yieldSyncV1VaultProperty[initiator].erc721Token"
+		);
+
+		require(
+			_yieldSyncV1Vault_yieldSyncV1VaultProperty[initiator].voteAgainstRequired > 0,
+			"!_yieldSyncV1Vault_yieldSyncV1VaultProperty[initiator].voteAgainstRequired"
+		);
+
+		require(
+			_yieldSyncV1Vault_yieldSyncV1VaultProperty[initiator].voteForRequired > 0,
+			"!_yieldSyncV1Vault_yieldSyncV1VaultProperty[initiator].voteForRequired"
+		);
+
+		_yieldSyncV1Vault_yieldSyncV1VaultProperty[yieldSyncV1Vault] = _yieldSyncV1Vault_yieldSyncV1VaultProperty[initiator];
 	}
 
 	///
@@ -254,7 +264,6 @@ contract ERC721TransferRequestProtocol is
 			_transferRequestIdTracker
 		] = TransferRequestPoll(
 			{
-				latestForVoteTime: block.timestamp,
 				voteAgainstMembers: emptyArray,
 				voteForMembers: emptyArray
 			}
@@ -360,8 +369,6 @@ contract ERC721TransferRequestProtocol is
 			{
 				transferRequestPoll.voteForMembers.push(tokenIds[i]);
 			}
-
-			transferRequestPoll.latestForVoteTime = block.timestamp;
 		}
 		else
 		{
@@ -412,6 +419,8 @@ contract ERC721TransferRequestProtocol is
 		//override
 		accessAdmin(yieldSyncV1Vault)
 	{
+		require(yieldSyncV1VaultProperty.erc721Token != address(0), "!yieldSyncV1VaultProperty.erc721Token");
+
 		require(yieldSyncV1VaultProperty.voteAgainstRequired > 0, "!yieldSyncV1VaultProperty.voteAgainstRequired");
 
 		require(yieldSyncV1VaultProperty.voteForRequired > 0, "!yieldSyncV1VaultProperty.voteForRequired");
