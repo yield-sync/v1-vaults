@@ -52,6 +52,7 @@ describe("[6.0] YieldSyncV1Vault.sol with YieldSyncV1ERC721TransferRequestProtoc
 	let addr1NFTs: number[] = [];
 	let addr2NFTs: number[] = [];
 
+
 	beforeEach("[beforeEach] Set up contracts..", async () => {
 		const [owner, addr1, addr2] = await ethers.getSigners();
 
@@ -236,7 +237,7 @@ describe("[6.0] YieldSyncV1Vault.sol with YieldSyncV1ERC721TransferRequestProtoc
 		);
 	});
 
-	describe("Restriction: member (1/1)", async () => {
+	describe("Restriction: ERC 721 token-holder (1/1)", async () => {
 		describe("[transferRequest] For", async () => {
 			describe("Requesting Ether", async () => {
 				describe("vault_transferRequestId_transferRequestCreate()", async () => {
@@ -346,7 +347,7 @@ describe("[6.0] YieldSyncV1Vault.sol with YieldSyncV1ERC721TransferRequestProtoc
 
 				describe("vault_transferRequestId_transferRequestPollVote()", async () => {
 					it(
-						"Should be able vote on TransferRequest & add token ids to _transferRequest[].votedMembers..",
+						"Should be able vote on TransferRequest & add token ids to _transferRequest[].voteForErc721TokenId..",
 						async () => {
 							const [, addr1] = await ethers.getSigners();
 
@@ -467,6 +468,82 @@ describe("[6.0] YieldSyncV1Vault.sol with YieldSyncV1ERC721TransferRequestProtoc
 									0,
 									true,
 									doubledUpTokenIds
+								)
+							).to.be.rejectedWith("Already voted");
+						}
+					);
+
+					it(
+						"Should revert when vote is cast with ids of tokens not owned..",
+						async () => {
+							const [, addr1, , addr3] = await ethers.getSigners();
+
+							await transferRequestProtocol.connect(
+								addr1
+							).yieldSyncV1Vault_transferRequestId_transferRequestCreate(
+								vault.address,
+								false,
+								false,
+								addr1.address,
+								ethers.constants.AddressZero,
+								ethers.utils.parseEther(".5"),
+								0
+							);
+
+							// Bad attempt
+							await expect(
+								transferRequestProtocol.connect(
+									addr3
+								).yieldSyncV1Vault_transferRequestId_transferRequestPollVote(
+									vault.address,
+									0,
+									true,
+									addr1NFTs
+								)
+							).to.be.rejectedWith(
+								"IERC721(yieldSyncV1VaultProperty.erc721Token).ownerOf(tokenIds[i]) != msg.sender"
+							);
+						}
+					);
+
+					it(
+						"Should revert when a token has already been voted with but attempted to be voted with again by new owner..",
+						async () => {
+							const [, addr1, , addr3] = await ethers.getSigners();
+
+							await transferRequestProtocol.connect(
+								addr1
+							).yieldSyncV1Vault_transferRequestId_transferRequestCreate(
+								vault.address,
+								false,
+								false,
+								addr1.address,
+								ethers.constants.AddressZero,
+								ethers.utils.parseEther(".5"),
+								0
+							);
+
+							// 1st vote
+							await transferRequestProtocol.connect(
+								addr1
+							).yieldSyncV1Vault_transferRequestId_transferRequestPollVote(
+								vault.address,
+								0,
+								true,
+								addr1NFTs
+							);
+
+							await mockERC721.connect(addr1).transferFrom(addr1.address, addr3.address, addr1NFTs[0]);
+
+							// 1st vote
+							await expect(
+								transferRequestProtocol.connect(
+									addr3
+								).yieldSyncV1Vault_transferRequestId_transferRequestPollVote(
+									vault.address,
+									0,
+									true,
+									[addr1NFTs[0]]
 								)
 							).to.be.rejectedWith("Already voted");
 						}
