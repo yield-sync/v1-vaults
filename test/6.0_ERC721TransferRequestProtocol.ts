@@ -35,7 +35,7 @@ const secondsIn7Days = 24 * 60 * 60 * 7;
 const secondsIn6Days = 24 * 60 * 60 * 6;
 
 
-describe("[6.0] YieldSyncV1Vault.sol with ERC721TransferRequestProtocol", async () => {
+describe("[6.0] YieldSyncV1Vault.sol with YieldSyncV1ERC721TransferRequestProtocol", async () => {
 	const initialVoteForRequired: number = 4;
 	const initialVoteAgainstRequired: number = 4;
 
@@ -64,8 +64,8 @@ describe("[6.0] YieldSyncV1Vault.sol with ERC721TransferRequestProtocol", async 
 		const YieldSyncV1Vault: ContractFactory = await ethers.getContractFactory("YieldSyncV1Vault");
 		const YieldSyncV1VaultFactory: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultFactory");
 		const YieldSyncV1VaultRegistry: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultRegistry");
-		const ERC721TransferRequestProtocol: ContractFactory = await ethers.getContractFactory(
-			"ERC721TransferRequestProtocol"
+		const YieldSyncV1ERC721TransferRequestProtocol: ContractFactory = await ethers.getContractFactory(
+			"YieldSyncV1ERC721TransferRequestProtocol"
 		);
 
 		/// Mock
@@ -83,9 +83,9 @@ describe("[6.0] YieldSyncV1Vault.sol with ERC721TransferRequestProtocol", async 
 			await YieldSyncV1VaultFactory.deploy(mockYieldSyncGovernance.address, Registry.address)
 		).deployed();
 
-		// Deploy ERC721TransferRequestProtocol
+		// Deploy YieldSyncV1ERC721TransferRequestProtocol
 		transferRequestProtocol = await (
-			await ERC721TransferRequestProtocol.deploy(Registry.address)
+			await YieldSyncV1ERC721TransferRequestProtocol.deploy(Registry.address)
 		).deployed();
 
 		// Set YieldSyncV1Vault properties on TransferRequestProtocol.sol

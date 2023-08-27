@@ -7,18 +7,18 @@ import { IERC721 } from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 
 import {
 	ITransferRequestProtocol,
-	IERC721TransferRequestProtocol,
+	IYieldSyncV1ERC721TransferRequestProtocol,
 	IYieldSyncV1VaultRegistry,
 	TransferRequest,
 	TransferRequestPoll,
 	YieldSyncV1VaultProperty
-} from "./interface/IERC721TransferRequestProtocol.sol";
+} from "./interface/IYieldSyncV1ERC721TransferRequestProtocol.sol";
 
 
-contract ERC721TransferRequestProtocol is
+contract YieldSyncV1ERC721TransferRequestProtocol is
 	ReentrancyGuard,
 	ITransferRequestProtocol,
-	IERC721TransferRequestProtocol
+	IYieldSyncV1ERC721TransferRequestProtocol
 {
 	uint256 internal _transferRequestIdTracker;
 
