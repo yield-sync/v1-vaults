@@ -23,22 +23,22 @@ async function main()
 	switch (network.name)
 	{
 		case "mainnet":
-			yieldSyncV1VaultRegistry = String(process.env.YIELD_SYNC_V1_VAULT_ACCESS_CONTROL_MAINNET);
+			yieldSyncV1VaultRegistry = String(process.env.YIELD_SYNC_V1_VAULT_REGISTRY_MAINNET);
 
 			break;
 
 		case "optimism":
-			yieldSyncV1VaultRegistry = String(process.env.YIELD_SYNC_V1_VAULT_ACCESS_CONTROL_OP);
+			yieldSyncV1VaultRegistry = String(process.env.YIELD_SYNC_V1_VAULT_REGISTRY_OP);
 
 			break;
 
 		case "optimismgoerli":
-			yieldSyncV1VaultRegistry = String(process.env.YIELD_SYNC_V1_VAULT_ACCESS_CONTROL_OP_GOERLI);
+			yieldSyncV1VaultRegistry = String(process.env.YIELD_SYNC_V1_VAULT_REGISTRY_OP_GOERLI);
 
 			break;
 
 		case "sepolia":
-			yieldSyncV1VaultRegistry = String(process.env.YIELD_SYNC_V1_VAULT_ACCESS_CONTROL_SEPOLIA);
+			yieldSyncV1VaultRegistry = String(process.env.YIELD_SYNC_V1_VAULT_REGISTRY_SEPOLIA);
 
 			break;
 
