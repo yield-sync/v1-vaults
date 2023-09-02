@@ -1,3 +1,13 @@
+type UpdateVaultProperty = [
+	// voteAgainstRequired
+	number,
+	// voteForRequired
+	number,
+	// transferDelaySeconds
+	number,
+];
+
+
 require("dotenv").config();
 
 

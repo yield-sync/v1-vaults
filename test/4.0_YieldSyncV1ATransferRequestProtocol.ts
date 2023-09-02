@@ -1,3 +1,35 @@
+// Transfer Request Poll
+type TransferRequestPoll = {
+	latestForVoteTime: number,
+	voteAgainstMembers: string[],
+	voteForMembers: string[],
+};
+
+type UpdateTransferRequestPoll = [
+	// latestForVoteTime
+	number | bigint,
+	// voteAgainstMembers
+	string[],
+	// voteForMembers
+	string[],
+];
+
+type VaultProperty = {
+	transferDelaySeconds: number,
+	voteAgainstRequired: number,
+	voteForRequired: number,
+};
+
+type UpdateVaultProperty = [
+	// voteAgainstRequired
+	number,
+	// voteForRequired
+	number,
+	// transferDelaySeconds
+	number,
+];
+
+
 const { ethers } = require("hardhat");
 
 
@@ -483,11 +515,7 @@ describe("[4.0] YieldSyncV1Vault.sol with YieldSyncV1ATransferRequestProtocol", 
 							// Preset
 							await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 								vault.address,
-								[
-									2,
-									1,
-									secondsIn7Days
-								] as UpdateVaultProperty
+								[2, 1, secondsIn7Days] as UpdateVaultProperty
 							);
 
 							await transferRequestProtocol.connect(
@@ -529,11 +557,7 @@ describe("[4.0] YieldSyncV1Vault.sol with YieldSyncV1ATransferRequestProtocol", 
 							// Preset
 							await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 								vault.address,
-								[
-									2,
-									1,
-									secondsIn6Days
-								] as UpdateVaultProperty
+								[2, 1, secondsIn6Days] as UpdateVaultProperty
 							);
 
 							await transferRequestProtocol.connect(
@@ -592,11 +616,7 @@ describe("[4.0] YieldSyncV1Vault.sol with YieldSyncV1ATransferRequestProtocol", 
 							// Preset
 							await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 								vault.address,
-								[
-									2,
-									1,
-									secondsIn7Days
-								] as UpdateVaultProperty
+								[2, 1, secondsIn7Days] as UpdateVaultProperty
 							);
 
 							await transferRequestProtocol.connect(
@@ -761,11 +781,7 @@ describe("[4.0] YieldSyncV1Vault.sol with YieldSyncV1ATransferRequestProtocol", 
 							// Preset
 							await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 								vault.address,
-								[
-									2,
-									1,
-									secondsIn7Days
-								] as UpdateVaultProperty
+								[2, 1, secondsIn7Days] as UpdateVaultProperty
 							);
 
 							await transferRequestProtocol.connect(
@@ -809,11 +825,7 @@ describe("[4.0] YieldSyncV1Vault.sol with YieldSyncV1ATransferRequestProtocol", 
 							// Preset
 							await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 								vault.address,
-								[
-									2,
-									1,
-									secondsIn6Days
-								] as UpdateVaultProperty
+								[2, 1, secondsIn6Days] as UpdateVaultProperty
 							);
 
 							await transferRequestProtocol.connect(
@@ -1023,11 +1035,7 @@ describe("[4.0] YieldSyncV1Vault.sol with YieldSyncV1ATransferRequestProtocol", 
 							// Preset
 							await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 								vault.address,
-								[
-									2,
-									1,
-									secondsIn6Days
-								] as UpdateVaultProperty
+								[2, 1, secondsIn6Days] as UpdateVaultProperty
 							);
 
 							await transferRequestProtocol.connect(
@@ -1073,11 +1081,7 @@ describe("[4.0] YieldSyncV1Vault.sol with YieldSyncV1ATransferRequestProtocol", 
 							// Preset
 							await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 								vault.address,
-								[
-									2,
-									1,
-									secondsIn6Days
-								] as UpdateVaultProperty
+								[2, 1, secondsIn6Days] as UpdateVaultProperty
 							);
 
 							await transferRequestProtocol.connect(
@@ -1166,11 +1170,7 @@ describe("[4.0] YieldSyncV1Vault.sol with YieldSyncV1ATransferRequestProtocol", 
 						// Preset
 						await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 							vault.address,
-							[
-								1,
-								2,
-								secondsIn6Days
-							] as UpdateVaultProperty
+							[1, 2, secondsIn6Days] as UpdateVaultProperty
 						);
 
 						await transferRequestProtocol.connect(addr1)

@@ -10,6 +10,8 @@ struct YieldSyncV1VaultProperty
 {
 	uint256 voteAgainstRequired;
 	uint256 voteForRequired;
+	uint256 maxVotePeriodSeconds;
+	uint256 minVotePeriodSeconds;
 }
 
 struct TransferRequestPoll

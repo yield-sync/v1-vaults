@@ -1,3 +1,13 @@
+type UpdateVaultProperty = [
+	// voteAgainstRequired
+	number,
+	// voteForRequired
+	number,
+	// transferDelaySeconds
+	number,
+]
+
+
 const { ethers } = require("hardhat");
 
 
