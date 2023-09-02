@@ -71,7 +71,7 @@ type UpdateTransferRequestPoll = [
 
 // Transfer Request Poll
 type V1BTransferRequestPoll = {
-	voteCloseTime: number,
+	voteCloseTimestamp: number,
 	voteAgainstMembers: string[],
 	voteForMembers: string[],
 };

@@ -14,7 +14,7 @@ struct YieldSyncV1VaultProperty
 
 struct TransferRequestPoll
 {
-	uint256 voteCloseTime;
+	uint256 voteCloseTimestamp;
 	address[] voteAgainstMembers;
 	address[] voteForMembers;
 }
@@ -105,7 +105,7 @@ interface IYieldSyncV1BTransferRequestProtocol is
 		address token,
 		uint256 amount,
 		uint256 tokenId,
-		uint256 voteCloseTime
+		uint256 voteCloseTimestamp
 	)
 		external
 	;

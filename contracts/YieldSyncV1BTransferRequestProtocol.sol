@@ -154,7 +154,7 @@ contract YieldSyncV1BTransferRequestProtocol is
 			yieldSyncV1Vault
 		];
 
-		if (block.timestamp < transferRequestPoll.voteCloseTime)
+		if (block.timestamp < transferRequestPoll.voteCloseTimestamp)
 		{
 			return (false, true, "Voting not closed");
 		}
@@ -257,7 +257,7 @@ contract YieldSyncV1BTransferRequestProtocol is
 		address token,
 		uint256 amount,
 		uint256 tokenId,
-		uint256 voteCloseTime
+		uint256 voteCloseTimestamp
 	)
 		public
 		override
@@ -286,7 +286,7 @@ contract YieldSyncV1BTransferRequestProtocol is
 			_transferRequestIdTracker
 		] = TransferRequestPoll(
 			{
-				voteCloseTime: voteCloseTime,
+				voteCloseTimestamp: voteCloseTimestamp,
 				voteAgainstMembers: emptyArray,
 				voteForMembers: emptyArray
 			}
@@ -355,7 +355,7 @@ contract YieldSyncV1BTransferRequestProtocol is
 		require(
 			block.timestamp < _yieldSyncV1Vault_transferRequestId_transferRequestPoll[yieldSyncV1Vault][
 				transferRequestId
-			].voteCloseTime,
+			].voteCloseTimestamp,
 			"Voting closed"
 		);
 
