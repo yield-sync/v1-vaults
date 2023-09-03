@@ -268,7 +268,7 @@ contract YieldSyncV1BTransferRequestProtocol is
 		require(!(forERC20 && forERC721), "forERC20 && forERC721");
 
 		require(
-			voteCloseTimestamp - block.timestamp  >= _yieldSyncV1Vault_yieldSyncV1VaultProperty[
+			voteCloseTimestamp - block.timestamp >= _yieldSyncV1Vault_yieldSyncV1VaultProperty[
 				yieldSyncV1Vault
 			].minVotePeriodSeconds,
 			"!voteCloseTimestamp"

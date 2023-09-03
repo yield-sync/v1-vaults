@@ -159,9 +159,9 @@ describe("[5.0] YieldSyncV1Vault.sol with YieldSyncV1BTransferRequestProtocol", 
 			);
 		});
 
-		describe("When initiator sets properties, they must be >0", async () => {
+		describe("When initiator sets properties, the following must be > 0", async () => {
 			it(
-				"Should fail to set voteAgainstRequired on addr1 yieldSyncV1VaultProperty to 0..",
+				"Should fail to set voteAgainstRequired to 0..",
 				async () => {
 					const [, addr1] = await ethers.getSigners();
 
@@ -176,7 +176,7 @@ describe("[5.0] YieldSyncV1Vault.sol with YieldSyncV1BTransferRequestProtocol", 
 			);
 
 			it(
-				"Should fail to set voteForRequired on addr1 yieldSyncV1VaultProperty to 0..",
+				"Should fail to set voteForRequired to 0..",
 				async () => {
 					const [, addr1] = await ethers.getSigners();
 
