@@ -100,7 +100,7 @@ describe("[5.0] YieldSyncV1Vault.sol with YieldSyncV1BTransferRequestProtocol", 
 		// Set YieldSyncV1Vault properties on TransferRequestProtocol.sol
 		await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 			owner.address,
-			[2, 2, secondsIn8Days, secondsIn5Days] as UpdateV1BVaultProperty
+			[2, 2, secondsIn7Days, secondsIn6Days] as UpdateV1BVaultProperty
 		);
 
 		// Deploy a vault
@@ -169,7 +169,7 @@ describe("[5.0] YieldSyncV1Vault.sol with YieldSyncV1BTransferRequestProtocol", 
 					await expect(
 						transferRequestProtocol.connect(addr1).yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 							addr1.address,
-							[0, 0, secondsIn8Days, secondsIn6Days] as UpdateV1BVaultProperty
+							[0, 0, secondsIn7Days, secondsIn6Days] as UpdateV1BVaultProperty
 						)
 					).to.be.rejectedWith("!yieldSyncV1VaultProperty.voteAgainstRequired");
 				}
@@ -184,7 +184,7 @@ describe("[5.0] YieldSyncV1Vault.sol with YieldSyncV1BTransferRequestProtocol", 
 					await expect(
 						transferRequestProtocol.connect(addr1).yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 							addr1.address,
-							[1, 0, secondsIn8Days, secondsIn6Days] as UpdateV1BVaultProperty
+							[1, 0, secondsIn7Days, secondsIn6Days] as UpdateV1BVaultProperty
 						)
 					).to.be.rejectedWith("!yieldSyncV1VaultProperty.voteForRequired");
 				}
@@ -221,67 +221,129 @@ describe("[5.0] YieldSyncV1Vault.sol with YieldSyncV1BTransferRequestProtocol", 
 		describe("[transferRequest] For", async () => {
 			describe("Requesting Ether", async () => {
 				describe("vault_transferRequestId_transferRequestCreate()", async () => {
-					it(
-						"[auth] Should revert when unauthorized msg.sender calls..",
-						async () => {
-							const [, , , , addr4] = await ethers.getSigners();
+					describe("Expected failures", async () => {
+						it(
+							"[auth] Should revert when unauthorized msg.sender calls..",
+							async () => {
+								const [, , , , addr4] = await ethers.getSigners();
 
-							await expect(
-								transferRequestProtocol.connect(
-									addr4
-								).yieldSyncV1Vault_transferRequestId_transferRequestCreate(
-									vault.address,
-									false,
-									false,
-									addr4.address,
-									ethers.constants.AddressZero,
-									ethers.utils.parseEther(".5"),
-									0,
-									(await ethers.provider.getBlock("latest")).timestamp + secondsIn7Days
-								)
-							).to.be.rejected;
-						}
-					);
+								await expect(
+									transferRequestProtocol.connect(
+										addr4
+									).yieldSyncV1Vault_transferRequestId_transferRequestCreate(
+										vault.address,
+										false,
+										false,
+										addr4.address,
+										ethers.constants.AddressZero,
+										ethers.utils.parseEther(".5"),
+										0,
+										(await ethers.provider.getBlock("latest")).timestamp + secondsIn7Days
+									)
+								).to.be.rejected;
+							}
+						);
 
-					it(
-						"Should revert when amount is set to 0 or less..",
-						async () => {
-							const [, addr1] = await ethers.getSigners();
+						it(
+							"Should revert when amount is set to 0 or less..",
+							async () => {
+								const [, addr1] = await ethers.getSigners();
 
-							await expect(
-								transferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestCreate(
-									vault.address,
-									false,
-									false,
-									addr1.address,
-									ethers.constants.AddressZero,
-									0,
-									0,
-									(await ethers.provider.getBlock("latest")).timestamp + secondsIn7Days
-								)
-							).to.be.rejectedWith("!amount");
-						}
-					);
+								await expect(
+									transferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestCreate(
+										vault.address,
+										false,
+										false,
+										addr1.address,
+										ethers.constants.AddressZero,
+										0,
+										0,
+										(await ethers.provider.getBlock("latest")).timestamp + secondsIn7Days
+									)
+								).to.be.rejectedWith("!amount");
+							}
+						);
 
-					it(
-						"Should revert when forERC20 and forERC721 are BOTH true..",
-						async () => {
-							const [, addr1] = await ethers.getSigners();
+						it(
+							"Should revert when forERC20 and forERC721 are BOTH true..",
+							async () => {
+								const [, addr1] = await ethers.getSigners();
 
-							await expect(
-								transferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestCreate(
-									vault.address,
-									true,
-									true,
-									addr1.address,
-									ethers.constants.AddressZero,
-									1,
-									0,
-									(await ethers.provider.getBlock("latest")).timestamp + secondsIn7Days
-								)
-							).to.be.rejectedWith("forERC20 && forERC721");
-						}
-					);
+								await expect(
+									transferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestCreate(
+										vault.address,
+										true,
+										true,
+										addr1.address,
+										ethers.constants.AddressZero,
+										1,
+										0,
+										(await ethers.provider.getBlock("latest")).timestamp + secondsIn7Days
+									)
+								).to.be.rejectedWith("forERC20 && forERC721");
+							}
+						);
+
+						it(
+							"Should revert when forERC20 and forERC721 are BOTH true..",
+							async () => {
+								const [, addr1] = await ethers.getSigners();
+
+								await expect(
+									transferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestCreate(
+										vault.address,
+										true,
+										true,
+										addr1.address,
+										ethers.constants.AddressZero,
+										1,
+										0,
+										(await ethers.provider.getBlock("latest")).timestamp + secondsIn7Days
+									)
+								).to.be.rejectedWith("forERC20 && forERC721");
+							}
+						);
+
+						it(
+							"Should revert when voteCloseTimestamp exceeds maxVotePeriodSeconds..",
+							async () => {
+								const [, addr1] = await ethers.getSigners();
+
+								await expect(
+									transferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestCreate(
+										vault.address,
+										false,
+										false,
+										addr1.address,
+										ethers.constants.AddressZero,
+										1,
+										0,
+										(await ethers.provider.getBlock("latest")).timestamp + secondsIn8Days
+									)
+								).to.be.rejectedWith("!voteCloseTimestamp");
+							}
+						);
+
+						it(
+							"Should revert when voteCloseTimestamp less than minVotePeriodSeconds..",
+							async () => {
+								const [, addr1] = await ethers.getSigners();
+
+								await expect(
+									transferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestCreate(
+										vault.address,
+										false,
+										false,
+										addr1.address,
+										ethers.constants.AddressZero,
+										1,
+										0,
+										(await ethers.provider.getBlock("latest")).timestamp + secondsIn5Days
+									)
+								).to.be.rejectedWith("!voteCloseTimestamp");
+							}
+						);
+					});
 
 					it(
 						"Should be able to create a TransferRequest for Ether..",
@@ -518,7 +580,7 @@ describe("[5.0] YieldSyncV1Vault.sol with YieldSyncV1BTransferRequestProtocol", 
 							// Preset
 							await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 								vault.address,
-								[2, 1, secondsIn8Days, secondsIn6Days] as UpdateV1BVaultProperty
+								[2, 1, secondsIn7Days, secondsIn6Days] as UpdateV1BVaultProperty
 							);
 
 							const voteCloseTimestamp = (await ethers.provider.getBlock("latest")).timestamp + secondsIn7Days;
@@ -615,7 +677,7 @@ describe("[5.0] YieldSyncV1Vault.sol with YieldSyncV1BTransferRequestProtocol", 
 							// Preset
 							await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 								vault.address,
-								[2, 1, secondsIn8Days, secondsIn6Days] as UpdateV1BVaultProperty
+								[2, 1, secondsIn7Days, secondsIn6Days] as UpdateV1BVaultProperty
 							);
 
 							// Create transferRequest
@@ -675,7 +737,7 @@ describe("[5.0] YieldSyncV1Vault.sol with YieldSyncV1BTransferRequestProtocol", 
 							// Preset
 							await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 								vault.address,
-								[ 2, 1, secondsIn8Days, secondsIn6Days] as UpdateV1BVaultProperty
+								[ 2, 1, secondsIn7Days, secondsIn6Days] as UpdateV1BVaultProperty
 							);
 
 							await transferRequestProtocol.connect(
@@ -848,7 +910,7 @@ describe("[5.0] YieldSyncV1Vault.sol with YieldSyncV1BTransferRequestProtocol", 
 							// Preset
 							await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 								vault.address,
-								[ 2, 1, secondsIn8Days, secondsIn6Days] as UpdateV1BVaultProperty
+								[ 2, 1, secondsIn7Days, secondsIn6Days] as UpdateV1BVaultProperty
 							);
 
 							await transferRequestProtocol.connect(
@@ -897,7 +959,7 @@ describe("[5.0] YieldSyncV1Vault.sol with YieldSyncV1BTransferRequestProtocol", 
 							// Preset
 							await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 								vault.address,
-								[2, 1, secondsIn8Days, secondsIn6Days] as UpdateV1BVaultProperty
+								[2, 1, secondsIn7Days, secondsIn6Days] as UpdateV1BVaultProperty
 							);
 
 							// Create
@@ -950,7 +1012,7 @@ describe("[5.0] YieldSyncV1Vault.sol with YieldSyncV1BTransferRequestProtocol", 
 							// Preset
 							await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 								vault.address,
-								[2, 1, secondsIn8Days, secondsIn6Days] as UpdateV1BVaultProperty
+								[2, 1, secondsIn7Days, secondsIn6Days] as UpdateV1BVaultProperty
 							);
 
 							// Create transferRequest
@@ -1130,7 +1192,7 @@ describe("[5.0] YieldSyncV1Vault.sol with YieldSyncV1BTransferRequestProtocol", 
 							// Preset
 							await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 								vault.address,
-								[2, 1, secondsIn8Days, secondsIn5Days] as UpdateV1BVaultProperty
+								[2, 1, secondsIn7Days, secondsIn6Days] as UpdateV1BVaultProperty
 							);
 
 							await transferRequestProtocol.connect(
@@ -1183,7 +1245,7 @@ describe("[5.0] YieldSyncV1Vault.sol with YieldSyncV1BTransferRequestProtocol", 
 							// Preset
 							await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 								vault.address,
-								[2, 1, secondsIn8Days, secondsIn5Days] as UpdateV1BVaultProperty
+								[2, 1, secondsIn7Days, secondsIn6Days] as UpdateV1BVaultProperty
 							);
 
 							await transferRequestProtocol.connect(
@@ -1276,7 +1338,7 @@ describe("[5.0] YieldSyncV1Vault.sol with YieldSyncV1BTransferRequestProtocol", 
 						// Preset
 						await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 							vault.address,
-							[1, 2, secondsIn8Days, secondsIn5Days] as UpdateV1BVaultProperty
+							[1, 2, secondsIn7Days, secondsIn6Days] as UpdateV1BVaultProperty
 						);
 
 						await transferRequestProtocol.connect(
@@ -1339,7 +1401,7 @@ describe("[5.0] YieldSyncV1Vault.sol with YieldSyncV1BTransferRequestProtocol", 
 						// Preset
 						await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 							vault.address,
-							[1, 2, secondsIn8Days, secondsIn5Days] as UpdateV1BVaultProperty
+							[1, 2, secondsIn7Days, secondsIn6Days] as UpdateV1BVaultProperty
 						);
 
 						await transferRequestProtocol.connect(addr1)
