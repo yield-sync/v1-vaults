@@ -1693,25 +1693,24 @@ describe("[5.0] YieldSyncV1Vault.sol with YieldSyncV1BTransferRequestProtocol", 
 				async () => {
 					const [, addr1, addr2] = await ethers.getSigners();
 
-					const voteCloseTimestampBefore = (await ethers.provider.getBlock("latest")).timestamp + secondsIn6Days;
-					const voteCloseTimestamp = (await ethers.provider.getBlock("latest")).timestamp + secondsIn7Days;
+					const voteCloseTimestampAfter = (await ethers.provider.getBlock("latest")).timestamp + secondsIn7Days;
 
-					await transferRequestProtocol.connect(addr1)
-						.yieldSyncV1Vault_transferRequestId_transferRequestCreate(
-							vault.address,
-							true,
-							false,
-							addr2.address,
-							mockERC20.address,
-							999,
-							0,
-							voteCloseTimestampBefore
-						);
+					await transferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestCreate(
+						vault.address,
+						true,
+						false,
+						addr2.address,
+						mockERC20.address,
+						999,
+						0,
+						(await ethers.provider.getBlock("latest")).timestamp + secondsIn6Days + 10
+					);
 
 					const openTRIds: OpenTransferRequestIds = await transferRequestProtocol.yieldSyncV1Vault_openTransferRequestIds(
 						vault.address
 					);
 
+					// Get the latest transferRequest
 					const transferRequestPoll: V1BTransferRequestPoll = await transferRequestProtocol
 						.yieldSyncV1Vault_transferRequestId_transferRequestPoll(
 							vault.address,
@@ -1722,7 +1721,7 @@ describe("[5.0] YieldSyncV1Vault.sol with YieldSyncV1BTransferRequestProtocol", 
 						vault.address,
 						openTRIds[openTRIds.length - 1],
 						[
-							voteCloseTimestamp,
+							voteCloseTimestampAfter,
 							transferRequestPoll.voteAgainstMembers,
 							transferRequestPoll.voteForMembers,
 						] as UpdateV1BTransferRequestPoll
@@ -1733,7 +1732,7 @@ describe("[5.0] YieldSyncV1Vault.sol with YieldSyncV1BTransferRequestProtocol", 
 						openTRIds[openTRIds.length - 1]
 					);
 
-					expect(updatedTransferRequestPoll.voteCloseTimestamp).to.be.equal(voteCloseTimestamp);
+					expect(updatedTransferRequestPoll.voteCloseTimestamp).to.be.equal(voteCloseTimestampAfter);
 				}
 			);
 		});
