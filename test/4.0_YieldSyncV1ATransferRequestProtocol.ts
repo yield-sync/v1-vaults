@@ -205,6 +205,39 @@ describe("[4.0] YieldSyncV1Vault.sol with YieldSyncV1ATransferRequestProtocol", 
 		);
 	});
 
+	describe("Restriction: admin (1/2)", async () => {
+		it(
+			"[auth] Should revert when unauthorized msg.sender calls..",
+			async () => {
+				const [, , , , addr4] = await ethers.getSigners();
+
+				await expect(
+					transferRequestProtocol.connect(addr4).yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+						vault.address,
+						[123, 456, 789] as UpdateVaultProperty
+					)
+				).to.be.rejected;
+			}
+		);
+
+		it("Should allow admin to update vault propreties..", async () => {
+			const [owner] = await ethers.getSigners();
+
+			// Preset
+			await transferRequestProtocol.connect(owner).yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+				vault.address,
+				[123, 456, 789] as UpdateVaultProperty
+			);
+
+			const vProp: VaultProperty = await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultProperty(
+				vault.address
+			);
+
+			expect(vProp.voteAgainstRequired).to.equal(123);
+			expect(vProp.voteForRequired).to.equal(456);
+			expect(vProp.transferDelaySeconds).to.equal(789);
+		});
+	});
 
 	describe("Restriction: member (1/1)", async () => {
 		describe("[transferRequest] For", async () => {
@@ -1491,7 +1524,6 @@ describe("[4.0] YieldSyncV1Vault.sol with YieldSyncV1ATransferRequestProtocol", 
 				}
 			);
 		});
-
 
 		describe("vault_transferRequestId_transferRequestDelete()", async () => {
 			it(
