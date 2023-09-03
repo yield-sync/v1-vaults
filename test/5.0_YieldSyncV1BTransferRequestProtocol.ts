@@ -217,6 +217,41 @@ describe("[5.0] YieldSyncV1Vault.sol with YieldSyncV1BTransferRequestProtocol", 
 		);
 	});
 
+	describe("Restriction: admin (1/2)", async () => {
+		it(
+			"[auth] Should revert when unauthorized msg.sender calls..",
+			async () => {
+				const [, , , , addr4] = await ethers.getSigners();
+
+				await expect(
+					transferRequestProtocol.connect(addr4).yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+						vault.address,
+						[123, 456, 789, 987] as UpdateV1BVaultProperty
+					)
+				).to.be.rejected;
+			}
+		);
+
+		it("Should allow admin to update vault propreties..", async () => {
+			const [owner] = await ethers.getSigners();
+
+			// Preset
+			await transferRequestProtocol.connect(owner).yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+				vault.address,
+				[123, 456, 789, 987] as UpdateV1BVaultProperty
+			);
+
+			const vProp: V1BVaultProperty = await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultProperty(
+				vault.address
+			);
+
+			expect(vProp.voteAgainstRequired).to.equal(123);
+			expect(vProp.voteForRequired).to.equal(456);
+			expect(vProp.maxVotePeriodSeconds).to.equal(789);
+			expect(vProp.minVotePeriodSeconds).to.equal(987);
+		});
+	});
+
 	describe("Restriction: member (1/1)", async () => {
 		describe("[transferRequest] For", async () => {
 			describe("Requesting Ether", async () => {
