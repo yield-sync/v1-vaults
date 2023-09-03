@@ -267,6 +267,23 @@ contract YieldSyncV1BTransferRequestProtocol is
 
 		require(!(forERC20 && forERC721), "forERC20 && forERC721");
 
+		require(
+			voteCloseTimestamp - block.timestamp  >= _yieldSyncV1Vault_yieldSyncV1VaultProperty[
+				yieldSyncV1Vault
+			].minVotePeriodSeconds,
+			"!voteCloseTimestamp"
+		);
+
+		if (_yieldSyncV1Vault_yieldSyncV1VaultProperty[yieldSyncV1Vault].maxVotePeriodSeconds > 0)
+		{
+			require(
+				voteCloseTimestamp - block.timestamp <= _yieldSyncV1Vault_yieldSyncV1VaultProperty[
+					yieldSyncV1Vault
+				].maxVotePeriodSeconds,
+				"!voteCloseTimestamp"
+			);
+		}
+
 		address[] memory emptyArray;
 
 		_yieldSyncV1Vault_transferRequestId_transferRequest[yieldSyncV1Vault][_transferRequestIdTracker] = TransferRequest(
