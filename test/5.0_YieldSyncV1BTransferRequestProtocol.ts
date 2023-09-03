@@ -737,7 +737,7 @@ describe("[5.0] YieldSyncV1Vault.sol with YieldSyncV1BTransferRequestProtocol", 
 							// Preset
 							await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 								vault.address,
-								[ 2, 1, secondsIn7Days, secondsIn6Days] as UpdateV1BVaultProperty
+								[2, 1, secondsIn7Days, secondsIn6Days] as UpdateV1BVaultProperty
 							);
 
 							await transferRequestProtocol.connect(
@@ -910,7 +910,7 @@ describe("[5.0] YieldSyncV1Vault.sol with YieldSyncV1BTransferRequestProtocol", 
 							// Preset
 							await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
 								vault.address,
-								[ 2, 1, secondsIn7Days, secondsIn6Days] as UpdateV1BVaultProperty
+								[2, 1, secondsIn7Days, secondsIn6Days] as UpdateV1BVaultProperty
 							);
 
 							await transferRequestProtocol.connect(
@@ -1736,7 +1736,6 @@ describe("[5.0] YieldSyncV1Vault.sol with YieldSyncV1BTransferRequestProtocol", 
 				}
 			);
 		});
-
 
 		describe("vault_transferRequestId_transferRequestDelete()", async () => {
 			it(
