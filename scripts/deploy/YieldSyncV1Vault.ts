@@ -38,25 +38,25 @@ async function main()
 	{
 		case "mainnet":
 			factoryContractAddress = String(process.env.YIELD_SYNC_V1_VAULT_FACTORY_ADDRESS_MAINNET);
-			transferRequestProtocolAddress = String(process.env.YIELD_SYNC_V1_VAULT_TRANSFER_REQUEST_PROTOCOL_MAINNET);
+			transferRequestProtocolAddress = String(process.env.YIELD_SYNC_V1_A_TRANSFER_REQUEST_PROTOCOL_MAINNET);
 
 			break;
 
 		case "optimism":
 			factoryContractAddress = String(process.env.YIELD_SYNC_V1_VAULT_FACTORY_ADDRESS_OP);
-			transferRequestProtocolAddress = String(process.env.YIELD_SYNC_V1_VAULT_TRANSFER_REQUEST_PROTOCOL_OP);
+			transferRequestProtocolAddress = String(process.env.YIELD_SYNC_V1_A_TRANSFER_REQUEST_PROTOCOL_OP);
 
 			break;
 
 		case "optimismgoerli":
 			factoryContractAddress = String(process.env.YIELD_SYNC_V1_VAULT_FACTORY_ADDRESS_OP_GOERLI);
-			transferRequestProtocolAddress = String(process.env.YIELD_SYNC_V1_VAULT_TRANSFER_REQUEST_PROTOCOL_OP_GOERLI);
+			transferRequestProtocolAddress = String(process.env.YIELD_SYNC_V1_A_TRANSFER_REQUEST_PROTOCOL_OP_GOERLI);
 
 			break;
 
 		case "sepolia":
 			factoryContractAddress = String(process.env.YIELD_SYNC_V1_VAULT_FACTORY_ADDRESS_SEPOLIA);
-			transferRequestProtocolAddress = String(process.env.YIELD_SYNC_V1_VAULT_TRANSFER_REQUEST_PROTOCOL_SEPOLIA);
+			transferRequestProtocolAddress = String(process.env.YIELD_SYNC_V1_A_TRANSFER_REQUEST_PROTOCOL_SEPOLIA);
 
 			break;
 
