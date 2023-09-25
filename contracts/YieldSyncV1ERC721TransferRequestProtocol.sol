@@ -228,6 +228,48 @@ contract YieldSyncV1ERC721TransferRequestProtocol is
 		return _yieldSyncV1Vault_transferRequestId_transferRequestPoll[yieldSyncV1Vault][transferRequestId];
 	}
 
+
+	///
+	function yieldSyncV1Vault_transferRequestId_transferRequestAdminDelete(
+		address yieldSyncV1Vault,
+		uint256 transferRequestId
+	)
+		public
+		//override
+		accessAdmin(yieldSyncV1Vault)
+		validTransferRequest(yieldSyncV1Vault, transferRequestId)
+	{
+		_yieldSyncV1Vault_transferRequestId_transferRequestDelete(yieldSyncV1Vault, transferRequestId);
+
+		emit DeletedTransferRequest(yieldSyncV1Vault, transferRequestId);
+	}
+
+	///
+	function yieldSyncV1Vault_transferRequestId_transferRequestAdminUpdate(
+		address yieldSyncV1Vault,
+		uint256 transferRequestId,
+		TransferRequest memory transferRequest
+	)
+		public
+		//override
+		accessAdmin(yieldSyncV1Vault)
+		validTransferRequest(yieldSyncV1Vault, transferRequestId)
+	{
+		require(transferRequest.amount > 0, "!transferRequest.amount");
+
+		require(
+			!(transferRequest.forERC20 && transferRequest.forERC721),
+			"transferRequest.forERC20 && transferRequest.forERC721"
+		);
+
+		_yieldSyncV1Vault_transferRequestId_transferRequest[yieldSyncV1Vault][transferRequestId] = transferRequest;
+
+		emit UpdateTransferRequest(
+			yieldSyncV1Vault,
+			_yieldSyncV1Vault_transferRequestId_transferRequest[yieldSyncV1Vault][transferRequestId]
+		);
+	}
+
 	///
 	function yieldSyncV1Vault_transferRequestId_transferRequestCreate(
 		address yieldSyncV1Vault,
@@ -286,34 +328,31 @@ contract YieldSyncV1ERC721TransferRequestProtocol is
 		accessAdmin(yieldSyncV1Vault)
 		validTransferRequest(yieldSyncV1Vault, transferRequestId)
 	{
+		require(
+			_yieldSyncV1Vault_transferRequestId_transferRequest[yieldSyncV1Vault][transferRequestId].creator == msg.sender,
+			"_yieldSyncV1Vault_transferRequestId_transferRequest[yieldSyncV1Vault][transferRequestId].creator != msg.sender"
+		);
+
 		_yieldSyncV1Vault_transferRequestId_transferRequestDelete(yieldSyncV1Vault, transferRequestId);
 
 		emit DeletedTransferRequest(yieldSyncV1Vault, transferRequestId);
 	}
 
 	///
-	function yieldSyncV1Vault_transferRequestId_transferRequestUpdate(
+	function yieldSyncV1Vault_transferRequestId_transferRequestPollAdminUpdate(
 		address yieldSyncV1Vault,
 		uint256 transferRequestId,
-		TransferRequest memory transferRequest
+		TransferRequestPoll memory transferRequestPoll
 	)
 		public
 		//override
-		accessAdmin(yieldSyncV1Vault)
 		validTransferRequest(yieldSyncV1Vault, transferRequestId)
 	{
-		require(transferRequest.amount > 0, "!transferRequest.amount");
+		_yieldSyncV1Vault_transferRequestId_transferRequestPoll[yieldSyncV1Vault][transferRequestId] = transferRequestPoll;
 
-		require(
-			!(transferRequest.forERC20 && transferRequest.forERC721),
-			"transferRequest.forERC20 && transferRequest.forERC721"
-		);
-
-		_yieldSyncV1Vault_transferRequestId_transferRequest[yieldSyncV1Vault][transferRequestId] = transferRequest;
-
-		emit UpdateTransferRequest(
+		emit UpdateTransferRequestPoll(
 			yieldSyncV1Vault,
-			_yieldSyncV1Vault_transferRequestId_transferRequest[yieldSyncV1Vault][transferRequestId]
+			_yieldSyncV1Vault_transferRequestId_transferRequestPoll[yieldSyncV1Vault][transferRequestId]
 		);
 	}
 
@@ -386,26 +425,7 @@ contract YieldSyncV1ERC721TransferRequestProtocol is
 	}
 
 	///
-	function yieldSyncV1Vault_transferRequestId_transferRequestPollUpdate(
-		address yieldSyncV1Vault,
-		uint256 transferRequestId,
-		TransferRequestPoll memory transferRequestPoll
-	)
-		public
-		//override
-		accessAdmin(yieldSyncV1Vault)
-		validTransferRequest(yieldSyncV1Vault, transferRequestId)
-	{
-		_yieldSyncV1Vault_transferRequestId_transferRequestPoll[yieldSyncV1Vault][transferRequestId] = transferRequestPoll;
-
-		emit UpdateTransferRequestPoll(
-			yieldSyncV1Vault,
-			_yieldSyncV1Vault_transferRequestId_transferRequestPoll[yieldSyncV1Vault][transferRequestId]
-		);
-	}
-
-	///
-	function yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+	function yieldSyncV1Vault_yieldSyncV1VaultPropertyAdminUpdate(
 		address yieldSyncV1Vault,
 		YieldSyncV1VaultProperty memory yieldSyncV1VaultProperty
 	)

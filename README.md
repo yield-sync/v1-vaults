@@ -57,11 +57,12 @@ The functions should follow the ordering below
 
 ### Function
 
-1. Visibility (`public` | `private` | `internal` | `external`)
-2. State Interaction (`pure` | `view`)
-3. Restriction (`Access Control` etc. DEFAULT_ADMIN_ROLE first)
-4. Complexity (Calls to inherited functions, external functions, change state)
-5. Alphabetical
+1. Interface
+2. Visibility (`public` | `private` | `internal` | `external`)
+3. State Interaction (`pure` | `view`)
+4. Restriction (`Access Control` etc. DEFAULT_ADMIN_ROLE first)
+5. Complexity (Calls to inherited functions, external functions, change state)
+6. Alphabetical
 
 ### Verifying
 

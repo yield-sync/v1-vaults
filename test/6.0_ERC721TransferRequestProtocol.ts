@@ -90,7 +90,7 @@ describe("[6.0] YieldSyncV1Vault.sol with YieldSyncV1ERC721TransferRequestProtoc
 		).deployed();
 
 		// Set YieldSyncV1Vault properties on TransferRequestProtocol.sol
-		await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+		await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyAdminUpdate(
 			owner.address,
 			[mockERC721.address, initialVoteAgainstRequired, initialVoteForRequired,] as UpdateERC721VaultProperty
 		);
@@ -169,7 +169,7 @@ describe("[6.0] YieldSyncV1Vault.sol with YieldSyncV1ERC721TransferRequestProtoc
 
 					// Fail to set vault property with invalid values
 					await expect(
-						transferRequestProtocol.connect(addr1).yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+						transferRequestProtocol.connect(addr1).yieldSyncV1Vault_yieldSyncV1VaultPropertyAdminUpdate(
 							addr1.address,
 							[ethers.constants.AddressZero, 1, 1] as UpdateERC721VaultProperty
 						)
@@ -186,7 +186,7 @@ describe("[6.0] YieldSyncV1Vault.sol with YieldSyncV1ERC721TransferRequestProtoc
 
 					// Fail to set vault property with invalid values
 					await expect(
-						transferRequestProtocol.connect(addr1).yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+						transferRequestProtocol.connect(addr1).yieldSyncV1Vault_yieldSyncV1VaultPropertyAdminUpdate(
 							addr1.address,
 							[mockERC721.address, 0, 0] as UpdateERC721VaultProperty
 						)
@@ -201,7 +201,7 @@ describe("[6.0] YieldSyncV1Vault.sol with YieldSyncV1ERC721TransferRequestProtoc
 
 					// Fail to set vault property with invalid values
 					await expect(
-						transferRequestProtocol.connect(addr1).yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+						transferRequestProtocol.connect(addr1).yieldSyncV1Vault_yieldSyncV1VaultPropertyAdminUpdate(
 							addr1.address,
 							[mockERC721.address, 1, 0,] as UpdateERC721VaultProperty
 						)
@@ -654,7 +654,7 @@ describe("[6.0] YieldSyncV1Vault.sol with YieldSyncV1ERC721TransferRequestProtoc
 							const [, addr1, addr2] = await ethers.getSigners();
 
 							// Preset
-							await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+							await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyAdminUpdate(
 								vault.address,
 								[
 									mockERC721.address,
@@ -870,7 +870,7 @@ describe("[6.0] YieldSyncV1Vault.sol with YieldSyncV1ERC721TransferRequestProtoc
 							const [, addr1, addr2] = await ethers.getSigners();
 
 							// Preset
-							await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+							await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyAdminUpdate(
 								vault.address,
 								[
 									mockERC721.address,
@@ -918,7 +918,7 @@ describe("[6.0] YieldSyncV1Vault.sol with YieldSyncV1ERC721TransferRequestProtoc
 							const [, addr1, addr2] = await ethers.getSigners();
 
 							// Preset
-							await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+							await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyAdminUpdate(
 								vault.address,
 								[
 									mockERC721.address,
@@ -1088,7 +1088,7 @@ describe("[6.0] YieldSyncV1Vault.sol with YieldSyncV1ERC721TransferRequestProtoc
 							const [, addr1, addr2] = await ethers.getSigners();
 
 							// Preset
-							await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+							await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyAdminUpdate(
 								vault.address,
 								[
 									mockERC721.address,
@@ -1136,7 +1136,7 @@ describe("[6.0] YieldSyncV1Vault.sol with YieldSyncV1ERC721TransferRequestProtoc
 							const [, addr1, addr2] = await ethers.getSigners();
 
 							// Preset
-							await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+							await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyAdminUpdate(
 								vault.address,
 								[
 									mockERC721.address,
@@ -1237,7 +1237,7 @@ describe("[6.0] YieldSyncV1Vault.sol with YieldSyncV1ERC721TransferRequestProtoc
 						const [, addr1, addr2] = await ethers.getSigners();
 
 						// Preset
-						await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+						await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyAdminUpdate(
 							vault.address,
 							[
 								mockERC721.address,
@@ -1360,7 +1360,7 @@ describe("[6.0] YieldSyncV1Vault.sol with YieldSyncV1ERC721TransferRequestProtoc
 					];
 
 					await expect(
-						transferRequestProtocol.yieldSyncV1Vault_transferRequestId_transferRequestUpdate(
+						transferRequestProtocol.yieldSyncV1Vault_transferRequestId_transferRequestAdminUpdate(
 							vault.address,
 							openTRIds[openTRIds.length - 1],
 							updatedTR
@@ -1405,7 +1405,7 @@ describe("[6.0] YieldSyncV1Vault.sol with YieldSyncV1ERC721TransferRequestProtoc
 					];
 
 					await expect(
-						transferRequestProtocol.yieldSyncV1Vault_transferRequestId_transferRequestUpdate(
+						transferRequestProtocol.yieldSyncV1Vault_transferRequestId_transferRequestAdminUpdate(
 							vault.address,
 							openTRIds[openTRIds.length - 1],
 							updatedTR
@@ -1449,7 +1449,7 @@ describe("[6.0] YieldSyncV1Vault.sol with YieldSyncV1ERC721TransferRequestProtoc
 						transferRequest.tokenId,
 					];
 
-					await transferRequestProtocol.yieldSyncV1Vault_transferRequestId_transferRequestUpdate(
+					await transferRequestProtocol.yieldSyncV1Vault_transferRequestId_transferRequestAdminUpdate(
 						vault.address,
 						openTRIds[openTRIds.length - 1],
 						updatedTR
@@ -1491,7 +1491,7 @@ describe("[6.0] YieldSyncV1Vault.sol with YieldSyncV1ERC721TransferRequestProtoc
 					);
 
 
-					await transferRequestProtocol.yieldSyncV1Vault_transferRequestId_transferRequestPollUpdate(
+					await transferRequestProtocol.yieldSyncV1Vault_transferRequestId_transferRequestPollAdminUpdate(
 						vault.address,
 						openTRIds[openTRIds.length - 1],
 						[
@@ -1522,7 +1522,7 @@ describe("[6.0] YieldSyncV1Vault.sol with YieldSyncV1ERC721TransferRequestProtoc
 					await expect(
 						transferRequestProtocol.connect(
 							addr1
-						).yieldSyncV1Vault_transferRequestId_transferRequestDelete(2)
+						).yieldSyncV1Vault_transferRequestId_transferRequestAdminDelete(2)
 					).to.be.rejected;
 				}
 			);
@@ -1550,7 +1550,7 @@ describe("[6.0] YieldSyncV1Vault.sol with YieldSyncV1ERC721TransferRequestProtoc
 						);
 
 
-					await transferRequestProtocol.yieldSyncV1Vault_transferRequestId_transferRequestDelete(
+					await transferRequestProtocol.yieldSyncV1Vault_transferRequestId_transferRequestAdminDelete(
 						vault.address,
 						b4TransferRequests[b4TransferRequests.length - 1]
 					);

@@ -107,7 +107,7 @@ async function main()
 		transferRequestProtocolAddress
 	);
 
-	await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+	await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyAdminUpdate(
 		owner.address,
 		[1, 1, 10] as UpdateVaultProperty
 	);

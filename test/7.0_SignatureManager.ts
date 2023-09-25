@@ -82,7 +82,7 @@ describe("[7.0] signatureProtocol.sol", async () => {
 		await signatureProtocol.yieldSyncV1Vault_signaturesRequiredUpdate(2);
 
 		// Set YieldSyncV1Vault properties on TransferRequestProtocol.sol
-		await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+		await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyAdminUpdate(
 			owner.address,
 			[2, 2, 5] as UpdateVaultProperty
 		);

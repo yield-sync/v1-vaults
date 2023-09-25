@@ -65,7 +65,7 @@ contract MockAdmin is Ownable
 
 		IYieldSyncV1ATransferRequestProtocol(
 			yieldSyncV1ATransferRequestProtocol
-		).yieldSyncV1Vault_transferRequestId_transferRequestPollUpdate(
+		).yieldSyncV1Vault_transferRequestId_transferRequestPollAdminUpdate(
 			yieldSyncV1Vault,
 			transferRequestId,
 			transferRequestPoll

@@ -98,7 +98,7 @@ describe("[5.0] YieldSyncV1Vault.sol with YieldSyncV1BTransferRequestProtocol", 
 		transferRequestProtocol = await (await YieldSyncV1BTransferRequestProtocol.deploy(Registry.address)).deployed();
 
 		// Set YieldSyncV1Vault properties on TransferRequestProtocol.sol
-		await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+		await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyAdminUpdate(
 			owner.address,
 			[2, 2, secondsIn7Days, secondsIn6Days] as UpdateV1BVaultProperty
 		);
@@ -167,7 +167,7 @@ describe("[5.0] YieldSyncV1Vault.sol with YieldSyncV1BTransferRequestProtocol", 
 
 					// fail to deploy a vault
 					await expect(
-						transferRequestProtocol.connect(addr1).yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+						transferRequestProtocol.connect(addr1).yieldSyncV1Vault_yieldSyncV1VaultPropertyAdminUpdate(
 							addr1.address,
 							[0, 0, secondsIn7Days, secondsIn6Days] as UpdateV1BVaultProperty
 						)
@@ -182,7 +182,7 @@ describe("[5.0] YieldSyncV1Vault.sol with YieldSyncV1BTransferRequestProtocol", 
 
 					// fail to deploy a vault
 					await expect(
-						transferRequestProtocol.connect(addr1).yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+						transferRequestProtocol.connect(addr1).yieldSyncV1Vault_yieldSyncV1VaultPropertyAdminUpdate(
 							addr1.address,
 							[1, 0, secondsIn7Days, secondsIn6Days] as UpdateV1BVaultProperty
 						)
@@ -224,7 +224,7 @@ describe("[5.0] YieldSyncV1Vault.sol with YieldSyncV1BTransferRequestProtocol", 
 				const [, , , , addr4] = await ethers.getSigners();
 
 				await expect(
-					transferRequestProtocol.connect(addr4).yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+					transferRequestProtocol.connect(addr4).yieldSyncV1Vault_yieldSyncV1VaultPropertyAdminUpdate(
 						vault.address,
 						[123, 456, 789, 987] as UpdateV1BVaultProperty
 					)
@@ -236,7 +236,7 @@ describe("[5.0] YieldSyncV1Vault.sol with YieldSyncV1BTransferRequestProtocol", 
 			const [owner] = await ethers.getSigners();
 
 			// Preset
-			await transferRequestProtocol.connect(owner).yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+			await transferRequestProtocol.connect(owner).yieldSyncV1Vault_yieldSyncV1VaultPropertyAdminUpdate(
 				vault.address,
 				[123, 456, 789, 987] as UpdateV1BVaultProperty
 			);
@@ -613,7 +613,7 @@ describe("[5.0] YieldSyncV1Vault.sol with YieldSyncV1BTransferRequestProtocol", 
 							const [, addr1] = await ethers.getSigners();
 
 							// Preset
-							await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+							await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyAdminUpdate(
 								vault.address,
 								[2, 1, secondsIn7Days, secondsIn6Days] as UpdateV1BVaultProperty
 							);
@@ -710,7 +710,7 @@ describe("[5.0] YieldSyncV1Vault.sol with YieldSyncV1BTransferRequestProtocol", 
 							const voteCloseTimestamp = (await ethers.provider.getBlock("latest")).timestamp + secondsIn7Days;
 
 							// Preset
-							await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+							await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyAdminUpdate(
 								vault.address,
 								[2, 1, secondsIn7Days, secondsIn6Days] as UpdateV1BVaultProperty
 							);
@@ -770,7 +770,7 @@ describe("[5.0] YieldSyncV1Vault.sol with YieldSyncV1BTransferRequestProtocol", 
 							const voteCloseTimestamp = (await ethers.provider.getBlock("latest")).timestamp + secondsIn7Days;
 
 							// Preset
-							await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+							await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyAdminUpdate(
 								vault.address,
 								[2, 1, secondsIn7Days, secondsIn6Days] as UpdateV1BVaultProperty
 							);
@@ -943,7 +943,7 @@ describe("[5.0] YieldSyncV1Vault.sol with YieldSyncV1BTransferRequestProtocol", 
 							const voteCloseTimestamp = (await ethers.provider.getBlock("latest")).timestamp + secondsIn7Days;
 
 							// Preset
-							await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+							await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyAdminUpdate(
 								vault.address,
 								[2, 1, secondsIn7Days, secondsIn6Days] as UpdateV1BVaultProperty
 							);
@@ -992,7 +992,7 @@ describe("[5.0] YieldSyncV1Vault.sol with YieldSyncV1BTransferRequestProtocol", 
 							const voteCloseTimestamp = (await ethers.provider.getBlock("latest")).timestamp + secondsIn7Days;
 
 							// Preset
-							await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+							await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyAdminUpdate(
 								vault.address,
 								[2, 1, secondsIn7Days, secondsIn6Days] as UpdateV1BVaultProperty
 							);
@@ -1045,7 +1045,7 @@ describe("[5.0] YieldSyncV1Vault.sol with YieldSyncV1BTransferRequestProtocol", 
 							const voteCloseTimestamp = (await ethers.provider.getBlock("latest")).timestamp + secondsIn7Days;
 
 							// Preset
-							await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+							await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyAdminUpdate(
 								vault.address,
 								[2, 1, secondsIn7Days, secondsIn6Days] as UpdateV1BVaultProperty
 							);
@@ -1225,7 +1225,7 @@ describe("[5.0] YieldSyncV1Vault.sol with YieldSyncV1BTransferRequestProtocol", 
 							const voteCloseTimestamp = (await ethers.provider.getBlock("latest")).timestamp + secondsIn7Days;
 
 							// Preset
-							await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+							await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyAdminUpdate(
 								vault.address,
 								[2, 1, secondsIn7Days, secondsIn6Days] as UpdateV1BVaultProperty
 							);
@@ -1278,7 +1278,7 @@ describe("[5.0] YieldSyncV1Vault.sol with YieldSyncV1BTransferRequestProtocol", 
 							const voteCloseTimestamp = (await ethers.provider.getBlock("latest")).timestamp + secondsIn7Days;
 
 							// Preset
-							await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+							await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyAdminUpdate(
 								vault.address,
 								[2, 1, secondsIn7Days, secondsIn6Days] as UpdateV1BVaultProperty
 							);
@@ -1371,7 +1371,7 @@ describe("[5.0] YieldSyncV1Vault.sol with YieldSyncV1BTransferRequestProtocol", 
 						const voteCloseTimestamp = (await ethers.provider.getBlock("latest")).timestamp + secondsIn7Days;
 
 						// Preset
-						await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+						await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyAdminUpdate(
 							vault.address,
 							[1, 2, secondsIn7Days, secondsIn6Days] as UpdateV1BVaultProperty
 						);
@@ -1434,7 +1434,7 @@ describe("[5.0] YieldSyncV1Vault.sol with YieldSyncV1BTransferRequestProtocol", 
 						const voteCloseTimestamp = (await ethers.provider.getBlock("latest")).timestamp + secondsIn7Days;
 
 						// Preset
-						await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+						await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyAdminUpdate(
 							vault.address,
 							[1, 2, secondsIn7Days, secondsIn6Days] as UpdateV1BVaultProperty
 						);
@@ -1563,7 +1563,7 @@ describe("[5.0] YieldSyncV1Vault.sol with YieldSyncV1BTransferRequestProtocol", 
 					];
 
 					await expect(
-						transferRequestProtocol.yieldSyncV1Vault_transferRequestId_transferRequestUpdate(
+						transferRequestProtocol.yieldSyncV1Vault_transferRequestId_transferRequestAdminUpdate(
 							vault.address,
 							openTRIds[openTRIds.length - 1],
 							updatedTR
@@ -1611,7 +1611,7 @@ describe("[5.0] YieldSyncV1Vault.sol with YieldSyncV1BTransferRequestProtocol", 
 					];
 
 					await expect(
-						transferRequestProtocol.yieldSyncV1Vault_transferRequestId_transferRequestUpdate(
+						transferRequestProtocol.yieldSyncV1Vault_transferRequestId_transferRequestAdminUpdate(
 							vault.address,
 							openTRIds[openTRIds.length - 1],
 							updatedTR
@@ -1658,7 +1658,7 @@ describe("[5.0] YieldSyncV1Vault.sol with YieldSyncV1BTransferRequestProtocol", 
 						transferRequest.tokenId,
 					];
 
-					await transferRequestProtocol.yieldSyncV1Vault_transferRequestId_transferRequestUpdate(
+					await transferRequestProtocol.yieldSyncV1Vault_transferRequestId_transferRequestAdminUpdate(
 						vault.address,
 						openTRIds[openTRIds.length - 1],
 						updatedTR
@@ -1703,7 +1703,7 @@ describe("[5.0] YieldSyncV1Vault.sol with YieldSyncV1BTransferRequestProtocol", 
 					);
 
 
-					await transferRequestProtocol.yieldSyncV1Vault_transferRequestId_transferRequestPollUpdate(
+					await transferRequestProtocol.yieldSyncV1Vault_transferRequestId_transferRequestPollAdminUpdate(
 						vault.address,
 						openTRIds[openTRIds.length - 1],
 						[
@@ -1752,7 +1752,7 @@ describe("[5.0] YieldSyncV1Vault.sol with YieldSyncV1BTransferRequestProtocol", 
 							openTRIds[openTRIds.length - 1]
 						);
 
-					await transferRequestProtocol.yieldSyncV1Vault_transferRequestId_transferRequestPollUpdate(
+					await transferRequestProtocol.yieldSyncV1Vault_transferRequestId_transferRequestPollAdminUpdate(
 						vault.address,
 						openTRIds[openTRIds.length - 1],
 						[
@@ -1781,7 +1781,7 @@ describe("[5.0] YieldSyncV1Vault.sol with YieldSyncV1BTransferRequestProtocol", 
 					await expect(
 						transferRequestProtocol.connect(
 							addr1
-						).yieldSyncV1Vault_transferRequestId_transferRequestDelete(2)
+						).yieldSyncV1Vault_transferRequestId_transferRequestAdminDelete(2)
 					).to.be.rejected;
 				}
 			);
@@ -1812,7 +1812,7 @@ describe("[5.0] YieldSyncV1Vault.sol with YieldSyncV1BTransferRequestProtocol", 
 						);
 
 
-					await transferRequestProtocol.yieldSyncV1Vault_transferRequestId_transferRequestDelete(
+					await transferRequestProtocol.yieldSyncV1Vault_transferRequestId_transferRequestAdminDelete(
 						vault.address,
 						b4TransferRequests[b4TransferRequests.length - 1]
 					);
