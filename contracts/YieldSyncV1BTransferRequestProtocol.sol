@@ -364,7 +364,7 @@ contract YieldSyncV1BTransferRequestProtocol is
 	)
 		public
 		override
-		accessAdmin(yieldSyncV1Vault)
+		accessMember(yieldSyncV1Vault)
 		validTransferRequest(yieldSyncV1Vault, transferRequestId)
 	{
 		require(

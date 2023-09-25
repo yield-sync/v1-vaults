@@ -454,6 +454,87 @@ describe("[5.0] YieldSyncV1Vault.sol with YieldSyncV1BTransferRequestProtocol", 
 					);
 				});
 
+				describe("yieldSyncV1Vault_transferRequestId_transferRequestDelete()", async () => {
+					it(
+						"[auth] Should not allow !creator to delete TransferRequest..",
+						async () => {
+							const [, addr1, addr2] = await ethers.getSigners();
+
+							await vault.memberAdd(addr2.address)
+
+							await transferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestCreate(
+								vault.address,
+								false,
+								false,
+								addr2.address,
+								ethers.constants.AddressZero,
+								ethers.utils.parseEther(".5"),
+								0,
+								(await ethers.provider.getBlock("latest")).timestamp + secondsIn7Days
+							);
+
+							const beforeOpenTRIds: OpenTransferRequestIds = await transferRequestProtocol.yieldSyncV1Vault_openTransferRequestIds(
+								vault.address
+							);
+
+							expect(beforeOpenTRIds.length).to.be.equal(1);
+							expect(beforeOpenTRIds[0]).to.be.equal(0);
+
+
+							await expect(
+								transferRequestProtocol.connect(addr2).yieldSyncV1Vault_transferRequestId_transferRequestDelete(
+									vault.address,
+									0
+								)
+							).to.be.rejectedWith("_yieldSyncV1Vault_transferRequestId_transferRequest[yieldSyncV1Vault][transferRequestId].creator != msg.sender");
+
+							const openTRIds: OpenTransferRequestIds = await transferRequestProtocol.yieldSyncV1Vault_openTransferRequestIds(
+								vault.address
+							);
+
+							expect(openTRIds.length).to.be.equal(1);
+							expect(beforeOpenTRIds[0]).to.be.equal(0);
+						}
+					);
+
+					it(
+						"Should be able to delete a TransferRequest..",
+						async () => {
+							const [, addr1, addr2] = await ethers.getSigners();
+
+							await transferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestCreate(
+								vault.address,
+								false,
+								false,
+								addr2.address,
+								ethers.constants.AddressZero,
+								ethers.utils.parseEther(".5"),
+								0,
+								(await ethers.provider.getBlock("latest")).timestamp + secondsIn7Days
+							);
+
+							const beforeOpenTRIds: OpenTransferRequestIds = await transferRequestProtocol.yieldSyncV1Vault_openTransferRequestIds(
+								vault.address
+							);
+
+							expect(beforeOpenTRIds.length).to.be.equal(1);
+							expect(beforeOpenTRIds[0]).to.be.equal(0);
+
+
+							await transferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestDelete(
+								vault.address,
+								0
+							);
+
+							const openTRIds: OpenTransferRequestIds = await transferRequestProtocol.yieldSyncV1Vault_openTransferRequestIds(
+								vault.address
+							);
+
+							expect(openTRIds.length).to.be.equal(0);
+						}
+					);
+				});
+
 				describe("vault_transferRequestId_transferRequestPollVote()", async () => {
 					it(
 						"[auth] Should revert when unauthorized msg.sender calls..",
