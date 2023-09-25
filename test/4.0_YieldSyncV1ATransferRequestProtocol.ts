@@ -89,7 +89,7 @@ describe("[4.0] YieldSyncV1Vault.sol with YieldSyncV1ATransferRequestProtocol", 
 		).deployed();
 
 		// Set YieldSyncV1Vault properties on TransferRequestProtocol.sol
-		await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+		await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyAdminUpdate(
 			owner.address,
 			[2, 2, secondsIn6Days] as UpdateVaultProperty
 		);
@@ -156,7 +156,7 @@ describe("[4.0] YieldSyncV1Vault.sol with YieldSyncV1ATransferRequestProtocol", 
 
 					// fail to deploy a vault
 					await expect(
-						transferRequestProtocol.connect(addr1).yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+						transferRequestProtocol.connect(addr1).yieldSyncV1Vault_yieldSyncV1VaultPropertyAdminUpdate(
 							addr1.address,
 							[0, 0, secondsIn6Days] as UpdateVaultProperty
 						)
@@ -171,7 +171,7 @@ describe("[4.0] YieldSyncV1Vault.sol with YieldSyncV1ATransferRequestProtocol", 
 
 					// fail to deploy a vault
 					await expect(
-						transferRequestProtocol.connect(addr1).yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+						transferRequestProtocol.connect(addr1).yieldSyncV1Vault_yieldSyncV1VaultPropertyAdminUpdate(
 							addr1.address,
 							[1, 0, secondsIn6Days] as UpdateVaultProperty
 						)
@@ -212,7 +212,7 @@ describe("[4.0] YieldSyncV1Vault.sol with YieldSyncV1ATransferRequestProtocol", 
 				const [, , , , addr4] = await ethers.getSigners();
 
 				await expect(
-					transferRequestProtocol.connect(addr4).yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+					transferRequestProtocol.connect(addr4).yieldSyncV1Vault_yieldSyncV1VaultPropertyAdminUpdate(
 						vault.address,
 						[123, 456, 789] as UpdateVaultProperty
 					)
@@ -224,7 +224,7 @@ describe("[4.0] YieldSyncV1Vault.sol with YieldSyncV1ATransferRequestProtocol", 
 			const [owner] = await ethers.getSigners();
 
 			// Preset
-			await transferRequestProtocol.connect(owner).yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+			await transferRequestProtocol.connect(owner).yieldSyncV1Vault_yieldSyncV1VaultPropertyAdminUpdate(
 				vault.address,
 				[123, 456, 789] as UpdateVaultProperty
 			);
@@ -364,6 +364,86 @@ describe("[4.0] YieldSyncV1Vault.sol with YieldSyncV1ATransferRequestProtocol", 
 
 							expect(openTRIds.length).to.be.equal(1);
 							expect(openTRIds[0]).to.be.equal(0);
+						}
+					);
+				});
+
+				describe("yieldSyncV1Vault_transferRequestId_transferRequestDelete()", async () => {
+					it(
+						"[auth] Should not allow !creator to delete TransferRequest..",
+						async () => {
+							const [, addr1, addr2] = await ethers.getSigners();
+
+							await vault.memberAdd(addr2.address)
+
+
+							await transferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestCreate(
+								vault.address,
+								false,
+								false,
+								addr2.address,
+								ethers.constants.AddressZero,
+								ethers.utils.parseEther(".5"),
+								0
+							);
+
+							const beforeOpenTRIds: OpenTransferRequestIds = await transferRequestProtocol.yieldSyncV1Vault_openTransferRequestIds(
+								vault.address
+							);
+
+							expect(beforeOpenTRIds.length).to.be.equal(1);
+							expect(beforeOpenTRIds[0]).to.be.equal(0);
+
+
+							await expect(
+								transferRequestProtocol.connect(addr2).yieldSyncV1Vault_transferRequestId_transferRequestDelete(
+									vault.address,
+									0
+								)
+							).to.be.rejectedWith("_yieldSyncV1Vault_transferRequestId_transferRequest[yieldSyncV1Vault][transferRequestId].creator != msg.sender");
+
+							const openTRIds: OpenTransferRequestIds = await transferRequestProtocol.yieldSyncV1Vault_openTransferRequestIds(
+								vault.address
+							);
+
+							expect(openTRIds.length).to.be.equal(1);
+							expect(beforeOpenTRIds[0]).to.be.equal(0);
+						}
+					);
+
+					it(
+						"Should be able to delete a TransferRequest..",
+						async () => {
+							const [, addr1, addr2] = await ethers.getSigners();
+
+							await transferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestCreate(
+								vault.address,
+								false,
+								false,
+								addr2.address,
+								ethers.constants.AddressZero,
+								ethers.utils.parseEther(".5"),
+								0
+							);
+
+							const beforeOpenTRIds: OpenTransferRequestIds = await transferRequestProtocol.yieldSyncV1Vault_openTransferRequestIds(
+								vault.address
+							);
+
+							expect(beforeOpenTRIds.length).to.be.equal(1);
+							expect(beforeOpenTRIds[0]).to.be.equal(0);
+
+
+							await transferRequestProtocol.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestDelete(
+								vault.address,
+								0
+							);
+
+							const openTRIds: OpenTransferRequestIds = await transferRequestProtocol.yieldSyncV1Vault_openTransferRequestIds(
+								vault.address
+							);
+
+							expect(openTRIds.length).to.be.equal(0);
 						}
 					);
 				});
@@ -546,7 +626,7 @@ describe("[4.0] YieldSyncV1Vault.sol with YieldSyncV1ATransferRequestProtocol", 
 							const [, addr1] = await ethers.getSigners();
 
 							// Preset
-							await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+							await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyAdminUpdate(
 								vault.address,
 								[2, 1, secondsIn7Days] as UpdateVaultProperty
 							);
@@ -588,7 +668,7 @@ describe("[4.0] YieldSyncV1Vault.sol with YieldSyncV1ATransferRequestProtocol", 
 							const [, addr1, addr2] = await ethers.getSigners();
 
 							// Preset
-							await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+							await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyAdminUpdate(
 								vault.address,
 								[2, 1, secondsIn6Days] as UpdateVaultProperty
 							);
@@ -647,7 +727,7 @@ describe("[4.0] YieldSyncV1Vault.sol with YieldSyncV1ATransferRequestProtocol", 
 							const [, addr1, addr2] = await ethers.getSigners();
 
 							// Preset
-							await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+							await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyAdminUpdate(
 								vault.address,
 								[2, 1, secondsIn7Days] as UpdateVaultProperty
 							);
@@ -812,7 +892,7 @@ describe("[4.0] YieldSyncV1Vault.sol with YieldSyncV1ATransferRequestProtocol", 
 							const [, addr1, addr2] = await ethers.getSigners();
 
 							// Preset
-							await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+							await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyAdminUpdate(
 								vault.address,
 								[2, 1, secondsIn7Days] as UpdateVaultProperty
 							);
@@ -856,7 +936,7 @@ describe("[4.0] YieldSyncV1Vault.sol with YieldSyncV1ATransferRequestProtocol", 
 							const [, addr1, addr2] = await ethers.getSigners();
 
 							// Preset
-							await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+							await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyAdminUpdate(
 								vault.address,
 								[2, 1, secondsIn6Days] as UpdateVaultProperty
 							);
@@ -902,7 +982,7 @@ describe("[4.0] YieldSyncV1Vault.sol with YieldSyncV1ATransferRequestProtocol", 
 							const [, addr1, addr2] = await ethers.getSigners();
 
 							// Preset
-							await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+							await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyAdminUpdate(
 								vault.address,
 								[
 									2,
@@ -1066,7 +1146,7 @@ describe("[4.0] YieldSyncV1Vault.sol with YieldSyncV1ATransferRequestProtocol", 
 							const [, addr1, addr2] = await ethers.getSigners();
 
 							// Preset
-							await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+							await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyAdminUpdate(
 								vault.address,
 								[2, 1, secondsIn6Days] as UpdateVaultProperty
 							);
@@ -1112,7 +1192,7 @@ describe("[4.0] YieldSyncV1Vault.sol with YieldSyncV1ATransferRequestProtocol", 
 							const [, addr1, addr2] = await ethers.getSigners();
 
 							// Preset
-							await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+							await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyAdminUpdate(
 								vault.address,
 								[2, 1, secondsIn6Days] as UpdateVaultProperty
 							);
@@ -1201,7 +1281,7 @@ describe("[4.0] YieldSyncV1Vault.sol with YieldSyncV1ATransferRequestProtocol", 
 						const [, addr1, addr2] = await ethers.getSigners();
 
 						// Preset
-						await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+						await transferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyAdminUpdate(
 							vault.address,
 							[1, 2, secondsIn6Days] as UpdateVaultProperty
 						);
@@ -1320,7 +1400,7 @@ describe("[4.0] YieldSyncV1Vault.sol with YieldSyncV1ATransferRequestProtocol", 
 					];
 
 					await expect(
-						transferRequestProtocol.yieldSyncV1Vault_transferRequestId_transferRequestUpdate(
+						transferRequestProtocol.yieldSyncV1Vault_transferRequestId_transferRequestAdminUpdate(
 							vault.address,
 							openTRIds[openTRIds.length - 1],
 							updatedTR
@@ -1365,7 +1445,7 @@ describe("[4.0] YieldSyncV1Vault.sol with YieldSyncV1ATransferRequestProtocol", 
 					];
 
 					await expect(
-						transferRequestProtocol.yieldSyncV1Vault_transferRequestId_transferRequestUpdate(
+						transferRequestProtocol.yieldSyncV1Vault_transferRequestId_transferRequestAdminUpdate(
 							vault.address,
 							openTRIds[openTRIds.length - 1],
 							updatedTR
@@ -1409,7 +1489,7 @@ describe("[4.0] YieldSyncV1Vault.sol with YieldSyncV1ATransferRequestProtocol", 
 						transferRequest.tokenId,
 					];
 
-					await transferRequestProtocol.yieldSyncV1Vault_transferRequestId_transferRequestUpdate(
+					await transferRequestProtocol.yieldSyncV1Vault_transferRequestId_transferRequestAdminUpdate(
 						vault.address,
 						openTRIds[openTRIds.length - 1],
 						updatedTR
@@ -1451,7 +1531,7 @@ describe("[4.0] YieldSyncV1Vault.sol with YieldSyncV1ATransferRequestProtocol", 
 					);
 
 
-					await transferRequestProtocol.yieldSyncV1Vault_transferRequestId_transferRequestPollUpdate(
+					await transferRequestProtocol.yieldSyncV1Vault_transferRequestId_transferRequestPollAdminUpdate(
 						vault.address,
 						openTRIds[openTRIds.length - 1],
 						[
@@ -1498,7 +1578,7 @@ describe("[4.0] YieldSyncV1Vault.sol with YieldSyncV1ATransferRequestProtocol", 
 							openTRIds[openTRIds.length - 1]
 						);
 
-					await transferRequestProtocol.yieldSyncV1Vault_transferRequestId_transferRequestPollUpdate(
+					await transferRequestProtocol.yieldSyncV1Vault_transferRequestId_transferRequestPollAdminUpdate(
 						vault.address,
 						openTRIds[openTRIds.length - 1],
 						[
@@ -1534,7 +1614,7 @@ describe("[4.0] YieldSyncV1Vault.sol with YieldSyncV1ATransferRequestProtocol", 
 					await expect(
 						transferRequestProtocol.connect(
 							addr1
-						).yieldSyncV1Vault_transferRequestId_transferRequestDelete(2)
+						).yieldSyncV1Vault_transferRequestId_transferRequestAdminDelete(2)
 					).to.be.rejected;
 				}
 			);
@@ -1562,7 +1642,7 @@ describe("[4.0] YieldSyncV1Vault.sol with YieldSyncV1ATransferRequestProtocol", 
 						);
 
 
-					await transferRequestProtocol.yieldSyncV1Vault_transferRequestId_transferRequestDelete(
+					await transferRequestProtocol.yieldSyncV1Vault_transferRequestId_transferRequestAdminDelete(
 						vault.address,
 						b4TransferRequests[b4TransferRequests.length - 1]
 					);

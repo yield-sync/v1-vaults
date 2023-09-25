@@ -169,14 +169,14 @@ describe("[0.0] YieldSyncV1VaultFactory.sol", async () => {
 
 
 	describe("!Restriction", async () => {
-		describe("YieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate()", async () => {
+		describe("YieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyAdminUpdate()", async () => {
 			it(
 				"[auth] Should revert when unauthorized msg.sender calls..",
 				async () => {
 					const [, addr1] = await ethers.getSigners();
 
 					await expect(
-						yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+						yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyAdminUpdate(
 							addr1.address,
 							[1, 1, 10] as UpdateVaultProperty
 						)
@@ -192,7 +192,7 @@ describe("[0.0] YieldSyncV1VaultFactory.sol", async () => {
 					// Preset
 					await yieldSyncV1ATransferRequestProtocol.connect(
 						addr1
-					).yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+					).yieldSyncV1Vault_yieldSyncV1VaultPropertyAdminUpdate(
 						addr1.address,
 						[1, 1, 10] as UpdateVaultProperty
 					);
@@ -254,7 +254,7 @@ describe("[0.0] YieldSyncV1VaultFactory.sol", async () => {
 					// Preset
 					await yieldSyncV1ATransferRequestProtocol.connect(
 						addr1
-					).yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+					).yieldSyncV1Vault_yieldSyncV1VaultPropertyAdminUpdate(
 						addr1.address,
 						[1, 1, 10] as UpdateVaultProperty
 					);
@@ -281,7 +281,7 @@ describe("[0.0] YieldSyncV1VaultFactory.sol", async () => {
 					// Preset
 					await yieldSyncV1ATransferRequestProtocol.connect(
 						addr1
-					).yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+					).yieldSyncV1Vault_yieldSyncV1VaultPropertyAdminUpdate(
 						addr1.address,
 						[1, 1, 10] as UpdateVaultProperty
 					);
@@ -328,7 +328,7 @@ describe("[0.0] YieldSyncV1VaultFactory.sol", async () => {
 					// Preset
 					await yieldSyncV1ATransferRequestProtocol.connect(
 						addr1
-					).yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+					).yieldSyncV1Vault_yieldSyncV1VaultPropertyAdminUpdate(
 						addr1.address,
 						[1, 1, 10] as UpdateVaultProperty
 					);
@@ -359,7 +359,7 @@ describe("[0.0] YieldSyncV1VaultFactory.sol", async () => {
 					// Preset
 					await yieldSyncV1ATransferRequestProtocol.connect(
 						addr1
-					).yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+					).yieldSyncV1Vault_yieldSyncV1VaultPropertyAdminUpdate(
 						addr1.address,
 						[1, 1, 10] as UpdateVaultProperty
 					);
@@ -392,7 +392,7 @@ describe("[0.0] YieldSyncV1VaultFactory.sol", async () => {
 						// Preset
 						await yieldSyncV1ATransferRequestProtocol.connect(
 							addr1
-						).yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+						).yieldSyncV1Vault_yieldSyncV1VaultPropertyAdminUpdate(
 							addr1.address,
 							[1, 1, 10] as UpdateVaultProperty
 						);
@@ -431,7 +431,7 @@ describe("[0.0] YieldSyncV1VaultFactory.sol", async () => {
 						// Preset
 						await yieldSyncV1ATransferRequestProtocol.connect(
 							addr1
-						).yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+						).yieldSyncV1Vault_yieldSyncV1VaultPropertyAdminUpdate(
 							addr1.address,
 							[1, 1, 10] as UpdateVaultProperty
 						);

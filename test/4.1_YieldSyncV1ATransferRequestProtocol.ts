@@ -50,7 +50,7 @@ describe("[4.1] YieldSyncV1Vault.sol with YieldSyncV1ATransferRequestProtocol - 
 		).deployed();
 
 		// Set YieldSyncV1Vault properties on TransferRequestProtocol.sol
-		await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+		await yieldSyncV1ATransferRequestProtocol.yieldSyncV1Vault_yieldSyncV1VaultPropertyAdminUpdate(
 			admin.address,
 			[2, 2, twoDaysInSeconds] as UpdateVaultProperty
 		);

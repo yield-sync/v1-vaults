@@ -84,6 +84,37 @@ interface IYieldSyncV1BTransferRequestProtocol is
 
 
 	/**
+	* @notice Delete transferRequest & all associated values
+	* @dev [restriction] `YieldSyncV1Record` → admin
+	* @dev Utilized by `YieldSyncV1Vault`
+	* @param yieldSyncV1Vault {address}
+	* @param transferRequestId {uint256}
+	*/
+	function yieldSyncV1Vault_transferRequestId_transferRequestAdminDelete(
+		address yieldSyncV1Vault,
+		uint256 transferRequestId
+	)
+		external
+	;
+
+	/**
+	* @notice Update transferRequest
+	* @dev [restriction] `YieldSyncV1Record` → admin
+	* @dev [update] `_transferRequest`
+	* @param yieldSyncV1Vault {address}
+	* @param transferRequestId {uint256}
+	* @param transferRequest {TransferRequest}
+	* Emits: `UpdateTransferRequest`
+	*/
+	function yieldSyncV1Vault_transferRequestId_transferRequestAdminUpdate(
+		address yieldSyncV1Vault,
+		uint256 transferRequestId,
+		TransferRequest memory transferRequest
+	)
+		external
+	;
+
+	/**
 	* @notice Create a transferRequest
 	* @dev [restriction] `YieldSyncV1Record` → member
 	* @dev [add] `_yieldSyncV1Vault_transferRequestId_transferRequest` value
@@ -114,6 +145,7 @@ interface IYieldSyncV1BTransferRequestProtocol is
 
 	/**
 	* @notice Delete transferRequest & all associated values
+	* @dev [restriction] `YieldSyncV1Record` → member
 	* @dev Utilized by `YieldSyncV1Vault`
 	* @param yieldSyncV1Vault {address}
 	* @param transferRequestId {uint256}
@@ -126,18 +158,18 @@ interface IYieldSyncV1BTransferRequestProtocol is
 	;
 
 	/**
-	* @notice Update transferRequest
+	* @notice Update a TransferRequestPoll
 	* @dev [restriction] `YieldSyncV1Record` → admin
 	* @dev [update] `_transferRequest`
 	* @param yieldSyncV1Vault {address}
 	* @param transferRequestId {uint256}
-	* @param transferRequest {TransferRequest}
-	* Emits: `UpdateTransferRequest`
+	* @param transferRequestPoll {TransferRequestPoll}
+	* Emits: `UpdateTransferRequestPoll`
 	*/
-	function yieldSyncV1Vault_transferRequestId_transferRequestUpdate(
+	function yieldSyncV1Vault_transferRequestId_transferRequestPollAdminUpdate(
 		address yieldSyncV1Vault,
 		uint256 transferRequestId,
-		TransferRequest memory transferRequest
+		TransferRequestPoll memory transferRequestPoll
 	)
 		external
 	;
@@ -161,23 +193,6 @@ interface IYieldSyncV1BTransferRequestProtocol is
 	;
 
 	/**
-	* @notice Update a TransferRequestPoll
-	* @dev [restriction] `YieldSyncV1Record` → admin
-	* @dev [update] `_transferRequest`
-	* @param yieldSyncV1Vault {address}
-	* @param transferRequestId {uint256}
-	* @param transferRequestPoll {TransferRequestPoll}
-	* Emits: `UpdateTransferRequestPoll`
-	*/
-	function yieldSyncV1Vault_transferRequestId_transferRequestPollUpdate(
-		address yieldSyncV1Vault,
-		uint256 transferRequestId,
-		TransferRequestPoll memory transferRequestPoll
-	)
-		external
-	;
-
-	/**
 	* @notice Update
 	* @dev [restriction] `YieldSyncV1Record` → admin
 	* @dev [update] `_updateYieldSyncV1VaultProperty`
@@ -185,7 +200,7 @@ interface IYieldSyncV1BTransferRequestProtocol is
 	* @param yieldSyncV1VaultProperty {YieldSyncV1VaultProperty}
 	* Emits: `UpdatedYieldSyncV1VaultYieldSyncV1VaultProperty`
 	*/
-	function yieldSyncV1Vault_yieldSyncV1VaultPropertyUpdate(
+	function yieldSyncV1Vault_yieldSyncV1VaultPropertyAdminUpdate(
 		address yieldSyncV1Vault,
 		YieldSyncV1VaultProperty memory yieldSyncV1VaultProperty
 	)
