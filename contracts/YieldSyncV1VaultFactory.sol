@@ -64,11 +64,11 @@ contract YieldSyncV1VaultFactory is
 		public
 		payable
 		override
-		returns (address deployedyieldSyncV1Vault)
+		returns (address deployedYieldSyncV1Vault)
 	{
 		require(msg.value >= fee, "!msg.value");
 
-		YieldSyncV1Vault deployedYieldSyncV1Vault = new YieldSyncV1Vault(
+		YieldSyncV1Vault yieldSyncV1Vault = new YieldSyncV1Vault(
 			msg.sender,
 			signatureProtocol,
 			transferRequestProtocol,
@@ -77,14 +77,14 @@ contract YieldSyncV1VaultFactory is
 			members
 		);
 
-		yieldSyncV1Vault_yieldSyncV1VaultId[address(deployedYieldSyncV1Vault)] = yieldSyncV1VaultIdTracker;
-		yieldSyncV1VaultId_yieldSyncV1Vault[yieldSyncV1VaultIdTracker] = address(deployedYieldSyncV1Vault);
+		yieldSyncV1Vault_yieldSyncV1VaultId[address(yieldSyncV1Vault)] = yieldSyncV1VaultIdTracker;
+		yieldSyncV1VaultId_yieldSyncV1Vault[yieldSyncV1VaultIdTracker] = address(yieldSyncV1Vault);
 
 		yieldSyncV1VaultIdTracker++;
 
-		emit DeployedYieldSyncV1Vault(address(deployedYieldSyncV1Vault));
+		emit DeployedYieldSyncV1Vault(address(yieldSyncV1Vault));
 
-		return address(deployedYieldSyncV1Vault);
+		return address(yieldSyncV1Vault);
 	}
 
 	/// @inheritdoc IYieldSyncV1VaultFactory
