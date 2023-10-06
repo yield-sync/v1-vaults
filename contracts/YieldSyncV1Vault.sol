@@ -187,6 +187,16 @@ contract YieldSyncV1Vault is
 
 
 	/// @inheritdoc IYieldSyncV1Vault
+	function renounceMembership()
+		public
+		override
+		accessMember()
+	{
+		YieldSyncV1VaultRegistry.memberRemove(address(this), msg.sender);
+	}
+
+
+	/// @inheritdoc IYieldSyncV1Vault
 	function yieldSyncV1Vault_transferRequestId_transferRequestProcess(uint256 transferRequestId)
 		public
 		override
@@ -252,14 +262,5 @@ contract YieldSyncV1Vault is
 			address(this),
 			transferRequestId
 		);
-	}
-
-	/// @inheritdoc IYieldSyncV1Vault
-	function renounceMembership()
-		public
-		override
-		accessMember()
-	{
-		YieldSyncV1VaultRegistry.memberRemove(address(this), msg.sender);
 	}
 }

@@ -120,6 +120,16 @@ interface IYieldSyncV1Vault
 
 
 	/**
+	* @notice Renounce Membership
+	* @dev [restriction] `YieldSyncV1Record` → member
+	* @dev [remove] member on `YieldSyncV1Record`
+	*/
+	function renounceMembership()
+		external
+	;
+
+
+	/**
 	* @notice Process transferRequest with given `transferRequestId`
 	* @dev [restriction] `YieldSyncV1Record` → member
 	* @dev [erc20-transfer]
@@ -129,15 +139,6 @@ interface IYieldSyncV1Vault
 	* Emits: `TokensTransferred`
 	*/
 	function yieldSyncV1Vault_transferRequestId_transferRequestProcess(uint256 transferRequestId)
-		external
-	;
-
-	/**
-	* @notice Renounce Membership
-	* @dev [restriction] `YieldSyncV1Record` → member
-	* @dev [remove] member on `YieldSyncV1Record`
-	*/
-	function renounceMembership()
 		external
 	;
 }
