@@ -54,12 +54,10 @@ contract MockAdmin is Ownable
 
 		if (arithmaticSign)
 		{
-			// [update] TransferRequest within `_transferRequest`
 			transferRequestPoll.latestForVoteTime += (timeInSeconds * 1 seconds);
 		}
 		else
 		{
-			// [update] TransferRequest within `_transferRequest`
 			transferRequestPoll.latestForVoteTime -= (timeInSeconds * 1 seconds);
 		}
 

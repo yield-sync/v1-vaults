@@ -113,7 +113,6 @@ contract YieldSyncV1VaultRegistry is
 	{
 		require(_yieldSyncV1Vault_participant_access[yieldSyncV1Vault][admin].admin, "Not admin");
 
-		// [update] _admin_yieldSyncV1Vaults
 		for (uint256 i = 0; i < _admin_yieldSyncV1Vaults[admin].length; i++)
 		{
 			if (_admin_yieldSyncV1Vaults[admin][i] == yieldSyncV1Vault)
@@ -128,7 +127,6 @@ contract YieldSyncV1VaultRegistry is
 			}
 		}
 
-		// [update] _yieldSyncV1Vault_admins
 		for (uint256 i = 0; i < _yieldSyncV1Vault_admins[yieldSyncV1Vault].length; i++)
 		{
 			if (_yieldSyncV1Vault_admins[yieldSyncV1Vault][i] == admin)
@@ -175,7 +173,6 @@ contract YieldSyncV1VaultRegistry is
 	{
 		require(_yieldSyncV1Vault_participant_access[yieldSyncV1Vault][member].member, "Not member");
 
-		// [update] _member_yieldSyncV1Vaults
 		for (uint256 i = 0; i < _member_yieldSyncV1Vaults[member].length; i++)
 		{
 			if (_member_yieldSyncV1Vaults[member][i] == yieldSyncV1Vault)
@@ -190,7 +187,6 @@ contract YieldSyncV1VaultRegistry is
 			}
 		}
 
-		// [update] _yieldSyncV1Vault_members
 		for (uint256 i = 0; i < _yieldSyncV1Vault_members[yieldSyncV1Vault].length; i++)
 		{
 			if (_yieldSyncV1Vault_members[yieldSyncV1Vault][i] == member)
