@@ -1,5 +1,9 @@
 # YieldSync V1 Vaults
 
+## Note
+
+This protocol complies to the [yield-sync/specifications](https://github.com/yield-sync/specifications/tree/master/v1-vaults)
+
 ## Get Started
 
 ```shell
@@ -53,7 +57,3 @@ YIELD_SYNC_V1_B_TRANSFER_REQUEST_PROTOCOL_OP=
 YIELD_SYNC_V1_B_TRANSFER_REQUEST_PROTOCOL_OP_GOERLI=
 YIELD_SYNC_V1_B_TRANSFER_REQUEST_PROTOCOL_SEPOLIA=
 ```
-
-## Note
-
-This protocol complies to the [yield-sync/specifications](https://github.com/yield-sync/specifications/tree/master/v1-vaults)
