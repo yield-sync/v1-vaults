@@ -7,7 +7,7 @@ import { Contract, ContractFactory } from "ethers";
 
 describe("[2.0] YieldSyncV1VaultRegistry.sol", async () => {
 	let yieldSyncV1Vault: Contract;
-	let yieldSyncV1VaultFactory: Contract;
+	let yieldSyncV1VaultDeployer: Contract;
 	let yieldSyncV1VaultRegistry: Contract;
 	let mockYieldSyncGovernance: Contract;
 
@@ -15,21 +15,21 @@ describe("[2.0] YieldSyncV1VaultRegistry.sol", async () => {
 	beforeEach("[beforeEach] Set up contracts..", async () => {
 		const [owner, addr1, addr2, addr3] = await ethers.getSigners();
 
-		// Contract Factory
+		// Contract Deployer
 		const YieldSyncV1Vault: ContractFactory = await ethers.getContractFactory("YieldSyncV1Vault");
-		const YieldSyncV1VaultFactory: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultFactory");
+		const YieldSyncV1VaultDeployer: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultDeployer");
 		const YieldSyncV1VaultRegistry: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultRegistry");
 		const MockYieldSyncGovernance: ContractFactory = await ethers.getContractFactory("MockYieldSyncGovernance");
 
 		// Contract
 		mockYieldSyncGovernance = await (await MockYieldSyncGovernance.deploy()).deployed();
 		yieldSyncV1VaultRegistry = await (await YieldSyncV1VaultRegistry.deploy()).deployed();
-		yieldSyncV1VaultFactory = await (
-			await YieldSyncV1VaultFactory.deploy(mockYieldSyncGovernance.address, yieldSyncV1VaultRegistry.address)
+		yieldSyncV1VaultDeployer = await (
+			await YieldSyncV1VaultDeployer.deploy(mockYieldSyncGovernance.address, yieldSyncV1VaultRegistry.address)
 		).deployed();
 
 		// Deploy a vault
-		await yieldSyncV1VaultFactory.deployYieldSyncV1Vault(
+		await yieldSyncV1VaultDeployer.deployYieldSyncV1Vault(
 			ethers.constants.AddressZero,
 			ethers.constants.AddressZero,
 			[owner.address],
@@ -39,7 +39,7 @@ describe("[2.0] YieldSyncV1VaultRegistry.sol", async () => {
 
 		// Attach the deployed vault's address
 		yieldSyncV1Vault = await YieldSyncV1Vault.attach(
-			await yieldSyncV1VaultFactory.yieldSyncV1VaultId_yieldSyncV1Vault(0)
+			await yieldSyncV1VaultDeployer.yieldSyncV1VaultId_yieldSyncV1Vault(0)
 		);
 	});
 

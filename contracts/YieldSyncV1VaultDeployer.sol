@@ -4,12 +4,12 @@ pragma solidity ^0.8.18;
 
 import { IAccessControlEnumerable } from "@openzeppelin/contracts/access/IAccessControlEnumerable.sol";
 
-import { IYieldSyncV1VaultFactory } from "./interface/IYieldSyncV1VaultFactory.sol";
+import { IYieldSyncV1VaultDeployer } from "./interface/IYieldSyncV1VaultDeployer.sol";
 import { YieldSyncV1Vault } from "./YieldSyncV1Vault.sol";
 
 
-contract YieldSyncV1VaultFactory is
-	IYieldSyncV1VaultFactory
+contract YieldSyncV1VaultDeployer is
+	IYieldSyncV1VaultDeployer
 {
 	receive ()
 		external
@@ -54,7 +54,7 @@ contract YieldSyncV1VaultFactory is
 	}
 
 
-	/// @inheritdoc IYieldSyncV1VaultFactory
+	/// @inheritdoc IYieldSyncV1VaultDeployer
 	function deployYieldSyncV1Vault(
 		address signatureProtocol,
 		address transferRequestProtocol,
@@ -87,7 +87,7 @@ contract YieldSyncV1VaultFactory is
 		return address(yieldSyncV1Vault);
 	}
 
-	/// @inheritdoc IYieldSyncV1VaultFactory
+	/// @inheritdoc IYieldSyncV1VaultDeployer
 	function etherTransfer(address to)
 		public
 		override
@@ -98,7 +98,7 @@ contract YieldSyncV1VaultFactory is
 		require(success, "etherTransfer failed");
 	}
 
-	/// @inheritdoc IYieldSyncV1VaultFactory
+	/// @inheritdoc IYieldSyncV1VaultDeployer
 	function feeUpdate(uint256 _fee)
 		public
 		override

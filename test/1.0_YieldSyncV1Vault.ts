@@ -15,7 +15,7 @@ describe("[1.0] YieldSyncV1Vault.sol", async () => {
 
 	let yieldSyncV1Vault: Contract;
 	let yieldSyncV1VaultRegistry: Contract;
-	let yieldSyncV1VaultFactory: Contract;
+	let yieldSyncV1VaultDeployer: Contract;
 	let mockYieldSyncGovernance: Contract;
 
 
@@ -23,14 +23,14 @@ describe("[1.0] YieldSyncV1Vault.sol", async () => {
 		const [owner, addr1] = await ethers.getSigners();
 
 
-		// Contract Factory
+		// Contract Deployer
 		const MockAdmin: ContractFactory = await ethers.getContractFactory("MockAdmin");
 		const MockERC20: ContractFactory = await ethers.getContractFactory("MockERC20");
 		const MockERC721: ContractFactory = await ethers.getContractFactory("MockERC721");
 		const MockYieldSyncGovernance: ContractFactory = await ethers.getContractFactory("MockYieldSyncGovernance");
 
 		const YieldSyncV1Vault: ContractFactory = await ethers.getContractFactory("YieldSyncV1Vault");
-		const YieldSyncV1VaultFactory: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultFactory");
+		const YieldSyncV1VaultDeployer: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultDeployer");
 		const YieldSyncV1VaultRegistry: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultRegistry");
 
 
@@ -44,13 +44,13 @@ describe("[1.0] YieldSyncV1Vault.sol", async () => {
 		/// Core
 		// Deploy YieldSyncV1VaultRegistry
 		yieldSyncV1VaultRegistry = await (await YieldSyncV1VaultRegistry.deploy()).deployed();
-		// Deploy YieldSyncV1VaultFactory
-		yieldSyncV1VaultFactory = await (
-			await YieldSyncV1VaultFactory.deploy(mockYieldSyncGovernance.address, yieldSyncV1VaultRegistry.address)
+		// Deploy YieldSyncV1VaultDeployer
+		yieldSyncV1VaultDeployer = await (
+			await YieldSyncV1VaultDeployer.deploy(mockYieldSyncGovernance.address, yieldSyncV1VaultRegistry.address)
 		).deployed();
 
 		// Deploy a vault
-		await yieldSyncV1VaultFactory.deployYieldSyncV1Vault(
+		await yieldSyncV1VaultDeployer.deployYieldSyncV1Vault(
 			ethers.constants.AddressZero,
 			ethers.constants.AddressZero,
 			[owner.address],
@@ -60,7 +60,7 @@ describe("[1.0] YieldSyncV1Vault.sol", async () => {
 
 		// Attach the deployed vault's address
 		yieldSyncV1Vault = await YieldSyncV1Vault.attach(
-			await yieldSyncV1VaultFactory.yieldSyncV1VaultId_yieldSyncV1Vault(0)
+			await yieldSyncV1VaultDeployer.yieldSyncV1VaultId_yieldSyncV1Vault(0)
 		);
 
 		// Send ether to YieldSyncV1Vault contract

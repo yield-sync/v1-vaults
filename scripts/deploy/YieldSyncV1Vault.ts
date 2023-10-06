@@ -23,39 +23,39 @@ async function main()
 {
 	const [owner] = await ethers.getSigners();
 
-	// Factory
+	// Deployer
 	const YieldSyncV1VaultRegistry: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultRegistry");
-	const YieldSyncV1VaultFactory: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultFactory");
+	const YieldSyncV1VaultDeployer: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultDeployer");
 	const YieldSyncV1ATransferRequestProtocol: ContractFactory = await ethers.getContractFactory(
 		"YieldSyncV1ATransferRequestProtocol"
 	);
 	const MockYieldSyncGovernance: ContractFactory = await ethers.getContractFactory("MockYieldSyncGovernance");
 
-	let factoryContractAddress: string = "";
+	let DeployerContractAddress: string = "";
 	let transferRequestProtocolAddress: string = "";
 
 	switch (network.name)
 	{
 		case "mainnet":
-			factoryContractAddress = String(process.env.YIELD_SYNC_V1_VAULT_FACTORY_ADDRESS_MAINNET);
+			DeployerContractAddress = String(process.env.YIELD_SYNC_V1_VAULT_Deployer_ADDRESS_MAINNET);
 			transferRequestProtocolAddress = String(process.env.YIELD_SYNC_V1_A_TRANSFER_REQUEST_PROTOCOL_MAINNET);
 
 			break;
 
 		case "optimism":
-			factoryContractAddress = String(process.env.YIELD_SYNC_V1_VAULT_FACTORY_ADDRESS_OP);
+			DeployerContractAddress = String(process.env.YIELD_SYNC_V1_VAULT_Deployer_ADDRESS_OP);
 			transferRequestProtocolAddress = String(process.env.YIELD_SYNC_V1_A_TRANSFER_REQUEST_PROTOCOL_OP);
 
 			break;
 
 		case "optimismgoerli":
-			factoryContractAddress = String(process.env.YIELD_SYNC_V1_VAULT_FACTORY_ADDRESS_OP_GOERLI);
+			DeployerContractAddress = String(process.env.YIELD_SYNC_V1_VAULT_Deployer_ADDRESS_OP_GOERLI);
 			transferRequestProtocolAddress = String(process.env.YIELD_SYNC_V1_A_TRANSFER_REQUEST_PROTOCOL_OP_GOERLI);
 
 			break;
 
 		case "sepolia":
-			factoryContractAddress = String(process.env.YIELD_SYNC_V1_VAULT_FACTORY_ADDRESS_SEPOLIA);
+			DeployerContractAddress = String(process.env.YIELD_SYNC_V1_VAULT_Deployer_ADDRESS_SEPOLIA);
 			transferRequestProtocolAddress = String(process.env.YIELD_SYNC_V1_A_TRANSFER_REQUEST_PROTOCOL_SEPOLIA);
 
 			break;
@@ -69,21 +69,21 @@ async function main()
 				await YieldSyncV1VaultRegistry.deploy()
 			).deployed();
 
-			const yieldSyncV1VaultFactory: Contract = await (
-				await YieldSyncV1VaultFactory.deploy(
+			const yieldSyncV1VaultDeployer: Contract = await (
+				await YieldSyncV1VaultDeployer.deploy(
 					mockYieldSyncGovernance.address,
 					yieldSyncV1VaultRegistry.address
 				)
 			).deployed();
 
-			factoryContractAddress = yieldSyncV1VaultFactory.address;
+			DeployerContractAddress = yieldSyncV1VaultDeployer.address;
 
 			break;
 	}
 
-	if (!factoryContractAddress)
+	if (!DeployerContractAddress)
 	{
-		console.error("No factoryContractAddress set.")
+		console.error("No DeployerContractAddress set.")
 		return;
 	}
 
@@ -97,9 +97,9 @@ async function main()
 	console.log("Deploying contract with Account:", owner.address);
 	console.log("Account Balance:", await owner.getBalance());
 
-	// Attach the deployed YieldSyncV1VaultFactory address
-	const yieldSyncV1VaultFactory: Contract = await YieldSyncV1VaultFactory.attach(
-		String(factoryContractAddress)
+	// Attach the deployed YieldSyncV1VaultDeployer address
+	const yieldSyncV1VaultDeployer: Contract = await YieldSyncV1VaultDeployer.attach(
+		String(DeployerContractAddress)
 	);
 
 	// Attach the deployed YieldSyncV1ATransferRequestProtocol address
@@ -113,7 +113,7 @@ async function main()
 	);
 
 	// Deploy a vault
-	await yieldSyncV1VaultFactory.deployYieldSyncV1Vault(
+	await yieldSyncV1VaultDeployer.deployYieldSyncV1Vault(
 		ethers.constants.AddressZero,
 		transferRequestProtocolAddress,
 		[owner.address],
@@ -134,14 +134,14 @@ async function main()
 			"verify:verify",
 			{
 				contract: "contracts/YieldSyncV1Vault.sol:YieldSyncV1Vault",
-				address: await yieldSyncV1VaultFactory.yieldSyncV1VaultId_yieldSyncV1Vault(
-					await yieldSyncV1VaultFactory.yieldSyncV1VaultIdTracker() - 1
+				address: await yieldSyncV1VaultDeployer.yieldSyncV1VaultId_yieldSyncV1Vault(
+					await yieldSyncV1VaultDeployer.yieldSyncV1VaultIdTracker() - 1
 				),
 				constructorArguments: [
 					owner.address,
 					ethers.constants.AddressZero,
 					transferRequestProtocolAddress,
-					await yieldSyncV1VaultFactory.YieldSyncV1VaultRegistry(),
+					await yieldSyncV1VaultDeployer.YieldSyncV1VaultRegistry(),
 					[owner.address],
 					[owner.address],
 				],

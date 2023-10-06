@@ -18,7 +18,7 @@ import { Contract, ContractFactory } from "ethers";
 describe("[3.0] MockAdmin.sol", async () => {
 	let yieldSyncV1Vault: Contract;
 	let yieldSyncV1VaultRegistry: Contract;
-	let yieldSyncV1VaultFactory: Contract;
+	let yieldSyncV1VaultDeployer: Contract;
 	let yieldSyncV1ATransferRequestProtocol: Contract;
 	let signatureProtocol: Contract;
 	let mockAdmin: Contract;
@@ -31,7 +31,7 @@ describe("[3.0] MockAdmin.sol", async () => {
 	beforeEach("[beforeEach] Set up contracts..", async () => {
 		const [owner, addr1, addr2] = await ethers.getSigners();
 
-		/// Contract Factory
+		/// Contract Deployer
 		const MockAdmin: ContractFactory = await ethers.getContractFactory("MockAdmin");
 		const MockERC20: ContractFactory = await ethers.getContractFactory("MockERC20");
 		const MockERC721: ContractFactory = await ethers.getContractFactory("MockERC721");
@@ -39,7 +39,7 @@ describe("[3.0] MockAdmin.sol", async () => {
 		const MockYieldSyncGovernance: ContractFactory = await ethers.getContractFactory("MockYieldSyncGovernance");
 
 		const YieldSyncV1Vault: ContractFactory = await ethers.getContractFactory("YieldSyncV1Vault");
-		const YieldSyncV1VaultFactory: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultFactory");
+		const YieldSyncV1VaultDeployer: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultDeployer");
 		const YieldSyncV1VaultRegistry: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultRegistry");
 		const YieldSyncV1ASignatureProtocol: ContractFactory = await ethers.getContractFactory("YieldSyncV1ASignatureProtocol");
 		const YieldSyncV1ATransferRequestProtocol: ContractFactory = await ethers.getContractFactory("YieldSyncV1ATransferRequestProtocol");
@@ -56,9 +56,9 @@ describe("[3.0] MockAdmin.sol", async () => {
 		mockYieldSyncGovernance = await (await MockYieldSyncGovernance.deploy()).deployed();
 		yieldSyncV1VaultRegistry = await (await YieldSyncV1VaultRegistry.deploy()).deployed();
 
-		// Deploy Factory
-		yieldSyncV1VaultFactory = await (
-			await YieldSyncV1VaultFactory.deploy(mockYieldSyncGovernance.address, yieldSyncV1VaultRegistry.address)
+		// Deploy Deployer
+		yieldSyncV1VaultDeployer = await (
+			await YieldSyncV1VaultDeployer.deploy(mockYieldSyncGovernance.address, yieldSyncV1VaultRegistry.address)
 		).deployed();
 
 		// Deploy Transfer Request Protocol
@@ -85,7 +85,7 @@ describe("[3.0] MockAdmin.sol", async () => {
 		);
 
 		// Deploy a vault
-		await yieldSyncV1VaultFactory.deployYieldSyncV1Vault(
+		await yieldSyncV1VaultDeployer.deployYieldSyncV1Vault(
 			signatureProtocol.address,
 			yieldSyncV1ATransferRequestProtocol.address,
 			[owner.address],
@@ -95,7 +95,7 @@ describe("[3.0] MockAdmin.sol", async () => {
 
 		// Attach the deployed vault's address
 		yieldSyncV1Vault = await YieldSyncV1Vault.attach(
-			await yieldSyncV1VaultFactory.yieldSyncV1VaultId_yieldSyncV1Vault(0)
+			await yieldSyncV1VaultDeployer.yieldSyncV1VaultId_yieldSyncV1Vault(0)
 		);
 
 		// Send ether to YieldSyncV1Vault contract

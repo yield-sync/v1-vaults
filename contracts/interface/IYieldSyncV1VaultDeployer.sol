@@ -2,7 +2,7 @@
 pragma solidity ^0.8.18;
 
 
-interface IYieldSyncV1VaultFactory
+interface IYieldSyncV1VaultDeployer
 {
 	event DeployedYieldSyncV1Vault(address indexed vaultAddress);
 

@@ -17,7 +17,7 @@ async function main()
 
 	// Get factories
 	const MockYieldSyncGovernance: ContractFactory = await ethers.getContractFactory("MockYieldSyncGovernance");
-	const YieldSyncV1VaultFactory: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultFactory");
+	const YieldSyncV1VaultDeployer: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultDeployer");
 	const YieldSyncV1VaultRegistry: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultRegistry");
 
 	switch (network.name)
@@ -64,11 +64,11 @@ async function main()
 	const yieldSyncV1VaultRegistry: Contract = await (await YieldSyncV1VaultRegistry.deploy()).deployed();
 
 
-	console.log("Deploying YieldSyncV1VaultFactory..");
+	console.log("Deploying YieldSyncV1VaultDeployer..");
 
-	// YieldSyncV1VaultFactory
-	const yieldSyncV1VaultFactory: Contract = await (
-		await YieldSyncV1VaultFactory.deploy(governanceContractAddress, yieldSyncV1VaultRegistry.address)
+	// YieldSyncV1VaultDeployer
+	const yieldSyncV1VaultDeployer: Contract = await (
+		await YieldSyncV1VaultDeployer.deploy(governanceContractAddress, yieldSyncV1VaultRegistry.address)
 	).deployed();
 
 	console.log("Waiting 30 seconds before verifying..");
@@ -89,12 +89,12 @@ async function main()
 			}
 		);
 
-		// yieldSyncV1VaultFactory
+		// yieldSyncV1VaultDeployer
 		await run(
 			"verify:verify",
 			{
-				contract: "contracts/YieldSyncV1VaultFactory.sol:YieldSyncV1VaultFactory",
-				address: yieldSyncV1VaultFactory.address,
+				contract: "contracts/YieldSyncV1VaultDeployer.sol:YieldSyncV1VaultDeployer",
+				address: yieldSyncV1VaultDeployer.address,
 				constructorArguments: [
 					governanceContractAddress,
 					yieldSyncV1VaultRegistry.address,
@@ -117,7 +117,7 @@ async function main()
 	}
 
 	console.log("yieldSyncV1VaultRegistry address:", yieldSyncV1VaultRegistry.address);
-	console.log("yieldSyncV1VaultFactory address:", yieldSyncV1VaultFactory.address);
+	console.log("yieldSyncV1VaultDeployer address:", yieldSyncV1VaultDeployer.address);
 	console.log("Account Balance:", await deployer.getBalance());
 }
 

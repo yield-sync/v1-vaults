@@ -20,7 +20,7 @@ const twoDaysInSeconds = 2 * 24 * 60 * 60;
 
 describe("[4.1] YieldSyncV1Vault.sol with YieldSyncV1ATransferRequestProtocol - Security", async () => {
 	let yieldSyncV1Vault: Contract;
-	let yieldSyncV1VaultFactory: Contract;
+	let yieldSyncV1VaultDeployer: Contract;
 	let yieldSyncV1ATransferRequestProtocol: Contract;
 	let yieldSyncV1VaultRegistry: Contract;
 	let mockYieldSyncGovernance: Contract;
@@ -29,9 +29,9 @@ describe("[4.1] YieldSyncV1Vault.sol with YieldSyncV1ATransferRequestProtocol - 
 	beforeEach("[beforeEach] Set up contracts..", async () => {
 		const [admin, addr1, addr2, addr3] = await ethers.getSigners();
 
-		// Contract Factory
+		// Contract Deployer
 		const YieldSyncV1Vault: ContractFactory = await ethers.getContractFactory("YieldSyncV1Vault");
-		const YieldSyncV1VaultFactory: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultFactory");
+		const YieldSyncV1VaultDeployer: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultDeployer");
 		const YieldSyncV1VaultRegistry: ContractFactory = await ethers.getContractFactory("YieldSyncV1VaultRegistry");
 		const MockYieldSyncGovernance: ContractFactory = await ethers.getContractFactory("MockYieldSyncGovernance");
 		const YieldSyncV1ATransferRequestProtocol: ContractFactory = await ethers.getContractFactory("YieldSyncV1ATransferRequestProtocol");
@@ -40,8 +40,8 @@ describe("[4.1] YieldSyncV1Vault.sol with YieldSyncV1ATransferRequestProtocol - 
 		// Contract
 		mockYieldSyncGovernance = await (await MockYieldSyncGovernance.deploy()).deployed();
 		yieldSyncV1VaultRegistry = await (await YieldSyncV1VaultRegistry.deploy()).deployed();
-		yieldSyncV1VaultFactory = await (
-			await YieldSyncV1VaultFactory.deploy(mockYieldSyncGovernance.address, yieldSyncV1VaultRegistry.address)
+		yieldSyncV1VaultDeployer = await (
+			await YieldSyncV1VaultDeployer.deploy(mockYieldSyncGovernance.address, yieldSyncV1VaultRegistry.address)
 		).deployed();
 
 		// Deploy yieldSyncV1ATransferRequestProtocol
@@ -56,7 +56,7 @@ describe("[4.1] YieldSyncV1Vault.sol with YieldSyncV1ATransferRequestProtocol - 
 		);
 
 		// Deploy a vault
-		await yieldSyncV1VaultFactory.deployYieldSyncV1Vault(
+		await yieldSyncV1VaultDeployer.deployYieldSyncV1Vault(
 			ethers.constants.AddressZero,
 			yieldSyncV1ATransferRequestProtocol.address,
 			[admin.address],
@@ -66,7 +66,7 @@ describe("[4.1] YieldSyncV1Vault.sol with YieldSyncV1ATransferRequestProtocol - 
 
 		// Attach the deployed vault's address
 		yieldSyncV1Vault = await YieldSyncV1Vault.attach(
-			await yieldSyncV1VaultFactory.yieldSyncV1VaultId_yieldSyncV1Vault(0)
+			await yieldSyncV1VaultDeployer.yieldSyncV1VaultId_yieldSyncV1Vault(0)
 		);
 
 		// Send ether to YieldSyncV1Vault contract
