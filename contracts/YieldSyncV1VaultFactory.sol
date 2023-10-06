@@ -88,15 +88,6 @@ contract YieldSyncV1VaultFactory is
 	}
 
 	/// @inheritdoc IYieldSyncV1VaultFactory
-	function feeUpdate(uint256 _fee)
-		public
-		override
-		contractYieldSyncGovernance(bytes32(0))
-	{
-		fee = _fee;
-	}
-
-	/// @inheritdoc IYieldSyncV1VaultFactory
 	function etherTransfer(address to)
 		public
 		override
@@ -105,5 +96,14 @@ contract YieldSyncV1VaultFactory is
 		(bool success, ) = to.call{value: address(this).balance}("");
 
 		require(success, "etherTransfer failed");
+	}
+
+	/// @inheritdoc IYieldSyncV1VaultFactory
+	function feeUpdate(uint256 _fee)
+		public
+		override
+		contractYieldSyncGovernance(bytes32(0))
+	{
+		fee = _fee;
 	}
 }
