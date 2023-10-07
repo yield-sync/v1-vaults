@@ -696,7 +696,7 @@ describe("[4.0] YieldSyncV1Vault.sol with YieldSyncV1ATransferRequestProtocol", 
 							// Fast-forward 6 days
 							await ethers.provider.send('evm_increaseTime', [secondsIn6Days]);
 
-							const recieverBalanceBefore: number = ethers.utils.formatUnits(
+							const receiverBalanceBefore: number = ethers.utils.formatUnits(
 								await ethers.provider.getBalance(addr2.address)
 							);
 
@@ -704,11 +704,11 @@ describe("[4.0] YieldSyncV1Vault.sol with YieldSyncV1ATransferRequestProtocol", 
 								addr1
 							).yieldSyncV1Vault_transferRequestId_transferRequestProcess(0);
 
-							const recieverBalanceAfter: number = ethers.utils.formatUnits(
+							const receiverBalanceAfter: number = ethers.utils.formatUnits(
 								await ethers.provider.getBalance(addr2.address)
 							);
 
-							await expect(recieverBalanceAfter - recieverBalanceBefore).to.be.equal(.5);
+							await expect(receiverBalanceAfter - receiverBalanceBefore).to.be.equal(.5);
 
 							const openTRIds: OpenTransferRequestIds = await transferRequestProtocol
 								.yieldSyncV1Vault_openTransferRequestIds(
@@ -760,7 +760,7 @@ describe("[4.0] YieldSyncV1Vault.sol with YieldSyncV1ATransferRequestProtocol", 
 								true
 							);
 
-							const recieverBalanceBefore: number = await ethers.provider.getBalance(addr2.address);
+							const receiverBalanceBefore: number = await ethers.provider.getBalance(addr2.address);
 
 							// Fast-forward 7 days
 							await ethers.provider.send('evm_increaseTime', [secondsIn7Days]);
@@ -769,11 +769,11 @@ describe("[4.0] YieldSyncV1Vault.sol with YieldSyncV1ATransferRequestProtocol", 
 								addr1
 							).yieldSyncV1Vault_transferRequestId_transferRequestProcess(0);
 
-							const recieverBalanceAfter: number = await ethers.provider.getBalance(addr2.address);
+							const receiverBalanceAfter: number = await ethers.provider.getBalance(addr2.address);
 
 							await expect(
-								ethers.utils.formatUnits(recieverBalanceAfter)
-							).to.be.equal(ethers.utils.formatUnits(recieverBalanceBefore));
+								ethers.utils.formatUnits(receiverBalanceAfter)
+							).to.be.equal(ethers.utils.formatUnits(receiverBalanceBefore));
 
 							expect(
 								(
@@ -961,16 +961,16 @@ describe("[4.0] YieldSyncV1Vault.sol with YieldSyncV1ATransferRequestProtocol", 
 								true
 							);
 
-							const recieverBalanceBefore: number = await mockERC20.balanceOf(addr2.address);
+							const receiverBalanceBefore: number = await mockERC20.balanceOf(addr2.address);
 
 							// Fast-forward 6 days
 							await ethers.provider.send('evm_increaseTime', [secondsIn6Days]);
 
 							await vault.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestProcess(0);
 
-							const recieverBalanceAfter: number = await mockERC20.balanceOf(addr2.address);
+							const receiverBalanceAfter: number = await mockERC20.balanceOf(addr2.address);
 
-							await expect(recieverBalanceAfter - recieverBalanceBefore).to.be.equal(50);
+							await expect(receiverBalanceAfter - receiverBalanceBefore).to.be.equal(50);
 						}
 					);
 				});
@@ -1011,7 +1011,7 @@ describe("[4.0] YieldSyncV1Vault.sol with YieldSyncV1ATransferRequestProtocol", 
 								true
 							);
 
-							const recieverBalanceBefore: number = ethers.utils.formatUnits(
+							const receiverBalanceBefore: number = ethers.utils.formatUnits(
 								await mockERC20.balanceOf(addr2.address)
 							);
 
@@ -1022,11 +1022,11 @@ describe("[4.0] YieldSyncV1Vault.sol with YieldSyncV1ATransferRequestProtocol", 
 								addr1
 							).yieldSyncV1Vault_transferRequestId_transferRequestProcess(0);
 
-							const recieverBalanceAfter: number = ethers.utils.formatUnits(
+							const receiverBalanceAfter: number = ethers.utils.formatUnits(
 								await mockERC20.balanceOf(addr2.address)
 							);
 
-							await expect(recieverBalanceAfter).to.be.equal(recieverBalanceBefore);
+							await expect(receiverBalanceAfter).to.be.equal(receiverBalanceBefore);
 						}
 					);
 				});
@@ -1174,13 +1174,13 @@ describe("[4.0] YieldSyncV1Vault.sol with YieldSyncV1ATransferRequestProtocol", 
 							// Fast-forward 6 days
 							await ethers.provider.send('evm_increaseTime', [secondsIn6Days]);
 
-							const recieverBalanceBefore: number = await mockERC721.balanceOf(addr2.address);
+							const receiverBalanceBefore: number = await mockERC721.balanceOf(addr2.address);
 
 							await vault.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestProcess(0);
 
-							const recieverBalanceAfter: number = await mockERC721.balanceOf(addr2.address);
+							const receiverBalanceAfter: number = await mockERC721.balanceOf(addr2.address);
 
-							await expect(recieverBalanceAfter - recieverBalanceBefore).to.be.equal(1);
+							await expect(receiverBalanceAfter - receiverBalanceBefore).to.be.equal(1);
 						}
 					);
 				});
@@ -1220,15 +1220,15 @@ describe("[4.0] YieldSyncV1Vault.sol with YieldSyncV1ATransferRequestProtocol", 
 							// Fast-forward 7 days
 							await ethers.provider.send('evm_increaseTime', [secondsIn7Days]);
 
-							const recieverBalanceBefore: number = await mockERC721.balanceOf(addr2.address);
+							const receiverBalanceBefore: number = await mockERC721.balanceOf(addr2.address);
 
 							await vault.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestProcess(0);
 
-							const recieverBalanceAfter: number = await mockERC721.balanceOf(addr2.address);
+							const receiverBalanceAfter: number = await mockERC721.balanceOf(addr2.address);
 
 							await expect(
-								ethers.utils.formatUnits(recieverBalanceAfter)
-							).to.be.equal(ethers.utils.formatUnits(recieverBalanceBefore))
+								ethers.utils.formatUnits(receiverBalanceAfter)
+							).to.be.equal(ethers.utils.formatUnits(receiverBalanceBefore))
 						}
 					);
 				});

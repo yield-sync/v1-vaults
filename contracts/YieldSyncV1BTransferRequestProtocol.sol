@@ -129,7 +129,7 @@ contract YieldSyncV1BTransferRequestProtocol is
 		public
 		view
 		override
-		returns (TransferRequest memory)
+		returns (TransferRequest memory transferRequest)
 	{
 		return _yieldSyncV1Vault_transferRequestId_transferRequest[yieldSyncV1Vault][transferRequestId];
 	}

@@ -737,7 +737,7 @@ describe("[5.0] YieldSyncV1Vault.sol with YieldSyncV1BTransferRequestProtocol", 
 							const [, addr1, addr2] = await ethers.getSigners();
 
 							// Balance Before
-							const recieverBalanceBefore: number = ethers.utils.formatUnits(
+							const receiverBalanceBefore: number = ethers.utils.formatUnits(
 								await ethers.provider.getBalance(addr2.address)
 							);
 
@@ -771,11 +771,11 @@ describe("[5.0] YieldSyncV1Vault.sol with YieldSyncV1BTransferRequestProtocol", 
 							await vault.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestProcess(0);
 
 							// Balance After
-							const recieverBalanceAfter: number = ethers.utils.formatUnits(
+							const receiverBalanceAfter: number = ethers.utils.formatUnits(
 								await ethers.provider.getBalance(addr2.address)
 							);
 
-							expect(recieverBalanceBefore).to.be.equal(recieverBalanceAfter);
+							expect(receiverBalanceBefore).to.be.equal(receiverBalanceAfter);
 						}
 					);
 
@@ -784,7 +784,7 @@ describe("[5.0] YieldSyncV1Vault.sol with YieldSyncV1BTransferRequestProtocol", 
 						async () => {
 							const [, addr1, addr2] = await ethers.getSigners();
 
-							const recieverBalanceBefore: number = ethers.utils.formatUnits(
+							const receiverBalanceBefore: number = ethers.utils.formatUnits(
 								await ethers.provider.getBalance(addr2.address)
 							);
 
@@ -824,11 +824,11 @@ describe("[5.0] YieldSyncV1Vault.sol with YieldSyncV1BTransferRequestProtocol", 
 
 							await vault.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestProcess(0);
 
-							const recieverBalanceAfter: number = ethers.utils.formatUnits(
+							const receiverBalanceAfter: number = ethers.utils.formatUnits(
 								await ethers.provider.getBalance(addr2.address)
 							);
 
-							await expect(recieverBalanceAfter - recieverBalanceBefore).to.be.equal(.5);
+							await expect(receiverBalanceAfter - receiverBalanceBefore).to.be.equal(.5);
 
 							const openTRIds: OpenTransferRequestIds = await transferRequestProtocol
 								.yieldSyncV1Vault_openTransferRequestIds(
@@ -846,7 +846,7 @@ describe("[5.0] YieldSyncV1Vault.sol with YieldSyncV1BTransferRequestProtocol", 
 						async () => {
 							const [, addr1, addr2] = await ethers.getSigners();
 
-							const recieverBalanceBefore: number = await ethers.provider.getBalance(addr2.address);
+							const receiverBalanceBefore: number = await ethers.provider.getBalance(addr2.address);
 
 							const voteCloseTimestamp = (await ethers.provider.getBlock("latest")).timestamp + secondsIn7Days;
 
@@ -890,10 +890,10 @@ describe("[5.0] YieldSyncV1Vault.sol with YieldSyncV1BTransferRequestProtocol", 
 								addr1
 							).yieldSyncV1Vault_transferRequestId_transferRequestProcess(0);
 
-							const recieverBalanceAfter: number = await ethers.provider.getBalance(addr2.address);
+							const receiverBalanceAfter: number = await ethers.provider.getBalance(addr2.address);
 
-							await expect(ethers.utils.formatUnits(recieverBalanceAfter)).to.be.equal(
-								ethers.utils.formatUnits(recieverBalanceBefore)
+							await expect(ethers.utils.formatUnits(receiverBalanceAfter)).to.be.equal(
+								ethers.utils.formatUnits(receiverBalanceBefore)
 							);
 
 							expect(
@@ -1068,7 +1068,7 @@ describe("[5.0] YieldSyncV1Vault.sol with YieldSyncV1BTransferRequestProtocol", 
 						async () => {
 							const [, addr1, addr2] = await ethers.getSigners();
 
-							const recieverBalanceBefore: number = await mockERC20.balanceOf(addr2.address);
+							const receiverBalanceBefore: number = await mockERC20.balanceOf(addr2.address);
 
 							const voteCloseTimestamp = (await ethers.provider.getBlock("latest")).timestamp + secondsIn7Days;
 
@@ -1106,9 +1106,9 @@ describe("[5.0] YieldSyncV1Vault.sol with YieldSyncV1BTransferRequestProtocol", 
 
 							await vault.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestProcess(0);
 
-							const recieverBalanceAfter: number = await mockERC20.balanceOf(addr2.address);
+							const receiverBalanceAfter: number = await mockERC20.balanceOf(addr2.address);
 
-							await expect(recieverBalanceAfter - recieverBalanceBefore).to.be.equal(50);
+							await expect(receiverBalanceAfter - receiverBalanceBefore).to.be.equal(50);
 						}
 					);
 				});
@@ -1119,7 +1119,7 @@ describe("[5.0] YieldSyncV1Vault.sol with YieldSyncV1BTransferRequestProtocol", 
 						async () => {
 							const [, addr1, addr2] = await ethers.getSigners();
 
-							const recieverBalanceBefore: number = ethers.utils.formatUnits(
+							const receiverBalanceBefore: number = ethers.utils.formatUnits(
 								await mockERC20.balanceOf(addr2.address)
 							);
 
@@ -1161,11 +1161,11 @@ describe("[5.0] YieldSyncV1Vault.sol with YieldSyncV1BTransferRequestProtocol", 
 								addr1
 							).yieldSyncV1Vault_transferRequestId_transferRequestProcess(0);
 
-							const recieverBalanceAfter: number = ethers.utils.formatUnits(
+							const receiverBalanceAfter: number = ethers.utils.formatUnits(
 								await mockERC20.balanceOf(addr2.address)
 							);
 
-							await expect(recieverBalanceAfter).to.be.equal(recieverBalanceBefore);
+							await expect(receiverBalanceAfter).to.be.equal(receiverBalanceBefore);
 
 							expect(
 								(
@@ -1301,7 +1301,7 @@ describe("[5.0] YieldSyncV1Vault.sol with YieldSyncV1BTransferRequestProtocol", 
 						async () => {
 							const [, addr1, addr2] = await ethers.getSigners();
 
-							const recieverBalanceBefore: number = await mockERC721.balanceOf(addr2.address);
+							const receiverBalanceBefore: number = await mockERC721.balanceOf(addr2.address);
 
 							const voteCloseTimestamp = (await ethers.provider.getBlock("latest")).timestamp + secondsIn7Days;
 
@@ -1337,9 +1337,9 @@ describe("[5.0] YieldSyncV1Vault.sol with YieldSyncV1BTransferRequestProtocol", 
 
 							await vault.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestProcess(0);
 
-							const recieverBalanceAfter: number = await mockERC721.balanceOf(addr2.address);
+							const receiverBalanceAfter: number = await mockERC721.balanceOf(addr2.address);
 
-							await expect(recieverBalanceAfter - recieverBalanceBefore).to.be.equal(1);
+							await expect(receiverBalanceAfter - receiverBalanceBefore).to.be.equal(1);
 
 							const openTRIds: OpenTransferRequestIds = await transferRequestProtocol.yieldSyncV1Vault_openTransferRequestIds(
 								vault.address
@@ -1388,15 +1388,15 @@ describe("[5.0] YieldSyncV1Vault.sol with YieldSyncV1BTransferRequestProtocol", 
 							// Fast-forward 7 days
 							await ethers.provider.send('evm_increaseTime', [secondsIn7Days]);
 
-							const recieverBalanceBefore: number = await mockERC721.balanceOf(addr2.address);
+							const receiverBalanceBefore: number = await mockERC721.balanceOf(addr2.address);
 
 							await vault.connect(addr1).yieldSyncV1Vault_transferRequestId_transferRequestProcess(0);
 
-							const recieverBalanceAfter: number = await mockERC721.balanceOf(addr2.address);
+							const receiverBalanceAfter: number = await mockERC721.balanceOf(addr2.address);
 
 							await expect(
-								ethers.utils.formatUnits(recieverBalanceAfter)
-							).to.be.equal(ethers.utils.formatUnits(recieverBalanceBefore))
+								ethers.utils.formatUnits(receiverBalanceAfter)
+							).to.be.equal(ethers.utils.formatUnits(receiverBalanceBefore))
 						}
 					);
 				});

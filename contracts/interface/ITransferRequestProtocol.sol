@@ -20,11 +20,10 @@ interface ITransferRequestProtocol
 	/**
 	* @param yieldSyncV1Vault {address}
 	* @param transferRequestId {uint256}
-	* @return {TransferRequest}
 	*/
 	function yieldSyncV1Vault_transferRequestId_transferRequest(address yieldSyncV1Vault, uint256 transferRequestId)
 		external
-		view returns (TransferRequest memory)
+		view returns (TransferRequest memory tranferRequest)
 	;
 
 	/**

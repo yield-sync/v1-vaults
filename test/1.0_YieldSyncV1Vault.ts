@@ -79,7 +79,7 @@ describe("[1.0] YieldSyncV1Vault.sol", async () => {
 
 	describe("Receiving tokens & ethers", async () => {
 		it(
-			"Should be able to recieve ether..",
+			"Should be able to receive ether..",
 			async () => {
 				await expect(
 					await ethers.provider.getBalance(yieldSyncV1Vault.address)
@@ -88,14 +88,14 @@ describe("[1.0] YieldSyncV1Vault.sol", async () => {
 		);
 
 		it(
-			"Should be able to recieve ERC20 tokens..",
+			"Should be able to receive ERC20 tokens..",
 			async () => {
 				expect(await mockERC20.balanceOf(yieldSyncV1Vault.address)).to.equal(50);
 			}
 		);
 
 		it(
-			"Should be able to recieve ERC721 tokens..",
+			"Should be able to receive ERC721 tokens..",
 			async () => {
 				expect(await mockERC721.balanceOf(yieldSyncV1Vault.address)).to.equal(1);
 			}

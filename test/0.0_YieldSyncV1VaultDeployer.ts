@@ -61,7 +61,7 @@ describe("[0.0] YieldSyncV1VaultDeployer.sol", async () => {
 
 	describe("Receiving tokens & ethers", async () => {
 		it(
-			"Should be able to recieve ether..",
+			"Should be able to receive ether..",
 			async () => {
 				const [, addr1] = await ethers.getSigners();
 
