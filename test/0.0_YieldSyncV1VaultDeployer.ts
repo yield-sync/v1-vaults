@@ -1,3 +1,9 @@
+type VaultProperty = {
+	transferDelaySeconds: number,
+	voteAgainstRequired: number,
+	voteForRequired: number,
+};
+
 type UpdateVaultProperty = [
 	// voteAgainstRequired
 	number,
@@ -418,7 +424,7 @@ describe("[0.0] YieldSyncV1VaultDeployer.sol", async () => {
 									yieldSyncV1Vault.address,
 									addr1.address,
 								)
-							).admin
+							).admin_
 						).to.be.true;
 					}
 				);
@@ -457,7 +463,7 @@ describe("[0.0] YieldSyncV1VaultDeployer.sol", async () => {
 									yieldSyncV1Vault.address,
 									addr1.address,
 								)
-							).member
+							).member_
 						).to.be.true;
 					}
 				);

@@ -114,7 +114,7 @@ describe("[1.0] YieldSyncV1Vault.sol", async () => {
 					owner.address,
 				);
 
-				expect(access.admin).to.be.true;
+				expect(access.admin_).to.be.true;
 
 				expect(
 					(await yieldSyncV1VaultRegistry.yieldSyncV1Vault_admins(yieldSyncV1Vault.address))[0]
@@ -136,7 +136,7 @@ describe("[1.0] YieldSyncV1Vault.sol", async () => {
 					addr1.address,
 				);
 
-				expect(access.member).to.be.true;
+				expect(access.member_).to.be.true;
 
 				expect(
 					(await yieldSyncV1VaultRegistry.yieldSyncV1Vault_members(yieldSyncV1Vault.address))[0]
@@ -164,7 +164,7 @@ describe("[1.0] YieldSyncV1Vault.sol", async () => {
 						addr4.address,
 					);
 
-					expect(access.admin).to.be.true;
+					expect(access.admin_).to.be.true;
 
 					expect(
 						(await yieldSyncV1VaultRegistry.admin_yieldSyncV1Vaults(addr4.address))[0]
@@ -187,7 +187,7 @@ describe("[1.0] YieldSyncV1Vault.sol", async () => {
 						mockAdmin.address,
 					);
 
-					expect(access.admin).to.be.true;
+					expect(access.admin_).to.be.true;
 
 					expect(
 						(await yieldSyncV1VaultRegistry.admin_yieldSyncV1Vaults(mockAdmin.address))[0]
@@ -232,7 +232,7 @@ describe("[1.0] YieldSyncV1Vault.sol", async () => {
 						addr2.address,
 					);
 
-					expect(access.member).to.be.true;
+					expect(access.member_).to.be.true;
 
 					expect(
 						(await yieldSyncV1VaultRegistry.member_yieldSyncV1Vaults(addr2.address))[0]
@@ -268,7 +268,7 @@ describe("[1.0] YieldSyncV1Vault.sol", async () => {
 						addr5.address,
 					);
 
-					expect(access.member).to.be.true;
+					expect(access.member_).to.be.true;
 
 					await yieldSyncV1Vault.memberRemove(addr5.address)
 
@@ -277,7 +277,7 @@ describe("[1.0] YieldSyncV1Vault.sol", async () => {
 						addr5.address,
 					);
 
-					expect(accessAfter.member).to.be.false;
+					expect(accessAfter.member_).to.be.false;
 				}
 			);
 		});

@@ -1,7 +1,7 @@
 // Access
 type Access = {
-	admin: boolean,
-	member: boolean,
+	admin_: boolean,
+	member_: boolean,
 }
 
 // Open transfer request ids
