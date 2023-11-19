@@ -8,48 +8,48 @@ interface IYieldSyncV1VaultRegistry
 	* @notice Getter for `_admin_yieldSyncV1Vaults`
 	* @dev [view]
 	* @param admin {address}
-	* @return {address[]}
+	* @return yieldSyncV1Vaults_ {address[]}
 	*/
 	function admin_yieldSyncV1Vaults(address admin)
 		external
 		view
-		returns (address[] memory)
+		returns (address[] memory yieldSyncV1Vaults_)
 	;
 
 	/**
 	* @notice Getter for `_member_yieldSyncV1Vaults`
 	* @dev [view]
 	* @param member {address}
-	* @return {address[]}
+	* @return yieldSyncV1Vaults_ {address[]}
 	*/
 	function member_yieldSyncV1Vaults(address member)
 		external
 		view
-		returns (address[] memory)
+		returns (address[] memory yieldSyncV1Vaults_)
 	;
 
 	/**
 	* @notice Getter for `_yieldSyncV1Vault_admins`
 	* @dev [view]
 	* @param yieldSyncV1Vault {address}
-	* @return {address[]}
+	* @return admins_ {address[]}
 	*/
 	function yieldSyncV1Vault_admins(address yieldSyncV1Vault)
 		external
 		view
-		returns (address[] memory)
+		returns (address[] memory admins_)
 	;
 
 	/**
 	* @notice Getter for `_yieldSyncV1Vault_members`
 	* @dev [view]
 	* @param yieldSyncV1Vault {address}
-	* @return {address[]}
+	* @return members_ {address[]}
 	*/
 	function yieldSyncV1Vault_members(address yieldSyncV1Vault)
 		external
 		view
-		returns (address[] memory)
+		returns (address[] memory members_)
 	;
 
 	/**
@@ -57,13 +57,13 @@ interface IYieldSyncV1VaultRegistry
 	* @dev [view]
 	* @param participant {address}
 	* @param yieldSyncV1Vault {address}
-	* @return admin {bool}
-	* @return member {bool}
+	* @return admin_ {bool}
+	* @return member_ {bool}
 	*/
 	function yieldSyncV1Vault_participant_access(address yieldSyncV1Vault, address participant)
 		external
 		view
-		returns (bool admin, bool member)
+		returns (bool admin_, bool member_)
 	;
 
 

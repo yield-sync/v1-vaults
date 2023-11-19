@@ -114,7 +114,8 @@ contract YieldSyncV1ERC721TransferRequestProtocol is
 	/// @inheritdoc ITransferRequestProtocol
 	function yieldSyncV1Vault_transferRequestId_transferRequest(address yieldSyncV1Vault, uint256 transferRequestId)
 		public
-		view returns (TransferRequest memory transferRequest)
+		view
+		returns (TransferRequest memory transferRequest_)
 	{
 		return _yieldSyncV1Vault_transferRequestId_transferRequest[yieldSyncV1Vault][transferRequestId];
 	}

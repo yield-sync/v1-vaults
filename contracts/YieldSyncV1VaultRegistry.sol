@@ -40,7 +40,7 @@ contract YieldSyncV1VaultRegistry is
 		public
 		view
 		override
-		returns (address[] memory)
+		returns (address[] memory yieldSyncV1Vaults_)
 	{
 		return _admin_yieldSyncV1Vaults[admin];
 	}
@@ -50,7 +50,7 @@ contract YieldSyncV1VaultRegistry is
 		public
 		view
 		override
-		returns (address[] memory)
+		returns (address[] memory yieldSyncV1Vaults_)
 	{
 		return _member_yieldSyncV1Vaults[member];
 	}
@@ -60,7 +60,7 @@ contract YieldSyncV1VaultRegistry is
 		public
 		view
 		override
-		returns (address[] memory)
+		returns (address[] memory admins_)
 	{
 		return _yieldSyncV1Vault_admins[yieldSyncV1Vault];
 	}
@@ -70,7 +70,7 @@ contract YieldSyncV1VaultRegistry is
 		public
 		view
 		override
-		returns (address[] memory)
+		returns (address[] memory members_)
 	{
 		return _yieldSyncV1Vault_members[yieldSyncV1Vault];
 	}
@@ -80,10 +80,10 @@ contract YieldSyncV1VaultRegistry is
 		public
 		view
 		override
-		returns (bool admin, bool member)
+		returns (bool admin_, bool member_)
 	{
-		admin = _yieldSyncV1Vault_participant_access[yieldSyncV1Vault][participant].admin;
-		member = _yieldSyncV1Vault_participant_access[yieldSyncV1Vault][participant].member;
+		admin_ = _yieldSyncV1Vault_participant_access[yieldSyncV1Vault][participant].admin;
+		member_ = _yieldSyncV1Vault_participant_access[yieldSyncV1Vault][participant].member;
 	}
 
 
