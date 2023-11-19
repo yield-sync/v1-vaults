@@ -43,23 +43,23 @@ interface IYieldSyncV1ASignatureProtocol is
 	* @notice Getter for `_vaultMessageHashes`
 	* @dev [view][mapping]
 	* @param yieldSyncV1Vault {address}
-	* @return {bytes32[]}
+	* @return vaultMessageHashes_ {bytes32[]}
 	*/
 	function vaultMessageHashes(address yieldSyncV1Vault)
 		external
 		view
-		returns (bytes32[] memory)
+		returns (bytes32[] memory vaultMessageHashes_)
 	;
 
 	/**
 	* @notice Getter for `_yieldSyncV1Vault_signaturesRequired`
 	* @dev [view][mapping]
 	* @param purposer {address}
-	* @return {YieldSyncV1VaultProperty}
+	* @return signaturesRequired_ {YieldSyncV1VaultProperty}
 	*/
 	function yieldSyncV1Vault_signaturesRequired(address purposer)
 		external
-		returns (uint256)
+		returns (uint256 signaturesRequired_)
 	;
 
 	/**
@@ -67,12 +67,12 @@ interface IYieldSyncV1ASignatureProtocol is
 	* @dev [view][mapping]
 	* @param yieldSyncV1Vault {address}
 	* @param messageHash {bytes32}
-	* @return {MessageHashData}
+	* @return messageHashData_ {MessageHashData}
 	*/
 	function yieldSyncV1Vault_messageHash_messageHashData(address yieldSyncV1Vault, bytes32 messageHash)
 		external
 		view
-		returns (MessageHashData memory)
+		returns (MessageHashData memory messageHashData_)
 	;
 
 	/**
@@ -80,12 +80,12 @@ interface IYieldSyncV1ASignatureProtocol is
 	* @dev [view][mapping]
 	* @param yieldSyncV1Vault {address}
 	* @param messageHash {bytes32}
-	* @return {MessageHashData}
+	* @return messageHashVote_ {MessageHashData}
 	*/
 	function yieldSyncV1Vault_messageHash_messageHashVote(address yieldSyncV1Vault, bytes32 messageHash)
 		external
 		view
-		returns (MessageHashVote memory)
+		returns (MessageHashVote memory messageHashVote_)
 	;
 
 

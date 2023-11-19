@@ -106,7 +106,7 @@ contract YieldSyncV1ASignatureProtocol is
 		public
 		view
 		override
-		returns (bytes32[] memory)
+		returns (bytes32[] memory vaultMessageHashes_)
 	{
 		return _vaultMessageHashes[yieldSyncV1Vault];
 	}
@@ -116,7 +116,7 @@ contract YieldSyncV1ASignatureProtocol is
 		public
 		view
 		override
-		returns (uint256)
+		returns (uint256 signaturesRequired_)
 	{
 		return _yieldSyncV1Vault_signaturesRequired[purposer];
 	}
@@ -126,7 +126,7 @@ contract YieldSyncV1ASignatureProtocol is
 		public
 		view
 		override
-		returns (MessageHashData memory)
+		returns (MessageHashData memory messageHashData_)
 	{
 		return _yieldSyncV1Vault_messageHash_messageHashData[yieldSyncV1Vault][messageHash];
 	}
@@ -136,7 +136,7 @@ contract YieldSyncV1ASignatureProtocol is
 		public
 		view
 		override
-		returns (MessageHashVote memory)
+		returns (MessageHashVote memory messageHashVote_)
 	{
 		return _yieldSyncV1Vault_messageHash_messageHashVote[yieldSyncV1Vault][messageHash];
 	}

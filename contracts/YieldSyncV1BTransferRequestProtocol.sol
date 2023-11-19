@@ -217,7 +217,7 @@ contract YieldSyncV1BTransferRequestProtocol is
 		public
 		view
 		override
-		returns (uint256[] memory)
+		returns (uint256[] memory openTransferRequestIds_)
 	{
 		return _yieldSyncV1Vault_openTransferRequestIds[yieldSyncV1Vault];
 	}
@@ -227,7 +227,7 @@ contract YieldSyncV1BTransferRequestProtocol is
 		public
 		view
 		override
-		returns (YieldSyncV1VaultProperty memory)
+		returns (YieldSyncV1VaultProperty memory yieldSyncV1VaultProperty_)
 	{
 		return _yieldSyncV1Vault_yieldSyncV1VaultProperty[yieldSyncV1Vault];
 	}
@@ -242,7 +242,7 @@ contract YieldSyncV1BTransferRequestProtocol is
 		view
 		override
 		validTransferRequest(yieldSyncV1Vault, transferRequestId)
-		returns (TransferRequestPoll memory)
+		returns (TransferRequestPoll memory transferRequestPoll_)
 	{
 		return _yieldSyncV1Vault_transferRequestId_transferRequestPoll[yieldSyncV1Vault][transferRequestId];
 	}

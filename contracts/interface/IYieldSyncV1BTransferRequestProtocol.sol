@@ -48,23 +48,23 @@ interface IYieldSyncV1BTransferRequestProtocol is
 	* @notice Getter for `_yieldSyncV1Vault_openTransferRequestIds`
 	* @dev [view][mapping]
 	* @param yieldSyncV1Vault {address}
-	* @return {uint256[]}
+	* @return openTransferRequestIds_ {uint256[]}
 	*/
 	function yieldSyncV1Vault_openTransferRequestIds(address yieldSyncV1Vault)
 		external
 		view
-		returns (uint256[] memory)
+		returns (uint256[] memory openTransferRequestIds_)
 	;
 
 	/**
 	* @notice Getter for `_yieldSyncV1Vault_yieldSyncV1VaultProperty`
 	* @dev [view][mapping]
 	* @param yieldSyncV1Vault {address}
-	* @return {YieldSyncV1VaultProperty}
+	* @return yieldSyncV1VaultProperty_ {YieldSyncV1VaultProperty}
 	*/
 	function yieldSyncV1Vault_yieldSyncV1VaultProperty(address yieldSyncV1Vault)
 		external
-		returns (YieldSyncV1VaultProperty memory)
+		returns (YieldSyncV1VaultProperty memory yieldSyncV1VaultProperty_)
 	;
 
 	/**
@@ -72,14 +72,15 @@ interface IYieldSyncV1BTransferRequestProtocol is
 	* @dev [view][mapping]
 	* @param yieldSyncV1Vault {address}
 	* @param transferRequestId {uint256}
-	* @return {TransferRequestPoll}
+	* @return transferRequestPoll_ {TransferRequestPoll}
 	*/
 	function yieldSyncV1Vault_transferRequestId_transferRequestPoll(
 		address yieldSyncV1Vault,
 		uint256 transferRequestId
 	)
 		external
-		view returns (TransferRequestPoll memory)
+		view
+		returns (TransferRequestPoll memory transferRequestPoll_)
 	;
 
 
