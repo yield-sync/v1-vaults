@@ -78,10 +78,10 @@ interface IYieldSyncV1VaultDeployer
 	/**
 	* @notice yieldSyncV1VaultId to yieldSyncV1Vault
 	* @dev [view-mapping]
-	* @param yieldSyncV1VaultId {uint256}
+	* @param _yieldSyncV1VaultId {uint256}
 	* @return {address}
 	*/
-	function yieldSyncV1VaultId_yieldSyncV1Vault(uint256 yieldSyncV1VaultId)
+	function yieldSyncV1VaultId_yieldSyncV1Vault(uint256 _yieldSyncV1VaultId)
 		external
 		view
 		returns (address)

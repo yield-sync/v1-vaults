@@ -104,13 +104,13 @@ interface IYieldSyncV1BTransferRequestProtocol is
 	* @dev [update] `_transferRequest`
 	* @param _yieldSyncV1Vault {address}
 	* @param _transferRequestId {uint256}
-	* @param transferRequest {TransferRequest}
+	* @param _transferRequest {TransferRequest}
 	* Emits: `UpdateTransferRequest`
 	*/
 	function yieldSyncV1Vault_transferRequestId_transferRequestAdminUpdate(
 		address _yieldSyncV1Vault,
 		uint256 _transferRequestId,
-		TransferRequest memory transferRequest
+		TransferRequest memory _transferRequest
 	)
 		external
 	;
