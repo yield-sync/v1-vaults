@@ -97,7 +97,7 @@ contract YieldSyncV1Vault is
 	{
 		(bool admin,) = YieldSyncV1VaultRegistry.yieldSyncV1Vault_participant_access(address(this), msg.sender);
 
-		require(admin, "!admin");
+		require(admin, "!_admin");
 
 		_;
 	}

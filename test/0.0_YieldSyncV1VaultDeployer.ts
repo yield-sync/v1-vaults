@@ -186,7 +186,7 @@ describe("[0.0] YieldSyncV1VaultDeployer.sol", async () => {
 							addr1.address,
 							[1, 1, 10] as UpdateVaultProperty
 						)
-					).to.be.rejectedWith("!admin && msg.sender != yieldSyncV1Vault");
+					).to.be.rejectedWith("!admin && msg.sender != _yieldSyncV1Vault");
 				}
 			);
 

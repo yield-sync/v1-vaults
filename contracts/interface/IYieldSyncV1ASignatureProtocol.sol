@@ -42,10 +42,10 @@ interface IYieldSyncV1ASignatureProtocol is
 	/**
 	* @notice Getter for `_vaultMessageHashes`
 	* @dev [view][mapping]
-	* @param yieldSyncV1Vault {address}
+	* @param _yieldSyncV1Vault {address}
 	* @return vaultMessageHashes_ {bytes32[]}
 	*/
-	function vaultMessageHashes(address yieldSyncV1Vault)
+	function vaultMessageHashes(address _yieldSyncV1Vault)
 		external
 		view
 		returns (bytes32[] memory vaultMessageHashes_)
@@ -54,10 +54,10 @@ interface IYieldSyncV1ASignatureProtocol is
 	/**
 	* @notice Getter for `_yieldSyncV1Vault_signaturesRequired`
 	* @dev [view][mapping]
-	* @param purposer {address}
+	* @param _purposer {address}
 	* @return signaturesRequired_ {YieldSyncV1VaultProperty}
 	*/
-	function yieldSyncV1Vault_signaturesRequired(address purposer)
+	function yieldSyncV1Vault_signaturesRequired(address _purposer)
 		external
 		returns (uint256 signaturesRequired_)
 	;
@@ -65,11 +65,11 @@ interface IYieldSyncV1ASignatureProtocol is
 	/**
 	* @notice Getter for `_yieldSyncV1Vault_messageHash_messageHashData`
 	* @dev [view][mapping]
-	* @param yieldSyncV1Vault {address}
-	* @param messageHash {bytes32}
+	* @param _yieldSyncV1Vault {address}
+	* @param _messageHash {bytes32}
 	* @return messageHashData_ {MessageHashData}
 	*/
-	function yieldSyncV1Vault_messageHash_messageHashData(address yieldSyncV1Vault, bytes32 messageHash)
+	function yieldSyncV1Vault_messageHash_messageHashData(address _yieldSyncV1Vault, bytes32 _messageHash)
 		external
 		view
 		returns (MessageHashData memory messageHashData_)
@@ -78,11 +78,11 @@ interface IYieldSyncV1ASignatureProtocol is
 	/**
 	* @notice Getter for `_yieldSyncV1Vault_messageHash_messageHashVote`
 	* @dev [view][mapping]
-	* @param yieldSyncV1Vault {address}
-	* @param messageHash {bytes32}
+	* @param _yieldSyncV1Vault {address}
+	* @param _messageHash {bytes32}
 	* @return messageHashVote_ {MessageHashData}
 	*/
-	function yieldSyncV1Vault_messageHash_messageHashVote(address yieldSyncV1Vault, bytes32 messageHash)
+	function yieldSyncV1Vault_messageHash_messageHashVote(address _yieldSyncV1Vault, bytes32 _messageHash)
 		external
 		view
 		returns (MessageHashVote memory messageHashVote_)
@@ -93,21 +93,21 @@ interface IYieldSyncV1ASignatureProtocol is
 	* @notice Update signaturesRequired
 	* @dev [restriction] `YieldSyncV1Record` → admin
 	* @dev [update] `yieldSyncV1Vault_signaturesRequiredUpdate`
-	* @param signatureRequired {YieldSyncV1VaultProperty}
+	* @param _signatureRequired {YieldSyncV1VaultProperty}
 	* Emits: `UpdatedPurposerYieldSyncV1VaultProperty`
 	*/
-	function yieldSyncV1Vault_signaturesRequiredUpdate(uint256 signatureRequired)
+	function yieldSyncV1Vault_signaturesRequiredUpdate(uint256 _signatureRequired)
 		external
 	;
 
 	/**
 	* @notice Sign a Message Hash
 	* @dev [create] `_vaultMessageHashData` value
-	* @param yieldSyncV1Vault {address}
-	* @param messageHash {bytes32}
-	* @param signature {bytes}
+	* @param _yieldSyncV1Vault {address}
+	* @param _messageHash {bytes32}
+	* @param _signature {bytes}
 	*/
-	function signMessageHash(address yieldSyncV1Vault, bytes32 messageHash, bytes memory signature)
+	function signMessageHash(address _yieldSyncV1Vault, bytes32 _messageHash, bytes memory _signature)
 		external
 	;
 
@@ -115,9 +115,9 @@ interface IYieldSyncV1ASignatureProtocol is
 	* @notice Set pause
 	* @dev [restriction] `IYieldSyncGovernance` AccessControlEnumerable → DEFAULT_ADMIN_ROLE
 	* @dev [call-internal]
-	* @param pause {bool}
+	* @param _pause {bool}
 	*/
-	function updatePause(bool pause)
+	function updatePause(bool _pause)
 		external
 	;
 }

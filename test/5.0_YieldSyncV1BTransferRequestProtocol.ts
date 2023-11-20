@@ -1,8 +1,8 @@
 // Trandfer Request Status
 type TransferRequestStatus = {
-	readyToBeProcessed: boolean,
-	approved: boolean,
-	message: string,
+	readyToBeProcessed_: boolean,
+	approved_: boolean,
+	message_: string,
 };
 
 type UpdateV1BVaultProperty = [
@@ -154,7 +154,7 @@ describe("[5.0] YieldSyncV1Vault.sol with YieldSyncV1BTransferRequestProtocol", 
 							[addr1.address],
 							{ value: 1 }
 						)
-					).to.be.rejectedWith("!_yieldSyncV1Vault_yieldSyncV1VaultProperty[initiator].voteAgainstRequired");
+					).to.be.rejectedWith("!_yieldSyncV1Vault_yieldSyncV1VaultProperty[_initiator].voteAgainstRequired");
 				}
 			);
 		});
@@ -171,7 +171,7 @@ describe("[5.0] YieldSyncV1Vault.sol with YieldSyncV1BTransferRequestProtocol", 
 							addr1.address,
 							[0, 0, secondsIn7Days, secondsIn6Days] as UpdateV1BVaultProperty
 						)
-					).to.be.rejectedWith("!yieldSyncV1VaultProperty.voteAgainstRequired");
+					).to.be.rejectedWith("!_yieldSyncV1VaultProperty.voteAgainstRequired");
 				}
 			);
 
@@ -186,7 +186,7 @@ describe("[5.0] YieldSyncV1Vault.sol with YieldSyncV1BTransferRequestProtocol", 
 							addr1.address,
 							[1, 0, secondsIn7Days, secondsIn6Days] as UpdateV1BVaultProperty
 						)
-					).to.be.rejectedWith("!yieldSyncV1VaultProperty.voteForRequired");
+					).to.be.rejectedWith("!_yieldSyncV1VaultProperty.voteForRequired");
 				}
 			);
 		});
@@ -295,7 +295,7 @@ describe("[5.0] YieldSyncV1Vault.sol with YieldSyncV1BTransferRequestProtocol", 
 										0,
 										(await ethers.provider.getBlock("latest")).timestamp + secondsIn7Days
 									)
-								).to.be.rejectedWith("!amount");
+								).to.be.rejectedWith("!_amount");
 							}
 						);
 
@@ -315,7 +315,7 @@ describe("[5.0] YieldSyncV1Vault.sol with YieldSyncV1BTransferRequestProtocol", 
 										0,
 										(await ethers.provider.getBlock("latest")).timestamp + secondsIn7Days
 									)
-								).to.be.rejectedWith("forERC20 && forERC721");
+								).to.be.rejectedWith("_forERC20 && _forERC721");
 							}
 						);
 
@@ -335,7 +335,7 @@ describe("[5.0] YieldSyncV1Vault.sol with YieldSyncV1BTransferRequestProtocol", 
 										0,
 										(await ethers.provider.getBlock("latest")).timestamp + secondsIn7Days
 									)
-								).to.be.rejectedWith("forERC20 && forERC721");
+								).to.be.rejectedWith("_forERC20 && _forERC721");
 							}
 						);
 
@@ -355,7 +355,7 @@ describe("[5.0] YieldSyncV1Vault.sol with YieldSyncV1BTransferRequestProtocol", 
 										0,
 										(await ethers.provider.getBlock("latest")).timestamp + secondsIn8Days
 									)
-								).to.be.rejectedWith("!voteCloseTimestamp");
+								).to.be.rejectedWith("!_voteCloseTimestamp");
 							}
 						);
 
@@ -375,7 +375,7 @@ describe("[5.0] YieldSyncV1Vault.sol with YieldSyncV1BTransferRequestProtocol", 
 										0,
 										(await ethers.provider.getBlock("latest")).timestamp + secondsIn5Days
 									)
-								).to.be.rejectedWith("!voteCloseTimestamp");
+								).to.be.rejectedWith("!_voteCloseTimestamp");
 							}
 						);
 					});
@@ -486,7 +486,7 @@ describe("[5.0] YieldSyncV1Vault.sol with YieldSyncV1BTransferRequestProtocol", 
 									vault.address,
 									0
 								)
-							).to.be.rejectedWith("_yieldSyncV1Vault_transferRequestId_transferRequest[yieldSyncV1Vault][transferRequestId].creator != msg.sender");
+							).to.be.rejectedWith("_yieldSyncV1Vault_transferRequestId_transferRequest[_yieldSyncV1Vault][_transferRequestId].creator != msg.sender");
 
 							const openTRIds: OpenTransferRequestIds = await transferRequestProtocol.yieldSyncV1Vault_openTransferRequestIds(
 								vault.address
@@ -1499,9 +1499,9 @@ describe("[5.0] YieldSyncV1Vault.sol with YieldSyncV1BTransferRequestProtocol", 
 							0
 						);
 
-						expect(status.readyToBeProcessed).to.be.true;
-						expect(status.approved).to.be.false;
-						expect(status.message).to.be.equal("TransferRequest denied");
+						expect(status.readyToBeProcessed_).to.be.true;
+						expect(status.approved_).to.be.false;
+						expect(status.message_).to.be.equal("TransferRequest denied");
 					}
 				)
 			});
@@ -1649,7 +1649,7 @@ describe("[5.0] YieldSyncV1Vault.sol with YieldSyncV1BTransferRequestProtocol", 
 							openTRIds[openTRIds.length - 1],
 							updatedTR
 						)
-					).to.be.rejectedWith("!transferRequest.amount");
+					).to.be.rejectedWith("!_transferRequest.amount");
 				}
 			);
 
@@ -1697,7 +1697,7 @@ describe("[5.0] YieldSyncV1Vault.sol with YieldSyncV1BTransferRequestProtocol", 
 							openTRIds[openTRIds.length - 1],
 							updatedTR
 						)
-					).to.be.rejectedWith("transferRequest.forERC20 && transferRequest.forERC721");
+					).to.be.rejectedWith("_transferRequest.forERC20 && _transferRequest.forERC721");
 				}
 			);
 

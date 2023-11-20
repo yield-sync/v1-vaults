@@ -189,7 +189,7 @@ describe("[2.0] YieldSyncV1VaultRegistry.sol", async () => {
 
 				await expect(
 					yieldSyncV1Vault.connect(addr1).adminAdd(ethers.constants.AddressZero)
-				).to.be.rejectedWith("!admin");
+				).to.be.rejectedWith("!_admin");
 			}
 		);
 
@@ -223,7 +223,7 @@ describe("[2.0] YieldSyncV1VaultRegistry.sol", async () => {
 
 				await expect(
 					yieldSyncV1Vault.connect(addr1).adminRemove(ethers.constants.AddressZero)
-				).to.be.rejectedWith("!admin");
+				).to.be.rejectedWith("!_admin");
 			}
 		);
 
@@ -270,7 +270,7 @@ describe("[2.0] YieldSyncV1VaultRegistry.sol", async () => {
 
 				await expect(
 					yieldSyncV1Vault.connect(addr1).memberAdd(ethers.constants.AddressZero)
-				).to.be.rejectedWith("!admin");
+				).to.be.rejectedWith("!_admin");
 			}
 		);
 
@@ -303,7 +303,7 @@ describe("[2.0] YieldSyncV1VaultRegistry.sol", async () => {
 
 				await expect(
 					yieldSyncV1Vault.connect(addr1).memberRemove(ethers.constants.AddressZero)
-				).to.be.rejectedWith("!admin");
+				).to.be.rejectedWith("!_admin");
 			}
 		);
 

@@ -156,7 +156,7 @@ describe("[6.0] YieldSyncV1Vault.sol with YieldSyncV1ERC721TransferRequestProtoc
 							[addr1.address,],
 							{ value: 1 }
 						)
-					).to.be.rejectedWith("!_yieldSyncV1Vault_yieldSyncV1VaultProperty[initiator].erc721Token");
+					).to.be.rejectedWith("!_yieldSyncV1Vault_yieldSyncV1VaultProperty[_initiator].erc721Token");
 				}
 			);
 		});
@@ -173,7 +173,7 @@ describe("[6.0] YieldSyncV1Vault.sol with YieldSyncV1ERC721TransferRequestProtoc
 							addr1.address,
 							[ethers.constants.AddressZero, 1, 1] as UpdateERC721VaultProperty
 						)
-					).to.be.rejectedWith("!yieldSyncV1VaultProperty.erc721Token");
+					).to.be.rejectedWith("!_yieldSyncV1VaultProperty.erc721Token");
 				}
 			);
 		});
@@ -190,7 +190,7 @@ describe("[6.0] YieldSyncV1Vault.sol with YieldSyncV1ERC721TransferRequestProtoc
 							addr1.address,
 							[mockERC721.address, 0, 0] as UpdateERC721VaultProperty
 						)
-					).to.be.rejectedWith("!yieldSyncV1VaultProperty.voteAgainstRequired");
+					).to.be.rejectedWith("!_yieldSyncV1VaultProperty.voteAgainstRequired");
 				}
 			);
 
@@ -205,7 +205,7 @@ describe("[6.0] YieldSyncV1Vault.sol with YieldSyncV1ERC721TransferRequestProtoc
 							addr1.address,
 							[mockERC721.address, 1, 0,] as UpdateERC721VaultProperty
 						)
-					).to.be.rejectedWith("!yieldSyncV1VaultProperty.voteForRequired");
+					).to.be.rejectedWith("!_yieldSyncV1VaultProperty.voteForRequired");
 				}
 			);
 		});
@@ -256,7 +256,7 @@ describe("[6.0] YieldSyncV1Vault.sol with YieldSyncV1ERC721TransferRequestProtoc
 									0,
 									0
 								)
-							).to.be.rejectedWith("!amount");
+							).to.be.rejectedWith("!_amount");
 						}
 					);
 
@@ -275,7 +275,7 @@ describe("[6.0] YieldSyncV1Vault.sol with YieldSyncV1ERC721TransferRequestProtoc
 									1,
 									0
 								)
-							).to.be.rejectedWith("forERC20 && forERC721");
+							).to.be.rejectedWith("_forERC20 && _forERC721");
 						}
 					);
 
@@ -1365,7 +1365,7 @@ describe("[6.0] YieldSyncV1Vault.sol with YieldSyncV1ERC721TransferRequestProtoc
 							openTRIds[openTRIds.length - 1],
 							updatedTR
 						)
-					).to.be.rejectedWith("!transferRequest.amount");
+					).to.be.rejectedWith("!_transferRequest.amount");
 				}
 			);
 
@@ -1410,7 +1410,7 @@ describe("[6.0] YieldSyncV1Vault.sol with YieldSyncV1ERC721TransferRequestProtoc
 							openTRIds[openTRIds.length - 1],
 							updatedTR
 						)
-					).to.be.rejectedWith("transferRequest.forERC20 && transferRequest.forERC721");
+					).to.be.rejectedWith("_transferRequest.forERC20 && _transferRequest.forERC721");
 				}
 			);
 

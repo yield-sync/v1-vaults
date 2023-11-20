@@ -23,10 +23,10 @@ struct TransferRequestPoll
 interface IYieldSyncV1ERC721TransferRequestProtocol is
 	ITransferRequestProtocol
 {
-	event CreatedTransferRequest(address yieldSyncV1Vault, uint256 transferRequestId);
-	event DeletedTransferRequest(address yieldSyncV1Vault, uint256 transferRequestId);
-	event UpdateTransferRequest(address yieldSyncV1Vault, TransferRequest transferRequest);
-	event UpdateTransferRequestPoll(address yieldSyncV1Vault, TransferRequestPoll transferRequestPoll);
-	event MemberVoted(address yieldSyncV1Vault, uint256 transferRequestId, address member, bool vote);
-	event TransferRequestReadyToBeProcessed(address yieldSyncV1Vault, uint256 transferRequestId);
+	event CreatedTransferRequest(address _yieldSyncV1Vault, uint256 _transferRequestId);
+	event DeletedTransferRequest(address _yieldSyncV1Vault, uint256 _transferRequestId);
+	event UpdateTransferRequest(address _yieldSyncV1Vault, TransferRequest _transferRequest);
+	event UpdateTransferRequestPoll(address _yieldSyncV1Vault, TransferRequestPoll _transferRequestPoll);
+	event MemberVoted(address _yieldSyncV1Vault, uint256 _transferRequestId, address _member, bool _vote);
+	event TransferRequestReadyToBeProcessed(address _yieldSyncV1Vault, uint256 _transferRequestId);
 }

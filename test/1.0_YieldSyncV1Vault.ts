@@ -103,7 +103,7 @@ describe("[1.0] YieldSyncV1Vault.sol", async () => {
 	});
 
 
-	describe("[yieldSyncV1Vault] Initial Values", async () => {
+	describe("[_yieldSyncV1Vault] Initial Values", async () => {
 		it(
 			"Should have admin set properly..",
 			async () => {

@@ -53,7 +53,7 @@ describe("[1.1] YieldSyncV1Vault.sol - Security", async () => {
 		it("BadActor should fail to add himself as admin..", async () => {
 			const [admin, addr1, addr2, addr3, BadActor] = await ethers.getSigners();
 
-			await expect(yieldSyncV1Vault.connect(BadActor).adminAdd(BadActor.address)).to.be.rejectedWith("!admin");
+			await expect(yieldSyncV1Vault.connect(BadActor).adminAdd(BadActor.address)).to.be.rejectedWith("!_admin");
 		});
 	});
 
@@ -61,7 +61,7 @@ describe("[1.1] YieldSyncV1Vault.sol - Security", async () => {
 		it("BadActor should fail to remove existing admin..", async () => {
 			const [admin, , , , BadActor] = await ethers.getSigners();
 
-			await expect(yieldSyncV1Vault.connect(BadActor).adminRemove(admin.address)).to.be.rejectedWith("!admin");
+			await expect(yieldSyncV1Vault.connect(BadActor).adminRemove(admin.address)).to.be.rejectedWith("!_admin");
 		});
 	});
 
@@ -69,7 +69,7 @@ describe("[1.1] YieldSyncV1Vault.sol - Security", async () => {
 		it("BadActor should fail to add himself as member..", async () => {
 			const [, , , , BadActor] = await ethers.getSigners();
 
-			await expect(yieldSyncV1Vault.connect(BadActor).memberAdd(BadActor.address)).to.be.rejectedWith("!admin");
+			await expect(yieldSyncV1Vault.connect(BadActor).memberAdd(BadActor.address)).to.be.rejectedWith("!_admin");
 		});
 	});
 
@@ -77,7 +77,7 @@ describe("[1.1] YieldSyncV1Vault.sol - Security", async () => {
 		it("BadActor should fail to remove existing admin..", async () => {
 			const [admin, , , , BadActor] = await ethers.getSigners();
 
-			await expect(yieldSyncV1Vault.connect(BadActor).memberRemove(admin.address)).to.be.rejectedWith("!admin");
+			await expect(yieldSyncV1Vault.connect(BadActor).memberRemove(admin.address)).to.be.rejectedWith("!_admin");
 		});
 	});
 
@@ -93,7 +93,7 @@ describe("[1.1] YieldSyncV1Vault.sol - Security", async () => {
 			await expect(
 				yieldSyncV1Vault.connect(BadActor).signatureProtocolUpdate(mockSignatureProtocol.address)
 			).to.be.rejectedWith(
-				"!admin"
+				"!_admin"
 			);
 		});
 	});
@@ -111,7 +111,7 @@ describe("[1.1] YieldSyncV1Vault.sol - Security", async () => {
 			await expect(
 				yieldSyncV1Vault.connect(BadActor).transferRequestProtocolUpdate(mockTransferRequestProtocol.address)
 			).to.be.rejectedWith(
-				"!admin"
+				"!_admin"
 			);
 		});
 	});
