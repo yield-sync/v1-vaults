@@ -361,14 +361,14 @@ contract YieldSyncV1ATransferRequestProtocol is
 	function yieldSyncV1Vault_transferRequestId_transferRequestPollAdminUpdate(
 		address _yieldSyncV1Vault,
 		uint256 _transferRequestId,
-		TransferRequestPoll memory transferRequestPoll
+		TransferRequestPoll memory _transferRequestPoll
 	)
 		public
 		override
 		accessAdmin(_yieldSyncV1Vault)
 		validTransferRequest(_yieldSyncV1Vault, _transferRequestId)
 	{
-		_yieldSyncV1Vault_transferRequestId_transferRequestPoll[_yieldSyncV1Vault][_transferRequestId] = transferRequestPoll;
+		_yieldSyncV1Vault_transferRequestId_transferRequestPoll[_yieldSyncV1Vault][_transferRequestId] = _transferRequestPoll;
 
 		emit UpdateTransferRequestPoll(
 			_yieldSyncV1Vault,
@@ -441,16 +441,16 @@ contract YieldSyncV1ATransferRequestProtocol is
 	/// @inheritdoc IYieldSyncV1ATransferRequestProtocol
 	function yieldSyncV1Vault_yieldSyncV1VaultPropertyAdminUpdate(
 		address _yieldSyncV1Vault,
-		YieldSyncV1VaultProperty memory yieldSyncV1VaultProperty
+		YieldSyncV1VaultProperty memory _yieldSyncV1VaultProperty
 	)
 		public
 		override
 		accessAdmin(_yieldSyncV1Vault)
 	{
-		require(yieldSyncV1VaultProperty.voteAgainstRequired > 0, "!_yieldSyncV1VaultProperty.voteAgainstRequired");
+		require(_yieldSyncV1VaultProperty.voteAgainstRequired > 0, "!_yieldSyncV1VaultProperty.voteAgainstRequired");
 
-		require(yieldSyncV1VaultProperty.voteForRequired > 0, "!_yieldSyncV1VaultProperty.voteForRequired");
+		require(_yieldSyncV1VaultProperty.voteForRequired > 0, "!_yieldSyncV1VaultProperty.voteForRequired");
 
-		_yieldSyncV1Vault_yieldSyncV1VaultProperty[_yieldSyncV1Vault] = yieldSyncV1VaultProperty;
+		_yieldSyncV1Vault_yieldSyncV1VaultProperty[_yieldSyncV1Vault] = _yieldSyncV1VaultProperty;
 	}
 }

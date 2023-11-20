@@ -381,14 +381,14 @@ contract YieldSyncV1BTransferRequestProtocol is
 	function yieldSyncV1Vault_transferRequestId_transferRequestPollAdminUpdate(
 		address _yieldSyncV1Vault,
 		uint256 _transferRequestId,
-		TransferRequestPoll memory transferRequestPoll
+		TransferRequestPoll memory _transferRequestPoll
 	)
 		public
 		override
 		accessAdmin(_yieldSyncV1Vault)
 		validTransferRequest(_yieldSyncV1Vault, _transferRequestId)
 	{
-		_yieldSyncV1Vault_transferRequestId_transferRequestPoll[_yieldSyncV1Vault][_transferRequestId] = transferRequestPoll;
+		_yieldSyncV1Vault_transferRequestId_transferRequestPoll[_yieldSyncV1Vault][_transferRequestId] = _transferRequestPoll;
 
 		emit UpdateTransferRequestPoll(
 			_yieldSyncV1Vault,

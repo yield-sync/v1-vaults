@@ -249,21 +249,21 @@ contract YieldSyncV1ERC721TransferRequestProtocol is
 	function yieldSyncV1Vault_transferRequestId_transferRequestAdminUpdate(
 		address _yieldSyncV1Vault,
 		uint256 _transferRequestId,
-		TransferRequest memory transferRequest
+		TransferRequest memory _transferRequest
 	)
 		public
 		//override
 		accessAdmin(_yieldSyncV1Vault)
 		validTransferRequest(_yieldSyncV1Vault, _transferRequestId)
 	{
-		require(transferRequest.amount > 0, "!_transferRequest.amount");
+		require(_transferRequest.amount > 0, "!_transferRequest.amount");
 
 		require(
-			!(transferRequest.forERC20 && transferRequest.forERC721),
+			!(_transferRequest.forERC20 && _transferRequest.forERC721),
 			"_transferRequest.forERC20 && _transferRequest.forERC721"
 		);
 
-		_yieldSyncV1Vault_transferRequestId_transferRequest[_yieldSyncV1Vault][_transferRequestId] = transferRequest;
+		_yieldSyncV1Vault_transferRequestId_transferRequest[_yieldSyncV1Vault][_transferRequestId] = _transferRequest;
 
 		emit UpdateTransferRequest(
 			_yieldSyncV1Vault,
@@ -343,13 +343,13 @@ contract YieldSyncV1ERC721TransferRequestProtocol is
 	function yieldSyncV1Vault_transferRequestId_transferRequestPollAdminUpdate(
 		address _yieldSyncV1Vault,
 		uint256 _transferRequestId,
-		TransferRequestPoll memory transferRequestPoll
+		TransferRequestPoll memory _transferRequestPoll
 	)
 		public
 		//override
 		validTransferRequest(_yieldSyncV1Vault, _transferRequestId)
 	{
-		_yieldSyncV1Vault_transferRequestId_transferRequestPoll[_yieldSyncV1Vault][_transferRequestId] = transferRequestPoll;
+		_yieldSyncV1Vault_transferRequestId_transferRequestPoll[_yieldSyncV1Vault][_transferRequestId] = _transferRequestPoll;
 
 		emit UpdateTransferRequestPoll(
 			_yieldSyncV1Vault,
@@ -362,7 +362,7 @@ contract YieldSyncV1ERC721TransferRequestProtocol is
 		address _yieldSyncV1Vault,
 		uint256 _transferRequestId,
 		bool _vote,
-		uint256[] memory tokenIds
+		uint256[] memory _tokenIds
 	)
 		public
 		//override
@@ -385,30 +385,30 @@ contract YieldSyncV1ERC721TransferRequestProtocol is
 			"Voting closed"
 		);
 
-		for (uint256 i = 0; i < tokenIds.length; i++)
+		for (uint256 i = 0; i < _tokenIds.length; i++)
 		{
 			require(
-				IERC721(yieldSyncV1VaultProperty.erc721Token).ownerOf(tokenIds[i]) == msg.sender,
-				"IERC721(yieldSyncV1VaultProperty.erc721Token).ownerOf(tokenIds[i]) != msg.sender"
+				IERC721(yieldSyncV1VaultProperty.erc721Token).ownerOf(_tokenIds[i]) == msg.sender,
+				"IERC721(yieldSyncV1VaultProperty.erc721Token).ownerOf(_tokenIds[i]) != msg.sender"
 			);
 
 			for (uint256 ii = 0; ii < transferRequestPoll.voteAgainstErc721TokenId.length; ii++)
 			{
-				require(tokenIds[i] != transferRequestPoll.voteAgainstErc721TokenId[ii], "Already voted");
+				require(_tokenIds[i] != transferRequestPoll.voteAgainstErc721TokenId[ii], "Already voted");
 			}
 
 			for (uint256 ii = 0; ii < transferRequestPoll.voteForErc721TokenId.length; ii++)
 			{
-				require(tokenIds[i] != transferRequestPoll.voteForErc721TokenId[ii], "Already voted");
+				require(_tokenIds[i] != transferRequestPoll.voteForErc721TokenId[ii], "Already voted");
 			}
 
 			if (_vote)
 			{
-				transferRequestPoll.voteForErc721TokenId.push(tokenIds[i]);
+				transferRequestPoll.voteForErc721TokenId.push(_tokenIds[i]);
 			}
 			else
 			{
-				transferRequestPoll.voteAgainstErc721TokenId.push(tokenIds[i]);
+				transferRequestPoll.voteAgainstErc721TokenId.push(_tokenIds[i]);
 			}
 		}
 
@@ -428,18 +428,18 @@ contract YieldSyncV1ERC721TransferRequestProtocol is
 	///
 	function yieldSyncV1Vault_yieldSyncV1VaultPropertyAdminUpdate(
 		address _yieldSyncV1Vault,
-		YieldSyncV1VaultProperty memory yieldSyncV1VaultProperty
+		YieldSyncV1VaultProperty memory _yieldSyncV1VaultProperty
 	)
 		public
 		//override
 		accessAdmin(_yieldSyncV1Vault)
 	{
-		require(yieldSyncV1VaultProperty.erc721Token != address(0), "!_yieldSyncV1VaultProperty.erc721Token");
+		require(_yieldSyncV1VaultProperty.erc721Token != address(0), "!_yieldSyncV1VaultProperty.erc721Token");
 
-		require(yieldSyncV1VaultProperty.voteAgainstRequired > 0, "!_yieldSyncV1VaultProperty.voteAgainstRequired");
+		require(_yieldSyncV1VaultProperty.voteAgainstRequired > 0, "!_yieldSyncV1VaultProperty.voteAgainstRequired");
 
-		require(yieldSyncV1VaultProperty.voteForRequired > 0, "!_yieldSyncV1VaultProperty.voteForRequired");
+		require(_yieldSyncV1VaultProperty.voteForRequired > 0, "!_yieldSyncV1VaultProperty.voteForRequired");
 
-		_yieldSyncV1Vault_yieldSyncV1VaultProperty[_yieldSyncV1Vault] = yieldSyncV1VaultProperty;
+		_yieldSyncV1Vault_yieldSyncV1VaultProperty[_yieldSyncV1Vault] = _yieldSyncV1VaultProperty;
 	}
 }

@@ -501,7 +501,7 @@ describe("[6.0] YieldSyncV1Vault.sol with YieldSyncV1ERC721TransferRequestProtoc
 									addr1NFTs
 								)
 							).to.be.rejectedWith(
-								"IERC721(yieldSyncV1VaultProperty.erc721Token).ownerOf(tokenIds[i]) != msg.sender"
+								"IERC721(yieldSyncV1VaultProperty.erc721Token).ownerOf(_tokenIds[i]) != msg.sender"
 							);
 						}
 					);
