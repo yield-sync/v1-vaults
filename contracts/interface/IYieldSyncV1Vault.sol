@@ -62,9 +62,9 @@ interface IYieldSyncV1Vault
 	* @notice Add Admin
 	* @dev [restriction] `YieldSyncV1Record` → admin
 	* @dev [add] admin on `YieldSyncV1Record`
-	* @param targetAddress {address}
+	* @param _target {address}
 	*/
-	function adminAdd(address targetAddress)
+	function adminAdd(address _target)
 		external
 	;
 
@@ -72,9 +72,9 @@ interface IYieldSyncV1Vault
 	* @notice Remove Admin
 	* @dev [restriction] `YieldSyncV1Record` → admin
 	* @dev [remove] admin on `YieldSyncV1Record`
-	* @param admin {address}
+	* @param _admin {address}
 	*/
-	function adminRemove(address admin)
+	function adminRemove(address _admin)
 		external
 	;
 
@@ -82,9 +82,9 @@ interface IYieldSyncV1Vault
 	* @notice Add Member
 	* @dev [restriction] `YieldSyncV1Record` → admin
 	* @dev [add] member `YieldSyncV1Record`
-	* @param targetAddress {address}
+	* @param _target {address}
 	*/
-	function memberAdd(address targetAddress)
+	function memberAdd(address _target)
 		external
 	;
 
@@ -92,9 +92,9 @@ interface IYieldSyncV1Vault
 	* @notice Remove Member
 	* @dev [restriction] `YieldSyncV1Record` → admin
 	* @dev [remove] member on `YieldSyncV1Record`
-	* @param member {address}
+	* @param _member {address}
 	*/
-	function memberRemove(address member)
+	function memberRemove(address _member)
 		external
 	;
 
@@ -135,10 +135,10 @@ interface IYieldSyncV1Vault
 	* @dev [erc20-transfer]
 	*      [decrement] `_tokenBalance`
 	*      [call][internal] `_yieldSyncV1Vault_transferRequestId_transferRequestDelete`
-	* @param transferRequestId {uint256} Id of the TransferRequest
+	* @param _transferRequestId {uint256} Id of the TransferRequest
 	* Emits: `TokensTransferred`
 	*/
-	function yieldSyncV1Vault_transferRequestId_transferRequestProcess(uint256 transferRequestId)
+	function yieldSyncV1Vault_transferRequestId_transferRequestProcess(uint256 _transferRequestId)
 		external
 	;
 }

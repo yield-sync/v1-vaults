@@ -46,9 +46,9 @@ contract YieldSyncV1VaultDeployer is
 	}
 
 
-	modifier contractYieldSyncGovernance(bytes32 role)
+	modifier contractYieldSyncGovernance(bytes32 _role)
 	{
-		require(IAccessControlEnumerable(YieldSyncGovernance).hasRole(role, msg.sender), "!auth");
+		require(IAccessControlEnumerable(YieldSyncGovernance).hasRole(_role, msg.sender), "!auth");
 
 		_;
 	}
@@ -56,25 +56,25 @@ contract YieldSyncV1VaultDeployer is
 
 	/// @inheritdoc IYieldSyncV1VaultDeployer
 	function deployYieldSyncV1Vault(
-		address signatureProtocol,
-		address transferRequestProtocol,
-		address[] memory admins,
-		address[] memory members
+		address _signatureProtocol,
+		address _transferRequestProtocol,
+		address[] memory _admins,
+		address[] memory _members
 	)
 		public
 		payable
 		override
-		returns (address deployedYieldSyncV1Vault)
+		returns (address yieldSyncV1Vault_)
 	{
 		require(msg.value >= fee, "!msg.value");
 
 		YieldSyncV1Vault yieldSyncV1Vault = new YieldSyncV1Vault(
 			msg.sender,
-			signatureProtocol,
-			transferRequestProtocol,
+			_signatureProtocol,
+			_transferRequestProtocol,
 			YieldSyncV1VaultRegistry,
-			admins,
-			members
+			_admins,
+			_members
 		);
 
 		yieldSyncV1Vault_yieldSyncV1VaultId[address(yieldSyncV1Vault)] = yieldSyncV1VaultIdTracker;
@@ -88,12 +88,12 @@ contract YieldSyncV1VaultDeployer is
 	}
 
 	/// @inheritdoc IYieldSyncV1VaultDeployer
-	function etherTransfer(address to)
+	function etherTransfer(address _to)
 		public
 		override
 		contractYieldSyncGovernance(bytes32(0))
 	{
-		(bool success, ) = to.call{value: address(this).balance}("");
+		(bool success, ) = _to.call{value: address(this).balance}("");
 
 		require(success, "etherTransfer failed");
 	}

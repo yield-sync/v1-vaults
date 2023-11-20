@@ -7,10 +7,10 @@ interface IYieldSyncV1VaultRegistry
 	/**
 	* @notice Getter for `_admin_yieldSyncV1Vaults`
 	* @dev [view]
-	* @param admin {address}
+	* @param _admin {address}
 	* @return yieldSyncV1Vaults_ {address[]}
 	*/
-	function admin_yieldSyncV1Vaults(address admin)
+	function admin_yieldSyncV1Vaults(address _admin)
 		external
 		view
 		returns (address[] memory yieldSyncV1Vaults_)
@@ -19,10 +19,10 @@ interface IYieldSyncV1VaultRegistry
 	/**
 	* @notice Getter for `_member_yieldSyncV1Vaults`
 	* @dev [view]
-	* @param member {address}
+	* @param _member {address}
 	* @return yieldSyncV1Vaults_ {address[]}
 	*/
-	function member_yieldSyncV1Vaults(address member)
+	function member_yieldSyncV1Vaults(address _member)
 		external
 		view
 		returns (address[] memory yieldSyncV1Vaults_)
@@ -31,10 +31,10 @@ interface IYieldSyncV1VaultRegistry
 	/**
 	* @notice Getter for `_yieldSyncV1Vault_admins`
 	* @dev [view]
-	* @param yieldSyncV1Vault {address}
+	* @param _yieldSyncV1Vault {address}
 	* @return admins_ {address[]}
 	*/
-	function yieldSyncV1Vault_admins(address yieldSyncV1Vault)
+	function yieldSyncV1Vault_admins(address _yieldSyncV1Vault)
 		external
 		view
 		returns (address[] memory admins_)
@@ -43,10 +43,10 @@ interface IYieldSyncV1VaultRegistry
 	/**
 	* @notice Getter for `_yieldSyncV1Vault_members`
 	* @dev [view]
-	* @param yieldSyncV1Vault {address}
+	* @param _yieldSyncV1Vault {address}
 	* @return members_ {address[]}
 	*/
-	function yieldSyncV1Vault_members(address yieldSyncV1Vault)
+	function yieldSyncV1Vault_members(address _yieldSyncV1Vault)
 		external
 		view
 		returns (address[] memory members_)
@@ -55,12 +55,12 @@ interface IYieldSyncV1VaultRegistry
 	/**
 	* @notice Getter for `_yieldSyncV1Vault_participant_access`
 	* @dev [view]
-	* @param participant {address}
-	* @param yieldSyncV1Vault {address}
+	* @param _participant {address}
+	* @param _yieldSyncV1Vault {address}
 	* @return admin_ {bool}
 	* @return member_ {bool}
 	*/
-	function yieldSyncV1Vault_participant_access(address yieldSyncV1Vault, address participant)
+	function yieldSyncV1Vault_participant_access(address _yieldSyncV1Vault, address _participant)
 		external
 		view
 		returns (bool admin_, bool member_)
@@ -72,10 +72,10 @@ interface IYieldSyncV1VaultRegistry
 	* @dev [update] `_admin_yieldSyncV1Vaults`
 	*      [update] `_yieldSyncV1Vault_admins`
 	*      [update] `yieldSyncV1Vault_participant_access`
-	* @param yieldSyncV1Vault {address}
-	* @param admin {address}
+	* @param _yieldSyncV1Vault {address}
+	* @param _admin {address}
 	*/
-	function adminAdd(address yieldSyncV1Vault, address admin)
+	function adminAdd(address _yieldSyncV1Vault, address _admin)
 		external
 	;
 
@@ -84,10 +84,10 @@ interface IYieldSyncV1VaultRegistry
 	* @dev [update] `_admin_yieldSyncV1Vaults`
 	*      [update] `_yieldSyncV1Vault_admins`
 	*      [update] `yieldSyncV1Vault_participant_access`
-	* @param yieldSyncV1Vault {address}
-	* @param admin {address}
+	* @param _yieldSyncV1Vault {address}
+	* @param _admin {address}
 	*/
-	function adminRemove(address yieldSyncV1Vault, address admin)
+	function adminRemove(address _yieldSyncV1Vault, address _admin)
 		external
 	;
 
@@ -96,10 +96,10 @@ interface IYieldSyncV1VaultRegistry
 	* @dev [update] `_member_yieldSyncV1Vaults`
 	*      [update] `_yieldSyncV1Vault_members`
 	*      [update] `yieldSyncV1Vault_participant_access`
-	* @param yieldSyncV1Vault {address}
-	* @param member {address}
+	* @param _yieldSyncV1Vault {address}
+	* @param _member {address}
 	*/
-	function memberAdd(address yieldSyncV1Vault, address member)
+	function memberAdd(address _yieldSyncV1Vault, address _member)
 		external
 	;
 
@@ -108,10 +108,10 @@ interface IYieldSyncV1VaultRegistry
 	* @dev [update] `_member_yieldSyncV1Vaults`
 	*      [update] `_yieldSyncV1Vault_members`
 	*      [update] `yieldSyncV1Vault_participant_access`
-	* @param yieldSyncV1Vault {address}
-	* @param member {address}
+	* @param _yieldSyncV1Vault {address}
+	* @param _member {address}
 	*/
-	function memberRemove(address yieldSyncV1Vault, address member)
+	function memberRemove(address _yieldSyncV1Vault, address _member)
 		external
 	;
 }

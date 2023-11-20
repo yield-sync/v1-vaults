@@ -36,173 +36,173 @@ contract YieldSyncV1VaultRegistry is
 
 
 	/// @inheritdoc IYieldSyncV1VaultRegistry
-	function admin_yieldSyncV1Vaults(address admin)
+	function admin_yieldSyncV1Vaults(address _admin)
 		public
 		view
 		override
 		returns (address[] memory yieldSyncV1Vaults_)
 	{
-		return _admin_yieldSyncV1Vaults[admin];
-	}
-
-		/// @inheritdoc IYieldSyncV1VaultRegistry
-	function member_yieldSyncV1Vaults(address member)
-		public
-		view
-		override
-		returns (address[] memory yieldSyncV1Vaults_)
-	{
-		return _member_yieldSyncV1Vaults[member];
+		return _admin_yieldSyncV1Vaults[_admin];
 	}
 
 	/// @inheritdoc IYieldSyncV1VaultRegistry
-	function yieldSyncV1Vault_admins(address yieldSyncV1Vault)
+	function member_yieldSyncV1Vaults(address _member)
+		public
+		view
+		override
+		returns (address[] memory yieldSyncV1Vaults_)
+	{
+		return _member_yieldSyncV1Vaults[_member];
+	}
+
+	/// @inheritdoc IYieldSyncV1VaultRegistry
+	function yieldSyncV1Vault_admins(address _yieldSyncV1Vault)
 		public
 		view
 		override
 		returns (address[] memory admins_)
 	{
-		return _yieldSyncV1Vault_admins[yieldSyncV1Vault];
+		return _yieldSyncV1Vault_admins[_yieldSyncV1Vault];
 	}
 
 	/// @inheritdoc IYieldSyncV1VaultRegistry
-	function yieldSyncV1Vault_members(address yieldSyncV1Vault)
+	function yieldSyncV1Vault_members(address _yieldSyncV1Vault)
 		public
 		view
 		override
 		returns (address[] memory members_)
 	{
-		return _yieldSyncV1Vault_members[yieldSyncV1Vault];
+		return _yieldSyncV1Vault_members[_yieldSyncV1Vault];
 	}
 
 	/// @inheritdoc IYieldSyncV1VaultRegistry
-	function yieldSyncV1Vault_participant_access(address yieldSyncV1Vault, address participant)
+	function yieldSyncV1Vault_participant_access(address _yieldSyncV1Vault, address _participant)
 		public
 		view
 		override
 		returns (bool admin_, bool member_)
 	{
-		admin_ = _yieldSyncV1Vault_participant_access[yieldSyncV1Vault][participant].admin;
-		member_ = _yieldSyncV1Vault_participant_access[yieldSyncV1Vault][participant].member;
+		admin_ = _yieldSyncV1Vault_participant_access[_yieldSyncV1Vault][_participant].admin;
+		member_ = _yieldSyncV1Vault_participant_access[_yieldSyncV1Vault][_participant].member;
 	}
 
 
 	/// @inheritdoc IYieldSyncV1VaultRegistry
-	function adminAdd(address yieldSyncV1Vault, address target)
+	function adminAdd(address _yieldSyncV1Vault, address _target)
 		public
 		override
-		contractYieldSyncV1Vault(yieldSyncV1Vault)
+		contractYieldSyncV1Vault(_yieldSyncV1Vault)
 	{
-		require(!_yieldSyncV1Vault_participant_access[yieldSyncV1Vault][target].admin, "Already admin");
+		require(!_yieldSyncV1Vault_participant_access[_yieldSyncV1Vault][_target].admin, "Already admin");
 
-		_admin_yieldSyncV1Vaults[target].push(yieldSyncV1Vault);
+		_admin_yieldSyncV1Vaults[_target].push(_yieldSyncV1Vault);
 
-		_yieldSyncV1Vault_admins[yieldSyncV1Vault].push(target);
+		_yieldSyncV1Vault_admins[_yieldSyncV1Vault].push(_target);
 
-		_yieldSyncV1Vault_participant_access[yieldSyncV1Vault][target] = Access({
-			member: _yieldSyncV1Vault_participant_access[yieldSyncV1Vault][target].member,
+		_yieldSyncV1Vault_participant_access[_yieldSyncV1Vault][_target] = Access({
+			member: _yieldSyncV1Vault_participant_access[_yieldSyncV1Vault][_target].member,
 			admin: true
 		});
 	}
 
 	/// @inheritdoc IYieldSyncV1VaultRegistry
-	function adminRemove(address yieldSyncV1Vault, address admin)
+	function adminRemove(address _yieldSyncV1Vault, address _admin)
 		public
 		override
-		contractYieldSyncV1Vault(yieldSyncV1Vault)
+		contractYieldSyncV1Vault(_yieldSyncV1Vault)
 	{
-		require(_yieldSyncV1Vault_participant_access[yieldSyncV1Vault][admin].admin, "Not admin");
+		require(_yieldSyncV1Vault_participant_access[_yieldSyncV1Vault][_admin].admin, "Not admin");
 
-		for (uint256 i = 0; i < _admin_yieldSyncV1Vaults[admin].length; i++)
+		for (uint256 i = 0; i < _admin_yieldSyncV1Vaults[_admin].length; i++)
 		{
-			if (_admin_yieldSyncV1Vaults[admin][i] == yieldSyncV1Vault)
+			if (_admin_yieldSyncV1Vaults[_admin][i] == _yieldSyncV1Vault)
 			{
-				_admin_yieldSyncV1Vaults[admin][i] = _admin_yieldSyncV1Vaults[admin][
-					_admin_yieldSyncV1Vaults[admin].length - 1
+				_admin_yieldSyncV1Vaults[_admin][i] = _admin_yieldSyncV1Vaults[_admin][
+					_admin_yieldSyncV1Vaults[_admin].length - 1
 				];
 
-				_admin_yieldSyncV1Vaults[admin].pop();
+				_admin_yieldSyncV1Vaults[_admin].pop();
 
 				break;
 			}
 		}
 
-		for (uint256 i = 0; i < _yieldSyncV1Vault_admins[yieldSyncV1Vault].length; i++)
+		for (uint256 i = 0; i < _yieldSyncV1Vault_admins[_yieldSyncV1Vault].length; i++)
 		{
-			if (_yieldSyncV1Vault_admins[yieldSyncV1Vault][i] == admin)
+			if (_yieldSyncV1Vault_admins[_yieldSyncV1Vault][i] == _admin)
 			{
-				_yieldSyncV1Vault_admins[yieldSyncV1Vault][i] = _yieldSyncV1Vault_admins[yieldSyncV1Vault][
-					_yieldSyncV1Vault_admins[yieldSyncV1Vault].length - 1
+				_yieldSyncV1Vault_admins[_yieldSyncV1Vault][i] = _yieldSyncV1Vault_admins[_yieldSyncV1Vault][
+					_yieldSyncV1Vault_admins[_yieldSyncV1Vault].length - 1
 				];
 
-				_yieldSyncV1Vault_admins[yieldSyncV1Vault].pop();
+				_yieldSyncV1Vault_admins[_yieldSyncV1Vault].pop();
 
 				break;
 			}
 		}
 
-		_yieldSyncV1Vault_participant_access[yieldSyncV1Vault][admin] = Access({
+		_yieldSyncV1Vault_participant_access[_yieldSyncV1Vault][_admin] = Access({
 			admin: false,
-			member: _yieldSyncV1Vault_participant_access[yieldSyncV1Vault][admin].member
+			member: _yieldSyncV1Vault_participant_access[_yieldSyncV1Vault][_admin].member
 		});
 	}
 
 	/// @inheritdoc IYieldSyncV1VaultRegistry
-	function memberAdd(address yieldSyncV1Vault, address target)
+	function memberAdd(address _yieldSyncV1Vault, address _target)
 		public
 		override
-		contractYieldSyncV1Vault(yieldSyncV1Vault)
+		contractYieldSyncV1Vault(_yieldSyncV1Vault)
 	{
-		require(!_yieldSyncV1Vault_participant_access[yieldSyncV1Vault][target].member, "Already member");
+		require(!_yieldSyncV1Vault_participant_access[_yieldSyncV1Vault][_target].member, "Already member");
 
-		_member_yieldSyncV1Vaults[target].push(yieldSyncV1Vault);
+		_member_yieldSyncV1Vaults[_target].push(_yieldSyncV1Vault);
 
-		_yieldSyncV1Vault_members[yieldSyncV1Vault].push(target);
+		_yieldSyncV1Vault_members[_yieldSyncV1Vault].push(_target);
 
-		_yieldSyncV1Vault_participant_access[yieldSyncV1Vault][target] = Access({
-			admin: _yieldSyncV1Vault_participant_access[yieldSyncV1Vault][target].admin,
+		_yieldSyncV1Vault_participant_access[_yieldSyncV1Vault][_target] = Access({
+			admin: _yieldSyncV1Vault_participant_access[_yieldSyncV1Vault][_target].admin,
 			member: true
 		});
 	}
 
 	/// @inheritdoc IYieldSyncV1VaultRegistry
-	function memberRemove(address yieldSyncV1Vault, address member)
+	function memberRemove(address _yieldSyncV1Vault, address _member)
 		public
 		override
-		contractYieldSyncV1Vault(yieldSyncV1Vault)
+		contractYieldSyncV1Vault(_yieldSyncV1Vault)
 	{
-		require(_yieldSyncV1Vault_participant_access[yieldSyncV1Vault][member].member, "Not member");
+		require(_yieldSyncV1Vault_participant_access[_yieldSyncV1Vault][_member].member, "Not member");
 
-		for (uint256 i = 0; i < _member_yieldSyncV1Vaults[member].length; i++)
+		for (uint256 i = 0; i < _member_yieldSyncV1Vaults[_member].length; i++)
 		{
-			if (_member_yieldSyncV1Vaults[member][i] == yieldSyncV1Vault)
+			if (_member_yieldSyncV1Vaults[_member][i] == _yieldSyncV1Vault)
 			{
-				_member_yieldSyncV1Vaults[member][i] = _member_yieldSyncV1Vaults[member][
-					_member_yieldSyncV1Vaults[member].length - 1
+				_member_yieldSyncV1Vaults[_member][i] = _member_yieldSyncV1Vaults[_member][
+					_member_yieldSyncV1Vaults[_member].length - 1
 				];
 
-				_member_yieldSyncV1Vaults[member].pop();
+				_member_yieldSyncV1Vaults[_member].pop();
 
 				break;
 			}
 		}
 
-		for (uint256 i = 0; i < _yieldSyncV1Vault_members[yieldSyncV1Vault].length; i++)
+		for (uint256 i = 0; i < _yieldSyncV1Vault_members[_yieldSyncV1Vault].length; i++)
 		{
-			if (_yieldSyncV1Vault_members[yieldSyncV1Vault][i] == member)
+			if (_yieldSyncV1Vault_members[_yieldSyncV1Vault][i] == _member)
 			{
-				_yieldSyncV1Vault_members[yieldSyncV1Vault][i] = _yieldSyncV1Vault_members[yieldSyncV1Vault][
-					_yieldSyncV1Vault_members[yieldSyncV1Vault].length - 1
+				_yieldSyncV1Vault_members[_yieldSyncV1Vault][i] = _yieldSyncV1Vault_members[_yieldSyncV1Vault][
+					_yieldSyncV1Vault_members[_yieldSyncV1Vault].length - 1
 				];
 
-				_yieldSyncV1Vault_members[yieldSyncV1Vault].pop();
+				_yieldSyncV1Vault_members[_yieldSyncV1Vault].pop();
 
 				break;
 			}
 		}
 
-		_yieldSyncV1Vault_participant_access[yieldSyncV1Vault][member] = Access({
-			admin: _yieldSyncV1Vault_participant_access[yieldSyncV1Vault][member].admin,
+		_yieldSyncV1Vault_participant_access[_yieldSyncV1Vault][_member] = Access({
+			admin: _yieldSyncV1Vault_participant_access[_yieldSyncV1Vault][_member].admin,
 			member: false
 		});
 	}

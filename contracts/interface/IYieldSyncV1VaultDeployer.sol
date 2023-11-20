@@ -4,7 +4,7 @@ pragma solidity ^0.8.18;
 
 interface IYieldSyncV1VaultDeployer
 {
-	event DeployedYieldSyncV1Vault(address indexed vaultAddress);
+	event DeployedYieldSyncV1Vault(address indexed yieldSyncV1Vault);
 
 
 	receive ()
@@ -90,30 +90,30 @@ interface IYieldSyncV1VaultDeployer
 	/**
 	* @notice Deploy a YieldSyncV1Vault contract
 	* @dev [create]
-	* @param signatureProtocol {address}
-	* @param transferRequestProtocol {uint256}
-	* @param admins {address[]}
-	* @param members {address[]}
-	* @return deployedYieldSyncV1Vault {address} Deployed vault
+	* @param _signatureProtocol {address}
+	* @param _transferRequestProtocol {uint256}
+	* @param _admins {address[]}
+	* @param _members {address[]}
+	* @return yieldSyncV1Vault_ {address} Deployed vault
 	*/
 	function deployYieldSyncV1Vault(
-		address signatureProtocol,
-		address transferRequestProtocol,
-		address[] memory admins,
-		address[] memory members
+		address _signatureProtocol,
+		address _transferRequestProtocol,
+		address[] memory _admins,
+		address[] memory _members
 	)
 		external
 		payable
-		returns (address deployedYieldSyncV1Vault)
+		returns (address yieldSyncV1Vault_)
 	;
 
 	/**
 	* @notice Transfer Ether to
 	* @dev [restriction] `IYieldSyncGovernance` AccessControlEnumerable → DEFAULT_ADMIN_ROLE
 	* @dev [transfer]
-	* @param to {uint256}
+	* @param _to {uint256}
 	*/
-	function etherTransfer(address to)
+	function etherTransfer(address _to)
 		external
 	;
 

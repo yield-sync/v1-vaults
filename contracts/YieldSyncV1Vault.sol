@@ -44,12 +44,12 @@ contract YieldSyncV1Vault is
 
 
 	constructor (
-		address deployer,
+		address _deployer,
 		address _signatureProtocol,
 		address _transferRequestProtocol,
 		address _YieldSyncV1VaultRegistry,
-		address[] memory admins,
-		address[] memory members
+		address[] memory _admins,
+		address[] memory _members
 	)
 	{
 		signatureProtocol = _signatureProtocol;
@@ -59,33 +59,33 @@ contract YieldSyncV1Vault is
 
 		if (signatureProtocol != address(0))
 		{
-			ISignatureProtocol(signatureProtocol).yieldSyncV1VaultInitialize(deployer, address(this));
+			ISignatureProtocol(signatureProtocol).yieldSyncV1VaultInitialize(_deployer, address(this));
 		}
 
 		if (transferRequestProtocol != address(0))
 		{
-			ITransferRequestProtocol(transferRequestProtocol).yieldSyncV1VaultInitialize(deployer, address(this));
+			ITransferRequestProtocol(transferRequestProtocol).yieldSyncV1VaultInitialize(_deployer, address(this));
 		}
 
-		for (uint i = 0; i < admins.length; i++)
+		for (uint i = 0; i < _admins.length; i++)
 		{
-			YieldSyncV1VaultRegistry.adminAdd(address(this), admins[i]);
+			YieldSyncV1VaultRegistry.adminAdd(address(this), _admins[i]);
 		}
 
-		for (uint i = 0; i < members.length; i++)
+		for (uint i = 0; i < _members.length; i++)
 		{
-			YieldSyncV1VaultRegistry.memberAdd(address(this), members[i]);
+			YieldSyncV1VaultRegistry.memberAdd(address(this), _members[i]);
 		}
 	}
 
 
-	modifier validYieldSyncV1Vault_transferRequestId_transferRequest(uint256 transferRequestId)
+	modifier validYieldSyncV1Vault_transferRequestId_transferRequest(uint256 _transferRequestId)
 	{
 		TransferRequest memory transferRequest = ITransferRequestProtocol(
 			transferRequestProtocol
 		).yieldSyncV1Vault_transferRequestId_transferRequest(
 			address(this),
-			transferRequestId
+			_transferRequestId
 		);
 
 		require(transferRequest.amount > 0, "No TransferRequest found");
@@ -124,39 +124,39 @@ contract YieldSyncV1Vault is
 
 
 	/// @inheritdoc IYieldSyncV1Vault
-	function adminAdd(address targetAddress)
+	function adminAdd(address _target)
 		public
 		override
 		accessAdmin()
 	{
-		YieldSyncV1VaultRegistry.adminAdd(address(this), targetAddress);
+		YieldSyncV1VaultRegistry.adminAdd(address(this), _target);
 	}
 
 	/// @inheritdoc IYieldSyncV1Vault
-	function adminRemove(address admin)
+	function adminRemove(address _admin)
 		public
 		override
 		accessAdmin()
 	{
-		YieldSyncV1VaultRegistry.adminRemove(address(this), admin);
+		YieldSyncV1VaultRegistry.adminRemove(address(this), _admin);
 	}
 
 	/// @inheritdoc IYieldSyncV1Vault
-	function memberAdd(address targetAddress)
+	function memberAdd(address _target)
 		public
 		override
 		accessAdmin()
 	{
-		YieldSyncV1VaultRegistry.memberAdd(address(this), targetAddress);
+		YieldSyncV1VaultRegistry.memberAdd(address(this), _target);
 	}
 
 	/// @inheritdoc IYieldSyncV1Vault
-	function memberRemove(address member)
+	function memberRemove(address _member)
 		public
 		override
 		accessAdmin()
 	{
-		YieldSyncV1VaultRegistry.memberRemove(address(this), member);
+		YieldSyncV1VaultRegistry.memberRemove(address(this), _member);
 	}
 
 	/// @inheritdoc IYieldSyncV1Vault
@@ -197,17 +197,17 @@ contract YieldSyncV1Vault is
 
 
 	/// @inheritdoc IYieldSyncV1Vault
-	function yieldSyncV1Vault_transferRequestId_transferRequestProcess(uint256 transferRequestId)
+	function yieldSyncV1Vault_transferRequestId_transferRequestProcess(uint256 _transferRequestId)
 		public
 		override
 		nonReentrant()
-		validYieldSyncV1Vault_transferRequestId_transferRequest(transferRequestId)
+		validYieldSyncV1Vault_transferRequestId_transferRequest(_transferRequestId)
 	{
 		(bool readyToBeProcessed, bool approved, string memory message) = ITransferRequestProtocol(
 			transferRequestProtocol
 		).yieldSyncV1Vault_transferRequestId_transferRequestStatus(
 			address(this),
-			transferRequestId
+			_transferRequestId
 		);
 
 		require(readyToBeProcessed, message);
@@ -218,7 +218,7 @@ contract YieldSyncV1Vault is
 				transferRequestProtocol
 			).yieldSyncV1Vault_transferRequestId_transferRequest(
 				address(this),
-				transferRequestId
+				_transferRequestId
 			);
 
 			if (transferRequest.forERC20 && !transferRequest.forERC721)
@@ -229,7 +229,7 @@ contract YieldSyncV1Vault is
 				}
 				else
 				{
-					emit ProcessTransferRequestFailed(transferRequestId);
+					emit ProcessTransferRequestFailed(_transferRequestId);
 				}
 			}
 
@@ -241,7 +241,7 @@ contract YieldSyncV1Vault is
 				}
 				else
 				{
-					emit ProcessTransferRequestFailed(transferRequestId);
+					emit ProcessTransferRequestFailed(_transferRequestId);
 				}
 			}
 
@@ -251,7 +251,7 @@ contract YieldSyncV1Vault is
 
 				if (!success)
 				{
-					emit ProcessTransferRequestFailed(transferRequestId);
+					emit ProcessTransferRequestFailed(_transferRequestId);
 				}
 			}
 
@@ -260,7 +260,7 @@ contract YieldSyncV1Vault is
 
 		ITransferRequestProtocol(transferRequestProtocol).yieldSyncV1Vault_transferRequestId_transferRequestProcess(
 			address(this),
-			transferRequestId
+			_transferRequestId
 		);
 	}
 }
