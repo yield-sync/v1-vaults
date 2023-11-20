@@ -40,16 +40,16 @@ contract YieldSyncV1ASignatureProtocol is
 	) internal _yieldSyncV1Vault_messageHash_messageHashVote;
 
 
-	modifier contractYieldSyncGovernance(bytes32 role)
+	modifier contractYieldSyncGovernance(bytes32 _role)
 	{
-		require(IAccessControlEnumerable(YieldSyncGovernance).hasRole(role, msg.sender), "!auth");
+		require(IAccessControlEnumerable(YieldSyncGovernance).hasRole(_role, msg.sender), "!auth");
 
 		_;
 	}
 
-	modifier contractYieldSyncV1Vault(address yieldSyncV1Vault)
+	modifier contractYieldSyncV1Vault(address _yieldSyncV1Vault)
 	{
-		require(msg.sender == yieldSyncV1Vault, "!yieldSyncV1Vault");
+		require(msg.sender == _yieldSyncV1Vault, "!_yieldSyncV1Vault");
 
 		_;
 	}
@@ -87,85 +87,85 @@ contract YieldSyncV1ASignatureProtocol is
 
 
 	/// @inheritdoc ISignatureProtocol
-	function yieldSyncV1VaultInitialize(address initiator, address yieldSyncV1Vault)
+	function yieldSyncV1VaultInitialize(address _initiator, address _yieldSyncV1Vault)
 		public
 		override
-		contractYieldSyncV1Vault(yieldSyncV1Vault)
+		contractYieldSyncV1Vault(_yieldSyncV1Vault)
 	{
 		require(
-			_yieldSyncV1Vault_signaturesRequired[initiator] > 0,
-			"!_yieldSyncV1Vault_signaturesRequired[initiator]"
+			_yieldSyncV1Vault_signaturesRequired[_initiator] > 0,
+			"!_yieldSyncV1Vault_signaturesRequired[_initiator]"
 		);
 
-		_yieldSyncV1Vault_signaturesRequired[yieldSyncV1Vault] = _yieldSyncV1Vault_signaturesRequired[initiator];
+		_yieldSyncV1Vault_signaturesRequired[_yieldSyncV1Vault] = _yieldSyncV1Vault_signaturesRequired[_initiator];
 	}
 
 
 	/// @inheritdoc IYieldSyncV1ASignatureProtocol
-	function vaultMessageHashes(address yieldSyncV1Vault)
+	function vaultMessageHashes(address _yieldSyncV1Vault)
 		public
 		view
 		override
 		returns (bytes32[] memory vaultMessageHashes_)
 	{
-		return _vaultMessageHashes[yieldSyncV1Vault];
+		return _vaultMessageHashes[_yieldSyncV1Vault];
 	}
 
 	/// @inheritdoc IYieldSyncV1ASignatureProtocol
-	function yieldSyncV1Vault_signaturesRequired(address purposer)
+	function yieldSyncV1Vault_signaturesRequired(address _purposer)
 		public
 		view
 		override
 		returns (uint256 signaturesRequired_)
 	{
-		return _yieldSyncV1Vault_signaturesRequired[purposer];
+		return _yieldSyncV1Vault_signaturesRequired[_purposer];
 	}
 
 	/// @inheritdoc IYieldSyncV1ASignatureProtocol
-	function yieldSyncV1Vault_messageHash_messageHashData(address yieldSyncV1Vault, bytes32 messageHash)
+	function yieldSyncV1Vault_messageHash_messageHashData(address _yieldSyncV1Vault, bytes32 _messageHash)
 		public
 		view
 		override
 		returns (MessageHashData memory messageHashData_)
 	{
-		return _yieldSyncV1Vault_messageHash_messageHashData[yieldSyncV1Vault][messageHash];
+		return _yieldSyncV1Vault_messageHash_messageHashData[_yieldSyncV1Vault][_messageHash];
 	}
 
 	/// @inheritdoc IYieldSyncV1ASignatureProtocol
-	function yieldSyncV1Vault_messageHash_messageHashVote(address yieldSyncV1Vault, bytes32 messageHash)
+	function yieldSyncV1Vault_messageHash_messageHashVote(address _yieldSyncV1Vault, bytes32 _messageHash)
 		public
 		view
 		override
 		returns (MessageHashVote memory messageHashVote_)
 	{
-		return _yieldSyncV1Vault_messageHash_messageHashVote[yieldSyncV1Vault][messageHash];
+		return _yieldSyncV1Vault_messageHash_messageHashVote[_yieldSyncV1Vault][_messageHash];
 	}
 
 
 	/// @inheritdoc IYieldSyncV1ASignatureProtocol
-	function yieldSyncV1Vault_signaturesRequiredUpdate(uint256 signatureRequired)
+	function yieldSyncV1Vault_signaturesRequiredUpdate(uint256 _signatureRequired)
 		public
 		override
 	{
-		_yieldSyncV1Vault_signaturesRequired[msg.sender] = signatureRequired;
+		_yieldSyncV1Vault_signaturesRequired[msg.sender] = _signatureRequired;
 	}
 
 	/// @inheritdoc IYieldSyncV1ASignatureProtocol
-	function signMessageHash(address yieldSyncV1Vault, bytes32 messageHash, bytes memory signature)
+	function signMessageHash(address _yieldSyncV1Vault, bytes32 _messageHash, bytes memory _signature)
 		public
 		override
 		whenNotPaused()
 	{
-		(, bool member) = YieldSyncV1VaultRegistry.yieldSyncV1Vault_participant_access(yieldSyncV1Vault, msg.sender);
+		(, bool member) = YieldSyncV1VaultRegistry.yieldSyncV1Vault_participant_access(_yieldSyncV1Vault, msg.sender);
 
 		require(member, "!member");
 
-		MessageHashData memory messageHashData = _yieldSyncV1Vault_messageHash_messageHashData[yieldSyncV1Vault][
-			messageHash
+		MessageHashData memory messageHashData = _yieldSyncV1Vault_messageHash_messageHashData[_yieldSyncV1Vault][
+			_messageHash
 		];
 
-		MessageHashVote memory messageHashVote = _yieldSyncV1Vault_messageHash_messageHashVote[yieldSyncV1Vault][
-			messageHash
+		MessageHashVote memory messageHashVote = _yieldSyncV1Vault_messageHash_messageHashVote[_yieldSyncV1Vault][
+			_messageHash
 		];
 
 		for (uint i = 0; i < messageHashVote.signedMembers.length; i++)
@@ -177,31 +177,31 @@ contract YieldSyncV1ASignatureProtocol is
 		{
 			address[] memory initialsignedMembers;
 
-			address recovered = ECDSA.recover(ECDSA.toEthSignedMessageHash(messageHash), signature);
+			address recovered = ECDSA.recover(ECDSA.toEthSignedMessageHash(_messageHash), _signature);
 
 			(, bool recoveredIsMember) = YieldSyncV1VaultRegistry.yieldSyncV1Vault_participant_access(
-				yieldSyncV1Vault,
+				_yieldSyncV1Vault,
 				recovered
 			);
 
 			require(recoveredIsMember, "!member");
 
-			_yieldSyncV1Vault_messageHash_messageHashData[yieldSyncV1Vault][messageHash] = MessageHashData({
-				signature: signature,
+			_yieldSyncV1Vault_messageHash_messageHashData[_yieldSyncV1Vault][_messageHash] = MessageHashData({
+				signature: _signature,
 				signer: recovered
 			});
 
-			_yieldSyncV1Vault_messageHash_messageHashVote[yieldSyncV1Vault][messageHash] = MessageHashVote({
+			_yieldSyncV1Vault_messageHash_messageHashVote[_yieldSyncV1Vault][_messageHash] = MessageHashVote({
 				signedMembers: initialsignedMembers,
 				signatureCount: 0
 			});
 
-			_vaultMessageHashes[yieldSyncV1Vault].push(messageHash);
+			_vaultMessageHashes[_yieldSyncV1Vault].push(_messageHash);
 		}
 
-		_yieldSyncV1Vault_messageHash_messageHashVote[yieldSyncV1Vault][messageHash].signedMembers.push(msg.sender);
+		_yieldSyncV1Vault_messageHash_messageHashVote[_yieldSyncV1Vault][_messageHash].signedMembers.push(msg.sender);
 
-		_yieldSyncV1Vault_messageHash_messageHashVote[yieldSyncV1Vault][messageHash].signatureCount++;
+		_yieldSyncV1Vault_messageHash_messageHashVote[_yieldSyncV1Vault][_messageHash].signatureCount++;
 	}
 
 
