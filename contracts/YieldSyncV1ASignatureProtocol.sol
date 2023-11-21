@@ -206,18 +206,18 @@ contract YieldSyncV1ASignatureProtocol is
 
 
 	/// @inheritdoc IYieldSyncV1ASignatureProtocol
-	function updatePause(bool pause)
+	function updatePause(bool _pause)
 		public
 		override
 		contractYieldSyncGovernance(bytes32(0))
 	{
-		if (pause)
+		if (_pause)
 		{
-			_pause();
+			super._pause();
 		}
 		else
 		{
-			_unpause();
+			super._unpause();
 		}
 	}
 }
