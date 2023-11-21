@@ -8,9 +8,9 @@ import { IYieldSyncV1VaultRegistry } from "./IYieldSyncV1VaultRegistry.sol";
 
 interface IYieldSyncV1Vault
 {
-	event TokensTransferred(address indexed to, address indexed token, uint256 amount);
-	event UpdatedSignatureProtocol(address signatureProtocol);
-	event ProcessTransferRequestFailed(uint256 transferRequestId);
+	event TokensTransferred(address indexed _to, address indexed _token, uint256 _amount);
+	event UpdatedSignatureProtocol(address _signatureProtocol);
+	event ProcessTransferRequestFailed(uint256 _transferRequestId);
 
 
 	receive ()

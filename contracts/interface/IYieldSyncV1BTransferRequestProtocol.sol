@@ -29,7 +29,7 @@ interface IYieldSyncV1BTransferRequestProtocol is
 	event DeletedTransferRequest(address _yieldSyncV1Vault, uint256 _transferRequestId);
 	event UpdateTransferRequest(address _yieldSyncV1Vault, TransferRequest _transferRequest);
 	event UpdateTransferRequestPoll(address _yieldSyncV1Vault, TransferRequestPoll _transferRequestPoll);
-	event MemberVoted(address _yieldSyncV1Vault, uint256 _transferRequestId, address member, bool _vote);
+	event MemberVoted(address _yieldSyncV1Vault, uint256 _transferRequestId, address _member, bool _vote);
 
 
 	/**

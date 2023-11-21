@@ -41,11 +41,11 @@ contract ReenteranceAttacker is Ownable
 		);
 	}
 
-	function etherTransfer(address to)
+	function etherTransfer(address _to)
 		public
 		onlyOwner()
 	{
-		(bool success, ) = to.call{value: address(this).balance}("");
+		(bool success, ) = _to.call{value: address(this).balance}("");
 
 		require(success, "etherTransfer failed");
 	}

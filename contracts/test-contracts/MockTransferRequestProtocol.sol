@@ -7,7 +7,7 @@ contract MockTransferRequestProtocol
 	constructor ()
 	{}
 
-	function yieldSyncV1VaultInitialize(address initiator, address yieldSyncV1Vault)
+	function yieldSyncV1VaultInitialize(address _initiator, address _yieldSyncV1Vault)
 		public
 	{}
 }

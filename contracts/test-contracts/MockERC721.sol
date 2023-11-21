@@ -10,14 +10,15 @@ contract MockERC721 is ERC721
 	constructor ()
 		ERC721("MockERC721", "MOCKERC721")
 	{
-		for (uint256 i = 0; i < 15; i++) {
+		for (uint256 i = 0; i < 15; i++)
+		{
 			_safeMint(msg.sender, i);
 		}
 	}
 
-	function safeMint(uint256 tokenId)
+	function safeMint(uint256 _tokenId)
 		public
 	{
-		_safeMint(msg.sender, tokenId);
+		_safeMint(msg.sender, _tokenId);
 	}
 }
