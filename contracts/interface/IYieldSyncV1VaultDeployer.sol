@@ -22,69 +22,69 @@ interface IYieldSyncV1VaultDeployer
 	/**
 	* @notice YieldSyncGovernance contract address
 	* @dev [view-address]
-	* @return {address}
+	* @return yieldSyncGovernance_ {address}
 	*/
 	function YieldSyncGovernance()
 		external
 		view
-		returns (address)
+		returns (address yieldSyncGovernance_)
 	;
 
 	/**
 	* @notice YieldSyncV1VaultRegistry contract address
 	* @dev [view-address]
-	* @return {address}
+	* @return yieldSyncV1VaultRegistry_ {address}
 	*/
 	function YieldSyncV1VaultRegistry()
 		external
 		view
-		returns (address)
+		returns (address yieldSyncV1VaultRegistry_)
 	;
 
 	/**
 	* @notice Fee
 	* @dev [view-uint256]
-	* @return {uint256}
+	* @return fee_ {uint256}
 	*/
 	function fee()
 		external
 		view
-		returns (uint256)
+		returns (uint256 fee_)
 	;
 
 	/**
 	* @notice yieldSyncV1Vault Id Tracker
 	* @dev [view-uint256]
-	* @return {uint256}
+	* @return yieldSyncV1VaultIdTracker_ {uint256}
 	*/
 	function yieldSyncV1VaultIdTracker()
 		external
 		view
-		returns (uint256)
+		returns (uint256 yieldSyncV1VaultIdTracker_)
 	;
 
 	/**
 	* @notice yieldSyncV1Vault to yieldSyncV1VaultId
 	* @dev [view-mapping]
 	* @param _yieldSyncV1Vault {address}
-	* @return {uint256}
+	* @return yieldSyncV1VaultId_ {uint256}
 	*/
 	function yieldSyncV1Vault_yieldSyncV1VaultId(address _yieldSyncV1Vault)
 		external
 		view
-		returns (uint256)
+		returns (uint256 yieldSyncV1VaultId_)
 	;
 
 	/**
 	* @notice yieldSyncV1VaultId to yieldSyncV1Vault
 	* @dev [view-mapping]
 	* @param _yieldSyncV1VaultId {uint256}
-	* @return {address}
+	* @return yieldSyncV1Vault_ {address}
 	*/
 	function yieldSyncV1VaultId_yieldSyncV1Vault(uint256 _yieldSyncV1VaultId)
 		external
 		view
-		returns (address)
+		returns (address yieldSyncV1Vault_)
 	;
 
 	/**
@@ -94,7 +94,7 @@ interface IYieldSyncV1VaultDeployer
 	* @param _transferRequestProtocol {uint256}
 	* @param _admins {address[]}
 	* @param _members {address[]}
-	* @return yieldSyncV1Vault_ {address} Deployed vault
+	* @return yieldSyncV1Vault_ {address} Deployed yieldSyncV1Vault
 	*/
 	function deployYieldSyncV1Vault(
 		address _signatureProtocol,

@@ -68,23 +68,23 @@ contract YieldSyncV1VaultDeployer is
 	{
 		require(msg.value >= fee, "!msg.value");
 
-		YieldSyncV1Vault yieldSyncV1Vault = new YieldSyncV1Vault(
-			msg.sender,
-			_signatureProtocol,
-			_transferRequestProtocol,
-			YieldSyncV1VaultRegistry,
-			_admins,
-			_members
+		yieldSyncV1Vault_ = address(
+			new YieldSyncV1Vault(
+				msg.sender,
+				_signatureProtocol,
+				_transferRequestProtocol,
+				YieldSyncV1VaultRegistry,
+				_admins,
+				_members
+			)
 		);
 
-		yieldSyncV1Vault_yieldSyncV1VaultId[address(yieldSyncV1Vault)] = yieldSyncV1VaultIdTracker;
-		yieldSyncV1VaultId_yieldSyncV1Vault[yieldSyncV1VaultIdTracker] = address(yieldSyncV1Vault);
+		yieldSyncV1Vault_yieldSyncV1VaultId[yieldSyncV1Vault_] = yieldSyncV1VaultIdTracker;
+		yieldSyncV1VaultId_yieldSyncV1Vault[yieldSyncV1VaultIdTracker] = yieldSyncV1Vault_;
 
 		yieldSyncV1VaultIdTracker++;
 
-		emit DeployedYieldSyncV1Vault(address(yieldSyncV1Vault));
-
-		return address(yieldSyncV1Vault);
+		emit DeployedYieldSyncV1Vault(yieldSyncV1Vault_);
 	}
 
 	/// @inheritdoc IYieldSyncV1VaultDeployer
