@@ -325,8 +325,6 @@ contract YieldSyncV1BTransferRequestProtocol is
 			);
 		}
 
-		address[] memory emptyArray;
-
 		_yieldSyncV1Vault_transferRequestId_transferRequest[_yieldSyncV1Vault][_transferRequestIdTracker] = TransferRequest(
 			{
 				forERC20: _forERC20,
@@ -345,8 +343,8 @@ contract YieldSyncV1BTransferRequestProtocol is
 		] = TransferRequestPoll(
 			{
 				voteCloseTimestamp: _voteCloseTimestamp,
-				voteAgainstMembers: emptyArray,
-				voteForMembers: emptyArray
+				voteAgainstMembers:  new address[](0),
+				voteForMembers:  new address[](0)
 			}
 		);
 

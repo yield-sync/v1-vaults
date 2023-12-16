@@ -305,8 +305,6 @@ contract YieldSyncV1ATransferRequestProtocol is
 
 		require(!(_forERC20 && _forERC721), "_forERC20 && _forERC721");
 
-		address[] memory emptyArray;
-
 		_yieldSyncV1Vault_transferRequestId_transferRequest[_yieldSyncV1Vault][_transferRequestIdTracker] = TransferRequest(
 			{
 				forERC20: _forERC20,
@@ -325,8 +323,8 @@ contract YieldSyncV1ATransferRequestProtocol is
 		] = TransferRequestPoll(
 			{
 				latestForVoteTime: block.timestamp,
-				voteAgainstMembers: emptyArray,
-				voteForMembers: emptyArray
+				voteAgainstMembers:  new address[](0),
+				voteForMembers:  new address[](0)
 			}
 		);
 
