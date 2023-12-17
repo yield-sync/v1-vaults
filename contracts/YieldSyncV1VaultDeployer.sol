@@ -66,7 +66,7 @@ contract YieldSyncV1VaultDeployer is
 		override
 		returns (address yieldSyncV1Vault_)
 	{
-		require(msg.value >= fee, "!msg.value");
+		require(fee <= msg.value, "fee > msg.value");
 
 		yieldSyncV1Vault_ = address(
 			new YieldSyncV1Vault(

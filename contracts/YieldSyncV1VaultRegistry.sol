@@ -18,8 +18,11 @@ contract YieldSyncV1VaultRegistry is
 	IYieldSyncV1VaultRegistry
 {
 	mapping (address admin => address[] yieldSyncV1Vaults) internal _admin_yieldSyncV1Vaults;
+
 	mapping (address member => address[] yieldSyncV1Vaults) internal _member_yieldSyncV1Vaults;
+
 	mapping (address yieldSyncV1Vault => address[] admins) internal _yieldSyncV1Vault_admins;
+
 	mapping (address yieldSyncV1Vault => address[] members) internal _yieldSyncV1Vault_members;
 
 	mapping (
