@@ -20,6 +20,7 @@ const { ethers } = require("hardhat");
 import { expect } from "chai";
 import { Contract, ContractFactory } from "ethers";
 
+const ERROR_INVALID_MSG_VALUE = "fee > msg.value";
 
 describe("[0.0] YieldSyncV1VaultDeployer.sol", async () => {
 	let yieldSyncV1VaultRegistry: Contract;
@@ -229,7 +230,7 @@ describe("[0.0] YieldSyncV1VaultDeployer.sol", async () => {
 						[addr1.address],
 						[addr1.address],
 						{ value: ethers.utils.parseEther(".5") }
-					)).to.be.rejectedWith("!msg.value");
+					)).to.be.rejectedWith(ERROR_INVALID_MSG_VALUE);
 				}
 			);
 
