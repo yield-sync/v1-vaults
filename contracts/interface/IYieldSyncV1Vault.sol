@@ -2,7 +2,6 @@
 pragma solidity ^0.8.18;
 
 
-import { ITransferRequestProtocol, TransferRequest } from "./ITransferRequestProtocol.sol";
 import { IYieldSyncV1VaultRegistry } from "./IYieldSyncV1VaultRegistry.sol";
 
 

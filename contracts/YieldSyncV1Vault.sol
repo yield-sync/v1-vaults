@@ -8,12 +8,8 @@ import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { IERC721 } from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 
 import { ISignatureProtocol } from "./interface/ISignatureProtocol.sol";
-import {
-	ITransferRequestProtocol,
-	IYieldSyncV1Vault,
-	IYieldSyncV1VaultRegistry,
-	TransferRequest
-} from "./interface/IYieldSyncV1Vault.sol";
+import { ITransferRequestProtocol, TransferRequest } from "./interface/ITransferRequestProtocol.sol";
+import { IYieldSyncV1Vault, IYieldSyncV1VaultRegistry } from "./interface/IYieldSyncV1Vault.sol";
 
 
 contract YieldSyncV1Vault is
