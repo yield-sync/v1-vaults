@@ -2,8 +2,6 @@
 pragma solidity ^0.8.18;
 
 
-import { IYieldSyncV1Vault } from "@yield-sync/v1-sdk/contracts/interface/IYieldSyncV1Vault.sol";
-
 import { IYieldSyncV1VaultRegistry } from "./interface/IYieldSyncV1VaultRegistry.sol";
 
 
