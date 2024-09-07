@@ -37,25 +37,25 @@ async function main()
 	switch (network.name)
 	{
 		case "mainnet":
-			DeployerContractAddress = String(process.env.YIELD_SYNC_V1_VAULT_Deployer_ADDRESS_MAINNET);
+			DeployerContractAddress = String(process.env.YIELD_SYNC_V1_VAULT_DEPLOYER_ADDRESS_MAINNET);
 			transferRequestProtocolAddress = String(process.env.YIELD_SYNC_V1_A_TRANSFER_REQUEST_PROTOCOL_MAINNET);
 
 			break;
 
 		case "optimism":
-			DeployerContractAddress = String(process.env.YIELD_SYNC_V1_VAULT_Deployer_ADDRESS_OP);
+			DeployerContractAddress = String(process.env.YIELD_SYNC_V1_VAULT_DEPLOYER_ADDRESS_OP);
 			transferRequestProtocolAddress = String(process.env.YIELD_SYNC_V1_A_TRANSFER_REQUEST_PROTOCOL_OP);
 
 			break;
 
 		case "optimismgoerli":
-			DeployerContractAddress = String(process.env.YIELD_SYNC_V1_VAULT_Deployer_ADDRESS_OP_GOERLI);
+			DeployerContractAddress = String(process.env.YIELD_SYNC_V1_VAULT_DEPLOYER_ADDRESS_OP_GOERLI);
 			transferRequestProtocolAddress = String(process.env.YIELD_SYNC_V1_A_TRANSFER_REQUEST_PROTOCOL_OP_GOERLI);
 
 			break;
 
 		case "sepolia":
-			DeployerContractAddress = String(process.env.YIELD_SYNC_V1_VAULT_Deployer_ADDRESS_SEPOLIA);
+			DeployerContractAddress = String(process.env.YIELD_SYNC_V1_VAULT_DEPLOYER_ADDRESS_SEPOLIA);
 			transferRequestProtocolAddress = String(process.env.YIELD_SYNC_V1_A_TRANSFER_REQUEST_PROTOCOL_SEPOLIA);
 
 			break;
@@ -65,15 +65,10 @@ async function main()
 
 			const mockYieldSyncGovernance: Contract = await (await MockYieldSyncGovernance.deploy()).deployed();
 
-			const yieldSyncV1VaultRegistry: Contract = await (
-				await YieldSyncV1VaultRegistry.deploy()
-			).deployed();
+			const yieldSyncV1VaultRegistry: Contract = await (await YieldSyncV1VaultRegistry.deploy()).deployed();
 
 			const yieldSyncV1VaultDeployer: Contract = await (
-				await YieldSyncV1VaultDeployer.deploy(
-					mockYieldSyncGovernance.address,
-					yieldSyncV1VaultRegistry.address
-				)
+				await YieldSyncV1VaultDeployer.deploy(mockYieldSyncGovernance.address, yieldSyncV1VaultRegistry.address)
 			).deployed();
 
 			DeployerContractAddress = yieldSyncV1VaultDeployer.address;
